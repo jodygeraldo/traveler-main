@@ -1,0 +1,474 @@
+:root {
+  --mauve1: 253 252 253;
+  --mauve2: 249 248 249;
+  --mauve3: 244 242 244;
+  --mauve4: 238 237 239;
+  --mauve5: 233 232 234;
+  --mauve6: 228 226 228;
+  --mauve7: 220 219 221;
+  --mauve8: 200 199 203;
+  --mauve9: 144 142 150;
+  --mauve10: 134 132 141;
+  --mauve11: 111 110 119;
+  --mauve12: 26 21 35;
+
+  --violet1: 253 252 254;
+  --violet2: 251 250 255;
+  --violet3: 245 242 255;
+  --violet4: 237 233 254;
+  --violet5: 228 222 252;
+  --violet6: 215 207 249;
+  --violet7: 196 184 243;
+  --violet8: 170 153 236;
+  --violet9: 110 86 207;
+  --violet10: 100 79 193;
+  --violet11: 87 70 175;
+  --violet12: 32 19 75;
+
+  --red1: 255 252 252;
+  --red2: 255 248 248;
+  --red3: 255 239 239;
+  --red4: 255 229 229;
+  --red5: 253 216 216;
+  --red6: 249 198 198;
+  --red7: 243 174 175;
+  --red8: 235 144 145;
+  --red9: 229 72 77;
+  --red10: 220 61 67;
+  --red11: 205 43 49;
+  --red12: 56 19 22;
+
+  --indigo1: 253 253 254;
+  --indigo2: 247 250 255;
+  --indigo3: 240 244 255;
+  --indigo4: 230 237 254;
+  --indigo5: 217 226 252;
+  --indigo6: 198 212 249;
+  --indigo7: 174 192 245;
+  --indigo8: 141 164 239;
+  --indigo9: 62 99 221;
+  --indigo10: 58 92 204;
+  --indigo11: 52 81 178;
+  --indigo12: 16 29 70;
+
+  --grass1: 251 254 251;
+  --grass2: 243 252 243;
+  --grass3: 235 249 235;
+  --grass4: 223 243 223;
+  --grass5: 206 235 207;
+  --grass6: 183 223 186;
+  --grass7: 151 207 156;
+  --grass8: 101 186 117;
+  --grass9: 70 167 88;
+  --grass10: 61 154 80;
+  --grass11: 41 124 59;
+  --grass12: 27 49 30;
+
+  --orange1: 254 252 251;
+  --orange2: 254 248 244;
+  --orange3: 255 241 231;
+  --orange4: 255 232 215;
+  --orange5: 255 220 195;
+  --orange6: 255 204 167;
+  --orange7: 255 179 129;
+  --orange8: 250 147 78;
+  --orange9: 247 104 8;
+  --orange10: 237 95 0;
+  --orange11: 189 75 0;
+  --orange12: 69 30 17;
+
+  --blackA1: hsla(0, 0%, 0%, 0.012);
+  --blackA2: hsla(0, 0%, 0%, 0.027);
+  --blackA3: hsla(0, 0%, 0%, 0.047);
+  --blackA4: hsla(0, 0%, 0%, 0.071);
+  --blackA5: hsla(0, 0%, 0%, 0.09);
+  --blackA6: hsla(0, 0%, 0%, 0.114);
+  --blackA7: hsla(0, 0%, 0%, 0.141);
+  --blackA8: hsla(0, 0%, 0%, 0.22);
+  --blackA9: hsla(0, 0%, 0%, 0.439);
+  --blackA10: hsla(0, 0%, 0%, 0.478);
+  --blackA11: hsla(0, 0%, 0%, 0.565);
+  --blackA12: hsla(0, 0%, 0%, 0.91);
+
+  --whiteA1: hsla(0, 0%, 100%, 0);
+  --whiteA2: hsla(0, 0%, 100%, 0.013);
+  --whiteA3: hsla(0, 0%, 100%, 0.034);
+  --whiteA4: hsla(0, 0%, 100%, 0.056);
+  --whiteA5: hsla(0, 0%, 100%, 0.086);
+  --whiteA6: hsla(0, 0%, 100%, 0.124);
+  --whiteA7: hsla(0, 0%, 100%, 0.176);
+  --whiteA8: hsla(0, 0%, 100%, 0.249);
+  --whiteA9: hsla(0, 0%, 100%, 0.386);
+  --whiteA10: hsla(0, 0%, 100%, 0.446);
+  --whiteA11: hsla(0, 0%, 100%, 0.592);
+  --whiteA12: hsla(0, 0%, 100%, 0.923);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --mauve1: 22 22 24;
+    --mauve2: 28 28 31;
+    --mauve3: 35 35 38;
+    --mauve4: 40 40 44;
+    --mauve5: 46 46 50;
+    --mauve6: 52 52 58;
+    --mauve7: 62 62 68;
+    --mauve8: 80 79 87;
+    --mauve9: 112 111 120;
+    --mauve10: 126 125 134;
+    --mauve11: 160 159 166;
+    --mauve12: 237 237 239;
+
+    --violet1: 23 21 31;
+    --violet2: 28 23 43;
+    --violet3: 37 30 64;
+    --violet4: 44 34 80;
+    --violet5: 50 39 95;
+    --violet6: 57 44 114;
+    --violet7: 68 53 146;
+    --violet8: 88 66 195;
+    --violet9: 110 86 207;
+    --violet10: 124 102 220;
+    --violet11: 158 140 252;
+    --violet12: 241 238 254;
+
+    --red1: 31 19 21;
+    --red2: 41 20 21;
+    --red3: 60 24 26;
+    --red4: 72 26 29;
+    --red5: 84 27 31;
+    --red6: 103 30 34;
+    --red7: 130 32 37;
+    --red8: 170 36 41;
+    --red9: 229 72 77;
+    --red10: 242 85 90;
+    --red11: 255 99 105;
+    --red12: 254 236 238;
+
+    --indigo1: 19 22 32;
+    --indigo2: 21 25 45;
+    --indigo3: 25 33 64;
+    --indigo4: 28 39 79;
+    --indigo5: 31 44 92;
+    --indigo6: 34 52 110;
+    --indigo7: 39 62 137;
+    --indigo8: 47 78 178;
+    --indigo9: 62 99 221;
+    --indigo10: 83 115 231;
+    --indigo11: 132 157 255;
+    --indigo12: 238 241 253;
+
+    --grass1: 13 25 18;
+    --grass2: 15 30 19;
+    --grass3: 19 40 25;
+    --grass4: 22 48 29;
+    --grass5: 25 57 33;
+    --grass6: 29 68 39;
+    --grass7: 36 85 48;
+    --grass8: 47 110 59;
+    --grass9: 70 167 88;
+    --grass10: 85 180 103;
+    --grass11: 99 193 116;
+    --grass12: 229 251 235;
+
+    --orange1: 31 18 6;
+    --orange2: 43 20 0;
+    --orange3: 57 26 3;
+    --orange4: 68 31 4;
+    --orange5: 79 35 5;
+    --orange6: 95 42 6;
+    --orange7: 118 50 5;
+    --orange8: 148 62 0;
+    --orange9: 247 104 8;
+    --orange10: 255 128 43;
+    --orange11: 255 139 62;
+    --orange12: 255 235 222;
+  }
+}
+
+.light {
+  --mauve1: 253 252 253;
+  --mauve2: 249 248 249;
+  --mauve3: 244 242 244;
+  --mauve4: 238 237 239;
+  --mauve5: 233 232 234;
+  --mauve6: 228 226 228;
+  --mauve7: 220 219 221;
+  --mauve8: 200 199 203;
+  --mauve9: 144 142 150;
+  --mauve10: 134 132 141;
+  --mauve11: 111 110 119;
+  --mauve12: 26 21 35;
+
+  --violet1: 253 252 254;
+  --violet2: 251 250 255;
+  --violet3: 245 242 255;
+  --violet4: 237 233 254;
+  --violet5: 228 222 252;
+  --violet6: 215 207 249;
+  --violet7: 196 184 243;
+  --violet8: 170 153 236;
+  --violet9: 110 86 207;
+  --violet10: 100 79 193;
+  --violet11: 87 70 175;
+  --violet12: 32 19 75;
+
+  --red1: 255 252 252;
+  --red2: 255 248 248;
+  --red3: 255 239 239;
+  --red4: 255 229 229;
+  --red5: 253 216 216;
+  --red6: 249 198 198;
+  --red7: 243 174 175;
+  --red8: 235 144 145;
+  --red9: 229 72 77;
+  --red10: 220 61 67;
+  --red11: 205 43 49;
+  --red12: 56 19 22;
+
+  --indigo1: 253 253 254;
+  --indigo2: 247 250 255;
+  --indigo3: 240 244 255;
+  --indigo4: 230 237 254;
+  --indigo5: 217 226 252;
+  --indigo6: 198 212 249;
+  --indigo7: 174 192 245;
+  --indigo8: 141 164 239;
+  --indigo9: 62 99 221;
+  --indigo10: 58 92 204;
+  --indigo11: 52 81 178;
+  --indigo12: 16 29 70;
+
+  --grass1: 251 254 251;
+  --grass2: 243 252 243;
+  --grass3: 235 249 235;
+  --grass4: 223 243 223;
+  --grass5: 206 235 207;
+  --grass6: 183 223 186;
+  --grass7: 151 207 156;
+  --grass8: 101 186 117;
+  --grass9: 70 167 88;
+  --grass10: 61 154 80;
+  --grass11: 41 124 59;
+  --grass12: 27 49 30;
+
+  --orange1: 254 252 251;
+  --orange2: 254 248 244;
+  --orange3: 255 241 231;
+  --orange4: 255 232 215;
+  --orange5: 255 220 195;
+  --orange6: 255 204 167;
+  --orange7: 255 179 129;
+  --orange8: 250 147 78;
+  --orange9: 247 104 8;
+  --orange10: 237 95 0;
+  --orange11: 189 75 0;
+  --orange12: 69 30 17;
+}
+
+.dark {
+  --mauve1: 22 22 24;
+  --mauve2: 28 28 31;
+  --mauve3: 35 35 38;
+  --mauve4: 40 40 44;
+  --mauve5: 46 46 50;
+  --mauve6: 52 52 58;
+  --mauve7: 62 62 68;
+  --mauve8: 80 79 87;
+  --mauve9: 112 111 120;
+  --mauve10: 126 125 134;
+  --mauve11: 160 159 166;
+  --mauve12: 237 237 239;
+
+  --violet1: 23 21 31;
+  --violet2: 28 23 43;
+  --violet3: 37 30 64;
+  --violet4: 44 34 80;
+  --violet5: 50 39 95;
+  --violet6: 57 44 114;
+  --violet7: 68 53 146;
+  --violet8: 88 66 195;
+  --violet9: 110 86 207;
+  --violet10: 124 102 220;
+  --violet11: 158 140 252;
+  --violet12: 241 238 254;
+
+  --red1: 31 19 21;
+  --red2: 41 20 21;
+  --red3: 60 24 26;
+  --red4: 72 26 29;
+  --red5: 84 27 31;
+  --red6: 103 30 34;
+  --red7: 130 32 37;
+  --red8: 170 36 41;
+  --red9: 229 72 77;
+  --red10: 242 85 90;
+  --red11: 255 99 105;
+  --red12: 254 236 238;
+
+  --indigo1: 19 22 32;
+  --indigo2: 21 25 45;
+  --indigo3: 25 33 64;
+  --indigo4: 28 39 79;
+  --indigo5: 31 44 92;
+  --indigo6: 34 52 110;
+  --indigo7: 39 62 137;
+  --indigo8: 47 78 178;
+  --indigo9: 62 99 221;
+  --indigo10: 83 115 231;
+  --indigo11: 132 157 255;
+  --indigo12: 238 241 253;
+
+  --grass1: 13 25 18;
+  --grass2: 15 30 19;
+  --grass3: 19 40 25;
+  --grass4: 22 48 29;
+  --grass5: 25 57 33;
+  --grass6: 29 68 39;
+  --grass7: 36 85 48;
+  --grass8: 47 110 59;
+  --grass9: 70 167 88;
+  --grass10: 85 180 103;
+  --grass11: 99 193 116;
+  --grass12: 229 251 235;
+
+  --orange1: 31 18 6;
+  --orange2: 43 20 0;
+  --orange3: 57 26 3;
+  --orange4: 68 31 4;
+  --orange5: 79 35 5;
+  --orange6: 95 42 6;
+  --orange7: 118 50 5;
+  --orange8: 148 62 0;
+  --orange9: 247 104 8;
+  --orange10: 255 128 43;
+  --orange11: 255 139 62;
+  --orange12: 255 235 222;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .focus-ring-2 {
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .focus-ring-2-primary-7 {
+    @apply focus-ring-2 focus:ring-primary-7;
+  }
+
+  .focus-ring-2-gray-7 {
+    @apply focus-ring-2 focus:ring-gray-7;
+  }
+
+  .focus-ring-2-primary-7-bg-1 {
+    @apply focus-ring-2-primary-7 focus:ring-offset-gray-1;
+  }
+
+  .focus-ring-2-primary-7-bg-2 {
+    @apply focus-ring-2-primary-7 focus:ring-offset-gray-2;
+  }
+
+  .focus-ring-2-primary-7-bg-3 {
+    @apply focus-ring-2-primary-7 focus:ring-offset-gray-3;
+  }
+
+  .focus-ring-2-gray-7-bg-1 {
+    @apply focus-ring-2-gray-7 focus:ring-offset-gray-1;
+  }
+
+  .focus-ring-2-gray-7-bg-2 {
+    @apply focus-ring-2-gray-7 focus:ring-offset-gray-2;
+  }
+
+  .focus-ring-2-gray-7-bg-3 {
+    @apply focus-ring-2-gray-7 focus:ring-offset-gray-3;
+  }
+
+  .focus-ring-2-primary-8 {
+    @apply focus-ring-2 focus:ring-primary-8;
+  }
+
+  .focus-ring-2-gray-8 {
+    @apply focus-ring-2 focus:ring-gray-8;
+  }
+
+  .focus-ring-2-primary-8-bg-1 {
+    @apply focus-ring-2-primary-8 focus:ring-offset-gray-1;
+  }
+
+  .focus-ring-2-primary-8-bg-2 {
+    @apply focus-ring-2-primary-8 focus:ring-offset-gray-2;
+  }
+
+  .focus-ring-2-primary-8-bg-3 {
+    @apply focus-ring-2-primary-8 focus:ring-offset-gray-3;
+  }
+
+  .focus-ring-2-gray-8-bg-1 {
+    @apply focus-ring-2-gray-8 focus:ring-offset-gray-1;
+  }
+
+  .focus-ring-2-gray-8-bg-2 {
+    @apply focus-ring-2-gray-8 focus:ring-offset-gray-2;
+  }
+
+  .focus-ring-2-gray-8-bg-3 {
+    @apply focus-ring-2-gray-8 focus:ring-offset-gray-3;
+  }
+
+  .focus-ring-2-inset {
+    @apply focus:outline-none focus:ring-2 focus:ring-inset;
+  }
+
+  .focus-ring-2-primary-7-inset {
+    @apply focus-ring-2-inset focus:ring-primary-7;
+  }
+
+  .focus-ring-2-primary-8-inset {
+    @apply focus-ring-2-inset focus:ring-primary-8;
+  }
+
+  .focus-ring-2-gray-7-inset {
+    @apply focus-ring-2-inset focus:ring-gray-7;
+  }
+
+  .focus-ring-2-gray-8-inset {
+    @apply focus-ring-2-inset focus:ring-gray-8;
+  }
+
+  .visible-ring-2-gray-7-inset {
+    @apply data-focus-visible:outline-none data-focus-visible:ring-2 data-focus-visible:ring-inset data-focus-visible:ring-gray-7;
+  }
+
+  .scrollarea-thumb {
+    @apply relative flex-1 rounded-xl bg-gray-10;
+  }
+
+  .scrollarea-thumb::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    min-width: 48px;
+    min-height: 48px;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(110, 86, 207, 0.2);
+    }
+    100% {
+      box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+  }
+
+  .pulse {
+    animation: pulse 1s infinite;
+  }
+}
