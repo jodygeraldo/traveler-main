@@ -352,95 +352,11 @@
 
 @layer components {
   .focus-ring-2 {
-    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply focus:outline-none focus:z-10 focus:ring-2;
   }
 
-  .focus-ring-2-primary-7 {
-    @apply focus-ring-2 focus:ring-primary-7;
-  }
-
-  .focus-ring-2-gray-7 {
-    @apply focus-ring-2 focus:ring-gray-7;
-  }
-
-  .focus-ring-2-primary-7-bg-1 {
-    @apply focus-ring-2-primary-7 focus:ring-offset-gray-1;
-  }
-
-  .focus-ring-2-primary-7-bg-2 {
-    @apply focus-ring-2-primary-7 focus:ring-offset-gray-2;
-  }
-
-  .focus-ring-2-primary-7-bg-3 {
-    @apply focus-ring-2-primary-7 focus:ring-offset-gray-3;
-  }
-
-  .focus-ring-2-gray-7-bg-1 {
-    @apply focus-ring-2-gray-7 focus:ring-offset-gray-1;
-  }
-
-  .focus-ring-2-gray-7-bg-2 {
-    @apply focus-ring-2-gray-7 focus:ring-offset-gray-2;
-  }
-
-  .focus-ring-2-gray-7-bg-3 {
-    @apply focus-ring-2-gray-7 focus:ring-offset-gray-3;
-  }
-
-  .focus-ring-2-primary-8 {
-    @apply focus-ring-2 focus:ring-primary-8;
-  }
-
-  .focus-ring-2-gray-8 {
-    @apply focus-ring-2 focus:ring-gray-8;
-  }
-
-  .focus-ring-2-primary-8-bg-1 {
-    @apply focus-ring-2-primary-8 focus:ring-offset-gray-1;
-  }
-
-  .focus-ring-2-primary-8-bg-2 {
-    @apply focus-ring-2-primary-8 focus:ring-offset-gray-2;
-  }
-
-  .focus-ring-2-primary-8-bg-3 {
-    @apply focus-ring-2-primary-8 focus:ring-offset-gray-3;
-  }
-
-  .focus-ring-2-gray-8-bg-1 {
-    @apply focus-ring-2-gray-8 focus:ring-offset-gray-1;
-  }
-
-  .focus-ring-2-gray-8-bg-2 {
-    @apply focus-ring-2-gray-8 focus:ring-offset-gray-2;
-  }
-
-  .focus-ring-2-gray-8-bg-3 {
-    @apply focus-ring-2-gray-8 focus:ring-offset-gray-3;
-  }
-
-  .focus-ring-2-inset {
-    @apply focus:outline-none focus:ring-2 focus:ring-inset;
-  }
-
-  .focus-ring-2-primary-7-inset {
-    @apply focus-ring-2-inset focus:ring-primary-7;
-  }
-
-  .focus-ring-2-primary-8-inset {
-    @apply focus-ring-2-inset focus:ring-primary-8;
-  }
-
-  .focus-ring-2-gray-7-inset {
-    @apply focus-ring-2-inset focus:ring-gray-7;
-  }
-
-  .focus-ring-2-gray-8-inset {
-    @apply focus-ring-2-inset focus:ring-gray-8;
-  }
-
-  .visible-ring-2-gray-7-inset {
-    @apply data-focus-visible:outline-none data-focus-visible:ring-2 data-focus-visible:ring-inset data-focus-visible:ring-gray-7;
+  .focus-ring-1 {
+    @apply focus:outline-none focus:z-10 focus:ring-1;
   }
 
   .scrollarea-thumb {
