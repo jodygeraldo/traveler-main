@@ -1,14 +1,9 @@
-CREATE MIGRATION m1kt42vjynoq2uik53rdzfjp2ecbr2upzqhpdvfzyml5xztdzkwnla
-    ONTO m1b3pwk2coagmrlal2nnt4p5c6k4e7ir7g4nniqbgmgxh6tmthvp4a
+CREATE MIGRATION m1mhsc2fdfeednadwysrp2pnvcbtnw3wlaomqt6plsfxlyjzcdabgq
+    ONTO m1n2wybadv7fh3itllvuhjdb7qgt5zktnvno24uigjax6qdyuapypa
 {
-  ALTER TYPE default::User {
-      ALTER LINK notes {
-          USING (.<user[IS default::Note]);
-      };
-  };
-  ALTER TYPE default::User {
-      ALTER LINK password {
-          USING (.<user[IS default::Password]);
+  ALTER TYPE default::Character {
+      ALTER PROPERTY region {
+          RESET OPTIONALITY;
       };
   };
 };

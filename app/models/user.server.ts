@@ -1,73 +1,73 @@
-import bcrypt from "bcryptjs";
+import bcrypt from 'bcryptjs'
 
-import { e, client } from "~/db.server";
+import { e, client } from '~/db.server'
 
 export async function getUserById(id: string) {
   return await e
     .select(e.User, (user) => ({
-      ...e.User["*"],
-      filter: e.op(user.id, "=", e.uuid(id)),
+      ...e.User['*'],
+      filter: e.op(user.id, '=', e.uuid(id)),
     }))
-    .run(client);
+    .run(client)
 }
 
 export async function getUserByEmail(email: string) {
   return await e
     .select(e.User, (user) => ({
-      ...e.User["*"],
-      filter: e.op(user.email, "=", email),
+      ...e.User['*'],
+      filter: e.op(user.email, '=', email),
     }))
-    .run(client);
+    .run(client)
 }
 
 export async function createUser(email: string, password: string) {
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10)
 
   const user = e.insert(e.User, {
     email,
-  });
+  })
   const pass = e.insert(e.Password, {
     hash: hashedPassword,
     user: user,
-  });
+  })
   const created = await e
     .select(pass, () => ({
       id: true,
-      user: { ...e.User["*"] },
+      user: { ...e.User['*'] },
     }))
-    .run(client);
-  return created.user;
+    .run(client)
+  return created.user
 }
 
 export async function deleteUserByEmail(email: string) {
   return e
     .delete(e.User, (user) => ({
-      filter: e.op(user.email, "=", email),
+      filter: e.op(user.email, '=', email),
     }))
-    .run(client);
+    .run(client)
 }
 
 export async function verifyLogin(email: string, password: string) {
   const user = await e
     .select(e.User, (user) => ({
-      ...e.User["*"],
+      ...e.User['*'],
       password: {
-        ...e.Password["*"],
+        ...e.Password['*'],
       },
-      filter: e.op(user.email, "=", email),
+      filter: e.op(user.email, '=', email),
     }))
-    .run(client);
+    .run(client)
 
   if (!user?.password) {
-    return null;
+    return null
   }
 
-  const isValid = await bcrypt.compare(password, user.password.hash);
+  const isValid = await bcrypt.compare(password, user.password.hash)
 
   if (!isValid) {
-    return null;
+    return null
   }
 
-  const { password: _password, ...userWithoutPassword } = user;
-  return userWithoutPassword;
+  const { password: _password, ...userWithoutPassword } = user
+  return userWithoutPassword
 }

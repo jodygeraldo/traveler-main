@@ -32,13 +32,7 @@ export default function Icon({ type, name, ...props }: Props) {
   }
 
   return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-      {...props}
-    >
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" {...props}>
       <use href={`${solid[name]}#${name}`} />
     </svg>
   )
