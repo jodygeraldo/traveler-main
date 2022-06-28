@@ -4,7 +4,7 @@ import { useActiveNavigation } from '~/hooks/useActiveNavigation'
 
 export default function InventoryLayout() {
   return (
-    <div className="py-6">
+    <div className="py-10">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-8 lg:px-8">
         <div className="hidden lg:col-span-2 lg:block">
           <nav aria-label="Sidebar" className="sticky top-6">
