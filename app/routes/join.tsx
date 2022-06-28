@@ -52,6 +52,7 @@ export const action: ActionFunction = async ({ request }) => {
   return createUserSession({
     request,
     userId: user.id,
+    accountId: user.account[0].id,
     remember: false,
     redirectTo,
   })

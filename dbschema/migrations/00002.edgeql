@@ -1,9 +1,9 @@
-CREATE MIGRATION m1mhsc2fdfeednadwysrp2pnvcbtnw3wlaomqt6plsfxlyjzcdabgq
-    ONTO m1n2wybadv7fh3itllvuhjdb7qgt5zktnvno24uigjax6qdyuapypa
+CREATE MIGRATION m1sy6mx7sng6jhutxavf5w6jybrbs2ti56y3li5vofqvahkue6d7rq
+    ONTO m174x2kwiz4pq3sumuclj2q4xcpgcs6vmjsuvyc2pjfx6ex4utpbma
 {
   ALTER TYPE default::Character {
-      ALTER PROPERTY region {
-          RESET OPTIONALITY;
+      ALTER PROPERTY name {
+          CREATE CONSTRAINT std::exclusive;
       };
   };
 };

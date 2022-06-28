@@ -21,6 +21,12 @@ export async function seedUser(client: Client) {
         email,
         account: e.insert(e.Account, {
           name: 'Default',
+          characters: e.insert(e.UserCharacter, {
+            characters: null,
+          }),
+          inventory: e.insert(e.Inventory, {
+            ascension_boss: null,
+          }),
         }),
       }),
     })

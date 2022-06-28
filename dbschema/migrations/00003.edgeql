@@ -1,44 +1,10 @@
-CREATE MIGRATION m17oy47zsv6idallf2pqhweyqey6vs5ypolxvduxh2ajwai7ufmbka
-    ONTO m1mhsc2fdfeednadwysrp2pnvcbtnw3wlaomqt6plsfxlyjzcdabgq
+CREATE MIGRATION m1nau5x7k6zv4bmbuecl5hd2gvkyco5bmd5zmo6nrbwmqgmesidbra
+    ONTO m1sy6mx7sng6jhutxavf5w6jybrbs2ti56y3li5vofqvahkue6d7rq
 {
-  ALTER TYPE default::Item {
-      ALTER PROPERTY rarity {
-          DROP CONSTRAINT std::max_len_value(5);
-      };
+  ALTER TYPE default::Inventory {
+      CREATE LINK owner := (.<inventory[IS default::Account]);
   };
-  ALTER TYPE default::Item {
-      ALTER PROPERTY rarity {
-          CREATE CONSTRAINT std::max_value(5);
-      };
-  };
-  ALTER TYPE default::Item {
-      ALTER PROPERTY rarity {
-          DROP CONSTRAINT std::min_len_value(1);
-      };
-  };
-  ALTER TYPE default::Item {
-      ALTER PROPERTY rarity {
-          CREATE CONSTRAINT std::min_value(1);
-      };
-  };
-  ALTER TYPE default::Character {
-      ALTER PROPERTY rarity {
-          DROP CONSTRAINT std::max_len_value(5);
-      };
-  };
-  ALTER TYPE default::Character {
-      ALTER PROPERTY rarity {
-          CREATE CONSTRAINT std::max_value(5);
-      };
-  };
-  ALTER TYPE default::Character {
-      ALTER PROPERTY rarity {
-          DROP CONSTRAINT std::min_len_value(4);
-      };
-  };
-  ALTER TYPE default::Character {
-      ALTER PROPERTY rarity {
-          CREATE CONSTRAINT std::min_value(4);
-      };
+  ALTER TYPE default::UserCharacter {
+      CREATE LINK owner := (.<characters[IS default::Account]);
   };
 };

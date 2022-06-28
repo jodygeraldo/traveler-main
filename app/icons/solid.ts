@@ -15,6 +15,7 @@ import trash from './solid/trash.svg'
 import viewGrid from './solid/view-grid.svg'
 import viewList from './solid/view-list.svg'
 import search from './solid/search.svg'
+import star from './solid/star.svg'
 
 export default {
   eye,
@@ -34,4 +35,5 @@ export default {
   selector,
   trash,
   search,
+  star,
 }
