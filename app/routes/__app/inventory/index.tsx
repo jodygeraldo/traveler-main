@@ -6,6 +6,8 @@ import { getAllItems } from '~/data/items'
 import { getInventory } from '~/models/inventory.server'
 import { requireAccountId } from '~/session.server'
 
+export { action } from '~/actions/inventory'
+
 type LoaderData = {
   items: ReturnType<typeof getAllItems>
 }

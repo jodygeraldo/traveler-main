@@ -1,9 +1,9 @@
 import { useFetcher } from '@remix-run/react'
 import type { Inventory } from 'dbschema/edgeql-js'
+import { useRef } from 'react'
 import { BadgeRarity } from '~/components/Badge'
 import Icon from '~/components/Icon'
 import type { Item } from '~/data/items'
-import { useDebounce } from '~/hooks/useDebounce'
 import { getImageSrc } from '~/utils'
 
 export default function ItemList({
@@ -15,11 +15,13 @@ export default function ItemList({
 }) {
   const { Form, submit } = useFetcher()
 
+  let timerRef = useRef<NodeJS.Timeout>()
   function handleChange(e: React.FormEvent<HTMLFormElement>) {
-    submit(e.currentTarget, { method: 'post', replace: true })
+    if (timerRef.current) clearTimeout(timerRef.current)
+    let $form = e.currentTarget
+    let timer = setTimeout(() => submit($form, { method: 'post', replace: true }), 500)
+    timerRef.current = timer
   }
-
-  const debouncedHandleChange = useDebounce(handleChange, 500)
 
   return (
     <ul className="mt-3 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
@@ -39,18 +41,12 @@ export default function ItemList({
                 <span className="ml-1">3</span>
               </BadgeRarity>
             </div>
-            <Form
-              onChange={(e) => {
-                // handleChange(e)
-                debouncedHandleChange(e)
-              }}
-              className="w-20 pr-2"
-            >
+            <Form method="post" onChange={handleChange} className="w-20 pr-2">
               <input type="hidden" name="name" value={item.name} />
               <input type="hidden" name="category" value={category} />
               <div>
                 <label htmlFor="quantity" className="sr-only">
-                  Quantity
+                  {item.name} Quantity
                 </label>
                 <input
                   type="number"
