@@ -1,7 +1,13 @@
 import clsx from 'clsx'
 import * as React from 'react'
 
-type Variant = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info'
+type Variant =
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'danger'
+  | 'warning'
+  | 'info'
 
 type BaseProps = {
   className?: string
@@ -12,6 +18,7 @@ interface BadgeProps extends BaseProps {
   variant?: Variant
   size?: 'xs' | 'sm'
   squared?: boolean
+  roundedFull?: boolean
 }
 
 interface BadgeRarityProps extends BaseProps {
@@ -35,16 +42,25 @@ const rarityVariant: Record<BadgeRarityProps['rarity'], string> = {
   5: 'bg-rarity-5/20 text-rarity-5',
 }
 
-export function Badge({ variant = 'primary', size = 'xs', squared = false, children }: BadgeProps) {
+export function Badge({
+  variant = 'primary',
+  size = 'xs',
+  squared = false,
+  roundedFull = false,
+  children,
+  className,
+}: BadgeProps) {
   return (
     <span
       className={clsx(
+        className,
         colorVariant[variant],
         size === 'xs' ? 'text-xs' : 'text-sm',
-        size === 'xs' && !squared && 'px-2.5',
-        size === 'sm' && !squared && 'px-3',
-        size === 'xs' && squared && 'rounded px-2',
-        size === 'sm' && squared && 'rounded-md px-2.5',
+        !roundedFull && size === 'xs' && !squared && 'px-2.5',
+        !roundedFull && size === 'sm' && !squared && 'px-3',
+        !roundedFull && size === 'xs' && squared && 'rounded px-2',
+        !roundedFull && size === 'sm' && squared && 'rounded-md px-2.5',
+        roundedFull && 'p-1',
         !squared && 'rounded-full',
         'inline-flex items-center py-0.5 font-medium'
       )}
@@ -54,10 +70,11 @@ export function Badge({ variant = 'primary', size = 'xs', squared = false, child
   )
 }
 
-export function BadgeRarity({ rarity, children }: BadgeRarityProps) {
+export function BadgeRarity({ rarity, children, className }: BadgeRarityProps) {
   return (
     <span
       className={clsx(
+        className,
         rarityVariant[rarity],
         'inline-flex items-center rounded py-0.5 px-2 text-xs font-medium'
       )}
