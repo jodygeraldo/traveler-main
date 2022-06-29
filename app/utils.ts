@@ -1,4 +1,4 @@
-import { useMatches } from '@remix-run/react'
+import { useMatches, useLocation, useResolvedPath } from '@remix-run/react'
 import { useMemo } from 'react'
 
 import type { User } from './db.server'
@@ -59,6 +59,11 @@ export function useUser(): User {
     )
   }
   return maybeUser
+}
+
+export function useActiveNavigation(to: string): boolean {
+  const { pathname } = useLocation()
+  return useResolvedPath(to).pathname === pathname
 }
 
 export function validateEmail(email: unknown): email is string {

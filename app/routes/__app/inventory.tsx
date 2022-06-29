@@ -1,6 +1,6 @@
 import { Link, Outlet } from '@remix-run/react'
 import clsx from 'clsx'
-import { useActiveNavigation } from '~/hooks/useActiveNavigation'
+import { useActiveNavigation } from '~/utils'
 
 export default function InventoryLayout() {
   return (
