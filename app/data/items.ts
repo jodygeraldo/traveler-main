@@ -4,7 +4,7 @@ import type { InventoryInfer } from '~/models/inventory.server'
 
 export interface Item {
   name: string
-  rarity: number
+  rarity: 1 | 2 | 3 | 4 | 5
   quantity?: number | null
 }
 
