@@ -1,3 +1,5 @@
+const plugin = require('tailwindcss/plugin')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./app/**/*.{js,ts,jsx,tsx}'],
@@ -133,6 +135,12 @@ module.exports = {
     aspectRatio: false,
   },
   plugins: [
+    plugin(function({addVariant}) {
+      addVariant('data-side-top', '&[data-state="open"][data-side="top"]');
+      addVariant('data-side-right', '&[data-state="open"][data-side="right"]');
+      addVariant('data-side-bottom', '&[data-state="open"][data-side="bottom"]');
+      addVariant('data-side-left', '&[data-state="open"][data-side="left"]');
+    }),
     require('@tailwindcss/aspect-ratio'),
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),

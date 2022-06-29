@@ -389,4 +389,64 @@
   .pulse {
     animation: pulse 1s infinite;
   }
+
+  @keyframes slideUpAndFade {
+    0% {
+      opacity: 0;
+      transform: translateY(2px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideRightAndFade {
+    0% {
+      opacity: 0;
+      transform: translateX(-2px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideDownAndFade {
+    0% {
+      opacity: 0;
+      transform: translateY(-2px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideLeftAndFade {
+    0% {
+      opacity: 0;
+      transform: translateX(2px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .slideUpAndFade {
+    animation: slideUpAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .slideRightAndFade {
+    animation: slideRightAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .slideDownAndFade {
+    animation: slideDownAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  
+  .slideLeftAndFade {
+    animation: slideLeftAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
 }
