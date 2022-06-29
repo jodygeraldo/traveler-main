@@ -123,6 +123,11 @@ module.exports = {
         },
       },
     },
+    backgroundImage: {
+      'image-rarity-4': "url('/image/background/bg-rarity-4.png')",
+      'image-rarity-5': "url('/image/background/bg-rarity-5.png')",
+      'image-rarity-5s': "url('/image/background/bg-rarity-5s.png')",
+    }
   },
   corePlugins: {
     aspectRatio: false,
