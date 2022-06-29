@@ -1,12 +1,7 @@
 import invariant from 'tiny-invariant'
 import type { Inventory, $infer } from '~/db.server'
 import { e, client } from '~/db.server'
-
-export function Account(id: string) {
-  return e.select(e.Account, (acc) => ({
-    filter: e.op(acc.id, '=', e.uuid(id)),
-  }))
-}
+import { Account } from './user.server'
 
 const query = e.select(e.Inventory, () => ({
   ascension_gem: { name: true, '@quantity': true },

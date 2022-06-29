@@ -95,3 +95,9 @@ export async function verifyLogin(email: string, password: string) {
   const { password: _password, ...userWithoutPassword } = user
   return userWithoutPassword
 }
+
+export function Account(id: string) {
+  return e.select(e.Account, (acc) => ({
+    filter: e.op(acc.id, '=', e.uuid(id)),
+  }))
+}
