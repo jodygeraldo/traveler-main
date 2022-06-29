@@ -114,27 +114,27 @@ module default {
 
   type UserCharacter {
     multi link characters -> Character {
-      property level -> int16 {
+      property level -> int64 {
         constraint min_value(1);
         constraint max_value(90);
         default := 1;
       };
-      property asecension -> int16 {
+      property asecension -> int64 {
         constraint min_value(0);
         constraint max_value(6);
         default := 0;
       };
-      property normal_attack -> int16 {
+      property normal_attack -> int64 {
         constraint min_value(1);
         constraint max_value(10);
         default := 1;
       };
-      property elemental_skill -> int16 {
+      property elemental_skill -> int64 {
         constraint min_value(1);
         constraint max_value(10);
         default := 1;
       };
-      property elemental_burst -> int16 {
+      property elemental_burst -> int64 {
         constraint min_value(1);
         constraint max_value(10);
         default := 1;
