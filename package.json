@@ -41,7 +41,6 @@
   "dependencies": {
     "@headlessui/react": "^1.6.5",
     "@next-boost/hybrid-disk-cache": "^0.3.0",
-    "@radix-ui/react-avatar": "^0.1.4",
     "@remix-run/node": "^1.6.0",
     "@remix-run/react": "^1.6.0",
     "@remix-run/serve": "^1.6.0",

@@ -6,6 +6,7 @@ import { Link, NavLink, Outlet } from '@remix-run/react'
 import Logo from '~/components/Logo'
 import { AvatarButton } from '~/components/Avatar'
 import { ButtonIcon } from '~/components/Button'
+import { useUser } from '~/utils'
 
 export default function AppLayout() {
   return (
@@ -16,12 +17,6 @@ export default function AppLayout() {
   )
 }
 
-const user = {
-  name: 'Chelsea Hagon',
-  email: 'chelsea.hagon@example.com',
-  imageUrl:
-    'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
 const navigation = [
   { name: 'Character', to: '/character' },
   { name: 'Inventory', to: '/inventory' },
@@ -36,6 +31,8 @@ function AppNavbar() {
   function toggleOverflowHiddenToBody() {
     document.body.classList.toggle('overflow-hidden')
   }
+
+  const user = useUser()
 
   return (
     <Popover
@@ -93,7 +90,9 @@ function AppNavbar() {
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-4 flex-shrink-0">
                   <div>
-                    <Menu.Button as={AvatarButton} fallback="JG" imageUrl={user.imageUrl} />
+                    <Menu.Button as={AvatarButton}>
+                      {user.account[0] && 'A1'}
+                    </Menu.Button>
                   </div>
                   <Transition
                     as={Fragment}
