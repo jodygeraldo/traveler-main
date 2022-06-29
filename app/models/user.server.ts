@@ -44,7 +44,7 @@ export async function createUser(email: string, password: string) {
         })),
       }),
       inventory: e.insert(e.Inventory, {
-        ascension_boss_material: null,
+        ascension_boss: null,
       }),
     }),
   })
