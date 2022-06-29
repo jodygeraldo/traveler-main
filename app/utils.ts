@@ -76,3 +76,7 @@ export function toSnakeCase(str: string): string {
     .map((x) => x.toLowerCase())
     .join('_')
 }
+
+export function toCapitalized(str: string): string {
+  return str.replace(/_/g, ' ').replace(/\b\w/g, (x) => x.toUpperCase())
+}
