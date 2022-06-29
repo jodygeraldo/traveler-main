@@ -8,7 +8,7 @@ import ItemList from '~/components/ItemList'
 import { getItems } from '~/data/items'
 import { getInventoryCategory } from '~/models/inventory.server'
 import { requireAccountId } from '~/session.server'
-import { toSnakeCase } from '~/utils'
+import { toCapitalized, toSnakeCase } from '~/utils'
 
 export { action } from '~/actions/inventory'
 
@@ -30,7 +30,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     snakeCaseCategory !== 'talent_boss' &&
     snakeCaseCategory !== 'special'
   ) {
-    throw json({ category }, { status: 404 })
+    throw json({ category }, { status: 404, statusText: 'Page Not Found' })
   }
 
   const accId = await requireAccountId(request)
@@ -45,12 +45,12 @@ export default function InventoryCategoryPage() {
 
   return (
     <div className="space-y-12">
-      <h1 className="text-2xl font-bold leading-7 text-primary-12 sm:truncate sm:text-3xl">
+      <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
         Inventory
       </h1>
 
       <div>
-        <h2 className="text-lg font-medium leading-6 text-primary-12">Common Material</h2>
+        <h2 className="text-lg font-medium leading-6 text-gray-12">{toCapitalized(category)}</h2>
         <ItemList items={items} category={category} />
       </div>
     </div>
@@ -66,11 +66,13 @@ export function CatchBoundary() {
 
   return (
     <div>
-      <h1>Caught</h1>
-      <p>Status: {caught.status}</p>
-      <pre>
-        <code>{JSON.stringify(caught.data.category, null, 2)}</code>
-      </pre>
+      <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
+        ERROR {caught.status} - {caught.statusText}
+      </h1>
+
+      <p className="mt-1 text-lg font-medium leading-6 text-gray-11">
+        Category: {caught.data.category} not found
+      </p>
     </div>
   )
 }
