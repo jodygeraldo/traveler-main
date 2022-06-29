@@ -139,9 +139,6 @@ module default {
         constraint max_value(10);
         default := 1;
       };
-      property tracked -> bool {
-        default := true;
-      };
     };
 
     link owner := .<characters[is Account];
