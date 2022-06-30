@@ -1,9 +1,10 @@
-import type { LoaderFunction } from '@remix-run/node'
+import type { ErrorBoundaryComponent, LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import type { ShouldReloadFunction } from '@remix-run/react'
 import { useCatch, useLoaderData } from '@remix-run/react'
 import type { Inventory } from 'dbschema/edgeql-js'
 import invariant from 'tiny-invariant'
+import { z } from 'zod'
 import ItemList from '~/components/ItemList'
 import { getItems } from '~/data/items'
 import { getInventoryCategory } from '~/models/inventory.server'
@@ -17,27 +18,28 @@ type LoaderData = {
   category: keyof Inventory
 }
 export const loader: LoaderFunction = async ({ params, request }) => {
-  const { category } = params
-  invariant(typeof category === 'string')
+  const { category: categoryParams } = params
+  invariant(categoryParams, 'category is required')
+  const ParamsSchema = z.enum([
+    'common',
+    'ascension_gem',
+    'ascension_boss',
+    'local_specialty',
+    'talent_book',
+    'talent_boss',
+    'special',
+  ])
 
-  const snakeCaseCategory = toSnakeCase(category)
-  if (
-    snakeCaseCategory !== 'common' &&
-    snakeCaseCategory !== 'ascension_gem' &&
-    snakeCaseCategory !== 'ascension_boss' &&
-    snakeCaseCategory !== 'local_specialty' &&
-    snakeCaseCategory !== 'talent_book' &&
-    snakeCaseCategory !== 'talent_boss' &&
-    snakeCaseCategory !== 'special'
-  ) {
-    throw json({ category }, { status: 404, statusText: 'Page Not Found' })
+  const parsedCategory = ParamsSchema.safeParse(toSnakeCase(categoryParams))
+  if (!parsedCategory.success) {
+    throw json({ category: categoryParams }, { status: 404, statusText: 'Page Not Found' })
   }
 
   const accId = await requireAccountId(request)
-  const inventory = await getInventoryCategory({ category: snakeCaseCategory, accId })
-  const items = getItems({ category: snakeCaseCategory, items: inventory })
+  const inventory = await getInventoryCategory({ category: parsedCategory.data, accId })
+  const items = getItems({ category: parsedCategory.data, items: inventory })
 
-  return json<LoaderData>({ items, category: snakeCaseCategory })
+  return json<LoaderData>({ items, category: parsedCategory.data })
 }
 
 export default function InventoryCategoryPage() {
@@ -70,9 +72,21 @@ export function CatchBoundary() {
         ERROR {caught.status} - {caught.statusText}
       </h1>
 
-      <p className="mt-1 text-lg font-medium leading-6 text-gray-11">
+      <p className="mt-1 font-medium leading-6 text-gray-11">
         Category: {caught.data.category} not found
       </p>
+    </div>
+  )
+}
+
+export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
+  return (
+    <div>
+      <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
+        INTERNAL SERVER ERROR
+      </h1>
+
+      <p className="mt-1 font-medium leading-6 text-gray-11">{error.message}</p>
     </div>
   )
 }

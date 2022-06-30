@@ -1,4 +1,4 @@
-import type { LoaderFunction } from '@remix-run/node'
+import type { ErrorBoundaryComponent, LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import ItemList from '~/components/ItemList'
@@ -62,6 +62,18 @@ export default function InventoryPage() {
         <h2 className="text-lg font-medium leading-6 text-gray-12">Special</h2>
         <ItemList items={items.special} category="special" />
       </div>
+    </div>
+  )
+}
+
+export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
+  return (
+    <div>
+      <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
+        INTERNAL SERVER ERROR
+      </h1>
+
+      <p className="mt-1 font-medium leading-6 text-gray-11">{error.message}</p>
     </div>
   )
 }

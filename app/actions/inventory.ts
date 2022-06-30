@@ -1,37 +1,34 @@
 import type { ActionFunction } from '@remix-run/node'
-import { json } from '@remix-run/node'
-import invariant from 'tiny-invariant'
+import { getFormDataOrFail } from 'remix-params-helper'
+import { z } from 'zod'
 import { upsertItem } from '~/models/inventory.server'
 import { requireAccountId } from '~/session.server'
 
 export const action: ActionFunction = async ({ request }) => {
   const accId = await requireAccountId(request)
 
-  const formData = await request.formData()
-  const name = formData.get('name')
-  const category = formData.get('category')
-  const quantity = formData.get('quantity')
-  invariant(typeof name === 'string', 'name is required')
-  invariant(typeof category === 'string', 'category is required')
-  invariant(typeof quantity === 'string', 'quantity is required')
+  const ParamsSchema = z.object({
+    name: z.string(),
+    category: z.enum([
+      'common',
+      'ascension_gem',
+      'ascension_boss',
+      'local_specialty',
+      'talent_book',
+      'talent_boss',
+      'special',
+    ]),
+    quantity: z.number().min(0).max(9999),
+  })
 
-  if (
-    category !== 'common' &&
-    category !== 'ascension_gem' &&
-    category !== 'ascension_boss' &&
-    category !== 'local_specialty' &&
-    category !== 'talent_book' &&
-    category !== 'talent_boss' &&
-    category !== 'special'
-  ) {
-    throw json({ category }, { status: 404 })
-  }
+  const { name, category, quantity } = await getFormDataOrFail(request, ParamsSchema)
+  console.log(name, category, quantity)
 
   await upsertItem({
     accId,
     category,
     name,
-    quantity: +quantity,
+    quantity,
   })
 
   return null
