@@ -94,33 +94,17 @@ function HoverCard({ character, children }: { character: Character; children: Re
       <RadixHoverCard.Trigger asChild>{children}</RadixHoverCard.Trigger>
       <RadixHoverCard.Content
         side="top"
-        sideOffset={5}
-        className="motion-safe:data-side-top:slideUpAndFade motion-safe:data-side-right:slideRightAndFade motion-safe:data-side-bottom:slideDownAndFade motion-safe:data-side-left:slideLeftAndFade"
+        className="motion-safe:slideAndFade rounded-md bg-gray-3 p-4 shadow-lg"
       >
-        <div className="w-48 rounded-md bg-gray-3 p-4 shadow-lg">
-          <div className="flex items-center space-x-2">
-            <h2 className="text-lg font-medium leading-6 text-primary-12">{character.name}</h2>
-            <div className="flex shrink-0 items-center space-x-1">
-              {Array.isArray(character.vision) ? (
-                character.vision.map((vision) => (
-                  <div key={`${character.name}-${vision}`}>
-                    <span className="sr-only">{character.vision} vision</span>
-                    <Image
-                      src={`/image/element/${vision.toLowerCase()}.png`}
-                      alt=""
-                      className="h-4 w-4"
-                      aria-hidden
-                      responsive={[{ size: { width: 16, height: 16 } }]}
-                      options={{ contentType: MimeType.WEBP }}
-                      dprVariants={[1, 2, 3]}
-                    />
-                  </div>
-                ))
-              ) : (
-                <div>
+        <div className="flex items-center space-x-2">
+          <h2 className="text-lg font-medium leading-6 text-primary-12">{character.name}</h2>
+          <div className="flex shrink-0 items-center space-x-1">
+            {Array.isArray(character.vision) ? (
+              character.vision.map((vision) => (
+                <div key={`${character.name}-${vision}`}>
                   <span className="sr-only">{character.vision} vision</span>
                   <Image
-                    src={`/image/element/${character.vision.toLowerCase()}.png`}
+                    src={`/image/element/${vision.toLowerCase()}.png`}
                     alt=""
                     className="h-4 w-4"
                     aria-hidden
@@ -129,15 +113,28 @@ function HoverCard({ character, children }: { character: Character; children: Re
                     dprVariants={[1, 2, 3]}
                   />
                 </div>
-              )}
-            </div>
+              ))
+            ) : (
+              <div>
+                <span className="sr-only">{character.vision} vision</span>
+                <Image
+                  src={`/image/element/${character.vision.toLowerCase()}.png`}
+                  alt=""
+                  className="h-4 w-4"
+                  aria-hidden
+                  responsive={[{ size: { width: 16, height: 16 } }]}
+                  options={{ contentType: MimeType.WEBP }}
+                  dprVariants={[1, 2, 3]}
+                />
+              </div>
+            )}
           </div>
-          <div className="mt-1 text-gray-11">
-            <p>Ascension: {character.progression?.ascension ?? 0}</p>
-            <p>Normal attack: {character.progression?.normalAttack ?? 1}</p>
-            <p>Elemental Skill: {character.progression?.elementalSkill ?? 1}</p>
-            <p>Elemental Burst: {character.progression?.elementalBurst ?? 1}</p>
-          </div>
+        </div>
+        <div className="mt-1 text-gray-11">
+          <p>Ascension: {character.progression?.ascension ?? 0}</p>
+          <p>Normal attack: {character.progression?.normalAttack ?? 1}</p>
+          <p>Elemental Skill: {character.progression?.elementalSkill ?? 1}</p>
+          <p>Elemental Burst: {character.progression?.elementalBurst ?? 1}</p>
         </div>
         <RadixHoverCard.Arrow className="fill-gray-3" />
       </RadixHoverCard.Content>

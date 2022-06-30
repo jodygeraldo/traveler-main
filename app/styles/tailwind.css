@@ -442,6 +442,10 @@
     animation: slideLeftAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
+  .slideAndFade {
+    @apply data-side-top:slideUpAndFade data-side-right:slideRightAndFade data-side-bottom:slideDownAndFade data-side-left:slideLeftAndFade;
+  }
+
   @keyframes scaleIn {
     0% {
       opacity: 0;
