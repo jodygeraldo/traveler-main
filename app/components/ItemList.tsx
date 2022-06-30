@@ -35,6 +35,7 @@ export default function ItemList({
               className="max-h-10 w-10 flex-shrink-0 pl-2"
               responsive={[{ size: { width: 40 } }]}
               options={{ contentType: MimeType.WEBP }}
+              loading="lazy"
               dprVariants={[1, 2, 3]}
             />
             <div className="flex-1 space-y-1 truncate px-4 py-2 text-sm">
