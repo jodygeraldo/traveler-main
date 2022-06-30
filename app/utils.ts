@@ -71,7 +71,6 @@ export function validateEmail(email: unknown): email is string {
 }
 
 export function getImageSrc(str: string): string {
-  str = str.replace(/'/g, '')
   return str.replace(/ /g, '_').toLowerCase()
 }
 
