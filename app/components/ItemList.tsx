@@ -20,6 +20,8 @@ export default function ItemList({
   function handleChange(e: React.FormEvent<HTMLFormElement>) {
     if (timerRef.current) clearTimeout(timerRef.current)
     let $form = e.currentTarget
+    const quantity = ($form.querySelector('#quantity') as HTMLInputElement).value
+    if (quantity === '') return
     let timer = setTimeout(() => submit($form, { method: 'post', replace: true }), 500)
     timerRef.current = timer
   }
@@ -59,6 +61,7 @@ export default function ItemList({
                   id="quantity"
                   className="w-full rounded-md border-gray-7 bg-gray-2 tabular-nums text-gray-11 shadow-sm focus:border-gray-8 focus:text-gray-12 focus:ring-gray-8 sm:text-sm"
                   defaultValue={item.quantity ?? 0}
+                  required
                   min={0}
                   max={9999}
                 />
