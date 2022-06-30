@@ -7,6 +7,8 @@ import * as React from 'react'
 import Image from 'remix-image'
 import type { Character } from '~/data/characters'
 import { getCharacters } from '~/data/characters'
+import { getUserCharacters } from '~/models/character.server'
+import { requireAccountId } from '~/session.server'
 import { getImageSrc } from '~/utils'
 
 type LoaderData = {
@@ -14,15 +16,15 @@ type LoaderData = {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const characters = getCharacters()
-  // if (!character) {
-  //   throw json(`Character ${name} not found`, { status: 404, statusText: 'Page Not Found' })
-  // }
+  const accId = await requireAccountId(request)
+
+  const userCharacters = await getUserCharacters({ accId })
+  const characters = getCharacters(userCharacters)
 
   return json<LoaderData>({ characters })
 }
 
-export default function CharacterPage() {
+export default function CharactersPage() {
   const { characters } = useLoaderData() as LoaderData
 
   return (

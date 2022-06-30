@@ -1,3 +1,6 @@
+import invariant from 'tiny-invariant'
+import type { CharacterInfer, CharactersInfer } from '~/models/character.server'
+
 const characters: CharacterDetail[] = [
   {
     name: 'Albedo',
@@ -786,11 +789,11 @@ export interface Character {
   vision: string | string[]
   rarity: 4 | 5
   progression?: {
-    level?: number
-    ascension?: number
-    normalAttack?: number
-    elementalSkill?: number
-    elementalBurst?: number
+    level?: number | null
+    ascension?: number | null
+    normalAttack?: number | null
+    elementalSkill?: number | null
+    elementalBurst?: number | null
   }
 }
 
@@ -808,17 +811,46 @@ export interface CharacterDetail extends Character {
   }
 }
 
-export function getCharacters(): Character[] {
-  return characters.map((character) => {
-    return {
-      name: character.name,
-      vision: character.vision,
-      rarity: character.rarity,
+export function getCharacters(userCharacters: CharactersInfer): Character[] {
+  invariant(userCharacters, 'there is no characters associated with this account')
+
+  const updatedCharacters = characters
+
+  userCharacters.forEach((character) => {
+    const idx = updatedCharacters.findIndex((c) => c.name === character.name)
+
+    if (idx === -1) {
+      return
+    }
+
+    updatedCharacters[idx].progression = {
+      level: character['@level'],
+      ascension: character['@ascension'],
+      normalAttack: character['@normal_attack'],
+      elementalSkill: character['@elemental_skill'],
+      elementalBurst: character['@elemental_burst'],
     }
   })
+
+  return updatedCharacters
 }
 
-export function getCharacter(name: string): CharacterDetail | undefined {
+export function getCharacter(name: string, characterData: CharacterInfer): CharacterDetail | null {
   const character = characters.find((character) => character.name === name)
-  return character
+  if (!character) {
+    return null
+  }
+  const updatedCharacter = characterData
+    ? {
+        ...character,
+        progression: {
+          level: characterData['@level'],
+          ascension: characterData['@ascension'],
+          normalAttack: characterData['@normal_attack'],
+          elementalSkill: characterData['@elemental_skill'],
+          elementalBurst: characterData['@elemental_burst'],
+        },
+      }
+    : character
+  return updatedCharacter
 }
