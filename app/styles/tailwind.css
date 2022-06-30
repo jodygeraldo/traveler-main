@@ -353,14 +353,6 @@
 @tailwind utilities;
 
 @layer components {
-  .focus-ring-2 {
-    @apply focus:z-10 focus:outline-none focus:ring-2;
-  }
-
-  .focus-ring-1 {
-    @apply focus:z-10 focus:outline-none focus:ring-1;
-  }
-
   .scrollarea-thumb {
     @apply relative flex-1 rounded-xl bg-gray-10;
   }

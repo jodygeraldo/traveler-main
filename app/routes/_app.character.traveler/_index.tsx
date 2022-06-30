@@ -36,7 +36,7 @@ function Sidebar() {
             item.active
               ? 'bg-gray-3 text-gray-12'
               : 'text-gray-11 hover:bg-gray-2 hover:text-gray-12',
-            'flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium'
+            'flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-7'
           )}
           aria-current={item.active ? 'page' : undefined}
         >

@@ -44,7 +44,10 @@ function AppNavbar() {
             <div className="relative flex h-16 justify-between">
               <div className="relative z-10 flex px-2 lg:px-0">
                 <div className="flex flex-shrink-0 items-center space-x-8">
-                  <Link to="/" className="focus-ring-2-primary-8-bg-2 rounded-md">
+                  <Link
+                    to="/"
+                    className="rounded-md focus:z-10 focus:outline-none focus:ring-2 focus:ring-primary-8 focus:ring-offset-2 focus:ring-offset-gray-2"
+                  >
                     <Logo />
                   </Link>
 
@@ -59,7 +62,7 @@ function AppNavbar() {
                             isActive
                               ? 'bg-gray-5 text-gray-12'
                               : 'text-gray-11 hover:bg-gray-4 hover:text-gray-12',
-                            'focus-ring-2-gray-7-inset inline-flex items-center rounded-md py-2 px-3 text-sm font-medium'
+                            'inline-flex items-center rounded-md py-2 px-3 text-sm font-medium focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-7'
                           )
                         }
                       >
@@ -84,7 +87,7 @@ function AppNavbar() {
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-4 flex-shrink-0">
                   <div>
-                    <Menu.Button className="focus-ring-2-primary-7-bg-1 inline-flex h-8 w-8 items-center justify-center rounded-full bg-gray-7 shadow-sm">
+                    <Menu.Button className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-gray-7 shadow-sm focus:z-10 focus:outline-none focus:ring-2 focus:ring-gray-7 focus:ring-offset-2 focus:ring-offset-gray-1">
                       {user.accounts[0] && 'A1'}
                     </Menu.Button>
                   </div>
@@ -131,7 +134,7 @@ function AppNavbar() {
                       isActive
                         ? 'bg-gray-5 text-gray-12'
                         : 'text-gray-11 hover:bg-gray-4 hover:text-gray-12',
-                      'focus-ring-2-gray-7-inset block rounded-md py-2 px-3 text-base font-medium'
+                      'block rounded-md py-2 px-3 text-base font-medium focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-7'
                     )
                   }
                 >
@@ -144,7 +147,7 @@ function AppNavbar() {
                 <Form method="post" action="/logout">
                   <button
                     type="submit"
-                    className="focus-ring-2-gray-7-inset block w-full rounded-md py-2 px-3 text-left text-base font-medium text-gray-11 hover:bg-gray-4 hover:text-gray-12"
+                    className="block w-full rounded-md py-2 px-3 text-left text-base font-medium text-gray-11 hover:bg-gray-4 hover:text-gray-12 focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-7"
                   >
                     Sign out
                   </button>

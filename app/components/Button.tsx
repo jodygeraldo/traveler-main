@@ -72,11 +72,11 @@ const variantStyles: Record<VariantProps, string> = {
 }
 
 const focusRingStyles: Record<FocusRingProps, string> = {
-  1: 'focus-ring-2 focus:ring-offset-2 focus:ring-offset-gray-1',
-  2: 'focus-ring-2 focus:ring-offset-2 focus:ring-offset-gray-2',
-  3: 'focus-ring-2 focus:ring-offset-2 focus:ring-offset-gray-3',
-  group: 'focus-ring-2 focus:ring-primary-8',
-  inset: 'focus-ring-2 focus:ring-inset focus:ring-primary-8',
+  1: 'focus:z-10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-1',
+  2: 'focus:z-10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-2',
+  3: 'focus:z-10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-3',
+  group: 'focus:z-10 focus:outline-none focus:ring-2 focus:ring-primary-8',
+  inset: 'focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-8',
 }
 
 const positionStyles: Record<PositionProps, string> = {
