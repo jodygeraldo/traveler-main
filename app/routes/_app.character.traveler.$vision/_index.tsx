@@ -1,8 +1,10 @@
-import { Outlet } from '@remix-run/react'
+import { Outlet, useParams } from '@remix-run/react'
 import Tabs from '~/components/Tabs'
-import { useActiveNavigation } from '~/utils'
+import { toCapitalized, useActiveNavigation } from '~/utils'
 
 export default function TravelerVisionLayout() {
+  const { vision } = useParams()
+
   const tabs = [
     { name: 'Required Items', to: '.', active: useActiveNavigation('.') },
     {
@@ -19,10 +21,16 @@ export default function TravelerVisionLayout() {
 
   return (
     <div>
-      <Tabs tabs={tabs} />
-      <main className="mt-8 pb-16">
-        <Outlet />
-      </main>
+      <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
+        Traveler {toCapitalized(vision ?? '')}
+      </h1>
+
+      <div className="mt-6 sm:mt-2 2xl:mt-5">
+        <Tabs tabs={tabs} />
+        <main className="mt-8 pb-16">
+          <Outlet />
+        </main>
+      </div>
     </div>
   )
 }
