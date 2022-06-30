@@ -1,41 +1,9 @@
-CREATE MIGRATION m17j5slzvmgewumtrgjym7sfzyidcqkvqicykhufyeayqo5i67ohma
-    ONTO m1nau5x7k6zv4bmbuecl5hd2gvkyco5bmd5zmo6nrbwmqgmesidbra
+CREATE MIGRATION m1ywzep2vvyygbjwnax2do6fwdhu3p62dyutoyyumx5p5q3a5i5sha
+    ONTO m1h6hrtidq2jonouw2gge4jc24odymuxjv5jvaxn5ynk47ag22epoq
 {
-  ALTER TYPE default::Inventory {
-      ALTER LINK ascension_boss_material {
-          ALTER PROPERTY quantity {
-              CREATE CONSTRAINT std::min_value(0);
-          };
-      };
-      ALTER LINK ascension_gem {
-          ALTER PROPERTY quantity {
-              CREATE CONSTRAINT std::min_value(0);
-          };
-      };
-      ALTER LINK common_material {
-          ALTER PROPERTY quantity {
-              CREATE CONSTRAINT std::min_value(0);
-          };
-      };
-      ALTER LINK local_specialty {
-          ALTER PROPERTY quantity {
-              CREATE CONSTRAINT std::min_value(0);
-          };
-      };
-      ALTER LINK special_items {
-          ALTER PROPERTY quantity {
-              CREATE CONSTRAINT std::min_value(0);
-          };
-      };
-      ALTER LINK talent_book {
-          ALTER PROPERTY quantity {
-              CREATE CONSTRAINT std::min_value(0);
-          };
-      };
-      ALTER LINK talent_boss_material {
-          ALTER PROPERTY quantity {
-              CREATE CONSTRAINT std::min_value(0);
-          };
+  ALTER TYPE default::Account {
+      ALTER LINK owner {
+          CREATE CONSTRAINT std::exclusive;
       };
   };
 };

@@ -203,6 +203,8 @@ const talentBoss: Item[] = [
 ]
 
 export function getAllItems(inventory: InventoryInfer) {
+  invariant(inventory, 'cannot find associated inventory for this account')
+
   return {
     special: getItems({ category: 'special', items: inventory.special }),
     common: getItems({ category: 'common', items: inventory.common }),

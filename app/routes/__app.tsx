@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { Menu, Popover, Transition } from '@headlessui/react'
 import Icon from '~/components/Icon'
 import clsx from 'clsx'
-import { Link, NavLink, Outlet } from '@remix-run/react'
+import { Form, Link, NavLink, Outlet } from '@remix-run/react'
 import Logo from '~/components/Logo'
 import { AvatarButton } from '~/components/Avatar'
 import { ButtonIcon } from '~/components/Button'
@@ -24,7 +24,7 @@ const navigation = [
 const userNavigation = [
   { name: 'Your Profile', to: '/profile' },
   { name: 'Settings', to: '/setting' },
-  { name: 'Sign out', to: '/signout' },
+  { name: 'Sign out', to: '/logout' },
 ]
 
 function AppNavbar() {
@@ -90,9 +90,7 @@ function AppNavbar() {
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-4 flex-shrink-0">
                   <div>
-                    <Menu.Button as={AvatarButton}>
-                      {user.account[0] && 'A1'}
-                    </Menu.Button>
+                    <Menu.Button as={AvatarButton}>{user.accounts[0] && 'A1'}</Menu.Button>
                   </div>
                   <Transition
                     as={Fragment}
@@ -104,10 +102,13 @@ function AppNavbar() {
                     leaveTo="transform opacity-0 scale-95"
                   >
                     <Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-gray-3 p-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      {userNavigation.map((item) => (
-                        <Menu.Item key={item.name}>
-                          {({ active }) => (
-                            <Link
+                      <Form method="post" action="/logout">
+                        {userNavigation.map((item) => (
+                          <Menu.Item key={item.name}>
+                            {({ active }) => (
+                              <button type="submit" key={item.name}>
+                                {item.name}
+                                {/* <Link
                               to={item.to}
                               className={clsx(
                                 active && 'bg-gray-4 text-gray-12',
@@ -115,10 +116,12 @@ function AppNavbar() {
                               )}
                             >
                               {item.name}
-                            </Link>
-                          )}
-                        </Menu.Item>
-                      ))}
+                            </Link> */}
+                              </button>
+                            )}
+                          </Menu.Item>
+                        ))}
+                      </Form>
                     </Menu.Items>
                   </Transition>
                 </Menu>
@@ -147,15 +150,19 @@ function AppNavbar() {
             </div>
             <div className="border-t border-gray-6 pt-4 pb-3">
               <div className="mx-auto max-w-3xl space-y-1 px-2 sm:px-4">
-                {userNavigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.to}
-                    className="focus-ring-2-gray-7-inset block rounded-md py-2 px-3 text-base font-medium text-gray-11 hover:bg-gray-4 hover:text-gray-12"
-                  >
-                    {item.name}
-                  </Link>
-                ))}
+                <Form method="post" action="/logout">
+                  {userNavigation.map((item) => (
+                    <button type="submit" key={item.name}>
+                      {item.name}
+                      {/* <Link
+                        to={item.to}
+                        className="focus-ring-2-gray-7-inset block rounded-md py-2 px-3 text-base font-medium text-gray-11 hover:bg-gray-4 hover:text-gray-12"
+                      >
+                        {item.name}
+                      </Link> */}
+                    </button>
+                  ))}
+                </Form>
               </div>
             </div>
           </Popover.Panel>

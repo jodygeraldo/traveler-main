@@ -3,7 +3,7 @@ module default {
     required property email -> str { constraint exclusive };
     required property createdAt -> datetime { default := datetime_current() };
     link password := .<user[is Password];
-    required multi link account -> Account { constraint exclusive };
+    multi link accounts := .<owner[is Account];
   }
 
   type Password {
@@ -11,13 +11,17 @@ module default {
     required link user -> User {
       constraint exclusive;
       on target delete delete source;
-    }
+    };
   }
 
   type Account {
     required property name -> str { default := "Default" };
-    required link inventory -> Inventory { constraint exclusive };
-    required link characters -> UserCharacter { constraint exclusive };
+    required link owner -> User {
+      constraint exclusive;
+      on target delete delete source;
+    };
+    link inventory := .<owner[is Inventory];
+    link characters := .<owner[is UserCharacter];
   }
 
   abstract type Item {
@@ -51,6 +55,11 @@ module default {
   }
 
   type Inventory {
+    required link owner -> Account { 
+      constraint exclusive ;
+      on target delete delete source;
+    };
+
     multi link special -> SpecialItem {
       property quantity -> int64 { 
         constraint min_value(0);
@@ -93,8 +102,6 @@ module default {
         default := 0;
       };
     };
-
-    link owner := .<inventory[is Account];
   }
 
   scalar type Region extending enum<Mondstadt, Liyue, Inazuma, Sumeru, Fontaine, Natlan, Snezhnaya>;
@@ -113,6 +120,11 @@ module default {
   }
 
   type UserCharacter {
+    required link owner -> Account { 
+      constraint exclusive ;
+      on target delete delete source;
+    };
+
     multi link characters -> Character {
       property level -> int64 {
         constraint min_value(1);
@@ -140,7 +152,5 @@ module default {
         default := 1;
       };
     };
-
-    link owner := .<characters[is Account];
   }
 }

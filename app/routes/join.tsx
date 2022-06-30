@@ -47,12 +47,12 @@ export const action: ActionFunction = async ({ request }) => {
     )
   }
 
-  const user = await createUser(email, password)
+  const account = await createUser(email, password)
 
   return createUserSession({
     request,
-    userId: user.id,
-    accountId: user.account[0].id,
+    userId: account.owner.id,
+    accountId: account.id,
     remember: false,
     redirectTo,
   })

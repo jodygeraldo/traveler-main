@@ -1,9 +1,7 @@
-CREATE MIGRATION m1sy6mx7sng6jhutxavf5w6jybrbs2ti56y3li5vofqvahkue6d7rq
-    ONTO m174x2kwiz4pq3sumuclj2q4xcpgcs6vmjsuvyc2pjfx6ex4utpbma
+CREATE MIGRATION m13g4z2ezu6knybzp527xmwbpmxltr4uc7qy2o6s3nm3og26ofmkeq
+    ONTO m1gi5kquczgrmh6ol62utx3t3elj5wahsn5xpdszh627azcp5zvh2a
 {
-  ALTER TYPE default::Character {
-      ALTER PROPERTY name {
-          CREATE CONSTRAINT std::exclusive;
-      };
+  ALTER TYPE default::Account {
+      CREATE LINK owner := (.<account[IS default::User]);
   };
 };

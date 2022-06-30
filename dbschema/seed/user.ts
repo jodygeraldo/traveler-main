@@ -3,32 +3,69 @@ import { e } from '~/db.server'
 import bcrypt from 'bcryptjs'
 
 export async function seedUser(client: Client) {
-  const email = 'test@test.com'
-  const pass = 'test1234'
-  const user = e.select(e.User, (u) => ({
+  const email = 'jody@test.com'
+  const password = 'test1234'
+  const prevUser = e.select(e.User, (u) => ({
     filter: e.op(u.email, '=', email),
   }))
 
-  // cleanup the existing database
-  await e.delete(user).run(client)
+  await e.delete(prevUser).run(client)
 
-  // create password and user nestedly
-  const hash = await bcrypt.hash(pass, 10)
-  await e
-    .insert(e.Password, {
-      hash,
-      user: e.insert(e.User, {
-        email,
-        account: e.insert(e.Account, {
-          name: 'Default',
-          characters: e.insert(e.UserCharacter, {
-            characters: null,
-          }),
-          inventory: e.insert(e.Inventory, {
-            ascension_boss: null,
-          }),
-        }),
-      }),
+  const hashedPassword = await bcrypt.hash(password, 10)
+  const queryPassword = e.insert(e.Password, {
+    hash: hashedPassword,
+    user: e.insert(e.User, {
+      email,
+    }),
+  })
+
+  const { user } = await e
+    .select(queryPassword, () => ({
+      user: true,
+    }))
+    .run(client)
+
+  const account = await e
+    .insert(e.Account, {
+      owner: e.select(e.User, (u) => ({
+        filter: e.op(u.id, '=', e.uuid(user.id)),
+      })),
     })
     .run(client)
+
+  // await e
+  //   .select(queryAccount, () => ({
+  //     ...e.Account['*'],
+  //     owner: {
+  //       ...e.User['*'],
+  //     },
+  //   }))
+  //   .run(client)
+
+  const freeCharacters = e.set(
+    e.str('Traveler Anemo'),
+    e.str('Amber'),
+    e.str('Kaeya'),
+    e.str('Lisa'),
+    e.str('Barbara'),
+    e.str('Xiangling'),
+    e.str('Noelle')
+  )
+
+  const character = e.insert(e.UserCharacter, {
+    owner: e.select(e.Account, (a) => ({
+      filter: e.op(a.id, '=', e.uuid(account.id)),
+    })),
+    characters: e.select(e.Character, (c) => ({
+      filter: e.op(c.name, 'in', freeCharacters),
+    })),
+  })
+
+  const inventory = e.insert(e.Inventory, {
+    owner: e.select(e.Account, (a) => ({
+      filter: e.op(a.id, '=', e.uuid(account.id)),
+    })),
+  })
+
+  await Promise.all([inventory.run(client), character.run(client)])
 }

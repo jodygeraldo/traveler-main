@@ -19,6 +19,7 @@ export const sessionStorage = createCookieSessionStorage({
 })
 
 const USER_SESSION_KEY = 'userId'
+const ACCOUNT_SESSION_KEY = 'accountId'
 
 export async function getSession(request: Request) {
   const cookie = request.headers.get('Cookie')
@@ -33,7 +34,7 @@ export async function getUserId(request: Request): Promise<User['id'] | undefine
 
 export async function getAccountId(request: Request): Promise<Account['id'] | undefined> {
   const session = await getSession(request)
-  const accountId = session.get('accountId')
+  const accountId = session.get(ACCOUNT_SESSION_KEY)
   return accountId
 }
 
@@ -95,7 +96,7 @@ export async function createUserSession({
 }) {
   const session = await getSession(request)
   session.set(USER_SESSION_KEY, userId)
-  session.set('accountId', accountId)
+  session.set(ACCOUNT_SESSION_KEY, accountId)
   return redirect(redirectTo, {
     headers: {
       'Set-Cookie': await sessionStorage.commitSession(session, {

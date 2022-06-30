@@ -3,7 +3,7 @@ import type { Inventory, $infer } from '~/db.server'
 import { e, client } from '~/db.server'
 import { Account } from './user.server'
 
-const query = e.select(e.Inventory, () => ({
+const query = e.select(e.Inventory, (i) => ({
   ascension_gem: { name: true, '@quantity': true },
   ascension_boss: { name: true, '@quantity': true },
   local_specialty: { name: true, '@quantity': true },
@@ -11,8 +11,9 @@ const query = e.select(e.Inventory, () => ({
   talent_book: { name: true, '@quantity': true },
   talent_boss: { name: true, '@quantity': true },
   special: { name: true, '@quantity': true },
+  filter: e.op(i.owner, '=', Account('uuid')),
 }))
-export type InventoryInfer = $infer<typeof query>[0]
+export type InventoryInfer = $infer<typeof query>
 
 export async function getInventory({ accId }: { accId: string }) {
   const inventory = await e
@@ -28,7 +29,7 @@ export async function getInventory({ accId }: { accId: string }) {
     }))
     .run(client)
 
-  return inventory[0]
+  return inventory
 }
 
 export async function getInventoryCategory({
@@ -45,8 +46,8 @@ export async function getInventoryCategory({
     }))
     .run(client)
 
-  invariant(inventory)
-  return inventory[0][category] as { name: string; '@quantity': number }[]
+  invariant(inventory, "Can't find inventory for this account")
+  return inventory[category] as { name: string; '@quantity': number }[]
 }
 
 export async function upsertItem({
