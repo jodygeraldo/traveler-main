@@ -11,3 +11,4 @@ node_modules
 .DS_Store
 /dbschema/edgeql-js
 /tmp
+/app/oldroutes

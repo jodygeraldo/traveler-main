@@ -105,22 +105,28 @@ function HoverCard({ character, children }: { character: Character; children: Re
                 character.vision.map((vision) => (
                   <div key={`${character.name}-${vision}`}>
                     <span className="sr-only">{character.vision} vision</span>
-                    <img
+                    <Image
                       src={`/image/element/${vision.toLowerCase()}.png`}
                       alt=""
                       className="h-4 w-4"
                       aria-hidden
+                      responsive={[{ size: { width: 16, height: 16 } }]}
+                      options={{ contentType: MimeType.WEBP }}
+                      dprVariants={[1, 2, 3]}
                     />
                   </div>
                 ))
               ) : (
                 <div>
                   <span className="sr-only">{character.vision} vision</span>
-                  <img
+                  <Image
                     src={`/image/element/${character.vision.toLowerCase()}.png`}
                     alt=""
                     className="h-4 w-4"
                     aria-hidden
+                    responsive={[{ size: { width: 16, height: 16 } }]}
+                    options={{ contentType: MimeType.WEBP }}
+                    dprVariants={[1, 2, 3]}
                   />
                 </div>
               )}
