@@ -17,7 +17,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   invariant(characterName)
 
   const userCharacter = await getUserCharacter({ name: characterName, accId })
-  const character = getCharacter(characterName, userCharacter)
+  const character = getCharacter({ name: characterName, characterData: userCharacter })
   if (!character) {
     throw json(`Character ${characterName} not found`, {
       status: 404,

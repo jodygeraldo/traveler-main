@@ -835,7 +835,13 @@ export function getCharacters(userCharacters: CharactersInfer): Character[] {
   return updatedCharacters
 }
 
-export function getCharacter(name: string, characterData: CharacterInfer): CharacterDetail | null {
+export function getCharacter({
+  name,
+  characterData,
+}: {
+  name: string
+  characterData: CharacterInfer
+}): CharacterDetail | null {
   const character = characters.find((character) => character.name === name)
   if (!character) {
     return null
