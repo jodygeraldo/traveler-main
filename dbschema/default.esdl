@@ -131,7 +131,7 @@ module default {
         constraint max_value(90);
         default := 1;
       };
-      property asecension -> int64 {
+      property ascension -> int64 {
         constraint min_value(0);
         constraint max_value(6);
         default := 0;
