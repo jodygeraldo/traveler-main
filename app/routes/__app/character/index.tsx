@@ -4,7 +4,7 @@ import { json } from '@remix-run/node'
 import { Link, useLoaderData } from '@remix-run/react'
 import clsx from 'clsx'
 import * as React from 'react'
-import Image from 'remix-image'
+import Image, { MimeType } from 'remix-image'
 import type { Character } from '~/data/characters'
 import { getCharacters } from '~/data/characters'
 import { getUserCharacters } from '~/models/character.server'
@@ -68,6 +68,7 @@ function CharacterList({ characters }: { characters: Character[] }) {
                       alt={character.name}
                       className="h-24 w-24 rounded-br-3xl"
                       responsive={[{ size: { width: 96, height: 96 } }]}
+                      options={{ contentType: MimeType.WEBP }}
                       dprVariants={[1, 2, 3]}
                     />
                   </div>
