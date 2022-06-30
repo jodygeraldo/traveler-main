@@ -1,3 +1,4 @@
+import { TooltipProvider } from '@radix-ui/react-tooltip'
 import type { LinksFunction, LoaderFunction, MetaFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react'
@@ -33,7 +34,9 @@ export default function App() {
         <Links />
       </head>
       <body className="h-full bg-gray-1">
-        <Outlet />
+        <TooltipProvider delayDuration={500}>
+          <Outlet />
+        </TooltipProvider>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
