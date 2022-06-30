@@ -4,7 +4,6 @@ import Icon from '~/components/Icon'
 import clsx from 'clsx'
 import { Form, Link, NavLink, Outlet } from '@remix-run/react'
 import Logo from '~/components/Logo'
-import { AvatarButton } from '~/components/Avatar'
 import { ButtonIcon } from '~/components/Button'
 import { useUser } from '~/utils'
 
@@ -85,7 +84,9 @@ function AppNavbar() {
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-4 flex-shrink-0">
                   <div>
-                    <Menu.Button as={AvatarButton}>{user.accounts[0] && 'A1'}</Menu.Button>
+                    <Menu.Button className="focus-ring-2-primary-7-bg-1 inline-flex h-8 w-8 items-center justify-center rounded-full bg-gray-7 shadow-sm">
+                      {user.accounts[0] && 'A1'}
+                    </Menu.Button>
                   </div>
                   <Transition
                     as={Fragment}
