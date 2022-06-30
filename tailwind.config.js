@@ -129,17 +129,17 @@ module.exports = {
       'image-rarity-4': "url('/image/background/bg-rarity-4.png')",
       'image-rarity-5': "url('/image/background/bg-rarity-5.png')",
       'image-rarity-5s': "url('/image/background/bg-rarity-5s.png')",
-    }
+    },
   },
   corePlugins: {
     aspectRatio: false,
   },
   plugins: [
-    plugin(function({addVariant}) {
-      addVariant('data-side-top', '&[data-state="open"][data-side="top"]');
-      addVariant('data-side-right', '&[data-state="open"][data-side="right"]');
-      addVariant('data-side-bottom', '&[data-state="open"][data-side="bottom"]');
-      addVariant('data-side-left', '&[data-state="open"][data-side="left"]');
+    plugin(function ({ addVariant }) {
+      addVariant('data-side-top', '&[data-state="open"][data-side="top"]')
+      addVariant('data-side-right', '&[data-state="open"][data-side="right"]')
+      addVariant('data-side-bottom', '&[data-state="open"][data-side="bottom"]')
+      addVariant('data-side-left', '&[data-state="open"][data-side="left"]')
     }),
     require('@tailwindcss/aspect-ratio'),
     require('@tailwindcss/forms'),

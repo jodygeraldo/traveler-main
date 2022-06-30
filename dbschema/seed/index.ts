@@ -5,11 +5,11 @@ import { seedUser } from './user'
 const client = createClient()
 
 async function seed() {
-  const user = seedUser(client)
   const characters = seedCharacters(client)
   const items = seedItems(client)
 
-  await Promise.all([user, characters, ...items])
+  await Promise.all([characters, ...items])
+  await seedUser(client)
 
   console.log(`Database has been seeded. 🌱`)
 }

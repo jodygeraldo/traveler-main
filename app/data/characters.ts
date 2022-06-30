@@ -698,7 +698,7 @@ const characters: CharacterDetail[] = [
       crown: 'Crown of Insight',
       common: 'Nobushi Handguards',
       talentBook: ['Light'],
-      talentBoss: "The Meaning of Aeons",
+      talentBoss: 'The Meaning of Aeons',
       ascensionGem: 'Vajrada Amethyst',
       ascensionBoss: "Dragonheir's False Fin",
       localSpecialty: 'Sea Ganoderma',

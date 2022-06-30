@@ -1,13 +1,7 @@
 import clsx from 'clsx'
 import * as React from 'react'
 
-type Variant =
-  | 'primary'
-  | 'secondary'
-  | 'success'
-  | 'danger'
-  | 'warning'
-  | 'info'
+type Variant = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info'
 
 type BaseProps = {
   className?: string
