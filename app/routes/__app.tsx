@@ -21,11 +21,6 @@ const navigation = [
   { name: 'Character', to: '/character' },
   { name: 'Inventory', to: '/inventory' },
 ]
-const userNavigation = [
-  { name: 'Your Profile', to: '/profile' },
-  { name: 'Settings', to: '/setting' },
-  { name: 'Sign out', to: '/logout' },
-]
 
 function AppNavbar() {
   function toggleOverflowHiddenToBody() {
@@ -103,24 +98,19 @@ function AppNavbar() {
                   >
                     <Menu.Items className="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-gray-3 p-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <Form method="post" action="/logout">
-                        {userNavigation.map((item) => (
-                          <Menu.Item key={item.name}>
-                            {({ active }) => (
-                              <button type="submit" key={item.name}>
-                                {item.name}
-                                {/* <Link
-                              to={item.to}
+                        <Menu.Item>
+                          {({ active }) => (
+                            <button
+                              type="submit"
                               className={clsx(
                                 active && 'bg-gray-4 text-gray-12',
-                                'block rounded-md py-2 px-4 text-sm text-gray-11 disabled:text-gray-8'
+                                'block w-full rounded-md py-2 px-4 text-left text-sm text-gray-11 disabled:text-gray-8'
                               )}
                             >
-                              {item.name}
-                            </Link> */}
-                              </button>
-                            )}
-                          </Menu.Item>
-                        ))}
+                              Sign out
+                            </button>
+                          )}
+                        </Menu.Item>
                       </Form>
                     </Menu.Items>
                   </Transition>
@@ -151,17 +141,12 @@ function AppNavbar() {
             <div className="border-t border-gray-6 pt-4 pb-3">
               <div className="mx-auto max-w-3xl space-y-1 px-2 sm:px-4">
                 <Form method="post" action="/logout">
-                  {userNavigation.map((item) => (
-                    <button type="submit" key={item.name}>
-                      {item.name}
-                      {/* <Link
-                        to={item.to}
-                        className="focus-ring-2-gray-7-inset block rounded-md py-2 px-3 text-base font-medium text-gray-11 hover:bg-gray-4 hover:text-gray-12"
-                      >
-                        {item.name}
-                      </Link> */}
-                    </button>
-                  ))}
+                  <button
+                    type="submit"
+                    className="focus-ring-2-gray-7-inset block w-full rounded-md py-2 px-3 text-left text-base font-medium text-gray-11 hover:bg-gray-4 hover:text-gray-12"
+                  >
+                    Sign out
+                  </button>
                 </Form>
               </div>
             </div>
