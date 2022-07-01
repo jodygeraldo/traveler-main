@@ -1235,3 +1235,309 @@ function getCharacterTalentMaterial(
     },
   ]
 }
+
+// const characterUpdated = [
+//   {
+//     name: 'Albedo',
+//     vision: 'Geo',
+//     rarity: 5,
+//     weapon: 'Sword',
+//     material: {
+//       ascension: {
+//         gem: 'Prithiva Topaz',
+//         boss: 'Basalt Pillar',
+//         local: 'Cecilia',
+//         common: commonMaterials['Samachurl Scrolls'],
+//       },
+//       talent: {
+//         book: ['Teachings of Freedom', 'Guide to Freedom', 'Philosophies of Freedom'],
+//         boss: 'Tusk of Monoceros Caeli',
+//         common: commonMaterials['Samachurl Scrolls'],
+//         special: 'Crown of Insight',
+//       },
+//     },
+//   },
+// ]
+
+const travelers = [
+  {
+    name: 'Traveler',
+    vision: 'Anemo',
+    rarity: 5,
+    weapon: 'Sword',
+    material: {
+      ascension: {
+        gem: 'Brilliant Diamond',
+        local: 'Windwheel Aster',
+        common: commonMaterials['Hilichurl Masks'],
+      },
+      talent: {
+        book: [
+          'Teachings of Freedom',
+          'Guide to Resistance',
+          'Guide to Ballad',
+          'Guide to Freedom',
+          'Guide to Resistance',
+          'Philosophies of Ballad',
+          'Philosophies of Freedom',
+          'Philosophies of Resistance',
+          'Philosophies of Ballad',
+        ],
+        boss: "Dvalin's Sigh",
+        common: commonMaterials['Samachurl Scrolls'],
+        special: 'Crown of Insight',
+      },
+    },
+  },
+  {
+    name: 'Traveler',
+    vision: 'Geo',
+    rarity: 5,
+    weapon: 'Sword',
+    material: {
+      ascension: {
+        gem: 'Brilliant Diamond',
+        localSpecialty: 'Windwheel Aster',
+        common: commonMaterials['Hilichurl Masks'],
+      },
+      talent: [
+        {
+          book: [
+            'Teachings of Freedom',
+            'Guide to Resistance',
+            'Guide to Ballad',
+            'Guide to Freedom',
+            'Guide to Resistance',
+            'Philosophies of Ballad',
+            'Philosophies of Freedom',
+            'Philosophies of Resistance',
+            'Philosophies of Ballad',
+          ],
+          boss: "Dvalin's Sigh",
+          common: commonMaterials['Samachurl Scrolls'],
+          special: 'Crown of Insight',
+        },
+        {
+          book: [
+            'Teachings of Prosperity',
+            'Guide to Diligence',
+            'Guide to Gold',
+            'Guide to Prosperity',
+            'Guide to Diligence',
+            'Philosophies of Gold',
+            'Philosophies of Prosperity',
+            'Philosophies of Diligence',
+            'Philosophies of Gold',
+          ],
+          boss: 'Tail of Boreas',
+          common: commonMaterials['Hilichurl Arrowheads'],
+          special: 'Crown of Insight',
+        },
+        {
+          book: [
+            'Teachings of Prosperity',
+            'Guide to Diligence',
+            'Guide to Gold',
+            'Guide to Prosperity',
+            'Guide to Diligence',
+            'Philosophies of Gold',
+            'Philosophies of Prosperity',
+            'Philosophies of Diligence',
+            'Philosophies of Gold',
+          ],
+          boss: 'Tail of Boreas',
+          common: commonMaterials['Hilichurl Arrowheads'],
+          special: 'Crown of Insight',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Traveler',
+    vision: 'Electro',
+    rarity: 5,
+    weapon: 'Sword',
+    material: {
+      ascension: {
+        gem: 'Brilliant Diamond',
+        localSpecialty: 'Windwheel Aster',
+        common: commonMaterials['Hilichurl Masks'],
+      },
+      talent: {
+        book: [
+          'Teachings of Transience',
+          'Guide to Elegance',
+          'Guide to Light',
+          'Guide to Transience',
+          'Guide to Elegance',
+          'Philosophies of Light',
+          'Philosophies of Transience',
+          'Philosophies of Elegance',
+          'Philosophies of Light',
+        ],
+        boss: "Dragon Lord's Crown",
+        common: commonMaterials['Nobushi Handguards'],
+        special: 'Crown of Insight',
+      },
+    },
+  },
+]
+
+export type TravelerAscension = {
+  phase: { from: number; to: number }
+  mora: number
+  common: { name: string; quantity: number }
+  gem: { name: string; quantity: number }
+  local: { name: string; quantity: number }
+}
+
+export type CharacterTalent = {
+  level: { from: number; to: number }
+  mora: number
+  common: { name: string; quantity: number }
+  book: { name: string; quantity: number }
+  boss?: { name: string; quantity: number }
+  special?: { name: string; quantity: number }
+}
+
+export function getTravelerRequiredMaterial({ vision }: { vision: string }) {
+  const traveler = travelers.find((traveler) => traveler.vision === vision)?.material
+  invariant(traveler)
+
+  const ascensionMaterial: TravelerAscension[] = [
+    {
+      phase: { from: 0, to: 1 },
+      mora: 20_000,
+      common: { name: 'Damaged Mask', quantity: 3 },
+      gem: { name: 'Brilliant Diamond Sliver', quantity: 1 },
+      local: { name: 'Windwheel Aster', quantity: 3 },
+    },
+    {
+      phase: { from: 1, to: 2 },
+      mora: 40_000,
+      common: { name: 'Damaged Mask', quantity: 15 },
+      gem: { name: 'Brilliant Diamond Fragment', quantity: 3 },
+      local: { name: 'Windwheel Aster', quantity: 10 },
+    },
+    {
+      phase: { from: 2, to: 3 },
+      mora: 60_000,
+      common: { name: 'Stained Mask', quantity: 12 },
+      gem: { name: 'Brilliant Diamond Fragment', quantity: 6 },
+      local: { name: 'Windwheel Aster', quantity: 20 },
+    },
+    {
+      phase: { from: 3, to: 4 },
+      mora: 80_000,
+      common: { name: 'Stained Mask', quantity: 18 },
+      gem: { name: 'Brilliant Diamond Chunk', quantity: 3 },
+      local: { name: 'Windwheel Aster', quantity: 30 },
+    },
+    {
+      phase: { from: 4, to: 5 },
+      mora: 100_000,
+      common: { name: 'Ominous Mask', quantity: 12 },
+      gem: { name: 'Brilliant Diamond Chunk', quantity: 6 },
+      local: { name: 'Windwheel Aster', quantity: 45 },
+    },
+    {
+      phase: { from: 5, to: 6 },
+      mora: 120_000,
+      common: { name: 'Ominous Mask', quantity: 24 },
+      gem: { name: 'Brilliant Diamond Gemstone', quantity: 6 },
+      local: { name: 'Windwheel Aster', quantity: 60 },
+    },
+  ]
+
+  if (Array.isArray(traveler.talent)) {
+    return {
+      ascensionMaterial,
+      talentMaterial: {
+        normal: getCharacterTalentMaterial(traveler.talent[0]),
+        elemental: getCharacterTalentMaterial(traveler.talent[1]),
+      },
+    }
+  }
+
+  return {
+    ascensionMaterial,
+    talentMaterial: {
+      normal: getCharacterTalentMaterial(traveler.talent),
+      elemental: getCharacterTalentMaterial(traveler.talent),
+    },
+  }
+}
+
+function getCharacterTalentMaterial({
+  book,
+  boss,
+  common,
+  special,
+}: {
+  book: string[]
+  boss: string
+  common: string[]
+  special: string
+}): CharacterTalent[] {
+  return [
+    {
+      level: { from: 1, to: 2 },
+      mora: 12_500,
+      common: { name: common[0], quantity: 3 },
+      book: { name: book[0], quantity: 3 },
+    },
+    {
+      level: { from: 2, to: 3 },
+      mora: 17_500,
+      common: { name: common[1], quantity: 3 },
+      book: { name: book[1], quantity: 2 },
+    },
+    {
+      level: { from: 3, to: 4 },
+      mora: 25_000,
+      common: { name: common[1], quantity: 4 },
+      book: { name: book[2], quantity: 4 },
+    },
+    {
+      level: { from: 4, to: 5 },
+      mora: 30_000,
+      common: { name: common[1], quantity: 6 },
+      book: { name: book[3], quantity: 6 },
+    },
+    {
+      level: { from: 5, to: 6 },
+      mora: 37_500,
+      common: { name: common[1], quantity: 9 },
+      book: { name: book[4], quantity: 9 },
+    },
+    {
+      level: { from: 6, to: 7 },
+      mora: 120_000,
+      common: { name: common[2], quantity: 4 },
+      book: { name: book[5], quantity: 4 },
+      boss: { name: boss, quantity: 1 },
+    },
+    {
+      level: { from: 7, to: 8 },
+      mora: 260_000,
+      common: { name: common[2], quantity: 6 },
+      book: { name: book[6], quantity: 6 },
+      boss: { name: boss, quantity: 1 },
+    },
+    {
+      level: { from: 8, to: 9 },
+      mora: 450_000,
+      common: { name: common[2], quantity: 9 },
+      book: { name: book[7], quantity: 12 },
+      boss: { name: boss, quantity: 2 },
+    },
+    {
+      level: { from: 9, to: 10 },
+      mora: 700_000,
+      common: { name: common[2], quantity: 12 },
+      book: { name: book[8], quantity: 16 },
+      boss: { name: boss, quantity: 2 },
+      special: { name: special, quantity: 1 },
+    },
+  ]
+}
