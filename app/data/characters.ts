@@ -101,7 +101,7 @@ export interface CharacterMinimal extends Omit<Character, 'vision' | 'rarity'> {
 export function getCharacters(userCharacters: CharactersInfer): Character[] {
   invariant(userCharacters, 'there is no characters associated with this account')
 
-  const updatedCharacters = characters
+  const updatedCharacters = [...characters]
 
   userCharacters.forEach((character) => {
     const idx = updatedCharacters.findIndex((c) => c.name === character.name)
