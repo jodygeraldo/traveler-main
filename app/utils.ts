@@ -3,6 +3,8 @@ import { useMemo } from 'react'
 
 import type { User } from './db.server'
 
+export type depromisify<T> = T extends Promise<infer U> ? U : T
+
 const DEFAULT_REDIRECT = '/'
 
 /**

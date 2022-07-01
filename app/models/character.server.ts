@@ -1,8 +1,8 @@
 import invariant from 'tiny-invariant'
 import { e, client } from '~/db.server'
+import type { depromisify } from '~/utils'
 import { Account } from './user.server'
 
-type depromisify<T> = T extends Promise<infer U> ? U : T
 export type CharacterInfer = depromisify<ReturnType<typeof getUserCharacter>>
 export type CharactersInfer = depromisify<ReturnType<typeof getUserCharacters>>
 
