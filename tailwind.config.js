@@ -126,9 +126,9 @@ module.exports = {
       },
     },
     backgroundImage: {
-      'image-rarity-4': "url('/image/background/bg-rarity-4.png')",
-      'image-rarity-5': "url('/image/background/bg-rarity-5.png')",
-      'image-rarity-5s': "url('/image/background/bg-rarity-5s.png')",
+      'image-rarity-4': "url('/image/background/bg-rarity-4.webp')",
+      'image-rarity-5': "url('/image/background/bg-rarity-5.webp')",
+      'image-rarity-5s': "url('/image/background/bg-rarity-5s.webp')",
     },
   },
   corePlugins: {
