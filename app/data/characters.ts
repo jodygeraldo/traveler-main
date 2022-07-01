@@ -283,6 +283,10 @@ export type TravelerAscension = {
   local: { name: string; quantity: number }
 }
 
+export type CharacterAscension = {
+  boss?: { name: string; quantity: number }
+} & TravelerAscension
+
 export type CharacterTalent = {
   level: { from: number; to: number }
   mora: number
@@ -358,6 +362,78 @@ export function getTravelerRequiredMaterial({ vision }: { vision: string }) {
       elemental: getCharacterTalentMaterial(traveler.talent, { isTraveler: true }),
     },
   }
+}
+
+export function getCharacterRequiredMaterial({ name }: { name: string }) {
+  const character = characterMaterial.find((character) => character.name === name)
+  invariant(character)
+
+  return {
+    ascensionMaterial: getCharacterAscensionMaterial(character.ascension),
+    talentMaterial: getCharacterTalentMaterial(character.talent),
+  }
+}
+
+function getCharacterAscensionMaterial({
+  gem,
+  boss,
+  local,
+  common,
+}: {
+  gem: string
+  boss: string
+  local: string
+  common: string[]
+}): CharacterAscension[] {
+  return [
+    {
+      phase: { from: 0, to: 1 },
+      mora: 20_000,
+      common: { name: common[1], quantity: 3 },
+      gem: { name: `${gem} Sliver`, quantity: 1 },
+      local: { name: local, quantity: 3 },
+    },
+    {
+      phase: { from: 1, to: 2 },
+      mora: 40_000,
+      common: { name: common[1], quantity: 15 },
+      gem: { name: `${gem} Fragment`, quantity: 3 },
+      local: { name: local, quantity: 10 },
+      boss: { name: boss, quantity: 2 },
+    },
+    {
+      phase: { from: 2, to: 3 },
+      mora: 60_000,
+      common: { name: common[1], quantity: 12 },
+      gem: { name: `${gem} Fragment`, quantity: 6 },
+      local: { name: local, quantity: 20 },
+      boss: { name: boss, quantity: 4 },
+    },
+    {
+      phase: { from: 3, to: 4 },
+      mora: 80_000,
+      common: { name: common[1], quantity: 18 },
+      gem: { name: `${gem} Chunk`, quantity: 3 },
+      local: { name: local, quantity: 30 },
+      boss: { name: boss, quantity: 8 },
+    },
+    {
+      phase: { from: 4, to: 5 },
+      mora: 100_000,
+      common: { name: common[2], quantity: 12 },
+      gem: { name: `${gem} Chunk`, quantity: 6 },
+      local: { name: local, quantity: 45 },
+      boss: { name: boss, quantity: 12 },
+    },
+    {
+      phase: { from: 5, to: 6 },
+      mora: 120_000,
+      common: { name: common[2], quantity: 24 },
+      gem: { name: `${gem} Gemstone`, quantity: 6 },
+      local: { name: local, quantity: 60 },
+      boss: { name: boss, quantity: 20 },
+    },
+  ]
 }
 
 function getCharacterTalentMaterial(
