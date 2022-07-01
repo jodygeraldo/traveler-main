@@ -2,13 +2,12 @@ import type { LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import invariant from 'tiny-invariant'
-import type { CharacterDetail } from '~/data/characters'
 import { getCharacter } from '~/data/characters'
 import { getUserCharacter } from '~/models/character.server'
 import { requireAccountId } from '~/session.server'
 
 type LoaderData = {
-  character: CharacterDetail
+  character: ReturnType<typeof getCharacter>
 }
 
 export const loader: LoaderFunction = async ({ request, params }) => {
