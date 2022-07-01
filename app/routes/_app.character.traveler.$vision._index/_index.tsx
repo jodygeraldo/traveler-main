@@ -10,9 +10,9 @@ import TableCell from '~/components/TableCell'
 import { getTravelerRequiredMaterial } from '~/data/characters'
 import { getUserCharacter } from '~/models/character.server'
 import { requireAccountId } from '~/session.server'
+import type { depromisify } from '~/utils'
 import { toCapitalized } from '~/utils'
 
-type depromisify<T> = T extends Promise<infer U> ? U : T
 type LoaderData = {
   traveler: depromisify<ReturnType<typeof getUserCharacter>>
   ascensionMaterial: ReturnType<typeof getTravelerRequiredMaterial>['ascensionMaterial']
