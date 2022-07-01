@@ -27,7 +27,7 @@ export default function TravelerVisionLayout() {
 
       <div className="mt-6 sm:mt-2 2xl:mt-5">
         <Tabs tabs={tabs} />
-        <main className="mt-8 pb-16">
+        <main className="pb-16">
           <Outlet />
         </main>
       </div>

@@ -1,6 +1,35 @@
 import invariant from 'tiny-invariant'
 import type { CharacterInfer, CharactersInfer } from '~/models/character.server'
 
+type CommonMaterial =
+  | 'Slime'
+  | 'Hilichurl Masks'
+  | 'Samachurl Scrolls'
+  | 'Hilichurl Arrowheads'
+  | 'Fatui Insignia'
+  | 'Treasure Hoarder Insignias'
+  | 'Whopperflower Nectar'
+  | 'Nobushi Handguards'
+  | 'Spectral Cores'
+  | 'Fungal Spore Powder'
+
+const commonMaterials: Record<CommonMaterial, string[]> = {
+  Slime: ['Slime Condensate', 'Slime Secretions', 'Slime Concentrate'],
+  'Hilichurl Masks': ['Damaged Mask', 'Stained Mask', 'Ominous Mask'],
+  'Samachurl Scrolls': ['Divining Scroll', 'Sealed Scroll', 'Forbidden Curse Scroll'],
+  'Hilichurl Arrowheads': ['Firm Arrowhead', 'Sharp Arrowhead', 'Weathered Arrowhead'],
+  'Fatui Insignia': ["Recruit's Insignia", "Sergeant's Insignia", "Lieutenant's Insignia"],
+  'Treasure Hoarder Insignias': [
+    'Treasure Hoarder Insignia',
+    'Silver Raven Insignia',
+    'Golden Raven Insignia',
+  ],
+  'Whopperflower Nectar': ['Whopperflower Nectar', 'Shimmering Nectar', 'Energy Nectar'],
+  'Nobushi Handguards': ['Old Handguard', 'Kageuchi Handguard', 'Famed Handguard'],
+  'Spectral Cores': ['Spectral Husk', 'Spectral Heart', 'Spectral Nucleus'],
+  'Fungal Spore Powder': ['Fungal Spores', 'Luminescent Pollen', 'Crystalline Cyst Dust'],
+}
+
 const characters: CharacterDetail[] = [
   {
     name: 'Albedo',
@@ -859,4 +888,213 @@ export function getCharacter({
       }
     : character
   return updatedCharacter
+}
+
+// const characterUpdated = [
+//   {
+//     name: 'Albedo',
+//     vision: 'Geo',
+//     rarity: 5,
+//     weapon: 'Sword',
+//     material: {
+//       ascension: {
+//         gem: 'Prithiva Topaz',
+//         boss: 'Basalt Pillar',
+//         local: 'Cecilia',
+//         common: commonMaterials['Samachurl Scrolls'],
+//       },
+//       talent: {
+//         book: ['Teachings of Freedom', 'Guide to Freedom', 'Philosophies of Freedom'],
+//         boss: 'Tusk of Monoceros Caeli',
+//         common: commonMaterials['Samachurl Scrolls'],
+//         special: 'Crown of Insight',
+//       },
+//     },
+//   },
+// ]
+
+const travelers = [
+  {
+    name: 'Traveler',
+    vision: 'Anemo',
+    rarity: 5,
+    weapon: 'Sword',
+    material: {
+      ascension: {
+        gem: 'Brilliant Diamond',
+        local: 'Windwheel Aster',
+        common: commonMaterials['Hilichurl Masks'],
+      },
+      talent: {
+        book: [
+          'Teachings of Freedom',
+          'Guide to Resistance',
+          'Guide to Ballad',
+          'Guide to Freedom',
+          'Guide to Resistance',
+          'Philosophies of Ballad',
+          'Philosophies of Freedom',
+          'Philosophies of Resistance',
+          'Philosophies of Ballad',
+        ],
+        boss: "Dvalin's Sigh",
+        common: commonMaterials['Samachurl Scrolls'],
+        special: 'Crown of Insight',
+      },
+    },
+  },
+  {
+    name: 'Traveler',
+    vision: 'Geo',
+    rarity: 5,
+    weapon: 'Sword',
+    material: {
+      ascension: {
+        gem: 'Brilliant Diamond',
+        localSpecialty: 'Windwheel Aster',
+        common: commonMaterials['Hilichurl Masks'],
+      },
+      talent: [
+        {
+          book: [
+            'Teachings of Freedom',
+            'Guide to Resistance',
+            'Guide to Ballad',
+            'Guide to Freedom',
+            'Guide to Resistance',
+            'Philosophies of Ballad',
+            'Philosophies of Freedom',
+            'Philosophies of Resistance',
+            'Philosophies of Ballad',
+          ],
+          boss: "Dvalin's Sigh",
+          common: commonMaterials['Samachurl Scrolls'],
+          special: 'Crown of Insight',
+        },
+        {
+          book: [
+            'Teachings of Prosperity',
+            'Guide to Diligence',
+            'Guide to Gold',
+            'Guide to Prosperity',
+            'Guide to Diligence',
+            'Philosophies of Gold',
+            'Philosophies of Prosperity',
+            'Philosophies of Diligence',
+            'Philosophies of Gold',
+          ],
+          boss: 'Tail of Boreas',
+          common: commonMaterials['Hilichurl Arrowheads'],
+          special: 'Crown of Insight',
+        },
+        {
+          book: [
+            'Teachings of Prosperity',
+            'Guide to Diligence',
+            'Guide to Gold',
+            'Guide to Prosperity',
+            'Guide to Diligence',
+            'Philosophies of Gold',
+            'Philosophies of Prosperity',
+            'Philosophies of Diligence',
+            'Philosophies of Gold',
+          ],
+          boss: 'Tail of Boreas',
+          common: commonMaterials['Hilichurl Arrowheads'],
+          special: 'Crown of Insight',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Traveler',
+    vision: 'Electro',
+    rarity: 5,
+    weapon: 'Sword',
+    material: {
+      ascension: {
+        gem: 'Brilliant Diamond',
+        localSpecialty: 'Windwheel Aster',
+        common: commonMaterials['Hilichurl Masks'],
+      },
+      talent: {
+        book: [
+          'Teachings of Transience',
+          'Guide to Elegance',
+          'Guide to Light',
+          'Guide to Transience',
+          'Guide to Elegance',
+          'Philosophies of Light',
+          'Philosophies of Transience',
+          'Philosophies of Elegance',
+          'Philosophies of Light',
+        ],
+        boss: "Dragon Lord's Crown",
+        common: commonMaterials['Nobushi Handguards'],
+        special: 'Crown of Insight',
+      },
+    },
+  },
+]
+
+export type TravelerAscension = {
+  phase: { from: number; to: number }
+  mora: number
+  gem: { name: string; quantity: number }
+  local: { name: string; quantity: number }
+  common: { name: string; quantity: number }
+}
+
+export function getTravelerRequiredMaterial({ vision }: { vision: string }) {
+  const traveler = travelers.find((traveler) => traveler.vision === vision)
+  invariant(traveler)
+
+  const ascensionMaterial: TravelerAscension[] = [
+    {
+      phase: { from: 0, to: 1 },
+      mora: 20_000,
+      gem: { name: 'Brilliant Diamond Sliver', quantity: 1 },
+      local: { name: 'Windwheel Aster', quantity: 3 },
+      common: { name: 'Damaged Mask', quantity: 3 },
+    },
+    {
+      phase: { from: 1, to: 2 },
+      mora: 40_000,
+      gem: { name: 'Brilliant Diamond Fragment', quantity: 3 },
+      local: { name: 'Windwheel Aster', quantity: 10 },
+      common: { name: 'Damaged Mask', quantity: 15 },
+    },
+    {
+      phase: { from: 2, to: 3 },
+      mora: 60_000,
+      gem: { name: 'Brilliant Diamond Fragment', quantity: 6 },
+      local: { name: 'Windwheel Aster', quantity: 20 },
+      common: { name: 'Stained Mask', quantity: 12 },
+    },
+    {
+      phase: { from: 3, to: 4 },
+      mora: 80_000,
+      gem: { name: 'Brilliant Diamond Chunk', quantity: 3 },
+      local: { name: 'Windwheel Aster', quantity: 30 },
+      common: { name: 'Stained Mask', quantity: 18 },
+    },
+    {
+      phase: { from: 4, to: 5 },
+      mora: 100_000,
+      gem: { name: 'Brilliant Diamond Chunk', quantity: 6 },
+      local: { name: 'Windwheel Aster', quantity: 45 },
+      common: { name: 'Ominous Mask', quantity: 12 },
+    },
+    {
+      phase: { from: 5, to: 6 },
+      mora: 120_000,
+      gem: { name: 'Brilliant Diamond Gemstone', quantity: 6 },
+      local: { name: 'Windwheel Aster', quantity: 60 },
+      common: { name: 'Ominous Mask', quantity: 24 },
+    },
+  ]
+
+  return {
+    ascensionMaterial,
+  }
 }
