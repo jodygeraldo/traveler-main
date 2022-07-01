@@ -1040,61 +1040,158 @@ const travelers = [
 export type TravelerAscension = {
   phase: { from: number; to: number }
   mora: number
+  common: { name: string; quantity: number }
   gem: { name: string; quantity: number }
   local: { name: string; quantity: number }
+}
+
+export type CharacterTalent = {
+  level: { from: number; to: number }
+  mora: number
   common: { name: string; quantity: number }
+  book: { name: string; quantity: number }
+  boss?: { name: string; quantity: number }
+  special?: { name: string; quantity: number }
 }
 
 export function getTravelerRequiredMaterial({ vision }: { vision: string }) {
-  const traveler = travelers.find((traveler) => traveler.vision === vision)
+  const traveler = travelers.find((traveler) => traveler.vision === vision)?.material
   invariant(traveler)
 
   const ascensionMaterial: TravelerAscension[] = [
     {
       phase: { from: 0, to: 1 },
       mora: 20_000,
+      common: { name: 'Damaged Mask', quantity: 3 },
       gem: { name: 'Brilliant Diamond Sliver', quantity: 1 },
       local: { name: 'Windwheel Aster', quantity: 3 },
-      common: { name: 'Damaged Mask', quantity: 3 },
     },
     {
       phase: { from: 1, to: 2 },
       mora: 40_000,
+      common: { name: 'Damaged Mask', quantity: 15 },
       gem: { name: 'Brilliant Diamond Fragment', quantity: 3 },
       local: { name: 'Windwheel Aster', quantity: 10 },
-      common: { name: 'Damaged Mask', quantity: 15 },
     },
     {
       phase: { from: 2, to: 3 },
       mora: 60_000,
+      common: { name: 'Stained Mask', quantity: 12 },
       gem: { name: 'Brilliant Diamond Fragment', quantity: 6 },
       local: { name: 'Windwheel Aster', quantity: 20 },
-      common: { name: 'Stained Mask', quantity: 12 },
     },
     {
       phase: { from: 3, to: 4 },
       mora: 80_000,
+      common: { name: 'Stained Mask', quantity: 18 },
       gem: { name: 'Brilliant Diamond Chunk', quantity: 3 },
       local: { name: 'Windwheel Aster', quantity: 30 },
-      common: { name: 'Stained Mask', quantity: 18 },
     },
     {
       phase: { from: 4, to: 5 },
       mora: 100_000,
+      common: { name: 'Ominous Mask', quantity: 12 },
       gem: { name: 'Brilliant Diamond Chunk', quantity: 6 },
       local: { name: 'Windwheel Aster', quantity: 45 },
-      common: { name: 'Ominous Mask', quantity: 12 },
     },
     {
       phase: { from: 5, to: 6 },
       mora: 120_000,
+      common: { name: 'Ominous Mask', quantity: 24 },
       gem: { name: 'Brilliant Diamond Gemstone', quantity: 6 },
       local: { name: 'Windwheel Aster', quantity: 60 },
-      common: { name: 'Ominous Mask', quantity: 24 },
     },
   ]
 
+  if (Array.isArray(traveler.talent)) {
+    return {
+      ascensionMaterial,
+      talentMaterial: {
+        normal: getCharacterTalentMaterial(traveler.talent[0]),
+        elemental: getCharacterTalentMaterial(traveler.talent[1]),
+      },
+    }
+  }
+
   return {
     ascensionMaterial,
+    talentMaterial: {
+      normal: getCharacterTalentMaterial(traveler.talent),
+      elemental: getCharacterTalentMaterial(traveler.talent),
+    },
   }
+}
+
+function getCharacterTalentMaterial({
+  book,
+  boss,
+  common,
+  special,
+}: {
+  book: string[]
+  boss: string
+  common: string[]
+  special: string
+}): CharacterTalent[] {
+  return [
+    {
+      level: { from: 1, to: 2 },
+      mora: 12_500,
+      common: { name: common[0], quantity: 3 },
+      book: { name: book[0], quantity: 3 },
+    },
+    {
+      level: { from: 2, to: 3 },
+      mora: 17_500,
+      common: { name: common[1], quantity: 3 },
+      book: { name: book[1], quantity: 2 },
+    },
+    {
+      level: { from: 3, to: 4 },
+      mora: 25_000,
+      common: { name: common[1], quantity: 4 },
+      book: { name: book[2], quantity: 4 },
+    },
+    {
+      level: { from: 4, to: 5 },
+      mora: 30_000,
+      common: { name: common[1], quantity: 6 },
+      book: { name: book[3], quantity: 6 },
+    },
+    {
+      level: { from: 5, to: 6 },
+      mora: 37_500,
+      common: { name: common[1], quantity: 9 },
+      book: { name: book[4], quantity: 9 },
+    },
+    {
+      level: { from: 6, to: 7 },
+      mora: 120_000,
+      common: { name: common[2], quantity: 4 },
+      book: { name: book[5], quantity: 4 },
+      boss: { name: boss, quantity: 1 },
+    },
+    {
+      level: { from: 7, to: 8 },
+      mora: 260_000,
+      common: { name: common[2], quantity: 6 },
+      book: { name: book[6], quantity: 6 },
+      boss: { name: boss, quantity: 1 },
+    },
+    {
+      level: { from: 8, to: 9 },
+      mora: 450_000,
+      common: { name: common[2], quantity: 9 },
+      book: { name: book[7], quantity: 12 },
+      boss: { name: boss, quantity: 2 },
+    },
+    {
+      level: { from: 9, to: 10 },
+      mora: 700_000,
+      common: { name: common[2], quantity: 12 },
+      book: { name: book[8], quantity: 16 },
+      boss: { name: boss, quantity: 2 },
+      special: { name: special, quantity: 1 },
+    },
+  ]
 }
