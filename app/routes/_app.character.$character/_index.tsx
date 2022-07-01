@@ -1,34 +1,59 @@
 import type { LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
+import { Outlet, useLoaderData } from '@remix-run/react'
 import invariant from 'tiny-invariant'
-import { getCharacter } from '~/data/characters'
-import { getUserCharacter } from '~/models/character.server'
-import { requireAccountId } from '~/session.server'
+import Tabs from '~/components/Tabs'
+import { validateCharacter } from '~/data/characters'
+import { useActiveNavigation } from '~/utils'
 
 type LoaderData = {
-  character: ReturnType<typeof getCharacter>
+  characterName: string
 }
 
 export const loader: LoaderFunction = async ({ request, params }) => {
-  const accId = await requireAccountId(request)
   const { character: characterName } = params
   invariant(characterName)
 
-  const userCharacter = await getUserCharacter({ name: characterName, accId })
-  const character = getCharacter({ name: characterName, characterData: userCharacter })
-  if (!character) {
+  const validCharacter = validateCharacter(characterName)
+  if (!validCharacter) {
     throw json(`Character ${characterName} not found`, {
       status: 404,
       statusText: 'Page Not Found',
     })
   }
 
-  return json<LoaderData>({ character })
+  return json<LoaderData>({ characterName })
 }
 
-export default function CharacterPage() {
-  const { character } = useLoaderData() as LoaderData
+export default function CharacterLayout() {
+  const { characterName } = useLoaderData() as LoaderData
 
-  return <h1>{character.name}</h1>
+  const tabs = [
+    { name: 'Required Items', to: '.', active: useActiveNavigation('.') },
+    {
+      name: 'Inventory Level Up',
+      to: './inventory-levelup',
+      active: useActiveNavigation('./inventory-levelup'),
+    },
+    {
+      name: 'Manual Level Up',
+      to: './manual-levelup',
+      active: useActiveNavigation('./manual-levelup'),
+    },
+  ]
+
+  return (
+    <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+      <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
+        {characterName}
+      </h1>
+
+      <div className="mt-6 sm:mt-2 2xl:mt-5">
+        <Tabs tabs={tabs} />
+        <main className="pb-16">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  )
 }

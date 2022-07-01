@@ -122,6 +122,10 @@ export function getCharacters(userCharacters: CharactersInfer): Character[] {
   return updatedCharacters
 }
 
+export function validateCharacter(name: string) {
+  return characters.findIndex((c) => c.name === name) !== -1
+}
+
 export function getCharacter({
   name,
   characterData,
