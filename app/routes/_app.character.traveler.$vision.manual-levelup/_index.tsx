@@ -5,6 +5,7 @@ import { getFormData, useFormInputProps } from 'remix-params-helper'
 import invariant from 'tiny-invariant'
 import { z } from 'zod'
 import ManualLevelForm from '~/components/ManualLevelForm'
+import { validateAscensionRequirement } from '~/data/characters'
 import { getUserCharacters, upsertCharacter } from '~/models/character.server'
 import { requireAccountId } from '~/session.server'
 import { toCapitalized } from '~/utils'
@@ -30,8 +31,14 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   const result = await getFormData(request, ParamsSchema)
   if (!result.success) {
-    console.log(result.errors)
     return json<ActionData>({ success: result.success, errors: result.errors }, { status: 400 })
+  }
+
+  const { travelersData, ...progression } = result.data
+  const errors = validateAscensionRequirement(progression)
+  if (errors) {
+    console.log(errors);
+    return json<ActionData>({ success: false, errors }, { status: 400 })
   }
 
   const characterSchema = z.enum([
@@ -53,7 +60,6 @@ export const action: ActionFunction = async ({ request, params }) => {
       elementalBurst: z.number(),
     })
   )
-  const { travelersData, ...progression } = result.data
 
   const parsedTravelersData = travelersDataSchema.parse(JSON.parse(travelersData))
 
