@@ -100,8 +100,6 @@ export async function upsertCharacter({
 
     const charactersToUpsert = e.json(travelersToUpsert)
 
-    console.log(charactersToUpsert)
-
     await e
       .update(e.UserCharacter, (userCharacter) => ({
         filter: e.op(userCharacter.owner, '=', Account(accId)),
