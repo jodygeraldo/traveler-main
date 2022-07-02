@@ -9,6 +9,5 @@ node_modules
 
 /app/tailwind.css
 .DS_Store
-/dbschema/edgeql-js
 /tmp
 /app/oldroutes
