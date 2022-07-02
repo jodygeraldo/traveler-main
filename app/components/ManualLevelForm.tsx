@@ -168,6 +168,7 @@ export default function ManualLevelForm({
             type={hydrated ? 'button' : 'submit'}
             onClick={hydrated ? handleClick : undefined}
             focusRing={1}
+            disabled={busy}
           >
             {busy ? 'Saving...' : 'Save'}
           </Button>
