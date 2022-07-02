@@ -1,4 +1,4 @@
-import { Form } from '@remix-run/react'
+import { Form, useLocation, useSubmit } from '@remix-run/react'
 import type { InputPropType } from 'remix-params-helper'
 import { useHydrated } from 'remix-utils'
 import type { TravelerData } from '~/routes/_app.character.traveler.$vision.manual-levelup/_index'
@@ -9,6 +9,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import Icon from './Icon'
 import { z } from 'zod'
 import { splitPerCapitalCase, toCapitalized } from '~/utils'
+import invariant from 'tiny-invariant'
 
 const newDataSchema = z.object({
   level: z.number(),
@@ -43,12 +44,15 @@ export default function ManualLevelForm({
   const alertState = useState(false)
   const ref = useRef<HTMLFormElement>(null)
   const [values, setValues] = useState<Values>(defaultValues)
+  const [formData, setFormData] = useState<FormData | undefined>(undefined)
 
   function handleClick() {
-    const formData = new FormData(ref.current ?? undefined)
+    const form = new FormData(ref.current ?? undefined)
 
     const { level, ascension, normalAttack, elementalSkill, elementalBurst } =
-      Object.fromEntries(formData)
+      Object.fromEntries(form)
+
+    setFormData(form ?? undefined)
 
     const parsedNewData = newDataSchema.parse({
       level: parseInt(z.string().parse(level)),
@@ -164,7 +168,7 @@ export default function ManualLevelForm({
           </Button>
         </div>
       </Form>
-      <Alert state={alertState} oldValues={defaultValues} newValues={values} />
+      <Alert state={alertState} oldValues={defaultValues} newValues={values} formData={formData} />
     </div>
   )
 }
@@ -173,13 +177,23 @@ function Alert({
   state,
   oldValues,
   newValues,
+  formData,
 }: {
   state: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
   oldValues: Values
   newValues: Values
+  formData?: FormData
 }) {
   const [open, setOpen] = state
   const cancelButtonRef = useRef(null)
+  const submit = useSubmit()
+  const { pathname } = useLocation()
+
+  function handleSubmit() {
+    invariant(formData)
+    submit(formData, { method: 'post', action: pathname })
+    setOpen(false)
+  }
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -249,7 +263,7 @@ function Alert({
                   <Button
                     className="w-full sm:ml-3 sm:w-auto"
                     variant="info"
-                    onClick={() => setOpen(false)}
+                    onClick={handleSubmit}
                   >
                     Confirm changes
                   </Button>
