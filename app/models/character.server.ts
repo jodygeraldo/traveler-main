@@ -52,7 +52,7 @@ export async function upsertCharacter({
   name: string
   progression: {
     level: number
-    asecension: number
+    ascension: number
     normalAttack: number
     elementalSkill: number
     elementalBurst: number
@@ -61,7 +61,7 @@ export async function upsertCharacter({
 }) {
   const itemToUpsert = e.select(e.Character, (c) => ({
     '@level': e.int16(progression.level),
-    '@ascension': e.int16(progression.asecension),
+    '@ascension': e.int16(progression.ascension),
     '@normal_attack': e.int16(progression.normalAttack),
     '@elemental_skill': e.int16(progression.elementalSkill),
     '@elemental_burst': e.int16(progression.elementalBurst),
