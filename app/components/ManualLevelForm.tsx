@@ -1,5 +1,5 @@
 import { Dialog, Portal, Transition } from '@headlessui/react'
-import { Form, useLocation, useSubmit } from '@remix-run/react'
+import { Form, useLocation, useSubmit, useTransition } from '@remix-run/react'
 import * as React from 'react'
 import type { InputPropType } from 'remix-params-helper'
 import { useHydrated } from 'remix-utils'
@@ -48,6 +48,8 @@ export default function ManualLevelForm({
   const [values, setValues] = React.useState<Values>(defaultValues)
   const [formData, setFormData] = React.useState<FormData | undefined>(undefined)
   const location = useLocation()
+  const transition = useTransition()
+  const busy = transition.state === 'submitting'
 
   function handleClick() {
     const form = new FormData(ref.current ?? undefined)
@@ -167,7 +169,7 @@ export default function ManualLevelForm({
             onClick={hydrated ? handleClick : undefined}
             focusRing={1}
           >
-            Save
+            {busy ? 'Saving...' : 'Save'}
           </Button>
         </div>
       </Form>
