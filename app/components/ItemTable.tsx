@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-key */
 import clsx from 'clsx'
-import Switch from './Switch'
 import type { Column } from 'react-table'
 import { useTable } from 'react-table'
+import Switch from './Switch'
 
 type Props = {
   uid: string

@@ -1,4 +1,4 @@
-import { useMatches, useLocation, useResolvedPath } from '@remix-run/react'
+import { useLocation, useMatches, useResolvedPath } from '@remix-run/react'
 import { useMemo } from 'react'
 
 import type { User } from './db.server'

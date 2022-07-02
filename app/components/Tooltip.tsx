@@ -14,7 +14,7 @@ export default function Tooltip({ text, children }: Props) {
         side="top"
         className="motion-safe:scaleIn origin-[var(--radix-tooltip-content-transform-origin)] rounded-md bg-gray-3 p-2 shadow-lg"
       >
-        <span className='text-sm'>{text}</span>
+        <span className="text-sm">{text}</span>
         <RadixTooltip.Arrow className="fill-gray-3" />
       </RadixTooltip.Content>
     </RadixTooltip.Root>

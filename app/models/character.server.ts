@@ -1,5 +1,5 @@
 import invariant from 'tiny-invariant'
-import { e, client } from '~/db.server'
+import { client, e } from '~/db.server'
 import type { depromisify } from '~/utils'
 import { Account } from './user.server'
 

@@ -1,14 +1,14 @@
-import { useActionData, useLoaderData } from '@remix-run/react'
 import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
+import { useActionData, useLoaderData } from '@remix-run/react'
 import { getFormData, useFormInputProps } from 'remix-params-helper'
+import invariant from 'tiny-invariant'
 import { z } from 'zod'
 import ManualLevelForm from '~/components/ManualLevelForm'
-import type { CharacterData } from '../_app.character.traveler.$vision.manual-levelup/_index'
-import { requireAccountId } from '~/session.server'
-import invariant from 'tiny-invariant'
-import { getUserCharacter, upsertCharacter } from '~/models/character.server'
 import { validateAscensionRequirement } from '~/data/characters'
+import { getUserCharacter, upsertCharacter } from '~/models/character.server'
+import { requireAccountId } from '~/session.server'
+import type { CharacterData } from '../_app.character.traveler.$vision.manual-levelup/_index'
 
 const ParamsSchema = z.object({
   level: z.number().min(1).max(90),

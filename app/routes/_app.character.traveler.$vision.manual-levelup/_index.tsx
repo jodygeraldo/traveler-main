@@ -37,7 +37,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const { travelersData, ...progression } = result.data
   const errors = validateAscensionRequirement(progression)
   if (errors) {
-    console.log(errors);
+    console.log(errors)
     return json<ActionData>({ success: false, errors }, { status: 400 })
   }
 
