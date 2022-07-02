@@ -41,7 +41,7 @@ export default function ManualLevelForm({ inputProps }: Props) {
             <input
               id="normal-attack"
               className="mt-1 block w-full rounded-md border-gray-7 bg-gray-3 shadow-sm focus:border-primary-8 focus:ring-primary-8 sm:text-sm"
-              {...inputProps('normal-attack')}
+              {...inputProps('normalAttack')}
             />
           </div>
 
@@ -52,7 +52,7 @@ export default function ManualLevelForm({ inputProps }: Props) {
             <input
               id="elemental-skill"
               className="mt-1 block w-full rounded-md border-gray-7 bg-gray-3 shadow-sm focus:border-primary-8 focus:ring-primary-8 sm:text-sm"
-              {...inputProps('elemental-skill')}
+              {...inputProps('elementalSkill')}
             />
           </div>
 
@@ -63,7 +63,7 @@ export default function ManualLevelForm({ inputProps }: Props) {
             <input
               id="elemental-burst"
               className="mt-1 block w-full rounded-md border-gray-7 bg-gray-3 shadow-sm focus:border-primary-8 focus:ring-primary-8 sm:text-sm"
-              {...inputProps('elemental-burst')}
+              {...inputProps('elementalBurst')}
             />
           </div>
         </div>
