@@ -7,15 +7,27 @@ import { Button } from './Button'
 import { Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import Icon from './Icon'
+import { z } from 'zod'
+import { splitPerCapitalCase, toCapitalized } from '~/utils'
+
+const newDataSchema = z.object({
+  level: z.number(),
+  ascension: z.number(),
+  normalAttack: z.number(),
+  elementalSkill: z.number(),
+  elementalBurst: z.number(),
+})
+
+type Values = {
+  level: number
+  ascension: number
+  normalAttack: number
+  elementalSkill: number
+  elementalBurst: number
+}
 
 type Props = {
-  defaultValues: {
-    level: number
-    ascension: number
-    normalAttack: number
-    elementalSkill: number
-    elementalBurst: number
-  }
+  defaultValues: Values
   inputProps: (key: string, options?: any) => InputPropType
   errors?: { [key: string]: string }
   hiddenTravelersData?: TravelerData[]
@@ -30,9 +42,23 @@ export default function ManualLevelForm({
   const hydrated = useHydrated()
   const alertState = useState(false)
   const ref = useRef<HTMLFormElement>(null)
+  const [values, setValues] = useState<Values>(defaultValues)
 
   function handleClick() {
-    // const formData = new FormData(ref.current ?? undefined)
+    const formData = new FormData(ref.current ?? undefined)
+
+    const { level, ascension, normalAttack, elementalSkill, elementalBurst } =
+      Object.fromEntries(formData)
+
+    const parsedNewData = newDataSchema.parse({
+      level: parseInt(z.string().parse(level)),
+      ascension: parseInt(z.string().parse(ascension)),
+      normalAttack: parseInt(z.string().parse(normalAttack)),
+      elementalSkill: parseInt(z.string().parse(elementalSkill)),
+      elementalBurst: parseInt(z.string().parse(elementalBurst)),
+    })
+
+    setValues(parsedNewData)
 
     alertState[1](true)
   }
@@ -138,14 +164,21 @@ export default function ManualLevelForm({
           </Button>
         </div>
       </Form>
-      <Alert state={alertState} />
+      <Alert state={alertState} oldValues={defaultValues} newValues={values} />
     </div>
   )
 }
 
-function Alert({ state }: { state: [boolean, React.Dispatch<React.SetStateAction<boolean>>] }) {
+function Alert({
+  state,
+  oldValues,
+  newValues,
+}: {
+  state: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+  oldValues: Values
+  newValues: Values
+}) {
   const [open, setOpen] = state
-
   const cancelButtonRef = useRef(null)
 
   return (
@@ -190,20 +223,25 @@ function Alert({ state }: { state: [boolean, React.Dispatch<React.SetStateAction
                     </Dialog.Title>
                     <div className="mt-2 text-sm text-gray-11">
                       <p>Manual level up generally not recommended.</p>
-                      {/* <p>You changed:</p>
+                      <p>You changed:</p>
                       <ul>
-                        <li>
-                          Level from <span className="font-bold">1</span>
-                          <span className="sr-only">To</span>
-                          <Icon
-                            type="solid"
-                            name="arrowSmRight"
-                            aria-hidden
-                            className="inline h-4 w-4"
-                          />
-                          <span className="font-bold">2</span>
-                        </li>
-                      </ul> */}
+                        {(Object.keys(newValues) as Array<keyof Values>).map((key) => {
+                          return newValues[key] !== oldValues[key] ? (
+                            <li key={key}>
+                              {splitPerCapitalCase(toCapitalized(key))}{' '}
+                              <span className="font-bold">{oldValues[key]}</span>
+                              <span className="sr-only">To</span>
+                              <Icon
+                                type="solid"
+                                name="arrowSmRight"
+                                aria-hidden
+                                className="inline h-4 w-4"
+                              />
+                              <span className="font-bold">{newValues[key]}</span>
+                            </li>
+                          ) : null
+                        })}
+                      </ul>
                     </div>
                   </div>
                 </div>

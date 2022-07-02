@@ -86,3 +86,7 @@ export function toSnakeCase(str: string): string {
 export function toCapitalized(str: string): string {
   return str.replace(/_/g, ' ').replace(/\b\w/g, (x) => x.toUpperCase())
 }
+
+export function splitPerCapitalCase(str: string): string {
+  return str.split(/(?=[A-Z])/g).join(' ')
+}
