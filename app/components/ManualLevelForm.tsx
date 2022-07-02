@@ -1,15 +1,14 @@
+import { Dialog, Portal, Transition } from '@headlessui/react'
 import { Form, useLocation, useSubmit } from '@remix-run/react'
+import * as React from 'react'
 import type { InputPropType } from 'remix-params-helper'
 import { useHydrated } from 'remix-utils'
-import type { TravelerData } from '~/routes/_app.character.traveler.$vision.manual-levelup/_index'
-import { Button } from './Button'
-
-import { Fragment, useRef, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-import Icon from './Icon'
-import { z } from 'zod'
-import { splitPerCapitalCase, toCapitalized } from '~/utils'
 import invariant from 'tiny-invariant'
+import { z } from 'zod'
+import type { TravelerData } from '~/routes/_app.character.traveler.$vision.manual-levelup/_index'
+import { splitPerCapitalCase, toCapitalized } from '~/utils'
+import { Button } from './Button'
+import Icon from './Icon'
 
 const newDataSchema = z.object({
   level: z.number(),
@@ -32,6 +31,7 @@ type Props = {
   inputProps: (key: string, options?: any) => InputPropType
   errors?: { [key: string]: string }
   hiddenTravelersData?: TravelerData[]
+  submitSuccess?: boolean
 }
 
 export default function ManualLevelForm({
@@ -39,12 +39,15 @@ export default function ManualLevelForm({
   inputProps,
   errors,
   hiddenTravelersData,
+  submitSuccess,
 }: Props) {
   const hydrated = useHydrated()
-  const alertState = useState(false)
-  const ref = useRef<HTMLFormElement>(null)
-  const [values, setValues] = useState<Values>(defaultValues)
-  const [formData, setFormData] = useState<FormData | undefined>(undefined)
+  const alertState = React.useState(false)
+  const notificationState = React.useState(false)
+  const ref = React.useRef<HTMLFormElement>(null)
+  const [values, setValues] = React.useState<Values>(defaultValues)
+  const [formData, setFormData] = React.useState<FormData | undefined>(undefined)
+  const location = useLocation()
 
   function handleClick() {
     const form = new FormData(ref.current ?? undefined)
@@ -169,6 +172,7 @@ export default function ManualLevelForm({
         </div>
       </Form>
       <Alert state={alertState} oldValues={defaultValues} newValues={values} formData={formData} />
+      <Notification key={location.key} state={notificationState} success={submitSuccess} />
     </div>
   )
 }
@@ -185,7 +189,7 @@ function Alert({
   formData?: FormData
 }) {
   const [open, setOpen] = state
-  const cancelButtonRef = useRef(null)
+  const cancelButtonRef = React.useRef(null)
   const submit = useSubmit()
   const { pathname } = useLocation()
 
@@ -196,10 +200,10 @@ function Alert({
   }
 
   return (
-    <Transition.Root show={open} as={Fragment}>
+    <Transition.Root show={open} as={React.Fragment}>
       <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpen}>
         <Transition.Child
-          as={Fragment}
+          as={React.Fragment}
           enter="ease-out duration-300"
           enterFrom="opacity-0"
           enterTo="opacity-100"
@@ -213,7 +217,7 @@ function Alert({
         <div className="fixed inset-0 z-10 overflow-y-auto">
           <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <Transition.Child
-              as={Fragment}
+              as={React.Fragment}
               enter="ease-out duration-300"
               enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               enterTo="opacity-100 translate-y-0 sm:scale-100"
@@ -282,5 +286,73 @@ function Alert({
         </div>
       </Dialog>
     </Transition.Root>
+  )
+}
+
+function Notification({
+  state,
+  success,
+}: {
+  success?: boolean
+  state: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+}) {
+  const [show, setShow] = state
+
+  React.useEffect(() => {
+    if (success !== undefined) {
+      setShow(true)
+
+      const timer = setTimeout(() => {
+        setShow(false)
+      }, 3000)
+
+      return () => clearTimeout(timer)
+    }
+  }, [success, setShow])
+
+  return (
+    <Portal>
+      <div
+        aria-live="assertive"
+        className="pointer-events-none fixed inset-0 z-10 flex items-end px-4 py-6 sm:items-start sm:p-6"
+      >
+        <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
+          <Transition
+            show={show}
+            as={React.Fragment}
+            enter="transform ease-out duration-300 transition"
+            enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+            enterTo="translate-y-0 opacity-100 sm:translate-x-0"
+            leave="transition ease-in duration-100"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+              <div className="p-4">
+                <div className="flex items-center">
+                  <div className="flex w-0 flex-1 justify-between">
+                    <p className="w-0 flex-1 text-sm font-medium text-gray-900">
+                      {success ? 'Level up successful' : 'Level up failed'}
+                    </p>
+                  </div>
+                  <div className="ml-4 flex flex-shrink-0">
+                    <button
+                      type="button"
+                      className="inline-flex rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      onClick={() => {
+                        setShow(false)
+                      }}
+                    >
+                      <span className="sr-only">Close</span>
+                      <Icon type="outline" name="x" className="h-5 w-5" aria-hidden="true" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Transition>
+        </div>
+      </div>
+    </Portal>
   )
 }

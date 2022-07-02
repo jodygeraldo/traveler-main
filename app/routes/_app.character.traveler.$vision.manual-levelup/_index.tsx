@@ -136,7 +136,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
 export default function TravelerManualLevelupPage() {
   const { travelerData, otherTravelersData } = useLoaderData() as LoaderData
-  const actionData = useActionData() as ActionData
+  const actionData = useActionData<ActionData>()
   const inputProps = useFormInputProps(ParamsSchema)
 
   return (
@@ -145,6 +145,7 @@ export default function TravelerManualLevelupPage() {
       errors={actionData?.errors}
       defaultValues={travelerData}
       hiddenTravelersData={otherTravelersData}
+      submitSuccess={actionData?.success}
     />
   )
 }
