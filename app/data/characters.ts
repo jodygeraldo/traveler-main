@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant'
 import { z } from 'zod'
 import type { CharacterInfer, CharactersInfer } from '~/models/character.server'
-import type { TravelerData } from '~/routes/_app.character.traveler.$vision.manual-levelup/_index'
+import type { CharacterData } from '~/routes/_app.character.traveler.$vision.manual-levelup/_index'
 
 type CommonMaterial =
   | 'Slime'
@@ -1257,7 +1257,7 @@ export function validateAscensionRequirement({
   normalAttack,
   elementalSkill,
   elementalBurst,
-}: Omit<TravelerData, 'name'>) {
+}: Omit<CharacterData, 'name'>) {
   switch (ascension) {
     case 0:
       const schema0 = z.object({

@@ -73,7 +73,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   return json<ActionData>({ success: true })
 }
 
-export type TravelerData = {
+export type CharacterData = {
   name: string
   level: number
   ascension: number
@@ -83,8 +83,8 @@ export type TravelerData = {
 }
 
 type LoaderData = {
-  travelerData: TravelerData
-  otherTravelersData: TravelerData[]
+  travelerData: CharacterData
+  otherTravelersData: CharacterData[]
 }
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -110,7 +110,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   const otherTravelers = validTraveler.filter((traveler) => traveler !== parsedTraveler)
 
-  const travelerData: TravelerData = {
+  const travelerData: CharacterData = {
     name: parsedTraveler,
     level: currentTraveler?.['@level'] ?? 1,
     ascension: currentTraveler?.['@ascension'] ?? 0,
@@ -119,7 +119,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     elementalBurst: currentTraveler?.['@elemental_burst'] ?? 1,
   }
 
-  const otherTravelersData: TravelerData[] = otherTravelers.map((traveler) => {
+  const otherTravelersData: CharacterData[] = otherTravelers.map((traveler) => {
     const otherTraveler = userTravelers?.find((c) => c.name === traveler)
     return {
       name: traveler,

@@ -5,7 +5,7 @@ import type { InputPropType } from 'remix-params-helper'
 import { useHydrated } from 'remix-utils'
 import invariant from 'tiny-invariant'
 import { z } from 'zod'
-import type { TravelerData } from '~/routes/_app.character.traveler.$vision.manual-levelup/_index'
+import type { CharacterData } from '~/routes/_app.character.traveler.$vision.manual-levelup/_index'
 import { splitPerCapitalCase, toCapitalized } from '~/utils'
 import { Button } from './Button'
 import Icon from './Icon'
@@ -30,7 +30,7 @@ type Props = {
   defaultValues: Values
   inputProps: (key: string, options?: any) => InputPropType
   errors?: { [key: string]: string }
-  hiddenTravelersData?: TravelerData[]
+  hiddenTravelersData?: CharacterData[]
   submitSuccess?: boolean
 }
 
