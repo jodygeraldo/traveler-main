@@ -1,5 +1,6 @@
 import { Form } from '@remix-run/react'
 import type { InputPropType } from 'remix-params-helper'
+import type { TravelerData } from '~/routes/_app.character.traveler.$vision.manual-levelup/_index'
 import { Button } from './Button'
 
 type Props = {
@@ -12,9 +13,15 @@ type Props = {
   }
   inputProps: (key: string, options?: any) => InputPropType
   errors?: { [key: string]: string }
+  hiddenTravelersData?: TravelerData[]
 }
 
-export default function ManualLevelForm({ defaultValues, inputProps, errors }: Props) {
+export default function ManualLevelForm({
+  defaultValues,
+  inputProps,
+  errors,
+  hiddenTravelersData,
+}: Props) {
   return (
     <div className="mt-8">
       <Form method="post">
@@ -105,6 +112,7 @@ export default function ManualLevelForm({ defaultValues, inputProps, errors }: P
             </p>
           </div>
         </div>
+        <input type="hidden" name="travelersData" value={JSON.stringify(hiddenTravelersData)} />
         <div className="mt-8 text-right">
           <Button type="submit" focusRing={1}>
             Save
