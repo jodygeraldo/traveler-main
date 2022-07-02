@@ -89,9 +89,9 @@ export default function CharacterPage() {
         Header: 'Boss',
         accessor: 'boss',
         Cell: ({ value }: { value?: { name: string; quantity: number } }) => (
-            <TableCell quantity={value?.quantity} text={value?.name} />
-          ),
-      }
+          <TableCell quantity={value?.quantity} text={value?.name} />
+        ),
+      },
     ],
     []
   )

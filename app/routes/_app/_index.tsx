@@ -1,10 +1,10 @@
-import { Fragment } from 'react'
 import { Menu, Popover, Transition } from '@headlessui/react'
-import Icon from '~/components/Icon'
-import clsx from 'clsx'
 import { Form, Link, NavLink, Outlet } from '@remix-run/react'
-import Logo from '~/components/Logo'
+import clsx from 'clsx'
+import { Fragment } from 'react'
 import { ButtonIcon } from '~/components/Button'
+import Icon from '~/components/Icon'
+import Logo from '~/components/Logo'
 import { useUser } from '~/utils'
 
 export default function AppLayout() {

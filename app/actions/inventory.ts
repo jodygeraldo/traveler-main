@@ -22,7 +22,6 @@ export const action: ActionFunction = async ({ request }) => {
   })
 
   const { name, category, quantity } = await getFormDataOrFail(request, ParamsSchema)
-  console.log(name, category, quantity)
 
   await upsertItem({
     accId,

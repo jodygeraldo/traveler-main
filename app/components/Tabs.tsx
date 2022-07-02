@@ -1,5 +1,5 @@
-import { Link, useNavigate } from '@remix-run/react'
-import clsx from 'clsx'
+import { Link, useNavigate } from '@remix-run/react';
+import clsx from 'clsx';
 
 export default function Tabs({ tabs }: { tabs: { name: string; to: string; active: boolean }[] }) {
   const navigate = useNavigate()

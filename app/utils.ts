@@ -1,4 +1,4 @@
-import { useMatches, useLocation, useResolvedPath } from '@remix-run/react'
+import { useLocation, useMatches, useResolvedPath } from '@remix-run/react'
 import { useMemo } from 'react'
 
 import type { User } from './db.server'
@@ -85,4 +85,8 @@ export function toSnakeCase(str: string): string {
 
 export function toCapitalized(str: string): string {
   return str.replace(/_/g, ' ').replace(/\b\w/g, (x) => x.toUpperCase())
+}
+
+export function splitPerCapitalCase(str: string): string {
+  return str.split(/(?=[A-Z])/g).join(' ')
 }

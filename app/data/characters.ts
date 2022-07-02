@@ -1,5 +1,7 @@
 import invariant from 'tiny-invariant'
+import { z } from 'zod'
 import type { CharacterInfer, CharactersInfer } from '~/models/character.server'
+import type { CharacterData } from '~/routes/_app.character.traveler.$vision.manual-levelup/_index'
 
 type CommonMaterial =
   | 'Slime'
@@ -1238,4 +1240,187 @@ function getCharacterTalentMaterial(
       special: { name: special, quantity: 1 },
     },
   ]
+}
+
+function narrowErrors(errors: z.ZodIssue[]): { [key: string]: string } {
+  return Object.assign(
+    {},
+    ...errors.map((error) => ({
+      [error.path[0]]: error.message,
+    }))
+  )
+}
+
+export function validateAscensionRequirement({
+  level,
+  ascension,
+  normalAttack,
+  elementalSkill,
+  elementalBurst,
+}: Omit<CharacterData, 'name'>) {
+  switch (ascension) {
+    case 0:
+      const schema0 = z.object({
+        level: z.number().refine((val) => val <= 20, {
+          message: 'Maximum level on ascension 0 is 20',
+        }),
+        normalAttack: z.number().refine((val) => val <= 1, {
+          message: 'Maximum normal attack on ascension 0 is 1',
+        }),
+        elementalSkill: z.number().refine((val) => val <= 1, {
+          message: 'Maximum elemental skill on ascension 0 is 1',
+        }),
+        elementalBurst: z.number().refine((val) => val <= 1, {
+          message: 'Maximum elemental burst on ascension 0 is 1',
+        }),
+      })
+
+      const parsed0 = schema0.safeParse({ level, normalAttack, elementalSkill, elementalBurst })
+
+      if (!parsed0.success) {
+        return narrowErrors(parsed0.error.issues)
+      }
+
+      return
+    case 1:
+      const schema1 = z.object({
+        level: z.number().refine((val) => val <= 40, {
+          message: 'Maximum level on ascension 1 is 40',
+        }),
+        normalAttack: z.number().refine((val) => val <= 1, {
+          message: 'Maximum normal attack on ascension 1 is 1',
+        }),
+        elementalSkill: z.number().refine((val) => val <= 1, {
+          message: 'Maximum elemental skill on ascension 1 is 1',
+        }),
+        elementalBurst: z.number().refine((val) => val <= 1, {
+          message: 'Maximum elemental burst on ascension 1 is 1',
+        }),
+      })
+
+      const parsed1 = schema1.safeParse({ level, normalAttack, elementalSkill, elementalBurst })
+
+      if (!parsed1.success) {
+        return narrowErrors(parsed1.error.issues)
+      }
+
+      return
+    case 2:
+      const schema2 = z.object({
+        level: z.number().refine((val) => val <= 50, {
+          message: 'Maximum level on ascension 2 is 50',
+        }),
+        normalAttack: z.number().refine((val) => val <= 2, {
+          message: 'Maximum normal attack on ascension 2 is 2',
+        }),
+        elementalSkill: z.number().refine((val) => val <= 2, {
+          message: 'Maximum elemental skill on ascension 2 is 2',
+        }),
+        elementalBurst: z.number().refine((val) => val <= 2, {
+          message: 'Maximum elemental burst on ascension 2 is 2',
+        }),
+      })
+
+      const parsed2 = schema2.safeParse({ level, normalAttack, elementalSkill, elementalBurst })
+
+      if (!parsed2.success) {
+        return narrowErrors(parsed2.error.issues)
+      }
+
+      return
+    case 3:
+      const schema3 = z.object({
+        level: z.number().refine((val) => val <= 60, {
+          message: 'Maximum level on ascension 3 is 60',
+        }),
+        normalAttack: z.number().refine((val) => val <= 4, {
+          message: 'Maximum normal attack on ascension 3 is 4',
+        }),
+        elementalSkill: z.number().refine((val) => val <= 4, {
+          message: 'Maximum elemental skill on ascension 3 is 4',
+        }),
+        elementalBurst: z.number().refine((val) => val <= 4, {
+          message: 'Maximum elemental burst on ascension 3 is 4',
+        }),
+      })
+
+      const parsed3 = schema3.safeParse({ level, normalAttack, elementalSkill, elementalBurst })
+
+      if (!parsed3.success) {
+        return narrowErrors(parsed3.error.issues)
+      }
+
+      return
+    case 4:
+      const schema4 = z.object({
+        level: z.number().refine((val) => val <= 70, {
+          message: 'Maximum level on ascension 4 is 70',
+        }),
+        normalAttack: z.number().refine((val) => val <= 6, {
+          message: 'Maximum normal attack on ascension 4 is 6',
+        }),
+        elementalSkill: z.number().refine((val) => val <= 6, {
+          message: 'Maximum elemental skill on ascension 4 is 6',
+        }),
+        elementalBurst: z.number().refine((val) => val <= 6, {
+          message: 'Maximum elemental burst on ascension 4 is 6',
+        }),
+      })
+
+      const parsed4 = schema4.safeParse({ level, normalAttack, elementalSkill, elementalBurst })
+
+      if (!parsed4.success) {
+        return narrowErrors(parsed4.error.issues)
+      }
+
+      return
+    case 5:
+      const schema5 = z.object({
+        level: z.number().refine((val) => val <= 80, {
+          message: 'Maximum level on ascension 5 is 80',
+        }),
+        normalAttack: z.number().refine((val) => val <= 8, {
+          message: 'Maximum normal attack on ascension 5 is 8',
+        }),
+        elementalSkill: z.number().refine((val) => val <= 8, {
+          message: 'Maximum elemental skill on ascension 5 is 8',
+        }),
+        elementalBurst: z.number().refine((val) => val <= 8, {
+          message: 'Maximum elemental burst on ascension 5 is 8',
+        }),
+      })
+
+      const parsed5 = schema5.safeParse({ level, normalAttack, elementalSkill, elementalBurst })
+
+      if (!parsed5.success) {
+        return narrowErrors(parsed5.error.issues)
+      }
+
+      return
+    case 6:
+      const schema6 = z.object({
+        level: z.number().refine((val) => val <= 90, {
+          message: 'Maximum level on ascension 6 is 90',
+        }),
+        normalAttack: z.number().refine((val) => val <= 10, {
+          message: 'Maximum normal attack on ascension 6 is 10',
+        }),
+        elementalSkill: z.number().refine((val) => val <= 10, {
+          message: 'Maximum elemental skill on ascension 6 is 10',
+        }),
+        elementalBurst: z.number().refine((val) => val <= 10, {
+          message: 'Maximum elemental burst on ascension 6 is 10',
+        }),
+      })
+
+      const parsed6 = schema6.safeParse({ level, normalAttack, elementalSkill, elementalBurst })
+
+      if (!parsed6.success) {
+        return narrowErrors(parsed6.error.issues)
+      }
+
+      return
+    default:
+      invariant(false, 'IMPOSSIBLE')
+  }
 }

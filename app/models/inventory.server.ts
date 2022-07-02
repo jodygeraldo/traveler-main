@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
-import type { Inventory, $infer } from '~/db.server'
-import { e, client } from '~/db.server'
+import type { $infer, Inventory } from '~/db.server'
+import { client, e } from '~/db.server'
 import { Account } from './user.server'
 
 const query = e.select(e.Inventory, (i) => ({

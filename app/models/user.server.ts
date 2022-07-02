@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs'
-import { e, client } from '~/db.server'
+import { client, e } from '~/db.server'
 
 export async function getUserById(id: string) {
   return await e
