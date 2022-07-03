@@ -1,5 +1,6 @@
 import { Dialog, Portal, Transition } from '@headlessui/react'
 import { Form, useLocation, useSubmit, useTransition } from '@remix-run/react'
+import clsx from 'clsx'
 import * as React from 'react'
 import type { InputPropType } from 'remix-params-helper'
 import { useHydrated } from 'remix-utils'
@@ -77,89 +78,54 @@ export default function ManualLevelForm({
       <Form ref={ref} method="post">
         <div className="grid grid-cols-6 gap-6">
           <div className="col-span-6 sm:col-span-3">
-            <label htmlFor="level" className="block text-sm font-medium text-gray-12">
-              Level
-            </label>
-            <input
+            <InputField
               id="level"
-              className="mt-1 block w-full rounded-md border-gray-7 bg-gray-3 shadow-sm focus:border-primary-8 focus:ring-primary-8 sm:text-sm"
+              label="Level"
               defaultValue={defaultValues.level}
-              {...inputProps('level')}
-              aria-invalid={!!errors?.level}
-              aria-describedby="level-error"
+              error={errors?.level}
+              inputProps={inputProps('level')}
             />
-            <p className="mt-2 text-sm text-danger-9" id="level-error">
-              {errors?.level}
-            </p>
           </div>
 
           <div className="col-span-6 sm:col-span-3">
-            <label htmlFor="ascension" className="block text-sm font-medium text-gray-12">
-              Ascension
-            </label>
-            <input
+            <InputField
               id="ascension"
-              className="mt-1 block w-full rounded-md border-gray-7 bg-gray-3 shadow-sm focus:border-primary-8 focus:ring-primary-8 sm:text-sm"
+              label="Ascension"
               defaultValue={defaultValues.ascension}
               min={0} // the params helper not correctly read the min value (0)
-              {...inputProps('ascension')}
-              aria-invalid={!!errors?.ascension}
-              aria-describedby="ascension-error"
+              error={errors?.ascension}
+              inputProps={inputProps('ascension')}
             />
-            <p className="mt-2 text-sm text-danger-9" id="ascension-error">
-              {errors?.ascension}
-            </p>
           </div>
 
           <div className="col-span-6 sm:col-span-2">
-            <label htmlFor="normal-attack" className="block text-sm font-medium text-gray-12">
-              Normal Attack
-            </label>
-            <input
+            <InputField
               id="normal-attack"
-              className="mt-1 block w-full rounded-md border-gray-7 bg-gray-3 shadow-sm focus:border-primary-8 focus:ring-primary-8 sm:text-sm"
+              label="Normal Attack"
               defaultValue={defaultValues.normalAttack}
-              {...inputProps('normalAttack')}
-              aria-invalid={!!errors?.normalAttack}
-              aria-describedby="normal-attack-error"
+              error={errors?.normalAttack}
+              inputProps={inputProps('normalAttack')}
             />
-            <p className="mt-2 text-sm text-danger-9" id="normal-attack-error">
-              {errors?.normalAttack}
-            </p>
           </div>
 
           <div className="col-span-6 sm:col-span-2">
-            <label htmlFor="elemental-skill" className="block text-sm font-medium text-gray-12">
-              Elemental Skill
-            </label>
-            <input
+            <InputField
               id="elemental-skill"
-              className="mt-1 block w-full rounded-md border-gray-7 bg-gray-3 shadow-sm focus:border-primary-8 focus:ring-primary-8 sm:text-sm"
+              label="elemental Skill"
               defaultValue={defaultValues.elementalSkill}
-              {...inputProps('elementalSkill')}
-              aria-invalid={!!errors?.elementalSkill}
-              aria-describedby="elemental-skill-error"
+              error={errors?.elementalSkill}
+              inputProps={inputProps('elementalSkill')}
             />
-            <p className="mt-2 text-sm text-danger-9" id="elemental-skill-error">
-              {errors?.elementalSkill}
-            </p>
           </div>
 
           <div className="col-span-6 sm:col-span-2">
-            <label htmlFor="elemental-burst" className="block text-sm font-medium text-gray-12">
-              Elemental Burst
-            </label>
-            <input
+            <InputField
               id="elemental-burst"
-              className="mt-1 block w-full rounded-md border-gray-7 bg-gray-3 shadow-sm focus:border-primary-8 focus:ring-primary-8 sm:text-sm"
+              label="elemental Burst"
               defaultValue={defaultValues.elementalBurst}
-              {...inputProps('elementalBurst')}
-              aria-invalid={!!errors?.elementalBurst}
-              aria-describedby="elemental-burst-error"
+              error={errors?.elementalBurst}
+              inputProps={inputProps('elementalBurst')}
             />
-            <p className="mt-2 text-sm text-danger-9" id="elemental-burst-error">
-              {errors?.elementalBurst}
-            </p>
           </div>
         </div>
         <input type="hidden" name="travelersData" value={JSON.stringify(hiddenTravelersData)} />
@@ -177,6 +143,43 @@ export default function ManualLevelForm({
       <Alert state={alertState} oldValues={defaultValues} newValues={values} formData={formData} />
       <Notification key={location.key} state={notificationState} success={submitSuccess} />
     </div>
+  )
+}
+
+function InputField({
+  id,
+  label,
+  defaultValue,
+  error,
+  inputProps,
+  min,
+}: {
+  label: string
+  defaultValue?: string | number
+  error?: string
+  id: string
+  inputProps: InputPropType
+  min?: number
+}) {
+  return (
+    <>
+      <label htmlFor={id} className="block text-sm font-medium text-gray-12">
+        {label}{' '}
+        <span className={clsx(!inputProps.required && 'hidden', 'text-sm text-gray-11')}>*</span>
+      </label>
+      <input
+        id={id}
+        className="mt-1 block w-full rounded-md border-gray-7 bg-gray-3 shadow-sm focus:border-primary-8 focus:ring-primary-8 sm:text-sm"
+        defaultValue={defaultValue}
+        min={min}
+        {...inputProps}
+        aria-invalid={!!error}
+        aria-describedby={`${id}-error`}
+      />
+      <p className="mt-2 text-sm text-danger-9" id={`${id}-error`}>
+        {error}
+      </p>
+    </>
   )
 }
 
