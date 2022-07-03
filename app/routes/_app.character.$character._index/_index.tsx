@@ -2,14 +2,17 @@ import type { LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import { useMemo, useState } from 'react'
+import Image, { MimeType } from 'remix-image'
 import invariant from 'tiny-invariant'
 import Icon from '~/components/Icon'
 import ItemTable from '~/components/ItemTable'
 import TableCell from '~/components/TableCell'
+import Tooltip from '~/components/Tooltip'
 import type { CharacterMinimal } from '~/data/characters'
 import { getCharacter, getCharacterRequiredMaterial } from '~/data/characters'
 import { getUserCharacter } from '~/models/character.server'
 import { requireAccountId } from '~/session.server'
+import { getImageSrc } from '~/utils'
 
 type LoaderData = {
   character: CharacterMinimal
@@ -40,10 +43,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
 export default function CharacterPage() {
   const { character, ascensionMaterial, talentMaterial } = useLoaderData() as LoaderData
-  const [ascensionNext, setAscensionNext] = useState(true)
-  const [normalTalentNext, setNormalTalentNext] = useState(true)
-  const [elementalSkillTalentNext, setelementalSkillTalentNext] = useState(true)
-  const [elementalBurstTalentNext, setElementalBurstTalentNext] = useState(true)
+  const [hideAscension, setHideAscension] = useState(false)
+  const [hideTalent, setHideTalent] = useState(false)
 
   const ascensionColumns = useMemo(
     () => [
@@ -148,77 +149,123 @@ export default function CharacterPage() {
   )
 
   const ascensionData = useMemo(
-    () =>
-      ascensionNext
-        ? ascensionMaterial.slice(character.progression?.ascension ?? 0)
-        : [...ascensionMaterial],
-    [ascensionNext, ascensionMaterial, character]
+    () => (hideAscension ? [] : [...ascensionMaterial]),
+    [hideAscension, ascensionMaterial]
   )
 
-  const normalTalentData = useMemo(
-    () =>
-      normalTalentNext
-        ? talentMaterial.slice(
-            character.progression?.normalAttack ? character.progression.normalAttack - 1 : 0
-          )
-        : [...talentMaterial],
-    [normalTalentNext, talentMaterial, character.progression]
+  const talentData = useMemo(
+    () => (hideTalent ? [] : [...talentMaterial]),
+    [hideTalent, talentMaterial]
   )
 
-  const elementalSkillTalentData = useMemo(
-    () =>
-      normalTalentNext
-        ? talentMaterial.slice(
-            character.progression?.elementalSkill ? character.progression.elementalSkill - 1 : 0
-          )
-        : [...talentMaterial],
-    [normalTalentNext, talentMaterial, character.progression]
-  )
-
-  const elementalBurstTalentData = useMemo(
-    () =>
-      normalTalentNext
-        ? talentMaterial.slice(
-            character.progression?.elementalBurst ? character.progression.elementalBurst - 1 : 0
-          )
-        : [...talentMaterial],
-    [normalTalentNext, talentMaterial, character.progression]
-  )
+  const talent = character.talent as [string, string, string] // this should be fine because the only time it is an array is because it's traveler but traveler handled on different page
 
   return (
     <>
       <ItemTable
         uid="ascension"
-        heading="Ascension Material"
-        switchLabel="Show only for next phase"
-        switchState={[ascensionNext, setAscensionNext]}
+        heading="Ascension"
+        switchLabel="Hide ascension table"
+        switchState={[hideAscension, setHideAscension]}
         columns={ascensionColumns}
         data={ascensionData}
+        ascensionPhase={character.progression?.ascension ?? 0}
       />
       <ItemTable
         uid="normal-talent"
-        heading="Talent Normal Attack Material"
-        switchLabel="Show only for next level"
-        switchState={[normalTalentNext, setNormalTalentNext]}
+        heading={CustomTableHeading({
+          talentName: talent,
+          name: character.name,
+          weapon: character.weapon,
+        })}
+        switchLabel="Hide talent table"
+        switchState={[hideTalent, setHideTalent]}
         columns={talentColumns}
-        data={normalTalentData}
-      />
-      <ItemTable
-        uid="elemental-skill-talent"
-        heading="Talent Elemental Skill Material"
-        switchLabel="Show only for next level"
-        switchState={[elementalSkillTalentNext, setelementalSkillTalentNext]}
-        columns={talentColumns}
-        data={elementalSkillTalentData}
-      />
-      <ItemTable
-        uid="elemental-burst-talent"
-        heading="Talent Elemental Burst Material"
-        switchLabel="Show only for next level"
-        switchState={[elementalBurstTalentNext, setElementalBurstTalentNext]}
-        columns={talentColumns}
-        data={elementalBurstTalentData}
+        data={talentData}
+        talentLevel={[
+          character.progression?.normalAttack ?? 1,
+          character.progression?.elementalSkill ?? 1,
+          character.progression?.elementalBurst ?? 1,
+        ]}
+        customAddionalFirstCellElement={[
+          CustomFirstCell({
+            name: character.name,
+            weapon: character.weapon,
+            talent: 'Normal_Attack',
+            talentName: talent[0],
+          }),
+          CustomFirstCell({
+            name: character.name,
+            weapon: character.weapon,
+            talent: 'Elemental_Skill',
+            talentName: talent[1],
+          }),
+          CustomFirstCell({
+            name: character.name,
+            weapon: character.weapon,
+            talent: 'Elemental_Burst',
+            talentName: talent[2],
+          }),
+        ]}
       />
     </>
+  )
+}
+
+function CustomTableHeading({
+  talentName,
+  name,
+  weapon,
+}: {
+  talentName: string[]
+  name: string
+  weapon: string
+}) {
+  const talent = ['Normal_Attack', 'Elemental_Skill', 'Elemental_Burst'] as const
+  return (
+    <>
+      Talent
+      <span className="ml-2 inline-flex flex-shrink-0 gap-1 rounded-full bg-gray-2 p-1">
+        {talent.map((t, i) => (
+          <Tooltip key={talentName[i]} text={talentName[i]}>
+            <Image
+              src={`/image/talent/${t}_${t === 'Normal_Attack' ? weapon : getImageSrc(name)}.png`}
+              alt=""
+              className="h-8 w-8 flex-shrink-0"
+              responsive={[{ size: { width: 32, height: 32 } }]}
+              options={{ contentType: MimeType.WEBP }}
+              dprVariants={[1, 2, 3]}
+            />
+          </Tooltip>
+        ))}
+      </span>
+    </>
+  )
+}
+
+function CustomFirstCell({
+  talentName,
+  name,
+  weapon,
+  talent,
+}: {
+  talentName: string
+  name: string
+  weapon?: string
+  talent: 'Normal_Attack' | 'Elemental_Skill' | 'Elemental_Burst'
+}) {
+  return (
+    <Tooltip key={talentName} text={talentName}>
+      <Image
+        src={`/image/talent/${talent}_${
+          talent === 'Normal_Attack' ? weapon : getImageSrc(name)
+        }.png`}
+        alt=""
+        className="h-6 w-6 flex-shrink-0"
+        responsive={[{ size: { width: 24, height: 24 } }]}
+        options={{ contentType: MimeType.WEBP }}
+        dprVariants={[1, 2, 3]}
+      />
+    </Tooltip>
   )
 }

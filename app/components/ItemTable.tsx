@@ -6,14 +6,26 @@ import Switch from './Switch'
 
 type Props = {
   uid: string
-  heading: string
+  heading: React.ReactNode
   switchLabel: string
   switchState: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
   columns: Column<any>[]
   data: {}[]
+  ascensionPhase?: number
+  talentLevel?: [number, number, number]
+  customAddionalFirstCellElement?: React.ReactNode[]
 }
 
-export default function ItemTable({ heading, switchLabel, switchState, columns, data }: Props) {
+export default function ItemTable({
+  heading,
+  switchLabel,
+  switchState,
+  columns,
+  data,
+  ascensionPhase,
+  talentLevel,
+  customAddionalFirstCellElement,
+}: Props) {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
     data,
@@ -23,7 +35,7 @@ export default function ItemTable({ heading, switchLabel, switchState, columns, 
     <div className="mt-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h2 className="text-xl font-semibold text-gray-12">{heading}</h2>
+          <h2 className="inline-flex items-center text-xl font-semibold text-gray-12">{heading}</h2>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
           <Switch state={switchState} label={switchLabel} />
@@ -35,7 +47,7 @@ export default function ItemTable({ heading, switchLabel, switchState, columns, 
             <div className="inline-block min-w-full py-2 px-4 align-middle sm:px-6 lg:px-8">
               <div className="overflow-hidden rounded-lg shadow ring-1 ring-black ring-opacity-5">
                 <table className="min-w-full divide-y divide-gray-8" {...getTableProps()}>
-                  <thead className="bg-gray-2">
+                  <thead className="bg-gray-3">
                     {headerGroups.map((headerGroup) => (
                       <tr {...headerGroup.getHeaderGroupProps()}>
                         {headerGroup.headers.map((column, idx) => (
@@ -54,20 +66,42 @@ export default function ItemTable({ heading, switchLabel, switchState, columns, 
                     ))}
                   </thead>
                   <tbody className="divide-y divide-gray-6" {...getTableBodyProps()}>
-                    {rows.map((row) => {
+                    {rows.map((row, idxRow) => {
                       prepareRow(row)
                       return (
-                        <tr {...row.getRowProps()}>
-                          {row.cells.map((cell, idx) => {
+                        <tr
+                          className={clsx(
+                            ascensionPhase === idxRow && 'bg-gray-2',
+                            talentLevel?.[0] === idxRow + 1 && 'bg-gray-2',
+                            talentLevel?.[1] === idxRow + 1 && 'bg-gray-2',
+                            talentLevel?.[2] === idxRow + 1 && 'bg-gray-2'
+                          )}
+                          {...row.getRowProps()}
+                        >
+                          {row.cells.map((cell, idxCell) => {
                             return (
                               <td
                                 className={clsx(
-                                  idx === 0 ? 'pl-4 pr-3 sm:pl-6' : 'px-2',
+                                  idxCell === 0 ? 'pl-4 pr-3 sm:pl-6' : 'px-2',
                                   'whitespace-nowrap py-2 text-sm font-medium text-gray-11'
                                 )}
                                 {...cell.getCellProps()}
                               >
-                                {cell.render('Cell')}
+                                {idxCell === 0 ? (
+                                  <div className="flex items-center gap-2">
+                                    {cell.render('Cell')}
+                                    <span className="hidden items-center gap-1 md:inline-flex">
+                                      {talentLevel?.[0] === idxRow + 1 &&
+                                        customAddionalFirstCellElement?.[0]}
+                                      {talentLevel?.[1] === idxRow + 1 &&
+                                        customAddionalFirstCellElement?.[1]}
+                                      {talentLevel?.[2] === idxRow + 1 &&
+                                        customAddionalFirstCellElement?.[2]}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  cell.render('Cell')
+                                )}
                               </td>
                             )
                           })}
