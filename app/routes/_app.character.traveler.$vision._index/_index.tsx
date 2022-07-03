@@ -2,19 +2,24 @@ import type { LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import { useMemo, useState } from 'react'
+import Image, { MimeType } from 'remix-image'
 import invariant from 'tiny-invariant'
 import { z } from 'zod'
+import CharacterCustomFirstCell from '~/components/CharacterCustomFirstCell'
+import CharacterCustomTableHeading from '~/components/CharacterCustomTableHeading'
 import Icon from '~/components/Icon'
-import ItemTable from '~/components/ItemTable'
+import { ItemTable, ItemTableElementalTraveler } from '~/components/ItemTable'
 import TableCell from '~/components/TableCell'
-import { getTravelerRequiredMaterial } from '~/data/characters'
+import Tooltip from '~/components/Tooltip'
+import type { CharacterMinimal } from '~/data/characters'
+import { getCharacter, getTravelerRequiredMaterial } from '~/data/characters'
 import { getUserCharacter } from '~/models/character.server'
 import { requireAccountId } from '~/session.server'
-import type { depromisify } from '~/utils'
-import { toCapitalized } from '~/utils'
+import { getImageSrc, toCapitalized } from '~/utils'
 
 type LoaderData = {
-  traveler: depromisify<ReturnType<typeof getUserCharacter>>
+  traveler: CharacterMinimal
+  vision: string
   ascensionMaterial: ReturnType<typeof getTravelerRequiredMaterial>['ascensionMaterial']
   talentMaterial: ReturnType<typeof getTravelerRequiredMaterial>['talentMaterial']
 }
@@ -25,22 +30,37 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   invariant(vision)
 
   const visionSchema = z.enum(['Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro', 'Cryo'])
-  const parsedVision = visionSchema.parse(toCapitalized(vision))
+  const parsedVision = visionSchema.safeParse(toCapitalized(vision))
 
-  const userCharacter = await getUserCharacter({ name: `Traveler ${parsedVision}`, accId })
+  if (!parsedVision.success) {
+    throw json(`Traveler ${parsedVision} not found`, {
+      status: 404,
+      statusText: 'Page Not Found',
+    })
+  }
+
+  const userCharacter = await getUserCharacter({ name: `Traveler ${parsedVision.data}`, accId })
+  const traveler = getCharacter({ name: 'Traveler', characterData: userCharacter })
+  invariant(traveler)
   const { ascensionMaterial, talentMaterial } = getTravelerRequiredMaterial({
-    vision: parsedVision,
+    vision: parsedVision.data,
   })
 
-  return json<LoaderData>({ traveler: userCharacter, ascensionMaterial, talentMaterial })
+  console.log(traveler.progression)
+
+  return json<LoaderData>({
+    traveler,
+    vision: parsedVision.data,
+    ascensionMaterial,
+    talentMaterial,
+  })
 }
 
 export default function TravelerRequiredItemsPage() {
-  const { traveler, ascensionMaterial, talentMaterial } = useLoaderData() as LoaderData
-  const [ascensionNext, setAscensionNext] = useState(true)
-  const [normalTalentNext, setNormalTalentNext] = useState(true)
-  const [elementalSkillTalentNext, setelementalSkillTalentNext] = useState(true)
-  const [elementalBurstTalentNext, setElementalBurstTalentNext] = useState(true)
+  const { traveler, vision, ascensionMaterial, talentMaterial } = useLoaderData() as LoaderData
+  const [hideAscension, setHideAscension] = useState(false)
+  const [hideNormalTalent, setHideNormalTalent] = useState(false)
+  const [hideElementalTalent, setHideElementalTalent] = useState(false)
 
   const ascensionColumns = useMemo(
     () => [
@@ -138,77 +158,178 @@ export default function TravelerRequiredItemsPage() {
   )
 
   const ascensionData = useMemo(
-    () =>
-      ascensionNext
-        ? ascensionMaterial.slice(traveler?.['@ascension'] ?? 0)
-        : [...ascensionMaterial],
-    [ascensionNext, ascensionMaterial, traveler]
+    () => (hideAscension ? [] : [...ascensionMaterial]),
+    [hideAscension, ascensionMaterial]
   )
 
   const normalTalentData = useMemo(
-    () =>
-      normalTalentNext
-        ? talentMaterial.normal.slice(
-            traveler?.['@normal_attack'] ? traveler['@normal_attack'] - 1 : 0
-          )
-        : [...talentMaterial.normal],
-    [normalTalentNext, talentMaterial.normal, traveler]
+    () => (hideNormalTalent ? [] : [...talentMaterial.normal]),
+    [hideNormalTalent, talentMaterial.normal]
   )
 
   const elementalSkillTalentData = useMemo(
-    () =>
-      elementalSkillTalentNext
-        ? talentMaterial.elemental.slice(
-            traveler?.['@elemental_skill'] ? traveler['@elemental_skill'] - 1 : 0
-          )
-        : [...talentMaterial.elemental],
-    [elementalSkillTalentNext, talentMaterial.elemental, traveler]
+    () => (hideElementalTalent ? [] : [...talentMaterial.elemental]),
+    [hideElementalTalent, talentMaterial.elemental]
   )
 
-  const elementalBurstTalentData = useMemo(
-    () =>
-      elementalBurstTalentNext
-        ? talentMaterial.elemental.slice(
-            traveler?.['@elemental_burst'] ? traveler['@elemental_burst'] - 1 : 0
-          )
-        : [...talentMaterial.elemental],
-    [elementalBurstTalentNext, talentMaterial.elemental, traveler]
-  )
+  const talent = traveler.talent as {
+    [key: string]: {
+      normalAttack: string
+      elementalSkill: string
+      elementalBurst: string
+    }
+  }
 
   return (
     <>
       <ItemTable
         uid="ascension"
-        heading="Ascension Material"
-        switchLabel="Show only for next phase"
-        switchState={[ascensionNext, setAscensionNext]}
+        heading="Ascension"
+        switchLabel="Hide ascension table"
+        switchState={[hideAscension, setHideAscension]}
         columns={ascensionColumns}
         data={ascensionData}
+        ascensionPhase={traveler.progression?.ascension ?? 0}
       />
-      <ItemTable
-        uid="normal-talent"
-        heading="Talent Normal Attack Material"
-        switchLabel="Show only for next level"
-        switchState={[normalTalentNext, setNormalTalentNext]}
-        columns={talentColumns}
-        data={normalTalentData}
-      />
-      <ItemTable
-        uid="elemental-skill-talent"
-        heading="Talent Elemental Skill Material"
-        switchLabel="Show only for next level"
-        switchState={[elementalSkillTalentNext, setelementalSkillTalentNext]}
-        columns={talentColumns}
-        data={elementalSkillTalentData}
-      />
-      <ItemTable
-        uid="elemental-burst-talent"
-        heading="Talent Elemental Burst Material"
-        switchLabel="Show only for next level"
-        switchState={[elementalBurstTalentNext, setElementalBurstTalentNext]}
-        columns={talentColumns}
-        data={elementalBurstTalentData}
-      />
+      {vision === 'Geo' ? (
+        <>
+          <ItemTableElementalTraveler
+            uid="normal-talent"
+            heading={CustomTableHeading({
+              talentName: talent[vision].normalAttack,
+              name: `Traveler ${vision}`,
+              talent: 'normal',
+            })}
+            switchLabel="Hide normal talent table"
+            switchState={[hideNormalTalent, setHideNormalTalent]}
+            columns={talentColumns}
+            data={normalTalentData}
+            talentLevel={traveler.progression?.normalAttack ?? 1}
+          />
+          <ItemTableElementalTraveler
+            uid="elemental-talent"
+            heading={CustomTableHeading({
+              talentName: [talent[vision].elementalSkill, talent[vision].elementalBurst],
+              name: `Traveler ${vision}`,
+              talent: 'elemental',
+            })}
+            switchLabel="Hide elemental talent table"
+            switchState={[hideElementalTalent, setHideElementalTalent]}
+            columns={talentColumns}
+            data={elementalSkillTalentData}
+            talentLevel={[
+              traveler.progression?.elementalSkill ?? 1,
+              traveler.progression?.elementalBurst ?? 1,
+            ]}
+            customAddionalFirstCellElement={[
+              CharacterCustomFirstCell({
+                name: `${traveler.name} ${vision}`,
+                weapon: traveler.weapon,
+                talent: 'Elemental_Skill',
+                talentName: talent[vision].elementalSkill,
+              }),
+              CharacterCustomFirstCell({
+                name: `${traveler.name} ${vision}`,
+                weapon: traveler.weapon,
+                talent: 'Elemental_Burst',
+                talentName: talent[vision].elementalBurst,
+              }),
+            ]}
+          />
+        </>
+      ) : (
+        <ItemTable
+          uid="normal-talent"
+          heading={CharacterCustomTableHeading({
+            talentName: [
+              talent[vision].normalAttack,
+              talent[vision].elementalSkill,
+              talent[vision].elementalBurst,
+            ],
+            name: `${traveler.name} ${vision}`,
+            weapon: traveler.weapon,
+          })}
+          switchLabel="Hide talent table"
+          switchState={[hideNormalTalent, setHideNormalTalent]}
+          columns={talentColumns}
+          data={normalTalentData}
+          talentLevel={[
+            traveler.progression?.normalAttack ?? 1,
+            traveler.progression?.elementalSkill ?? 1,
+            traveler.progression?.elementalBurst ?? 1,
+          ]}
+          customAddionalFirstCellElement={[
+            CharacterCustomFirstCell({
+              name: `${traveler.name} ${vision}`,
+              weapon: traveler.weapon,
+              talent: 'Normal_Attack',
+              talentName: talent[vision].normalAttack,
+            }),
+            CharacterCustomFirstCell({
+              name: `${traveler.name} ${vision}`,
+              weapon: traveler.weapon,
+              talent: 'Elemental_Skill',
+              talentName: talent[vision].elementalSkill,
+            }),
+            CharacterCustomFirstCell({
+              name: `${traveler.name} ${vision}`,
+              weapon: traveler.weapon,
+              talent: 'Elemental_Burst',
+              talentName: talent[vision].elementalBurst,
+            }),
+          ]}
+        />
+      )}
+    </>
+  )
+}
+
+function CustomTableHeading({
+  talentName,
+  name,
+  talent,
+}:
+  | {
+      talentName: [string, string]
+      name: string
+      talent: 'elemental'
+    }
+  | {
+      talentName: string
+      name: string
+      talent: 'normal'
+    }) {
+  const elemental = ['Elemental_Skill', 'Elemental_Burst'] as const
+  return (
+    <>
+      {talent === 'normal' ? 'Normal Attack' : 'Elemental'} Talent
+      <span className="ml-2 inline-flex flex-shrink-0 gap-1 rounded-full bg-gray-2 p-1">
+        {talent === 'elemental' ? (
+          elemental.map((t, i) => (
+            <Tooltip key={talentName[i]} text={talentName[i]}>
+              <Image
+                src={`/image/talent/${t}_${getImageSrc(name)}.png`}
+                alt=""
+                className="h-8 w-8 flex-shrink-0"
+                responsive={[{ size: { width: 32, height: 32 } }]}
+                options={{ contentType: MimeType.WEBP }}
+                dprVariants={[1, 2, 3]}
+              />
+            </Tooltip>
+          ))
+        ) : (
+          <Tooltip text={talentName}>
+            <Image
+              src={`/image/talent/Normal_Attack_Sword.png`}
+              alt=""
+              className="h-8 w-8 flex-shrink-0"
+              responsive={[{ size: { width: 32, height: 32 } }]}
+              options={{ contentType: MimeType.WEBP }}
+              dprVariants={[1, 2, 3]}
+            />
+          </Tooltip>
+        )}
+      </span>
     </>
   )
 }
