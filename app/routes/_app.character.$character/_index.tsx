@@ -1,10 +1,11 @@
 import type { LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Outlet, useLoaderData } from '@remix-run/react'
+import Image, { MimeType } from 'remix-image'
 import invariant from 'tiny-invariant'
 import Tabs from '~/components/Tabs'
 import { validateCharacter } from '~/data/characters'
-import { useActiveNavigation } from '~/utils'
+import { getImageSrc, useActiveNavigation } from '~/utils'
 
 type LoaderData = {
   characterName: string
@@ -44,9 +45,21 @@ export default function CharacterLayout() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-      <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
-        {characterName}
-      </h1>
+      <div className="flex items-center gap-2">
+        <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
+          {characterName}
+        </h1>
+        <div className="rounded-full bg-gray-2 p-1">
+          <Image
+            src={`/image/constellation/${getImageSrc(characterName)}.png`}
+            alt=""
+            className="h-8 w-8 flex-shrink-0"
+            responsive={[{ size: { width: 32, height: 32 } }]}
+            options={{ contentType: MimeType.WEBP }}
+            dprVariants={[1, 2, 3]}
+          />
+        </div>
+      </div>
 
       <div className="mt-6 sm:mt-2 2xl:mt-5">
         <Tabs tabs={tabs} />
