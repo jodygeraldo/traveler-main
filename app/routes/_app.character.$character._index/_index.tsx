@@ -40,10 +40,10 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
 export default function CharacterPage() {
   const { character, ascensionMaterial, talentMaterial } = useLoaderData() as LoaderData
-  const [ascensionNext, setAscensionNext] = useState(false)
-  const [normalTalentNext, setNormalTalentNext] = useState(false)
-  const [elementalSkillTalentNext, setelementalSkillTalentNext] = useState(false)
-  const [elementalBurstTalentNext, setElementalBurstTalentNext] = useState(false)
+  const [ascensionNext, setAscensionNext] = useState(true)
+  const [normalTalentNext, setNormalTalentNext] = useState(true)
+  const [elementalSkillTalentNext, setelementalSkillTalentNext] = useState(true)
+  const [elementalBurstTalentNext, setElementalBurstTalentNext] = useState(true)
 
   const ascensionColumns = useMemo(
     () => [
