@@ -11,7 +11,7 @@ export async function getUserCharacters({
   isTraveler,
 }: {
   accId: string
-  isTraveler: boolean
+  isTraveler?: boolean
 }) {
   const userCharacters = await e
     .select(e.UserCharacter, (userCharacter) => ({
