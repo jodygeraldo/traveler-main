@@ -33,62 +33,441 @@ const commonMaterials: Record<CommonMaterial, string[]> = {
 }
 
 const characters: Character[] = [
-  { name: 'Albedo', vision: 'Geo', rarity: 5 },
-  { name: 'Aloy', vision: 'Cryo', rarity: 5 },
-  { name: 'Amber', vision: 'Pyro', rarity: 4 },
-  { name: 'Arataki Itto', vision: 'Geo', rarity: 5 },
-  { name: 'Barbara', vision: 'Hydro', rarity: 4 },
-  { name: 'Beidou', vision: 'Electro', rarity: 4 },
-  { name: 'Bennett', vision: 'Pyro', rarity: 4 },
-  { name: 'Chongyun', vision: 'Cryo', rarity: 4 },
-  { name: 'Diluc', vision: 'Pyro', rarity: 5 },
-  { name: 'Diona', vision: 'Cryo', rarity: 4 },
-  { name: 'Eula', vision: 'Cryo', rarity: 5 },
-  { name: 'Fischl', vision: 'Electro', rarity: 4 },
-  { name: 'Ganyu', vision: 'Cryo', rarity: 5 },
-  { name: 'Gorou', vision: 'Geo', rarity: 4 },
-  { name: 'Hu Tao', vision: 'Pyro', rarity: 5 },
-  { name: 'Jean', vision: 'Anemo', rarity: 5 },
-  { name: 'Kaedehara Kazuha', vision: 'Anemo', rarity: 5 },
-  { name: 'Kaeya', vision: 'Cryo', rarity: 4 },
-  { name: 'Kamisato Ayaka', vision: 'Cryo', rarity: 5 },
-  { name: 'Kamisato Ayato', vision: 'Hydro', rarity: 5 },
-  { name: 'Keqing', vision: 'Electro', rarity: 5 },
-  { name: 'Klee', vision: 'Pyro', rarity: 5 },
-  { name: 'Kujou Sara', vision: 'Electro', rarity: 4 },
-  { name: 'Kuki Shinobu', vision: 'Electro', rarity: 4 },
-  { name: 'Lisa', vision: 'Electro', rarity: 4 },
-  { name: 'Mona', vision: 'Hydro', rarity: 5 },
-  { name: 'Ningguang', vision: 'Geo', rarity: 4 },
-  { name: 'Noelle', vision: 'Geo', rarity: 4 },
-  { name: 'Qiqi', vision: 'Cryo', rarity: 5 },
-  { name: 'Raiden Shogun', vision: 'Electro', rarity: 5 },
-  { name: 'Razor', vision: 'Electro', rarity: 4 },
-  { name: 'Rosaria', vision: 'Cryo', rarity: 4 },
-  { name: 'Sangonomiya Kokomi', vision: 'Hydro', rarity: 5 },
-  { name: 'Sayu', vision: 'Anemo', rarity: 4 },
-  { name: 'Shenhe', vision: 'Cryo', rarity: 5 },
-  { name: 'Sucrose', vision: 'Anemo', rarity: 4 },
-  { name: 'Tartaglia', vision: 'Hydro', rarity: 5 },
-  { name: 'Thoma', vision: 'Pyro', rarity: 4 },
-  { name: 'Traveler', vision: ['Anemo', 'Geo', 'Electro'], rarity: 5 },
-  { name: 'Venti', vision: 'Anemo', rarity: 5 },
-  { name: 'Xiangling', vision: 'Pyro', rarity: 4 },
-  { name: 'Xiao', vision: 'Anemo', rarity: 5 },
-  { name: 'Xingqiu', vision: 'Hydro', rarity: 4 },
-  { name: 'Xinyan', vision: 'Pyro', rarity: 4 },
-  { name: 'Yae Miko', vision: 'Electro', rarity: 5 },
-  { name: 'Yanfei', vision: 'Pyro', rarity: 4 },
-  { name: 'Yelan', vision: 'Hydro', rarity: 5 },
-  { name: 'Yoimiya', vision: 'Pyro', rarity: 5 },
-  { name: 'Yun Jin', vision: 'Geo', rarity: 4 },
-  { name: 'Zhongli', vision: 'Geo', rarity: 5 },
+  {
+    name: 'Albedo',
+    weapon: 'Sword',
+    vision: 'Geo',
+    rarity: 5,
+    talent: [
+      'Normal Attack: Favonius Bladework - Weiss',
+      'Abiogenesis: Solar Isotoma',
+      'Rite of Progeniture: Tectonic Tide',
+    ],
+  },
+  {
+    name: 'Aloy',
+    weapon: 'Bow',
+    vision: 'Cryo',
+    rarity: 5,
+    talent: ['Normal Attack: Rapid Fire', 'Frozen Wilds', 'Prophecies of Dawn'],
+  },
+  {
+    name: 'Amber',
+    weapon: 'Bow',
+    vision: 'Pyro',
+    rarity: 4,
+    talent: ['Normal Attack: Sharpshooter', 'Explosive Puppet', 'Fiery Rain'],
+  },
+  {
+    name: 'Arataki Itto',
+    weapon: 'Claymore',
+    vision: 'Geo',
+    rarity: 5,
+    talent: [
+      'Normal Attack: Fight Club Legend',
+      'Masatsu Zetsugi: Akaushi Burst!',
+      'Royal Descent: Behold, Itto the Evil!',
+    ],
+  },
+  {
+    name: 'Barbara',
+    weapon: 'Catalyst',
+    vision: 'Hydro',
+    rarity: 4,
+    talent: ['Normal Attack: Whisper of Water', 'Let the Show Begin♪', 'Shining Miracle♪'],
+  },
+  {
+    name: 'Beidou',
+    weapon: 'Claymore',
+    vision: 'Electro',
+    rarity: 4,
+    talent: ['Normal Attack: Oceanborne', 'Tidecaller', 'Stormbreaker'],
+  },
+  {
+    name: 'Bennett',
+    weapon: 'Sword',
+    vision: 'Pyro',
+    rarity: 4,
+    talent: ['Normal Attack: Strike of Fortune', 'Passion Overload', 'Fantastic Voyage'],
+  },
+  {
+    name: 'Chongyun',
+    weapon: 'Claymore',
+    vision: 'Cryo',
+    rarity: 4,
+    talent: [
+      'Normal Attack: Demonbane',
+      "Spirit Blade: Chonghua's Layered Frost",
+      'Spirit Blade: Cloud-Parting Star',
+    ],
+  },
+  {
+    name: 'Diluc',
+    weapon: 'Claymore',
+    vision: 'Pyro',
+    rarity: 5,
+    talent: ['Normal Attack: Tempered Sword', 'Searing Onslaught', 'Dawn'],
+  },
+  {
+    name: 'Diona',
+    weapon: 'Bow',
+    vision: 'Cryo',
+    rarity: 4,
+    talent: ['Normal Attack: Kätzlein Style', 'Icy Paws', 'Signature Mix'],
+  },
+  {
+    name: 'Eula',
+    weapon: 'Claymore',
+    vision: 'Cryo',
+    rarity: 5,
+    talent: ['Normal Attack: Favonius Bladework - Edel', 'Icetide Vortex', 'Glacial Illumination'],
+  },
+  {
+    name: 'Fischl',
+    weapon: 'Bow',
+    vision: 'Electro',
+    rarity: 4,
+    talent: ['Normal Attack: Bolts of Downfall', 'Nightrider', 'Midnight Phantasmagoria'],
+  },
+  {
+    name: 'Ganyu',
+    weapon: 'Bow',
+    vision: 'Cryo',
+    rarity: 5,
+    talent: ['Normal Attack: Liutian Archery', 'Trail of the Qilin', 'Celestial Shower'],
+  },
+  {
+    name: 'Gorou',
+    weapon: 'Bow',
+    vision: 'Geo',
+    rarity: 4,
+    talent: [
+      'Normal Attack: Ripping Fang Fletching',
+      'Inuzaka All-Round Defense',
+      'Juuga: Forward Unto Victory',
+    ],
+  },
+  {
+    name: 'Hu Tao',
+    weapon: 'Polearm',
+    vision: 'Pyro',
+    rarity: 5,
+    talent: ['Normal Attack: Secret Spear of Wangsheng', 'Guide to Afterlife', 'Spirit Soother'],
+  },
+  {
+    name: 'Jean',
+    weapon: 'Sword',
+    vision: 'Anemo',
+    rarity: 5,
+    talent: ['Normal Attack: Favonius Bladework', 'Gale Blade', 'Dandelion Breeze'],
+  },
+  {
+    name: 'Kaedehara Kazuha',
+    weapon: 'Sword',
+    vision: 'Anemo',
+    rarity: 5,
+    talent: ['Normal Attack: Garyuu Bladework', 'Chihayaburu', 'Kazuha Slash'],
+  },
+  {
+    name: 'Kaeya',
+    weapon: 'Sword',
+    vision: 'Cryo',
+    rarity: 4,
+    talent: ['Normal Attack: Ceremonial Bladework', 'Frostgnaw', 'Glacial Waltz'],
+  },
+  {
+    name: 'Kamisato Ayaka',
+    weapon: 'Sword',
+    vision: 'Cryo',
+    rarity: 5,
+    talent: [
+      'Normal Attack: Kamisato Art - Kabuki',
+      'Kamisato Art: Hyouka',
+      'Kamisato Art: Soumetsu',
+    ],
+  },
+  {
+    name: 'Kamisato Ayato',
+    weapon: 'Sword',
+    vision: 'Hydro',
+    rarity: 5,
+    talent: [
+      'Normal Attack: Kamisato Art - Marobashi',
+      'Kamisato Art: Kyouka',
+      'Kamisato Art: Suiyuu',
+    ],
+  },
+  {
+    name: 'Keqing',
+    weapon: 'Sword',
+    vision: 'Electro',
+    rarity: 5,
+    talent: ['Normal Attack: Yunlai Swordsmanship', 'Stellar Restoration', 'Starward Sword'],
+  },
+  {
+    name: 'Klee',
+    weapon: 'Catalyst',
+    vision: 'Pyro',
+    rarity: 5,
+    talent: ['Normal Attack: Kaboom!', 'Jumpy Dumpty', "Sparks 'n' Splash"],
+  },
+  {
+    name: 'Kujou Sara',
+    weapon: 'Bow',
+    vision: 'Electro',
+    rarity: 4,
+    talent: ['Normal Attack: Tengu Bowmanship', 'Tengu Stormcall', 'Subjugation: Koukou Sendou'],
+  },
+  {
+    name: 'Kuki Shinobu',
+    weapon: 'Sword',
+    vision: 'Electro',
+    rarity: 4,
+    talent: [
+      "Normal Attack: Shinobu's Shadowsword",
+      'Sanctifying Ring',
+      'Gyoei Narukami Kariyama Rite',
+    ],
+  },
+  {
+    name: 'Lisa',
+    weapon: 'Catalyst',
+    vision: 'Electro',
+    rarity: 4,
+    talent: ['Normal Attack: Lightning Touch', 'Violet Arc', 'Lightning Rose'],
+  },
+  {
+    name: 'Mona',
+    weapon: 'Catalyst',
+    vision: 'Hydro',
+    rarity: 5,
+    talent: ['Normal Attack: Ripple of Fate', 'Mirror Reflection of Doom', 'Stellaris Phantasm'],
+  },
+  {
+    name: 'Ningguang',
+    weapon: 'Catalyst',
+    vision: 'Geo',
+    rarity: 4,
+    talent: ['Normal Attack: Sparkling Scatter', 'Jade Screen', 'Starshatter'],
+  },
+  {
+    name: 'Noelle',
+    weapon: 'Claymore',
+    vision: 'Geo',
+    rarity: 4,
+    talent: ['Normal Attack: Favonius Bladework - Maid', 'Breastplate', 'Sweeping Time'],
+  },
+  {
+    name: 'Qiqi',
+    weapon: 'Sword',
+    vision: 'Cryo',
+    rarity: 5,
+    talent: [
+      'Normal Attack: Ancient Sword Art',
+      'Adeptus Art: Herald of Frost',
+      'Adeptus Art: Preserver of Fortune',
+    ],
+  },
+  {
+    name: 'Raiden Shogun',
+    weapon: 'Polearm',
+    vision: 'Electro',
+    rarity: 5,
+    talent: ['Normal Attack: Origin', 'Transcendence: Baleful Omen', 'Secret Art: Musou Shinsetsu'],
+  },
+  {
+    name: 'Razor',
+    weapon: 'Claymore',
+    vision: 'Electro',
+    rarity: 4,
+    talent: ['Normal Attack: Steel Fang', 'Claw and Thunder', 'Lightning Fang'],
+  },
+  {
+    name: 'Rosaria',
+    weapon: 'Polearm',
+    vision: 'Cryo',
+    rarity: 4,
+    talent: ['Normal Attack: Spear of the Church', 'Ravaging Confession', 'Rites of Termination'],
+  },
+  {
+    name: 'Sangonomiya Kokomi',
+    weapon: 'Catalyst',
+    vision: 'Hydro',
+    rarity: 5,
+    talent: ['Normal Attack: The Shape of Water', "Kurage's Oath", "Nereid's Ascension"],
+  },
+  {
+    name: 'Sayu',
+    weapon: 'Claymore',
+    vision: 'Anemo',
+    rarity: 4,
+    talent: [
+      'Normal Attack: Shuumatsuban Ninja Blade',
+      'Yoohoo Art: Fuuin Dash',
+      'Yoohoo Art: Mujina Flurry',
+    ],
+  },
+  {
+    name: 'Shenhe',
+    weapon: 'Polearm',
+    vision: 'Cryo',
+    rarity: 5,
+    talent: [
+      'Normal Attack: Dawnstar Piercer',
+      'Spring Spirit Summoning',
+      "Divine Maiden's Deliverance",
+    ],
+  },
+  {
+    name: 'Sucrose',
+    weapon: 'Catalyst',
+    vision: 'Anemo',
+    rarity: 4,
+    talent: [
+      'Normal Attack: Wind Spirit Creation',
+      'Astable Anemohypostasis Creation - 6308',
+      'Forbidden Creation - Isomer 75 / Type II',
+    ],
+  },
+  {
+    name: 'Tartaglia',
+    weapon: 'Bow',
+    vision: 'Hydro',
+    rarity: 5,
+    talent: ['Normal Attack: Cutting Torrent', 'Foul Legacy: Raging Tide', 'Havoc: Obliteration'],
+  },
+  {
+    name: 'Thoma',
+    weapon: 'Polearm',
+    vision: 'Pyro',
+    rarity: 4,
+    talent: ['Normal Attack: Swiftshatter Spear', 'Blazing Blessing', 'Crimson Ooyoroi'],
+  },
+  {
+    name: 'Traveler',
+    weapon: 'Sword',
+    vision: ['Anemo', 'Geo', 'Electro'],
+    rarity: 5,
+    talent: {
+      Anemo: {
+        normalAttack: 'Normal Attack: Foreign Thundershock',
+        elementalSkill: 'Palm Vortex',
+        elementalBurst: 'Gust Surge',
+      },
+      Geo: {
+        normalAttack: 'Normal Attack: Foreign Thundershock',
+        elementalSkill: 'Starfell Sword',
+        elementalBurst: 'Wake of Earth',
+      },
+      Electro: {
+        normalAttack: 'Normal Attack: Foreign Thundershock',
+        elementalSkill: 'Lightning Blade',
+        elementalBurst: 'Bellowing Thunder',
+      },
+    },
+  },
+  {
+    name: 'Venti',
+    weapon: 'Bow',
+    vision: 'Anemo',
+    rarity: 5,
+    talent: ['Normal Attack: Divine Marksmanship', 'Skyward Sonnet', "Wind's Grand Ode"],
+  },
+  {
+    name: 'Xiangling',
+    weapon: 'Polearm',
+    vision: 'Pyro',
+    rarity: 4,
+    talent: ['Normal Attack: Dough-Fu', 'Guoba Attack', 'Pyronado'],
+  },
+  {
+    name: 'Xiao',
+    weapon: 'Polearm',
+    vision: 'Anemo',
+    rarity: 5,
+    talent: ['Normal Attack: Whirlwind Thrust', 'Lemniscatic Wind Cycling', 'Bane of All Evil'],
+  },
+  {
+    name: 'Xingqiu',
+    weapon: 'Sword',
+    vision: 'Hydro',
+    rarity: 4,
+    talent: [
+      'Normal Attack: Guhua Style',
+      'Guhua Sword: Fatal Rainscreen',
+      'Guhua Sword: Raincutter',
+    ],
+  },
+  {
+    name: 'Xinyan',
+    weapon: 'Claymore',
+    vision: 'Pyro',
+    rarity: 4,
+    talent: ['Normal Attack: Dance on Fire', 'Sweeping Fervor', 'Riff Revolution'],
+  },
+  {
+    name: 'Yae Miko',
+    weapon: 'Catalyst',
+    vision: 'Electro',
+    rarity: 5,
+    talent: [
+      'Normal Attack: Spiritfox Sin-Eater',
+      'Yakan Evocation: Sesshou Sakura',
+      'Great Secret Art: Tenko Kenshin',
+    ],
+  },
+  {
+    name: 'Yanfei',
+    weapon: 'Catalyst',
+    vision: 'Pyro',
+    rarity: 4,
+    talent: ['Normal Attack: Seal of Approval', 'Signed Edict', 'Done Deal'],
+  },
+  {
+    name: 'Yelan',
+    weapon: 'Bow',
+    vision: 'Hydro',
+    rarity: 5,
+    talent: ['Normal Attack: Stealthy Bowshot', 'Lingering Lifeline', 'Depth-Clarion Dice'],
+  },
+  {
+    name: 'Yoimiya',
+    weapon: 'Bow',
+    vision: 'Pyro',
+    rarity: 5,
+    talent: ['Normal Attack: Firework Flare-Up', 'Niwabi Fire-Dance', 'Ryuukin Saxifrage'],
+  },
+  {
+    name: 'Yun Jin',
+    weapon: 'Polearm',
+    vision: 'Geo',
+    rarity: 4,
+    talent: ['Normal Attack: Cloud-Grazing Strike', 'Opening Flourish', "Cliffbreaker's Banner"],
+  },
+  {
+    name: 'Zhongli',
+    weapon: 'Polearm',
+    vision: 'Geo',
+    rarity: 5,
+    talent: ['Normal Attack: Rain of Stone', 'Dominus Lapidis', 'Planet Befall'],
+  },
 ]
 
 export interface Character {
   name: string
+  weapon: 'Sword' | 'Claymore' | 'Polearm' | 'Bow' | 'Catalyst'
   vision: string | string[]
   rarity: 4 | 5
+  talent:
+    | [string, string, string]
+    | {
+        [key: string]: {
+          normalAttack: string
+          elementalSkill: string
+          elementalBurst: string
+        }
+      }
+
   progression?: {
     level?: number | null
     ascension?: number | null
@@ -139,9 +518,13 @@ export function getCharacter({
   if (!character) {
     return null
   }
+
+  const { weapon, talent } = character
   const updatedCharacter = characterData
     ? {
-        ...character,
+        name,
+        weapon,
+        talent,
         progression: {
           level: characterData['@level'],
           ascension: characterData['@ascension'],
@@ -150,7 +533,7 @@ export function getCharacter({
           elementalBurst: characterData['@elemental_burst'],
         },
       }
-    : character
+    : { name, weapon, talent }
   return updatedCharacter
 }
 
