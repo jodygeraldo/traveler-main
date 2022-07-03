@@ -48,27 +48,28 @@ interface ButtonGroupProps
 
 const baseStyles: Record<KindProps, string> = {
   button:
-    'group inline-flex items-center rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm disabled:pointer-events-none',
-  icon: 'group text-gray-11 hover:text-gray-12 inline-flex items-center rounded-md border border-transparent p-2 text-sm font-medium shadow-sm disabled:text-gray-6 disabled:pointer-events-none',
+    'group inline-flex items-center rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm',
+  icon: 'group text-gray-11 hover:enabled:text-gray-12 inline-flex items-center rounded-md border border-transparent p-2 text-sm font-medium shadow-sm disabled:text-gray-6',
   group:
-    'group relative inline-flex items-center justify-between text-sm transition p-2 border disabled:bg-gray-6 disabled:pointer-events-none',
-  text: 'group inline-flex items-center rounded-md text-sm font-semibold text-gray-11 hover:text-gray-12 focus:ring-gray-8',
+    'group relative inline-flex items-center justify-between text-sm transition p-2 border disabled:bg-gray-6',
+  text: 'group inline-flex items-center rounded-md text-sm font-semibold text-gray-11 hover:enabled:text-gray-12 focus:ring-gray-8',
   buttonLink:
     'group inline-flex items-center rounded-md text-sm border border-gray-7 px-4 py-2 font-medium text-gray-11 shadow-sm hover:border-gray-8 focus:ring-gray-8',
 }
 
 const variantStyles: Record<VariantProps, string> = {
   primary:
-    'bg-primary-9 text-white hover:bg-primary-10 focus:ring-primary-8 disabled:bg-primary-6 disabled:text-primary-11',
+    'bg-primary-9 text-white hover:enabled:bg-primary-10 focus:ring-primary-8 disabled:bg-primary-6 disabled:text-primary-11',
   secondary:
-    'bg-primary-3 text-primary-11 hover:bg-primary-4 focus:ring-primary-8 disabled:bg-primary-6',
-  basic: 'bg-gray-3 text-gray-11 hover:bg-gray-4 focus:ring-gray-8 disabled:bg-gray-6',
+    'bg-primary-3 text-primary-11 hover:enabled:bg-primary-4 focus:ring-primary-8 disabled:bg-primary-6',
+  basic: 'bg-gray-3 text-gray-11 hover:enabled:bg-gray-4 focus:ring-gray-8 disabled:bg-gray-6',
   success:
-    'bg-success-3 text-success-11 hover:bg-success-4 focus:ring-success-8 disabled:bg-success-6',
+    'bg-success-3 text-success-11 hover:enabled:bg-success-4 focus:ring-success-8 disabled:bg-success-6',
   warning:
-    'bg-warning-3 text-warning-11 hover:bg-warning-4 focus:ring-warning-8 disabled:bg-warning-6',
-  info: 'bg-info-3 text-info-11 hover:bg-info-4 focus:ring-info-8 disabled:bg-info-6',
-  danger: 'bg-danger-3 text-danger-11 hover:bg-danger-4 focus:ring-danger-8 disabled:bg-danger-6',
+    'bg-warning-3 text-warning-11 hover:enabled:bg-warning-4 focus:ring-warning-8 disabled:bg-warning-6',
+  info: 'bg-info-3 text-info-11 hover:enabled:bg-info-4 focus:ring-info-8 disabled:bg-info-6',
+  danger:
+    'bg-danger-3 text-danger-11 hover:enabled:bg-danger-4 focus:ring-danger-8 disabled:bg-danger-6',
 }
 
 const focusRingStyles: Record<FocusRingProps, string> = {
