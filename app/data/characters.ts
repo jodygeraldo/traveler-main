@@ -348,25 +348,23 @@ const characters: Character[] = [
     weapon: 'Sword',
     vision: ['Anemo', 'Geo', 'Electro'],
     rarity: 5,
-    talent: [
-      {
-        Anemo: {
-          normalAttack: 'Normal Attack: Foreign Thundershock',
-          elementalSkill: 'Palm Vortex',
-          elementalBurst: 'Gust Surge',
-        },
-        Geo: {
-          normalAttack: 'Normal Attack: Foreign Thundershock',
-          elementalSkill: 'Starfell Sword',
-          elementalBurst: 'Wake of Earth',
-        },
-        Electro: {
-          normalAttack: 'Normal Attack: Foreign Thundershock',
-          elementalSkill: 'Lightning Blade',
-          elementalBurst: 'Bellowing Thunder',
-        },
+    talent: {
+      Anemo: {
+        normalAttack: 'Normal Attack: Foreign Thundershock',
+        elementalSkill: 'Palm Vortex',
+        elementalBurst: 'Gust Surge',
       },
-    ],
+      Geo: {
+        normalAttack: 'Normal Attack: Foreign Thundershock',
+        elementalSkill: 'Starfell Sword',
+        elementalBurst: 'Wake of Earth',
+      },
+      Electro: {
+        normalAttack: 'Normal Attack: Foreign Thundershock',
+        elementalSkill: 'Lightning Blade',
+        elementalBurst: 'Bellowing Thunder',
+      },
+    },
   },
   {
     name: 'Venti',
@@ -462,15 +460,14 @@ export interface Character {
   rarity: 4 | 5
   talent:
     | [string, string, string]
-    | [
-        {
-          [key: string]: {
-            normalAttack: string
-            elementalSkill: string
-            elementalBurst: string
-          }
+    | {
+        [key: string]: {
+          normalAttack: string
+          elementalSkill: string
+          elementalBurst: string
         }
-      ]
+      }
+
   progression?: {
     level?: number | null
     ascension?: number | null
