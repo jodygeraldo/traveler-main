@@ -5,6 +5,8 @@ import { Link, useLoaderData } from '@remix-run/react'
 import clsx from 'clsx'
 import * as React from 'react'
 import Image, { MimeType } from 'remix-image'
+import invariant from 'tiny-invariant'
+import Tooltip from '~/components/Tooltip'
 import type { Character } from '~/data/characters'
 import { getCharacters } from '~/data/characters'
 import { getUserCharacters } from '~/models/character.server'
@@ -12,20 +14,22 @@ import { requireAccountId } from '~/session.server'
 import { getImageSrc } from '~/utils'
 
 type LoaderData = {
-  characters: ReturnType<typeof getCharacters>
+  data: ReturnType<typeof getCharacters>
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
   const accId = await requireAccountId(request)
 
-  const userCharacters = await getUserCharacters({ accId })
-  const characters = getCharacters(userCharacters)
+  const userData = await getUserCharacters({ accId })
+  invariant(userData, 'every account should have an minimum 7 characters')
+  const userTravelers = userData.filter((c) => c.name.includes('Traveler'))
+  const data = getCharacters({ userCharacters: userData, travelers: userTravelers })
 
-  return json<LoaderData>({ characters })
+  return json<LoaderData>({ data })
 }
 
 export default function CharactersPage() {
-  const { characters } = useLoaderData() as LoaderData
+  const { data } = useLoaderData() as LoaderData
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -35,7 +39,7 @@ export default function CharactersPage() {
             Character
           </h1>
 
-          <CharacterList characters={characters} />
+          <CharacterList characters={data.characters} travelers={data.travelers} />
         </div>
       </main>
     </div>
@@ -48,13 +52,22 @@ const backgroundImage: Record<4 | 5 | '5s', string> = {
   '5s': 'bg-image-rarity-5s',
 }
 
-function CharacterList({ characters }: { characters: Character[] }) {
+function CharacterList({
+  characters,
+  travelers,
+}: {
+  characters: Character[]
+  travelers: Character[]
+}) {
   return (
     <div>
       <ul className="flex flex-wrap gap-5">
         {characters.map((character) => (
           <li key={character.name}>
-            <HoverCard character={character}>
+            <HoverCard
+              character={character}
+              travelers={character.name.includes('Traveler') ? travelers : undefined}
+            >
               <Link to={`./${character.name}`} prefetch="intent">
                 <div className="group rounded-b-md bg-gray-3 shadow-sm hover:bg-gray-4">
                   <div
@@ -73,9 +86,17 @@ function CharacterList({ characters }: { characters: Character[] }) {
                     />
                   </div>
                   <div className="mt-1 text-center">
-                    <span className="sr-only">Level {character.progression?.level ?? 1}</span>
+                    <span className="sr-only">
+                      Level{' '}
+                      {character.name.includes('Traveler')
+                        ? travelers[0].progression?.level ?? 1
+                        : character.progression?.level ?? 1}
+                    </span>
                     <p className="text-sm text-gray-11 group-hover:text-gray-12" aria-hidden>
-                      Lv. {character.progression?.level ?? 1}
+                      Lv.{' '}
+                      {character.name.includes('Traveler')
+                        ? travelers[0].progression?.level ?? 1
+                        : character.progression?.level ?? 1}
                     </p>
                   </div>
                 </div>
@@ -88,7 +109,15 @@ function CharacterList({ characters }: { characters: Character[] }) {
   )
 }
 
-function HoverCard({ character, children }: { character: Character; children: React.ReactNode }) {
+function HoverCard({
+  character,
+  travelers,
+  children,
+}: {
+  character: Character
+  travelers?: Character[]
+  children: React.ReactNode
+}) {
   return (
     <RadixHoverCard.Root openDelay={300}>
       <RadixHoverCard.Trigger asChild>{children}</RadixHoverCard.Trigger>
@@ -130,14 +159,112 @@ function HoverCard({ character, children }: { character: Character; children: Re
             )}
           </div>
         </div>
-        <div className="mt-1 text-gray-11">
-          <p>Ascension: {character.progression?.ascension ?? 0}</p>
-          <p>Normal attack: {character.progression?.normalAttack ?? 1}</p>
-          <p>Elemental Skill: {character.progression?.elementalSkill ?? 1}</p>
-          <p>Elemental Burst: {character.progression?.elementalBurst ?? 1}</p>
+        <div className="flex items-center gap-4">
+          {travelers ? (
+            <div className="mt-1 w-full text-gray-11">
+              <p>Ascension {travelers[0].progression?.ascension ?? 0}</p>
+              <div className="space-y-1">
+                {travelers.map((traveler) => (
+                  <div key={traveler.name}>
+                    <p>{traveler.vision}</p>
+                    <div className="flex w-full items-center gap-3">
+                      <span className="inline-flex items-center gap-0.5">
+                        <TalentTooltipIcon
+                          talentName={(traveler.talent as [string, string, string])[0]}
+                          talent="Normal_Attack"
+                          weapon="Sword"
+                        />
+                        <span>{traveler.progression?.normalAttack ?? 1}</span>
+                      </span>
+                      <span className="inline-flex items-center gap-0.5">
+                        <TalentTooltipIcon
+                          talentName={(traveler.talent as [string, string, string])[1]}
+                          talent="Elemental_Skill"
+                          name={traveler.name}
+                        />
+                        <span>{traveler.progression?.elementalSkill ?? 1}</span>
+                      </span>
+                      <span className="inline-flex items-center gap-0.5">
+                        <TalentTooltipIcon
+                          talentName={(traveler.talent as [string, string, string])[2]}
+                          talent="Elemental_Burst"
+                          name={traveler.name}
+                        />
+                        <span>{traveler.progression?.elementalBurst ?? 1}</span>
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="mt-1 text-gray-11 w-full">
+              <p>Ascension {character.progression?.ascension ?? 0}</p>
+              <div className="flex w-full items-center gap-3">
+                <span className="inline-flex items-center gap-0.5">
+                  <TalentTooltipIcon
+                    talentName={(character.talent as [string, string, string])[0]}
+                    talent="Normal_Attack"
+                    weapon="Sword"
+                  />
+                  <span>{character.progression?.normalAttack ?? 1}</span>
+                </span>
+                <span className="inline-flex items-center gap-0.5">
+                  <TalentTooltipIcon
+                    talentName={(character.talent as [string, string, string])[1]}
+                    talent="Elemental_Skill"
+                    name={character.name}
+                  />
+                  <span>{character.progression?.elementalSkill ?? 1}</span>
+                </span>
+                <span className="inline-flex items-center gap-0.5">
+                  <TalentTooltipIcon
+                    talentName={(character.talent as [string, string, string])[2]}
+                    talent="Elemental_Burst"
+                    name={character.name}
+                  />
+                  <span>{character.progression?.elementalBurst ?? 1}</span>
+                </span>
+              </div>
+            </div>
+          )}
         </div>
         <RadixHoverCard.Arrow className="fill-gray-3" />
       </RadixHoverCard.Content>
     </RadixHoverCard.Root>
+  )
+}
+
+function TalentTooltipIcon({
+  talentName,
+  name,
+  weapon,
+  talent,
+}:
+  | {
+      talentName: string
+      weapon?: undefined
+      name: string
+      talent: 'Elemental_Skill' | 'Elemental_Burst'
+    }
+  | {
+      talentName: string
+      weapon: string
+      name?: undefined
+      talent: 'Normal_Attack'
+    }) {
+  return (
+    <Tooltip key={talentName} text={talentName}>
+      <Image
+        src={`/image/talent/${talent}_${
+          talent === 'Normal_Attack' ? weapon : getImageSrc(name)
+        }.png`}
+        alt=""
+        className="h-5 w-5 flex-shrink-0"
+        responsive={[{ size: { width: 20, height: 20 } }]}
+        options={{ contentType: MimeType.WEBP }}
+        dprVariants={[1, 2, 3]}
+      />
+    </Tooltip>
   )
 }

@@ -479,8 +479,15 @@ export interface Character {
 
 export interface CharacterMinimal extends Omit<Character, 'vision' | 'rarity'> {}
 
-export function getCharacters(userCharacters: CharactersInfer): Character[] {
+export function getCharacters({
+  userCharacters,
+  travelers,
+}: {
+  userCharacters: CharactersInfer
+  travelers: CharactersInfer
+}): { characters: Character[]; travelers: Character[] } {
   invariant(userCharacters, 'there is no characters associated with this account')
+  invariant(travelers, 'there is no travelers associated with this account')
 
   const updatedCharacters = [...characters]
 
@@ -500,7 +507,40 @@ export function getCharacters(userCharacters: CharactersInfer): Character[] {
     }
   })
 
-  return updatedCharacters
+  const travelerVision = ['Anemo', 'Geo', 'Electro']
+
+  const travelerData = characters.find((c) => c.name === 'Traveler')
+  invariant(travelerData, 'Traveler is missing from the character list')
+
+  const updatedTravelers: Character[] = []
+
+  travelerVision.forEach((vision) => {
+    const traveler = travelers.find((t) => t.name.includes(vision))
+    let talent: [string, string, string] = ['', '', '']
+
+    if (!Array.isArray(travelerData.talent)) {
+      talent[0] = travelerData.talent[vision].normalAttack
+      talent[1] = travelerData.talent[vision].elementalSkill
+      talent[2] = travelerData.talent[vision].elementalBurst
+    }
+
+    updatedTravelers.push({
+      name: `Traveler ${vision}`,
+      weapon: 'Sword',
+      vision,
+      rarity: 5,
+      talent,
+      progression: {
+        level: traveler?.['@level'] ?? 1,
+        ascension: traveler?.['@ascension'] ?? 0,
+        normalAttack: traveler?.['@normal_attack'] ?? 1,
+        elementalSkill: traveler?.['@elemental_skill'] ?? 1,
+        elementalBurst: traveler?.['@elemental_burst'] ?? 1,
+      },
+    })
+  })
+
+  return { characters: updatedCharacters, travelers: updatedTravelers }
 }
 
 export function validateCharacter(name: string) {
