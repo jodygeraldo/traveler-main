@@ -27,6 +27,7 @@ export default function Tabs({ tabs }: { tabs: { name: string; to: string; activ
           <nav className="-mb-px flex" aria-label="Tabs">
             {tabs.map((tab) => (
               <Link
+                prefetch='intent'
                 key={tab.name}
                 to={tab.to}
                 className={clsx(
