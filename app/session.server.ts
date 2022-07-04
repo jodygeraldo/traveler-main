@@ -1,8 +1,10 @@
 import * as RemixNode from '@remix-run/node'
+import dotenv from 'dotenv'
 import invariant from 'tiny-invariant'
 import * as UserModel from '~/models/user.server'
 import type * as DB from './db.server'
 
+dotenv.config()
 invariant(process.env.SESSION_SECRET, 'SESSION_SECRET must be set')
 
 export const sessionStorage = RemixNode.createCookieSessionStorage({
