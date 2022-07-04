@@ -4,10 +4,12 @@ node_modules
 /public/build
 .env
 
-/cypress/screenshots
-/cypress/videos
-
 /app/tailwind.css
 .DS_Store
 /tmp
 /app/oldroutes
+
+/coverage
+/test-results/
+/playwright-report/
+/playwright/.cache/
