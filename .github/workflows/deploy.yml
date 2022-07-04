@@ -24,9 +24,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: 'npm'
 
       - name: 📥 Download deps
-        uses: bahmutov/npm-install@v1
+        run: npm install
 
       - name: 🔬 Lint
         run: npm run lint
@@ -45,9 +46,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: 'npm'
 
       - name: 📥 Download deps
-        uses: bahmutov/npm-install@v1
+        run: npm install
 
       - name: 🔎 Type check
         run: npm run typecheck --if-present
@@ -66,9 +68,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: 'npm'
 
       - name: 📥 Download deps
-        uses: bahmutov/npm-install@v1
+        run: npm install
 
       - name: ⚡ Run vitest
         run: npm run test -- --coverage
@@ -87,30 +90,31 @@ jobs:
   #       uses: actions/setup-node@v3
   #       with:
   #         node-version: 16
+  #         cache: 'npm'
 
   #     - name: 📥 Download deps
-  #       uses: bahmutov/npm-install@v1
+  #       run: npm install
 
   #     - uses: edgedb/setup-edgedb@v1
 
-      # - uses: edgedb/setup-edgedb@v1
+  # - uses: edgedb/setup-edgedb@v1
 
-      # - name: 🛠 Setup Database
-      #   run: edgedb project init --non-interactive
+  # - name: 🛠 Setup Database
+  #   run: edgedb project init --non-interactive
 
-      # - name: 🛠 Setup Database
-      #   run: npx prisma migrate reset --force
+  # - name: 🛠 Setup Database
+  #   run: npx prisma migrate reset --force
 
-      # - name: ⚙️ Build
-      #   run: npm run build
+  # - name: ⚙️ Build
+  #   run: npm run build
 
-      # - name: 🌳 Cypress run
-      #   uses: cypress-io/github-action@v3
-      #   with:
-      #     start: npm run start:mocks
-      #     wait-on: 'http://localhost:8811'
-      #   env:
-      #     PORT: '8811'
+  # - name: 🌳 Cypress run
+  #   uses: cypress-io/github-action@v3
+  #   with:
+  #     start: npm run start:mocks
+  #     wait-on: 'http://localhost:8811'
+  #   env:
+  #     PORT: '8811'
 
   build:
     name: 🐳 Build
