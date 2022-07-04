@@ -11,76 +11,79 @@ import { requireAccountId } from '~/session.server'
 import type { CharacterData } from '../_app.character.traveler.$vision.manual-levelup/_index'
 
 const ParamsSchema = z.object({
-  level: z.number().min(1).max(90),
-  ascension: z.number().min(0).max(6),
-  normalAttack: z.number().min(1).max(10),
-  elementalSkill: z.number().min(1).max(10),
-  elementalBurst: z.number().min(1).max(10),
+	level: z.number().min(1).max(90),
+	ascension: z.number().min(0).max(6),
+	normalAttack: z.number().min(1).max(10),
+	elementalSkill: z.number().min(1).max(10),
+	elementalBurst: z.number().min(1).max(10),
 })
 
 type ActionData = {
-  success: boolean
-  errors?: { [key: string]: string }
+	success: boolean
+	errors?: { [key: string]: string }
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
-  const accId = await requireAccountId(request)
-  const { character: characterName } = params
-  invariant(characterName)
+	const accId = await requireAccountId(request)
+	const { character: characterName } = params
+	invariant(characterName)
 
-  const result = await getFormData(request, ParamsSchema)
-  if (!result.success) {
-    return json<ActionData>({ success: result.success, errors: result.errors }, { status: 400 })
-  }
+	const result = await getFormData(request, ParamsSchema)
+	if (!result.success) {
+		return json<ActionData>(
+			{ success: result.success, errors: result.errors },
+			{ status: 400 }
+		)
+	}
 
-  const errors = validateAscensionRequirement(result.data)
-  if (errors) {
-    console.log(errors)
-    return json<ActionData>({ success: false, errors }, { status: 400 })
-  }
+	const errors = validateAscensionRequirement(result.data)
+	if (errors) {
+		console.log(errors)
+		return json<ActionData>({ success: false, errors }, { status: 400 })
+	}
 
-  await upsertCharacter({
-    name: characterName,
-    progression: result.data,
-    accId,
-  })
-  return json<ActionData>({ success: true })
+	await upsertCharacter({
+		name: characterName,
+		progression: result.data,
+		accId,
+	})
+	return json<ActionData>({ success: true })
 }
 
 type LoaderData = {
-  characterData: CharacterData
+	characterData: CharacterData
 }
 
 export const loader: LoaderFunction = async ({ request, params }) => {
-  const accId = await requireAccountId(request)
-  const { character: characterName } = params
-  invariant(characterName)
+	const accId = await requireAccountId(request)
+	const { character: characterName } = params
+	invariant(characterName)
 
-  const userCharacter = await getUserCharacter({ name: characterName, accId })
+	const userCharacter = await getUserCharacter({ name: characterName, accId })
 
-  const characterData: CharacterData = {
-    name: characterName,
-    level: userCharacter?.['@level'] ?? 1,
-    ascension: userCharacter?.['@ascension'] ?? 0,
-    normalAttack: userCharacter?.['@normal_attack'] ?? 1,
-    elementalSkill: userCharacter?.['@elemental_skill'] ?? 1,
-    elementalBurst: userCharacter?.['@elemental_burst'] ?? 1,
-  }
+	const characterData: CharacterData = {
+		name: characterName,
+		level: userCharacter?.['@level'] ?? 1,
+		ascension: userCharacter?.['@ascension'] ?? 0,
+		normalAttack: userCharacter?.['@normal_attack'] ?? 1,
+		elementalSkill: userCharacter?.['@elemental_skill'] ?? 1,
+		elementalBurst: userCharacter?.['@elemental_burst'] ?? 1,
+	}
 
-  return json<LoaderData>({ characterData })
+	return json<LoaderData>({ characterData })
 }
 
 export default function CharacterManualLevelupPage() {
-  const { characterData } = useLoaderData() as LoaderData
-  const actionData = useActionData<ActionData>()
-  const inputProps = useFormInputProps(ParamsSchema)
+	const { characterData } = useLoaderData() as LoaderData
+	const actionData = useActionData<ActionData>()
+	const inputProps = useFormInputProps(ParamsSchema)
 
-  return (
-    <ManualLevelForm
-      inputProps={inputProps}
-      errors={actionData?.errors}
-      defaultValues={characterData}
-      submitSuccess={actionData?.success}
-    />
-  )
+	return (
+		<ManualLevelForm
+			inputProps={inputProps}
+			errors={actionData?.errors}
+			defaultValues={characterData}
+			submitSuccess={actionData?.success}
+		/>
+	)
 }

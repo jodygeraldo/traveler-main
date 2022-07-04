@@ -5,30 +5,33 @@ import { upsertItem } from '~/models/inventory.server'
 import { requireAccountId } from '~/session.server'
 
 export const action: ActionFunction = async ({ request }) => {
-  const accId = await requireAccountId(request)
+	const accId = await requireAccountId(request)
 
-  const ParamsSchema = z.object({
-    name: z.string(),
-    category: z.enum([
-      'common',
-      'ascension_gem',
-      'ascension_boss',
-      'local_specialty',
-      'talent_book',
-      'talent_boss',
-      'special',
-    ]),
-    quantity: z.number().min(0).max(9999),
-  })
+	const ParamsSchema = z.object({
+		name: z.string(),
+		category: z.enum([
+			'common',
+			'ascension_gem',
+			'ascension_boss',
+			'local_specialty',
+			'talent_book',
+			'talent_boss',
+			'special',
+		]),
+		quantity: z.number().min(0).max(9999),
+	})
 
-  const { name, category, quantity } = await getFormDataOrFail(request, ParamsSchema)
+	const { name, category, quantity } = await getFormDataOrFail(
+		request,
+		ParamsSchema
+	)
 
-  await upsertItem({
-    accId,
-    category,
-    name,
-    quantity,
-  })
+	await upsertItem({
+		accId,
+		category,
+		name,
+		quantity,
+	})
 
-  return null
+	return null
 }
