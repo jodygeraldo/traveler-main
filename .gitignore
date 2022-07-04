@@ -13,3 +13,6 @@ node_modules
 /app/oldroutes
 
 /coverage
+/test-results/
+/playwright-report/
+/playwright/.cache/
