@@ -2,7 +2,7 @@ import type * as RemixReact from '@remix-run/react'
 import * as React from 'react'
 import * as ReactRouter from 'react-router'
 
-type CreateRemixReactMockOptions = {
+interface CreateRemixReactMockOptions {
   path: string
   Outlet?: React.ComponentType<React.ComponentProps<typeof RemixReact.Outlet>>
 }
@@ -16,7 +16,9 @@ export function createRemixReactMock(options: CreateRemixReactMockOptions) {
       children,
       ...rest
     }: React.ComponentProps<typeof RemixReact.Form>) => {
-      let href = ReactRouter.createPath(ReactRouter.resolvePath(action || '.', options.path))
+      let href = ReactRouter.createPath(
+        ReactRouter.resolvePath(action || '.', options.path)
+      )
       return (
         <form
           {...rest}
@@ -40,7 +42,9 @@ export function createRemixReactMock(options: CreateRemixReactMockOptions) {
       children,
       ...rest
     }: React.ComponentProps<typeof RemixReact.Link>) => {
-      let href = ReactRouter.createPath(ReactRouter.resolvePath(to, options.path))
+      let href = ReactRouter.createPath(
+        ReactRouter.resolvePath(to, options.path)
+      )
       return (
         <a
           {...rest}
@@ -65,7 +69,9 @@ export function createRemixReactMock(options: CreateRemixReactMockOptions) {
     LiveReload: vi.fn(() => <script data-testid="remix-live-reload" />),
     Meta: vi.fn(() => <title data-testid="remix-meta">remix-meta</title>),
     Outlet: options.Outlet || vi.fn(() => null),
-    ScrollRestoration: vi.fn(() => <script data-testid="remix-scroll-restoration" />),
+    ScrollRestoration: vi.fn(() => (
+      <script data-testid="remix-scroll-restoration" />
+    )),
     Scripts: vi.fn(() => <script data-testid="remix-scripts" />),
   }
 }

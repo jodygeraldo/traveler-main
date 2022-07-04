@@ -1,6 +1,6 @@
-import type { Inventory } from 'dbschema/edgeql-js'
 import invariant from 'tiny-invariant'
-import type { InventoryInfer } from '~/models/inventory.server'
+import type * as DB from '~/db.server'
+import type * as InventoryModel from '~/models/inventory.server'
 
 export interface Item {
   name: string
@@ -202,19 +202,28 @@ const talentBoss: Item[] = [
   { name: 'The Meaning of Aeons', rarity: 5 },
 ]
 
-export function getAllItems(inventory: InventoryInfer) {
+export function getAllItems(inventory: InventoryModel.InventoryInfer) {
   invariant(inventory, 'cannot find associated inventory for this account')
 
   return {
     special: getItems({ category: 'special', items: inventory.special }),
     common: getItems({ category: 'common', items: inventory.common }),
-    ascensionGem: getItems({ category: 'ascension_gem', items: inventory.ascension_gem }),
+    ascensionGem: getItems({
+      category: 'ascension_gem',
+      items: inventory.ascension_gem,
+    }),
     ascensionBoss: getItems({
       category: 'ascension_boss',
       items: inventory.ascension_boss,
     }),
-    localSpecialty: getItems({ category: 'local_specialty', items: inventory.local_specialty }),
-    talentBook: getItems({ category: 'talent_book', items: inventory.talent_book }),
+    localSpecialty: getItems({
+      category: 'local_specialty',
+      items: inventory.local_specialty,
+    }),
+    talentBook: getItems({
+      category: 'talent_book',
+      items: inventory.talent_book,
+    }),
     talentBoss: getItems({
       category: 'talent_boss',
       items: inventory.talent_boss,
@@ -226,7 +235,7 @@ export function getItems({
   category,
   items,
 }: {
-  category: keyof Inventory
+  category: keyof DB.Inventory
   items: {
     name: string
     '@quantity': number | null

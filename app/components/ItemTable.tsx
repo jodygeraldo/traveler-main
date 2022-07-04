@@ -1,27 +1,26 @@
 /* eslint-disable react/jsx-key */
 import clsx from 'clsx'
-import type { Column } from 'react-table'
-import { useTable } from 'react-table'
+import * as ReactTable from 'react-table'
 import Switch from './Switch'
 
-type BaseProps = {
+interface BaseProps {
   uid: string
   heading: React.ReactNode
   switchLabel: string
   switchState: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
-  columns: Column<any>[]
+  columns: ReactTable.Column<any>[]
   data: {}[]
-  ascensionPhase?: number
   customAddionalFirstCellElement?: React.ReactNode[]
 }
 
-type OtherCharacterProps = {
+interface OtherCharacterProps extends BaseProps {
+  ascensionPhase?: number
   talentLevel?: [number, number, number]
-} & BaseProps
+}
 
-type TravelerProps = {
+interface TravelerProps extends BaseProps {
   talentLevel: number | [number, number]
-} & Omit<BaseProps, 'ascensionPhase'>
+}
 
 export function ItemTable({
   heading,
@@ -33,16 +32,19 @@ export function ItemTable({
   talentLevel,
   customAddionalFirstCellElement,
 }: OtherCharacterProps) {
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
-    columns,
-    data,
-  })
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    ReactTable.useTable({
+      columns,
+      data,
+    })
 
   return (
     <div className="mt-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h2 className="inline-flex items-center text-xl font-semibold text-gray-12">{heading}</h2>
+          <h2 className="inline-flex items-center text-xl font-semibold text-gray-12">
+            {heading}
+          </h2>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
           <Switch state={switchState} label={switchLabel} />
@@ -53,7 +55,10 @@ export function ItemTable({
           <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 px-4 align-middle sm:px-6 lg:px-8">
               <div className="overflow-hidden rounded-lg shadow ring-1 ring-black ring-opacity-5">
-                <table className="min-w-full divide-y divide-gray-8" {...getTableProps()}>
+                <table
+                  className="min-w-full divide-y divide-gray-8"
+                  {...getTableProps()}
+                >
                   <thead className="bg-gray-3">
                     {headerGroups.map((headerGroup) => (
                       <tr {...headerGroup.getHeaderGroupProps()}>
@@ -72,7 +77,10 @@ export function ItemTable({
                       </tr>
                     ))}
                   </thead>
-                  <tbody className="divide-y divide-gray-6" {...getTableBodyProps()}>
+                  <tbody
+                    className="divide-y divide-gray-6"
+                    {...getTableBodyProps()}
+                  >
                     {rows.map((row, idxRow) => {
                       prepareRow(row)
                       return (
@@ -135,16 +143,19 @@ export function ItemTableElementalTraveler({
   talentLevel,
   customAddionalFirstCellElement,
 }: TravelerProps) {
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
-    columns,
-    data,
-  })
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    ReactTable.useTable({
+      columns,
+      data,
+    })
 
   return (
     <div className="mt-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h2 className="inline-flex items-center text-xl font-semibold text-gray-12">{heading}</h2>
+          <h2 className="inline-flex items-center text-xl font-semibold text-gray-12">
+            {heading}
+          </h2>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
           <Switch state={switchState} label={switchLabel} />
@@ -155,7 +166,10 @@ export function ItemTableElementalTraveler({
           <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 px-4 align-middle sm:px-6 lg:px-8">
               <div className="overflow-hidden rounded-lg shadow ring-1 ring-black ring-opacity-5">
-                <table className="min-w-full divide-y divide-gray-8" {...getTableProps()}>
+                <table
+                  className="min-w-full divide-y divide-gray-8"
+                  {...getTableProps()}
+                >
                   <thead className="bg-gray-3">
                     {headerGroups.map((headerGroup) => (
                       <tr {...headerGroup.getHeaderGroupProps()}>
@@ -174,7 +188,10 @@ export function ItemTableElementalTraveler({
                       </tr>
                     ))}
                   </thead>
-                  <tbody className="divide-y divide-gray-6" {...getTableBodyProps()}>
+                  <tbody
+                    className="divide-y divide-gray-6"
+                    {...getTableBodyProps()}
+                  >
                     {rows.map((row, idxRow) => {
                       prepareRow(row)
                       return (
@@ -229,3 +246,6 @@ export function ItemTableElementalTraveler({
     </div>
   )
 }
+
+export const Table = ItemTable
+export const ElementalTravelerTable = ItemTableElementalTraveler

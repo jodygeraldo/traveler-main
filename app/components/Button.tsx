@@ -1,10 +1,16 @@
-import type { LinkProps } from '@remix-run/react'
-import { Link } from '@remix-run/react'
+import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 import * as React from 'react'
 
 type KindProps = 'button' | 'icon' | 'group' | 'buttonLink' | 'text'
-type VariantProps = 'primary' | 'secondary' | 'basic' | 'success' | 'warning' | 'info' | 'danger'
+type VariantProps =
+  | 'primary'
+  | 'secondary'
+  | 'basic'
+  | 'success'
+  | 'warning'
+  | 'info'
+  | 'danger'
 type FocusRingProps = 1 | 2 | 3 | 'group' | 'inset'
 type PositionProps = 'left' | 'middle' | 'right'
 
@@ -17,7 +23,14 @@ interface ButtonProps
   extends BaseProps,
     Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof BaseProps> {
   type?: 'button' | 'submit' | 'reset'
-  variant?: 'primary' | 'secondary' | 'basic' | 'success' | 'warning' | 'info' | 'danger'
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'basic'
+    | 'success'
+    | 'warning'
+    | 'info'
+    | 'danger'
   focusRing?: 1 | 2 | 3
 }
 
@@ -27,7 +40,9 @@ interface ButtonIconProps
   type?: 'button' | 'submit' | 'reset'
 }
 
-interface ButtonLinkProps extends BaseProps, Omit<LinkProps, keyof BaseProps> {
+interface ButtonLinkProps
+  extends BaseProps,
+    Omit<RemixReact.LinkProps, keyof BaseProps> {
   focusRing?: 1 | 2 | 3
 }
 
@@ -62,7 +77,8 @@ const variantStyles: Record<VariantProps, string> = {
     'bg-primary-9 text-white hover:enabled:bg-primary-10 focus:ring-primary-8 disabled:bg-primary-6 disabled:text-primary-11',
   secondary:
     'bg-primary-3 text-primary-11 hover:enabled:bg-primary-4 focus:ring-primary-8 disabled:bg-primary-6',
-  basic: 'bg-gray-3 text-gray-11 hover:enabled:bg-gray-4 focus:ring-gray-8 disabled:bg-gray-6',
+  basic:
+    'bg-gray-3 text-gray-11 hover:enabled:bg-gray-4 focus:ring-gray-8 disabled:bg-gray-6',
   success:
     'bg-success-3 text-success-11 hover:enabled:bg-success-4 focus:ring-success-8 disabled:bg-success-6',
   warning:
@@ -77,7 +93,8 @@ const focusRingStyles: Record<FocusRingProps, string> = {
   2: 'focus:z-10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-2',
   3: 'focus:z-10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-3',
   group: 'focus:z-10 focus:outline-none focus:ring-2 focus:ring-primary-8',
-  inset: 'focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-8',
+  inset:
+    'focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-8',
 }
 
 const positionStyles: Record<PositionProps, string> = {
@@ -92,7 +109,17 @@ const activeStyles: Record<'true' | 'false', string> = {
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ type = 'button', focusRing = 2, variant = 'primary', className, children, ...props }, ref) => {
+  (
+    {
+      type = 'button',
+      focusRing = 2,
+      variant = 'primary',
+      className,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     return (
       <button
         ref={ref}
@@ -118,7 +145,11 @@ const ButtonIcon = React.forwardRef<HTMLButtonElement, ButtonIconProps>(
       <button
         ref={ref}
         type={type}
-        className={clsx(baseStyles['icon'], focusRingStyles['inset'], className)}
+        className={clsx(
+          baseStyles['icon'],
+          focusRingStyles['inset'],
+          className
+        )}
         {...props}
       >
         {children}
@@ -131,26 +162,40 @@ ButtonIcon.displayName = 'ButtonIcon'
 const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
   ({ focusRing = 2, className, children, ...props }, ref) => {
     return (
-      <Link
+      <RemixReact.Link
         ref={ref}
-        className={clsx(baseStyles['buttonLink'], focusRingStyles[focusRing], className)}
+        className={clsx(
+          baseStyles['buttonLink'],
+          focusRingStyles[focusRing],
+          className
+        )}
         {...props}
       >
         {children}
-      </Link>
+      </RemixReact.Link>
     )
   }
 )
 ButtonLink.displayName = 'ButtonLink'
 
-const ButtonLinkExternal = React.forwardRef<HTMLAnchorElement, ButtonLinkExternalProps>(
-  ({ kind = 'buttonLink', focusRing = 2, className, children, ...props }, ref) => {
+const ButtonLinkExternal = React.forwardRef<
+  HTMLAnchorElement,
+  ButtonLinkExternalProps
+>(
+  (
+    { kind = 'buttonLink', focusRing = 2, className, children, ...props },
+    ref
+  ) => {
     return (
       <a
         ref={ref}
         target="_blank"
         rel="noopener noreferrer"
-        className={clsx(baseStyles[kind], focusRingStyles[focusRing], className)}
+        className={clsx(
+          baseStyles[kind],
+          focusRingStyles[focusRing],
+          className
+        )}
         {...props}
       >
         {children}
@@ -161,7 +206,17 @@ const ButtonLinkExternal = React.forwardRef<HTMLAnchorElement, ButtonLinkExterna
 ButtonLinkExternal.displayName = 'ButtonLinkExternal'
 
 const ButtonGroup = React.forwardRef<HTMLButtonElement, ButtonGroupProps>(
-  ({ type = 'button', position = 'middle', active, className, children, ...props }, ref) => {
+  (
+    {
+      type = 'button',
+      position = 'middle',
+      active,
+      className,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     return (
       <button
         ref={ref}
@@ -183,3 +238,7 @@ const ButtonGroup = React.forwardRef<HTMLButtonElement, ButtonGroupProps>(
 ButtonGroup.displayName = 'ButtonGroup'
 
 export { Button, ButtonIcon, ButtonLink, ButtonLinkExternal, ButtonGroup }
+export const Icon = ButtonIcon
+export const Link = ButtonLink
+export const LinkExternal = ButtonLinkExternal
+export const Group = ButtonGroup

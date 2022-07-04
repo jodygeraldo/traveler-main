@@ -1,9 +1,8 @@
-import { Link } from '@remix-run/react'
-
-import { useOptionalUser } from '~/utils'
+import * as RemixReact from '@remix-run/react'
+import * as Utils from '~/utils'
 
 export default function Index() {
-  const user = useOptionalUser()
+  const user = Utils.useOptionalUser()
 
   return (
     <main className="relative min-h-screen bg-white sm:flex sm:items-center sm:justify-center">
@@ -25,30 +24,32 @@ export default function Index() {
                 </span>
               </h1>
               <p className="mx-auto mt-6 max-w-lg text-center text-xl text-white sm:max-w-3xl">
-                Check the README.md file for instructions on how to get this project deployed.
+                Check the README.md file for instructions on how to get this
+                project deployed.
               </p>
               <div className="mx-auto mt-10 max-w-sm sm:flex sm:max-w-none sm:justify-center">
                 {user ? (
-                  <Link
+                  <RemixReact.Link
                     to="/character"
                     className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
                   >
-                    View Characters for {user.email} on account: {user.accounts[0].name}
-                  </Link>
+                    View Characters for {user.email} on account:{' '}
+                    {user.accounts[0].name}
+                  </RemixReact.Link>
                 ) : (
                   <div className="space-y-4 sm:mx-auto sm:inline-grid sm:grid-cols-2 sm:gap-5 sm:space-y-0">
-                    <Link
+                    <RemixReact.Link
                       to="/join"
                       className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-yellow-700 shadow-sm hover:bg-yellow-50 sm:px-8"
                     >
                       Sign up
-                    </Link>
-                    <Link
+                    </RemixReact.Link>
+                    <RemixReact.Link
                       to="/login"
                       className="flex items-center justify-center rounded-md bg-yellow-500 px-4 py-3 font-medium text-white hover:bg-yellow-600  "
                     >
                       Log In
-                    </Link>
+                    </RemixReact.Link>
                   </div>
                 )}
               </div>

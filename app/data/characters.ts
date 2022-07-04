@@ -1,7 +1,15 @@
 import invariant from 'tiny-invariant'
-import { z } from 'zod'
-import type { CharacterInfer, CharactersInfer } from '~/models/character.server'
-import type { CharacterData } from '~/routes/_app.character.traveler.$vision.manual-levelup/_index'
+import * as Zod from 'zod'
+import type * as CharacterModel from '~/models/character.server'
+
+export interface CharacterData {
+  name: string
+  level: number
+  ascension: number
+  normalAttack: number
+  elementalSkill: number
+  elementalBurst: number
+}
 
 type CommonMaterial =
   | 'Slime'
@@ -18,18 +26,42 @@ type CommonMaterial =
 const commonMaterials: Record<CommonMaterial, string[]> = {
   Slime: ['Slime Condensate', 'Slime Secretions', 'Slime Concentrate'],
   'Hilichurl Masks': ['Damaged Mask', 'Stained Mask', 'Ominous Mask'],
-  'Samachurl Scrolls': ['Divining Scroll', 'Sealed Scroll', 'Forbidden Curse Scroll'],
-  'Hilichurl Arrowheads': ['Firm Arrowhead', 'Sharp Arrowhead', 'Weathered Arrowhead'],
-  'Fatui Insignia': ["Recruit's Insignia", "Sergeant's Insignia", "Lieutenant's Insignia"],
+  'Samachurl Scrolls': [
+    'Divining Scroll',
+    'Sealed Scroll',
+    'Forbidden Curse Scroll',
+  ],
+  'Hilichurl Arrowheads': [
+    'Firm Arrowhead',
+    'Sharp Arrowhead',
+    'Weathered Arrowhead',
+  ],
+  'Fatui Insignia': [
+    "Recruit's Insignia",
+    "Sergeant's Insignia",
+    "Lieutenant's Insignia",
+  ],
   'Treasure Hoarder Insignias': [
     'Treasure Hoarder Insignia',
     'Silver Raven Insignia',
     'Golden Raven Insignia',
   ],
-  'Whopperflower Nectar': ['Whopperflower Nectar', 'Shimmering Nectar', 'Energy Nectar'],
-  'Nobushi Handguards': ['Old Handguard', 'Kageuchi Handguard', 'Famed Handguard'],
+  'Whopperflower Nectar': [
+    'Whopperflower Nectar',
+    'Shimmering Nectar',
+    'Energy Nectar',
+  ],
+  'Nobushi Handguards': [
+    'Old Handguard',
+    'Kageuchi Handguard',
+    'Famed Handguard',
+  ],
   'Spectral Cores': ['Spectral Husk', 'Spectral Heart', 'Spectral Nucleus'],
-  'Fungal Spore Powder': ['Fungal Spores', 'Luminescent Pollen', 'Crystalline Cyst Dust'],
+  'Fungal Spore Powder': [
+    'Fungal Spores',
+    'Luminescent Pollen',
+    'Crystalline Cyst Dust',
+  ],
 }
 
 const characters: Character[] = [
@@ -74,7 +106,11 @@ const characters: Character[] = [
     weapon: 'Catalyst',
     vision: 'Hydro',
     rarity: 4,
-    talent: ['Normal Attack: Whisper of Water', 'Let the Show Begin♪', 'Shining Miracle♪'],
+    talent: [
+      'Normal Attack: Whisper of Water',
+      'Let the Show Begin♪',
+      'Shining Miracle♪',
+    ],
   },
   {
     name: 'Beidou',
@@ -88,7 +124,11 @@ const characters: Character[] = [
     weapon: 'Sword',
     vision: 'Pyro',
     rarity: 4,
-    talent: ['Normal Attack: Strike of Fortune', 'Passion Overload', 'Fantastic Voyage'],
+    talent: [
+      'Normal Attack: Strike of Fortune',
+      'Passion Overload',
+      'Fantastic Voyage',
+    ],
   },
   {
     name: 'Chongyun',
@@ -120,21 +160,33 @@ const characters: Character[] = [
     weapon: 'Claymore',
     vision: 'Cryo',
     rarity: 5,
-    talent: ['Normal Attack: Favonius Bladework - Edel', 'Icetide Vortex', 'Glacial Illumination'],
+    talent: [
+      'Normal Attack: Favonius Bladework - Edel',
+      'Icetide Vortex',
+      'Glacial Illumination',
+    ],
   },
   {
     name: 'Fischl',
     weapon: 'Bow',
     vision: 'Electro',
     rarity: 4,
-    talent: ['Normal Attack: Bolts of Downfall', 'Nightrider', 'Midnight Phantasmagoria'],
+    talent: [
+      'Normal Attack: Bolts of Downfall',
+      'Nightrider',
+      'Midnight Phantasmagoria',
+    ],
   },
   {
     name: 'Ganyu',
     weapon: 'Bow',
     vision: 'Cryo',
     rarity: 5,
-    talent: ['Normal Attack: Liutian Archery', 'Trail of the Qilin', 'Celestial Shower'],
+    talent: [
+      'Normal Attack: Liutian Archery',
+      'Trail of the Qilin',
+      'Celestial Shower',
+    ],
   },
   {
     name: 'Gorou',
@@ -152,14 +204,22 @@ const characters: Character[] = [
     weapon: 'Polearm',
     vision: 'Pyro',
     rarity: 5,
-    talent: ['Normal Attack: Secret Spear of Wangsheng', 'Guide to Afterlife', 'Spirit Soother'],
+    talent: [
+      'Normal Attack: Secret Spear of Wangsheng',
+      'Guide to Afterlife',
+      'Spirit Soother',
+    ],
   },
   {
     name: 'Jean',
     weapon: 'Sword',
     vision: 'Anemo',
     rarity: 5,
-    talent: ['Normal Attack: Favonius Bladework', 'Gale Blade', 'Dandelion Breeze'],
+    talent: [
+      'Normal Attack: Favonius Bladework',
+      'Gale Blade',
+      'Dandelion Breeze',
+    ],
   },
   {
     name: 'Kaedehara Kazuha',
@@ -173,7 +233,11 @@ const characters: Character[] = [
     weapon: 'Sword',
     vision: 'Cryo',
     rarity: 4,
-    talent: ['Normal Attack: Ceremonial Bladework', 'Frostgnaw', 'Glacial Waltz'],
+    talent: [
+      'Normal Attack: Ceremonial Bladework',
+      'Frostgnaw',
+      'Glacial Waltz',
+    ],
   },
   {
     name: 'Kamisato Ayaka',
@@ -202,7 +266,11 @@ const characters: Character[] = [
     weapon: 'Sword',
     vision: 'Electro',
     rarity: 5,
-    talent: ['Normal Attack: Yunlai Swordsmanship', 'Stellar Restoration', 'Starward Sword'],
+    talent: [
+      'Normal Attack: Yunlai Swordsmanship',
+      'Stellar Restoration',
+      'Starward Sword',
+    ],
   },
   {
     name: 'Klee',
@@ -216,7 +284,11 @@ const characters: Character[] = [
     weapon: 'Bow',
     vision: 'Electro',
     rarity: 4,
-    talent: ['Normal Attack: Tengu Bowmanship', 'Tengu Stormcall', 'Subjugation: Koukou Sendou'],
+    talent: [
+      'Normal Attack: Tengu Bowmanship',
+      'Tengu Stormcall',
+      'Subjugation: Koukou Sendou',
+    ],
   },
   {
     name: 'Kuki Shinobu',
@@ -241,7 +313,11 @@ const characters: Character[] = [
     weapon: 'Catalyst',
     vision: 'Hydro',
     rarity: 5,
-    talent: ['Normal Attack: Ripple of Fate', 'Mirror Reflection of Doom', 'Stellaris Phantasm'],
+    talent: [
+      'Normal Attack: Ripple of Fate',
+      'Mirror Reflection of Doom',
+      'Stellaris Phantasm',
+    ],
   },
   {
     name: 'Ningguang',
@@ -255,7 +331,11 @@ const characters: Character[] = [
     weapon: 'Claymore',
     vision: 'Geo',
     rarity: 4,
-    talent: ['Normal Attack: Favonius Bladework - Maid', 'Breastplate', 'Sweeping Time'],
+    talent: [
+      'Normal Attack: Favonius Bladework - Maid',
+      'Breastplate',
+      'Sweeping Time',
+    ],
   },
   {
     name: 'Qiqi',
@@ -273,7 +353,11 @@ const characters: Character[] = [
     weapon: 'Polearm',
     vision: 'Electro',
     rarity: 5,
-    talent: ['Normal Attack: Origin', 'Transcendence: Baleful Omen', 'Secret Art: Musou Shinsetsu'],
+    talent: [
+      'Normal Attack: Origin',
+      'Transcendence: Baleful Omen',
+      'Secret Art: Musou Shinsetsu',
+    ],
   },
   {
     name: 'Razor',
@@ -287,14 +371,22 @@ const characters: Character[] = [
     weapon: 'Polearm',
     vision: 'Cryo',
     rarity: 4,
-    talent: ['Normal Attack: Spear of the Church', 'Ravaging Confession', 'Rites of Termination'],
+    talent: [
+      'Normal Attack: Spear of the Church',
+      'Ravaging Confession',
+      'Rites of Termination',
+    ],
   },
   {
     name: 'Sangonomiya Kokomi',
     weapon: 'Catalyst',
     vision: 'Hydro',
     rarity: 5,
-    talent: ['Normal Attack: The Shape of Water', "Kurage's Oath", "Nereid's Ascension"],
+    talent: [
+      'Normal Attack: The Shape of Water',
+      "Kurage's Oath",
+      "Nereid's Ascension",
+    ],
   },
   {
     name: 'Sayu',
@@ -334,14 +426,22 @@ const characters: Character[] = [
     weapon: 'Bow',
     vision: 'Hydro',
     rarity: 5,
-    talent: ['Normal Attack: Cutting Torrent', 'Foul Legacy: Raging Tide', 'Havoc: Obliteration'],
+    talent: [
+      'Normal Attack: Cutting Torrent',
+      'Foul Legacy: Raging Tide',
+      'Havoc: Obliteration',
+    ],
   },
   {
     name: 'Thoma',
     weapon: 'Polearm',
     vision: 'Pyro',
     rarity: 4,
-    talent: ['Normal Attack: Swiftshatter Spear', 'Blazing Blessing', 'Crimson Ooyoroi'],
+    talent: [
+      'Normal Attack: Swiftshatter Spear',
+      'Blazing Blessing',
+      'Crimson Ooyoroi',
+    ],
   },
   {
     name: 'Traveler',
@@ -371,7 +471,11 @@ const characters: Character[] = [
     weapon: 'Bow',
     vision: 'Anemo',
     rarity: 5,
-    talent: ['Normal Attack: Divine Marksmanship', 'Skyward Sonnet', "Wind's Grand Ode"],
+    talent: [
+      'Normal Attack: Divine Marksmanship',
+      'Skyward Sonnet',
+      "Wind's Grand Ode",
+    ],
   },
   {
     name: 'Xiangling',
@@ -385,7 +489,11 @@ const characters: Character[] = [
     weapon: 'Polearm',
     vision: 'Anemo',
     rarity: 5,
-    talent: ['Normal Attack: Whirlwind Thrust', 'Lemniscatic Wind Cycling', 'Bane of All Evil'],
+    talent: [
+      'Normal Attack: Whirlwind Thrust',
+      'Lemniscatic Wind Cycling',
+      'Bane of All Evil',
+    ],
   },
   {
     name: 'Xingqiu',
@@ -403,7 +511,11 @@ const characters: Character[] = [
     weapon: 'Claymore',
     vision: 'Pyro',
     rarity: 4,
-    talent: ['Normal Attack: Dance on Fire', 'Sweeping Fervor', 'Riff Revolution'],
+    talent: [
+      'Normal Attack: Dance on Fire',
+      'Sweeping Fervor',
+      'Riff Revolution',
+    ],
   },
   {
     name: 'Yae Miko',
@@ -428,28 +540,44 @@ const characters: Character[] = [
     weapon: 'Bow',
     vision: 'Hydro',
     rarity: 5,
-    talent: ['Normal Attack: Stealthy Bowshot', 'Lingering Lifeline', 'Depth-Clarion Dice'],
+    talent: [
+      'Normal Attack: Stealthy Bowshot',
+      'Lingering Lifeline',
+      'Depth-Clarion Dice',
+    ],
   },
   {
     name: 'Yoimiya',
     weapon: 'Bow',
     vision: 'Pyro',
     rarity: 5,
-    talent: ['Normal Attack: Firework Flare-Up', 'Niwabi Fire-Dance', 'Ryuukin Saxifrage'],
+    talent: [
+      'Normal Attack: Firework Flare-Up',
+      'Niwabi Fire-Dance',
+      'Ryuukin Saxifrage',
+    ],
   },
   {
     name: 'Yun Jin',
     weapon: 'Polearm',
     vision: 'Geo',
     rarity: 4,
-    talent: ['Normal Attack: Cloud-Grazing Strike', 'Opening Flourish', "Cliffbreaker's Banner"],
+    talent: [
+      'Normal Attack: Cloud-Grazing Strike',
+      'Opening Flourish',
+      "Cliffbreaker's Banner",
+    ],
   },
   {
     name: 'Zhongli',
     weapon: 'Polearm',
     vision: 'Geo',
     rarity: 5,
-    talent: ['Normal Attack: Rain of Stone', 'Dominus Lapidis', 'Planet Befall'],
+    talent: [
+      'Normal Attack: Rain of Stone',
+      'Dominus Lapidis',
+      'Planet Befall',
+    ],
   },
 ]
 
@@ -477,16 +605,20 @@ export interface Character {
   }
 }
 
-export interface CharacterMinimal extends Omit<Character, 'vision' | 'rarity'> {}
+export interface CharacterMinimal
+  extends Omit<Character, 'vision' | 'rarity'> {}
 
 export function getCharacters({
   userCharacters,
   travelers,
 }: {
-  userCharacters: CharactersInfer
-  travelers: CharactersInfer
+  userCharacters: CharacterModel.CharactersInfer
+  travelers: CharacterModel.CharactersInfer
 }): { characters: Character[]; travelers: Character[] } {
-  invariant(userCharacters, 'there is no characters associated with this account')
+  invariant(
+    userCharacters,
+    'there is no characters associated with this account'
+  )
   invariant(travelers, 'there is no travelers associated with this account')
 
   const updatedCharacters = [...characters]
@@ -552,7 +684,7 @@ export function getCharacter({
   characterData,
 }: {
   name: string
-  characterData: CharacterInfer
+  characterData: CharacterModel.CharacterInfer
 }): CharacterMinimal | null {
   const character = characters.find((character) => character.name === name)
   if (!character) {
@@ -577,7 +709,7 @@ export function getCharacter({
   return updatedCharacter
 }
 
-type CharacterMaterial = {
+interface CharacterMaterial {
   name: string
   ascension: {
     gem: string
@@ -603,7 +735,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Samachurl Scrolls'],
     },
     talent: {
-      book: ['Teachings of Freedom', 'Guide to Freedom', 'Philosophies of Freedom'],
+      book: [
+        'Teachings of Freedom',
+        'Guide to Freedom',
+        'Philosophies of Freedom',
+      ],
       boss: 'Tusk of Monoceros Caeli',
       common: commonMaterials['Samachurl Scrolls'],
       special: 'Crown of Insight',
@@ -618,7 +754,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Spectral Cores'],
     },
     talent: {
-      book: ['Teachings of Freedom', 'Guide to Freedom', 'Philosophies of Freedom'],
+      book: [
+        'Teachings of Freedom',
+        'Guide to Freedom',
+        'Philosophies of Freedom',
+      ],
       boss: 'Molten Moment',
       common: commonMaterials['Spectral Cores'],
       special: 'Crown of Insight',
@@ -633,7 +773,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Hilichurl Arrowheads'],
     },
     talent: {
-      book: ['Teachings of Freedom', 'Guide to Freedom', 'Philosophies of Freedom'],
+      book: [
+        'Teachings of Freedom',
+        'Guide to Freedom',
+        'Philosophies of Freedom',
+      ],
       boss: "Dvalin's Sigh",
       common: commonMaterials['Hilichurl Arrowheads'],
       special: 'Crown of Insight',
@@ -648,7 +792,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Slime'],
     },
     talent: {
-      book: ['Teachings of Elegance', 'Guide to Elegance', 'Philosophies of Elegance'],
+      book: [
+        'Teachings of Elegance',
+        'Guide to Elegance',
+        'Philosophies of Elegance',
+      ],
       boss: 'Ashen Heart',
       common: commonMaterials['Slime'],
       special: 'Crown of Insight',
@@ -663,7 +811,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Samachurl Scrolls'],
     },
     talent: {
-      book: ['Teachings of Freedom', 'Guide to Freedom', 'Philosophies of Freedom'],
+      book: [
+        'Teachings of Freedom',
+        'Guide to Freedom',
+        'Philosophies of Freedom',
+      ],
       boss: 'Ring of Boreas',
       common: commonMaterials['Samachurl Scrolls'],
       special: 'Crown of Insight',
@@ -693,7 +845,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Treasure Hoarder Insignias'],
     },
     talent: {
-      book: ['Teachings of Resistance', 'Guide to Resistance', 'Philosophies of Resistance'],
+      book: [
+        'Teachings of Resistance',
+        'Guide to Resistance',
+        'Philosophies of Resistance',
+      ],
       boss: "Dvalin's Plume",
       common: commonMaterials['Treasure Hoarder Insignias'],
       special: 'Crown of Insight',
@@ -708,7 +864,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Hilichurl Masks'],
     },
     talent: {
-      book: ['Teachings of Diligence', 'Guide to Diligence', 'Philosophies of Diligence'],
+      book: [
+        'Teachings of Diligence',
+        'Guide to Diligence',
+        'Philosophies of Diligence',
+      ],
       boss: "Dvalin's Sigh",
       common: commonMaterials['Hilichurl Masks'],
       special: 'Crown of Insight',
@@ -723,7 +883,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Fatui Insignia'],
     },
     talent: {
-      book: ['Teachings of Resistance', 'Guide to Resistance', 'Philosophies of Resistance'],
+      book: [
+        'Teachings of Resistance',
+        'Guide to Resistance',
+        'Philosophies of Resistance',
+      ],
       boss: "Dvalin's Plume",
       common: commonMaterials['Fatui Insignia'],
       special: 'Crown of Insight',
@@ -738,7 +902,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Hilichurl Arrowheads'],
     },
     talent: {
-      book: ['Teachings of Freedom', 'Guide to Freedom', 'Philosophies of Freedom'],
+      book: [
+        'Teachings of Freedom',
+        'Guide to Freedom',
+        'Philosophies of Freedom',
+      ],
       boss: 'Shard of a Foul Legacy',
       common: commonMaterials['Hilichurl Arrowheads'],
       special: 'Crown of Insight',
@@ -753,7 +921,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Hilichurl Masks'],
     },
     talent: {
-      book: ['Teachings of Resistance', 'Guide to Resistance', 'Philosophies of Resistance'],
+      book: [
+        'Teachings of Resistance',
+        'Guide to Resistance',
+        'Philosophies of Resistance',
+      ],
       boss: "Dragon Lord's Crown",
       common: commonMaterials['Hilichurl Masks'],
       special: 'Crown of Insight',
@@ -768,7 +940,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Hilichurl Arrowheads'],
     },
     talent: {
-      book: ['Teachings of Ballad', 'Guide to Ballad', 'Philosophies of Ballad'],
+      book: [
+        'Teachings of Ballad',
+        'Guide to Ballad',
+        'Philosophies of Ballad',
+      ],
       boss: 'Spirit Locket of Boreas',
       common: commonMaterials['Hilichurl Arrowheads'],
       special: 'Crown of Insight',
@@ -783,7 +959,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Whopperflower Nectar'],
     },
     talent: {
-      book: ['Teachings of Diligence', 'Guide to Diligence', 'Philosophies of Diligence'],
+      book: [
+        'Teachings of Diligence',
+        'Guide to Diligence',
+        'Philosophies of Diligence',
+      ],
       boss: 'Shadow of the Warrior',
       common: commonMaterials['Whopperflower Nectar'],
       special: 'Crown of Insight',
@@ -813,7 +993,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Whopperflower Nectar'],
     },
     talent: {
-      book: ['Teachings of Diligence', 'Guide to Diligence', 'Philosophies of Diligence'],
+      book: [
+        'Teachings of Diligence',
+        'Guide to Diligence',
+        'Philosophies of Diligence',
+      ],
       boss: 'Shard of a Foul Legacy',
       common: commonMaterials['Whopperflower Nectar'],
       special: 'Crown of Insight',
@@ -828,7 +1012,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Hilichurl Masks'],
     },
     talent: {
-      book: ['Teachings of Resistance', 'Guide to Resistance', 'Philosophies of Resistance'],
+      book: [
+        'Teachings of Resistance',
+        'Guide to Resistance',
+        'Philosophies of Resistance',
+      ],
       boss: "Dvalin's Plume",
       common: commonMaterials['Hilichurl Masks'],
       special: 'Crown of Insight',
@@ -843,7 +1031,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Treasure Hoarder Insignias'],
     },
     talent: {
-      book: ['Teachings of Diligence', 'Guide to Diligence', 'Philosophies of Diligence'],
+      book: [
+        'Teachings of Diligence',
+        'Guide to Diligence',
+        'Philosophies of Diligence',
+      ],
       boss: 'Gilded Scale',
       common: commonMaterials['Treasure Hoarder Insignias'],
       special: 'Crown of Insight',
@@ -858,7 +1050,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Treasure Hoarder Insignias'],
     },
     talent: {
-      book: ['Teachings of Ballad', 'Guide to Ballad', 'Philosophies of Ballad'],
+      book: [
+        'Teachings of Ballad',
+        'Guide to Ballad',
+        'Philosophies of Ballad',
+      ],
       boss: 'Spirit Locket of Boreas',
       common: commonMaterials['Treasure Hoarder Insignias'],
       special: 'Crown of Insight',
@@ -873,7 +1069,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Nobushi Handguards'],
     },
     talent: {
-      book: ['Teachings of Elegance', 'Guide to Elegance', 'Philosophies of Elegance'],
+      book: [
+        'Teachings of Elegance',
+        'Guide to Elegance',
+        'Philosophies of Elegance',
+      ],
       boss: 'Bloodjade Branch',
       common: commonMaterials['Nobushi Handguards'],
       special: 'Crown of Insight',
@@ -888,7 +1088,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Nobushi Handguards'],
     },
     talent: {
-      book: ['Teachings of Elegance', 'Guide to Elegance', 'Philosophies of Elegance'],
+      book: [
+        'Teachings of Elegance',
+        'Guide to Elegance',
+        'Philosophies of Elegance',
+      ],
       boss: 'Mudra of the Malefic General',
       common: commonMaterials['Nobushi Handguards'],
       special: 'Crown of Insight',
@@ -903,7 +1107,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Whopperflower Nectar'],
     },
     talent: {
-      book: ['Teachings of Prosperity', 'Guide to Prosperity', 'Philosophies of Prosperity'],
+      book: [
+        'Teachings of Prosperity',
+        'Guide to Prosperity',
+        'Philosophies of Prosperity',
+      ],
       boss: 'Ring of Boreas',
       common: commonMaterials['Whopperflower Nectar'],
       special: 'Crown of Insight',
@@ -918,7 +1126,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Samachurl Scrolls'],
     },
     talent: {
-      book: ['Teachings of Freedom', 'Guide to Freedom', 'Philosophies of Freedom'],
+      book: [
+        'Teachings of Freedom',
+        'Guide to Freedom',
+        'Philosophies of Freedom',
+      ],
       boss: 'Ring of Boreas',
       common: commonMaterials['Samachurl Scrolls'],
       special: 'Crown of Insight',
@@ -933,7 +1145,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Hilichurl Masks'],
     },
     talent: {
-      book: ['Teachings of Elegance', 'Guide to Elegance', 'Philosophies of Elegance'],
+      book: [
+        'Teachings of Elegance',
+        'Guide to Elegance',
+        'Philosophies of Elegance',
+      ],
       boss: 'Ashen Heart',
       common: commonMaterials['Hilichurl Masks'],
       special: 'Crown of Insight',
@@ -948,7 +1164,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Spectral Cores'],
     },
     talent: {
-      book: ['Teachings of Elegance', 'Guide to Elegance', 'Philosophies of Elegance'],
+      book: [
+        'Teachings of Elegance',
+        'Guide to Elegance',
+        'Philosophies of Elegance',
+      ],
       boss: 'Tears of the Calamitous God',
       common: commonMaterials['Spectral Cores'],
       special: 'Crown of Insight',
@@ -963,7 +1183,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Slime'],
     },
     talent: {
-      book: ['Teachings of Ballad', 'Guide to Ballad', 'Philosophies of Ballad'],
+      book: [
+        'Teachings of Ballad',
+        'Guide to Ballad',
+        'Philosophies of Ballad',
+      ],
       boss: "Dvalin's Claw",
       common: commonMaterials['Slime'],
       special: 'Crown of Insight',
@@ -978,7 +1202,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Whopperflower Nectar'],
     },
     talent: {
-      book: ['Teachings of Resistance', 'Guide to Resistance', 'Philosophies of Resistance'],
+      book: [
+        'Teachings of Resistance',
+        'Guide to Resistance',
+        'Philosophies of Resistance',
+      ],
       boss: 'Ring of Boreas',
       common: commonMaterials['Whopperflower Nectar'],
       special: 'Crown of Insight',
@@ -993,7 +1221,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Fatui Insignia'],
     },
     talent: {
-      book: ['Teachings of Prosperity', 'Guide to Prosperity', 'Philosophies of Prosperity'],
+      book: [
+        'Teachings of Prosperity',
+        'Guide to Prosperity',
+        'Philosophies of Prosperity',
+      ],
       boss: 'Spirit Locket of Boreas',
       common: commonMaterials['Fatui Insignia'],
       special: 'Crown of Insight',
@@ -1008,7 +1240,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Hilichurl Masks'],
     },
     talent: {
-      book: ['Teachings of Resistance', 'Guide to Resistance', 'Philosophies of Resistance'],
+      book: [
+        'Teachings of Resistance',
+        'Guide to Resistance',
+        'Philosophies of Resistance',
+      ],
       boss: "Dvalin's Claw",
       common: commonMaterials['Hilichurl Masks'],
       special: 'Crown of Insight',
@@ -1023,7 +1259,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Samachurl Scrolls'],
     },
     talent: {
-      book: ['Teachings of Prosperity', 'Guide to Prosperity', 'Philosophies of Prosperity'],
+      book: [
+        'Teachings of Prosperity',
+        'Guide to Prosperity',
+        'Philosophies of Prosperity',
+      ],
       boss: 'Tail of Boreas',
       common: commonMaterials['Samachurl Scrolls'],
       special: 'Crown of Insight',
@@ -1053,7 +1293,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Hilichurl Masks'],
     },
     talent: {
-      book: ['Teachings of Resistance', 'Guide to Resistance', 'Philosophies of Resistance'],
+      book: [
+        'Teachings of Resistance',
+        'Guide to Resistance',
+        'Philosophies of Resistance',
+      ],
       boss: "Dvalin's Claw",
       common: commonMaterials['Hilichurl Masks'],
       special: 'Crown of Insight',
@@ -1068,7 +1312,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Fatui Insignia'],
     },
     talent: {
-      book: ['Teachings of Ballad', 'Guide to Ballad', 'Philosophies of Ballad'],
+      book: [
+        'Teachings of Ballad',
+        'Guide to Ballad',
+        'Philosophies of Ballad',
+      ],
       boss: 'Shadow of the Warrior',
       common: commonMaterials['Fatui Insignia'],
       special: 'Crown of Insight',
@@ -1083,7 +1331,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Spectral Cores'],
     },
     talent: {
-      book: ['Teachings of Transience', 'Guide to Transience', 'Philosophies of Transience'],
+      book: [
+        'Teachings of Transience',
+        'Guide to Transience',
+        'Philosophies of Transience',
+      ],
       boss: 'Hellfire Butterfly',
       common: commonMaterials['Spectral Cores'],
       special: 'Crown of Insight',
@@ -1113,7 +1365,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Whopperflower Nectar'],
     },
     talent: {
-      book: ['Teachings of Prosperity', 'Guide to Prosperity', 'Philosophies of Prosperity'],
+      book: [
+        'Teachings of Prosperity',
+        'Guide to Prosperity',
+        'Philosophies of Prosperity',
+      ],
       boss: 'Hellfire Butterfly',
       common: commonMaterials['Whopperflower Nectar'],
       special: 'Crown of Insight',
@@ -1128,7 +1384,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Whopperflower Nectar'],
     },
     talent: {
-      book: ['Teachings of Freedom', 'Guide to Freedom', 'Philosophies of Freedom'],
+      book: [
+        'Teachings of Freedom',
+        'Guide to Freedom',
+        'Philosophies of Freedom',
+      ],
       boss: 'Spirit Locket of Boreas',
       common: commonMaterials['Whopperflower Nectar'],
       special: 'Crown of Insight',
@@ -1143,7 +1403,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Fatui Insignia'],
     },
     talent: {
-      book: ['Teachings of Freedom', 'Guide to Freedom', 'Philosophies of Freedom'],
+      book: [
+        'Teachings of Freedom',
+        'Guide to Freedom',
+        'Philosophies of Freedom',
+      ],
       boss: 'Shard of a Foul Legacy',
       common: commonMaterials['Fatui Insignia'],
       special: 'Crown of Insight',
@@ -1158,7 +1422,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Treasure Hoarder Insignias'],
     },
     talent: {
-      book: ['Teachings of Transience', 'Guide to Transience', 'Philosophies of Transience'],
+      book: [
+        'Teachings of Transience',
+        'Guide to Transience',
+        'Philosophies of Transience',
+      ],
       boss: 'Hellfire Butterfly',
       common: commonMaterials['Treasure Hoarder Insignias'],
       special: 'Crown of Insight',
@@ -1173,7 +1441,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Slime'],
     },
     talent: {
-      book: ['Teachings of Ballad', 'Guide to Ballad', 'Philosophies of Ballad'],
+      book: [
+        'Teachings of Ballad',
+        'Guide to Ballad',
+        'Philosophies of Ballad',
+      ],
       boss: 'Tail of Boreas',
       common: commonMaterials['Slime'],
       special: 'Crown of Insight',
@@ -1188,7 +1460,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Slime'],
     },
     talent: {
-      book: ['Teachings of Diligence', 'Guide to Diligence', 'Philosophies of Diligence'],
+      book: [
+        'Teachings of Diligence',
+        'Guide to Diligence',
+        'Philosophies of Diligence',
+      ],
       boss: "Dvalin's Claw",
       common: commonMaterials['Slime'],
       special: 'Crown of Insight',
@@ -1203,7 +1479,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Slime'],
     },
     talent: {
-      book: ['Teachings of Prosperity', 'Guide to Prosperity', 'Philosophies of Prosperity'],
+      book: [
+        'Teachings of Prosperity',
+        'Guide to Prosperity',
+        'Philosophies of Prosperity',
+      ],
       boss: 'Shadow of the Warrior',
       common: commonMaterials['Slime'],
       special: 'Crown of Insight',
@@ -1278,7 +1558,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Treasure Hoarder Insignias'],
     },
     talent: {
-      book: ['Teachings of Prosperity', 'Guide to Prosperity', 'Philosophies of Prosperity'],
+      book: [
+        'Teachings of Prosperity',
+        'Guide to Prosperity',
+        'Philosophies of Prosperity',
+      ],
       boss: 'Gilded Scale',
       common: commonMaterials['Treasure Hoarder Insignias'],
       special: 'Crown of Insight',
@@ -1293,7 +1577,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Samachurl Scrolls'],
     },
     talent: {
-      book: ['Teachings of Transience', 'Guide to Transience', 'Philosophies of Transience'],
+      book: [
+        'Teachings of Transience',
+        'Guide to Transience',
+        'Philosophies of Transience',
+      ],
       boss: "Dragon Lord's Crown",
       common: commonMaterials['Samachurl Scrolls'],
       special: 'Crown of Insight',
@@ -1308,7 +1596,11 @@ const characterMaterial: CharacterMaterial[] = [
       common: commonMaterials['Hilichurl Masks'],
     },
     talent: {
-      book: ['Teachings of Diligence', 'Guide to Diligence', 'Philosophies of Diligence'],
+      book: [
+        'Teachings of Diligence',
+        'Guide to Diligence',
+        'Philosophies of Diligence',
+      ],
       boss: 'Ashen Heart',
       common: commonMaterials['Hilichurl Masks'],
       special: 'Crown of Insight',
@@ -1440,7 +1732,7 @@ const travelerMaterial = [
   },
 ]
 
-export type TravelerAscension = {
+export interface TravelerAscension {
   phase: { from: number; to: number }
   mora: number
   common: { name: string; quantity: number }
@@ -1448,11 +1740,11 @@ export type TravelerAscension = {
   local: { name: string; quantity: number }
 }
 
-export type CharacterAscension = {
+export interface CharacterAscension extends TravelerAscension {
   boss?: { name: string; quantity: number }
-} & TravelerAscension
+}
 
-export type CharacterTalent = {
+export interface CharacterTalent {
   level: { from: number; to: number }
   mora: number
   common: { name: string; quantity: number }
@@ -1462,7 +1754,9 @@ export type CharacterTalent = {
 }
 
 export function getTravelerRequiredMaterial({ vision }: { vision: string }) {
-  const traveler = travelerMaterial.find((traveler) => traveler.vision === vision)
+  const traveler = travelerMaterial.find(
+    (traveler) => traveler.vision === vision
+  )
   invariant(traveler)
 
   const ascensionMaterial: TravelerAscension[] = [
@@ -1514,8 +1808,12 @@ export function getTravelerRequiredMaterial({ vision }: { vision: string }) {
     return {
       ascensionMaterial,
       talentMaterial: {
-        normal: getCharacterTalentMaterial(traveler.talent[0], { isTraveler: true }),
-        elemental: getCharacterTalentMaterial(traveler.talent[1], { isTraveler: true }),
+        normal: getCharacterTalentMaterial(traveler.talent[0], {
+          isTraveler: true,
+        }),
+        elemental: getCharacterTalentMaterial(traveler.talent[1], {
+          isTraveler: true,
+        }),
       },
     }
   }
@@ -1524,13 +1822,17 @@ export function getTravelerRequiredMaterial({ vision }: { vision: string }) {
     ascensionMaterial,
     talentMaterial: {
       normal: getCharacterTalentMaterial(traveler.talent, { isTraveler: true }),
-      elemental: getCharacterTalentMaterial(traveler.talent, { isTraveler: true }),
+      elemental: getCharacterTalentMaterial(traveler.talent, {
+        isTraveler: true,
+      }),
     },
   }
 }
 
 export function getCharacterRequiredMaterial({ name }: { name: string }) {
-  const character = characterMaterial.find((character) => character.name === name)
+  const character = characterMaterial.find(
+    (character) => character.name === name
+  )
   invariant(character)
 
   return {
@@ -1665,7 +1967,7 @@ function getCharacterTalentMaterial(
   ]
 }
 
-function narrowErrors(errors: z.ZodIssue[]): { [key: string]: string } {
+function narrowErrors(errors: Zod.ZodIssue[]): { [key: string]: string } {
   return Object.assign(
     {},
     ...errors.map((error) => ({
@@ -1683,22 +1985,27 @@ export function validateAscensionRequirement({
 }: Omit<CharacterData, 'name'>) {
   switch (ascension) {
     case 0:
-      const schema0 = z.object({
-        level: z.number().refine((val) => val <= 20, {
+      const schema0 = Zod.object({
+        level: Zod.number().refine((val) => val <= 20, {
           message: 'Maximum level on ascension 0 is 20',
         }),
-        normalAttack: z.number().refine((val) => val <= 1, {
+        normalAttack: Zod.number().refine((val) => val <= 1, {
           message: 'Maximum normal attack on ascension 0 is 1',
         }),
-        elementalSkill: z.number().refine((val) => val <= 1, {
+        elementalSkill: Zod.number().refine((val) => val <= 1, {
           message: 'Maximum elemental skill on ascension 0 is 1',
         }),
-        elementalBurst: z.number().refine((val) => val <= 1, {
+        elementalBurst: Zod.number().refine((val) => val <= 1, {
           message: 'Maximum elemental burst on ascension 0 is 1',
         }),
       })
 
-      const parsed0 = schema0.safeParse({ level, normalAttack, elementalSkill, elementalBurst })
+      const parsed0 = schema0.safeParse({
+        level,
+        normalAttack,
+        elementalSkill,
+        elementalBurst,
+      })
 
       if (!parsed0.success) {
         return narrowErrors(parsed0.error.issues)
@@ -1706,22 +2013,27 @@ export function validateAscensionRequirement({
 
       return
     case 1:
-      const schema1 = z.object({
-        level: z.number().refine((val) => val <= 40, {
+      const schema1 = Zod.object({
+        level: Zod.number().refine((val) => val <= 40, {
           message: 'Maximum level on ascension 1 is 40',
         }),
-        normalAttack: z.number().refine((val) => val <= 1, {
+        normalAttack: Zod.number().refine((val) => val <= 1, {
           message: 'Maximum normal attack on ascension 1 is 1',
         }),
-        elementalSkill: z.number().refine((val) => val <= 1, {
+        elementalSkill: Zod.number().refine((val) => val <= 1, {
           message: 'Maximum elemental skill on ascension 1 is 1',
         }),
-        elementalBurst: z.number().refine((val) => val <= 1, {
+        elementalBurst: Zod.number().refine((val) => val <= 1, {
           message: 'Maximum elemental burst on ascension 1 is 1',
         }),
       })
 
-      const parsed1 = schema1.safeParse({ level, normalAttack, elementalSkill, elementalBurst })
+      const parsed1 = schema1.safeParse({
+        level,
+        normalAttack,
+        elementalSkill,
+        elementalBurst,
+      })
 
       if (!parsed1.success) {
         return narrowErrors(parsed1.error.issues)
@@ -1729,22 +2041,27 @@ export function validateAscensionRequirement({
 
       return
     case 2:
-      const schema2 = z.object({
-        level: z.number().refine((val) => val <= 50, {
+      const schema2 = Zod.object({
+        level: Zod.number().refine((val) => val <= 50, {
           message: 'Maximum level on ascension 2 is 50',
         }),
-        normalAttack: z.number().refine((val) => val <= 2, {
+        normalAttack: Zod.number().refine((val) => val <= 2, {
           message: 'Maximum normal attack on ascension 2 is 2',
         }),
-        elementalSkill: z.number().refine((val) => val <= 2, {
+        elementalSkill: Zod.number().refine((val) => val <= 2, {
           message: 'Maximum elemental skill on ascension 2 is 2',
         }),
-        elementalBurst: z.number().refine((val) => val <= 2, {
+        elementalBurst: Zod.number().refine((val) => val <= 2, {
           message: 'Maximum elemental burst on ascension 2 is 2',
         }),
       })
 
-      const parsed2 = schema2.safeParse({ level, normalAttack, elementalSkill, elementalBurst })
+      const parsed2 = schema2.safeParse({
+        level,
+        normalAttack,
+        elementalSkill,
+        elementalBurst,
+      })
 
       if (!parsed2.success) {
         return narrowErrors(parsed2.error.issues)
@@ -1752,22 +2069,27 @@ export function validateAscensionRequirement({
 
       return
     case 3:
-      const schema3 = z.object({
-        level: z.number().refine((val) => val <= 60, {
+      const schema3 = Zod.object({
+        level: Zod.number().refine((val) => val <= 60, {
           message: 'Maximum level on ascension 3 is 60',
         }),
-        normalAttack: z.number().refine((val) => val <= 4, {
+        normalAttack: Zod.number().refine((val) => val <= 4, {
           message: 'Maximum normal attack on ascension 3 is 4',
         }),
-        elementalSkill: z.number().refine((val) => val <= 4, {
+        elementalSkill: Zod.number().refine((val) => val <= 4, {
           message: 'Maximum elemental skill on ascension 3 is 4',
         }),
-        elementalBurst: z.number().refine((val) => val <= 4, {
+        elementalBurst: Zod.number().refine((val) => val <= 4, {
           message: 'Maximum elemental burst on ascension 3 is 4',
         }),
       })
 
-      const parsed3 = schema3.safeParse({ level, normalAttack, elementalSkill, elementalBurst })
+      const parsed3 = schema3.safeParse({
+        level,
+        normalAttack,
+        elementalSkill,
+        elementalBurst,
+      })
 
       if (!parsed3.success) {
         return narrowErrors(parsed3.error.issues)
@@ -1775,22 +2097,27 @@ export function validateAscensionRequirement({
 
       return
     case 4:
-      const schema4 = z.object({
-        level: z.number().refine((val) => val <= 70, {
+      const schema4 = Zod.object({
+        level: Zod.number().refine((val) => val <= 70, {
           message: 'Maximum level on ascension 4 is 70',
         }),
-        normalAttack: z.number().refine((val) => val <= 6, {
+        normalAttack: Zod.number().refine((val) => val <= 6, {
           message: 'Maximum normal attack on ascension 4 is 6',
         }),
-        elementalSkill: z.number().refine((val) => val <= 6, {
+        elementalSkill: Zod.number().refine((val) => val <= 6, {
           message: 'Maximum elemental skill on ascension 4 is 6',
         }),
-        elementalBurst: z.number().refine((val) => val <= 6, {
+        elementalBurst: Zod.number().refine((val) => val <= 6, {
           message: 'Maximum elemental burst on ascension 4 is 6',
         }),
       })
 
-      const parsed4 = schema4.safeParse({ level, normalAttack, elementalSkill, elementalBurst })
+      const parsed4 = schema4.safeParse({
+        level,
+        normalAttack,
+        elementalSkill,
+        elementalBurst,
+      })
 
       if (!parsed4.success) {
         return narrowErrors(parsed4.error.issues)
@@ -1798,22 +2125,27 @@ export function validateAscensionRequirement({
 
       return
     case 5:
-      const schema5 = z.object({
-        level: z.number().refine((val) => val <= 80, {
+      const schema5 = Zod.object({
+        level: Zod.number().refine((val) => val <= 80, {
           message: 'Maximum level on ascension 5 is 80',
         }),
-        normalAttack: z.number().refine((val) => val <= 8, {
+        normalAttack: Zod.number().refine((val) => val <= 8, {
           message: 'Maximum normal attack on ascension 5 is 8',
         }),
-        elementalSkill: z.number().refine((val) => val <= 8, {
+        elementalSkill: Zod.number().refine((val) => val <= 8, {
           message: 'Maximum elemental skill on ascension 5 is 8',
         }),
-        elementalBurst: z.number().refine((val) => val <= 8, {
+        elementalBurst: Zod.number().refine((val) => val <= 8, {
           message: 'Maximum elemental burst on ascension 5 is 8',
         }),
       })
 
-      const parsed5 = schema5.safeParse({ level, normalAttack, elementalSkill, elementalBurst })
+      const parsed5 = schema5.safeParse({
+        level,
+        normalAttack,
+        elementalSkill,
+        elementalBurst,
+      })
 
       if (!parsed5.success) {
         return narrowErrors(parsed5.error.issues)
@@ -1821,22 +2153,27 @@ export function validateAscensionRequirement({
 
       return
     case 6:
-      const schema6 = z.object({
-        level: z.number().refine((val) => val <= 90, {
+      const schema6 = Zod.object({
+        level: Zod.number().refine((val) => val <= 90, {
           message: 'Maximum level on ascension 6 is 90',
         }),
-        normalAttack: z.number().refine((val) => val <= 10, {
+        normalAttack: Zod.number().refine((val) => val <= 10, {
           message: 'Maximum normal attack on ascension 6 is 10',
         }),
-        elementalSkill: z.number().refine((val) => val <= 10, {
+        elementalSkill: Zod.number().refine((val) => val <= 10, {
           message: 'Maximum elemental skill on ascension 6 is 10',
         }),
-        elementalBurst: z.number().refine((val) => val <= 10, {
+        elementalBurst: Zod.number().refine((val) => val <= 10, {
           message: 'Maximum elemental burst on ascension 6 is 10',
         }),
       })
 
-      const parsed6 = schema6.safeParse({ level, normalAttack, elementalSkill, elementalBurst })
+      const parsed6 = schema6.safeParse({
+        level,
+        normalAttack,
+        elementalSkill,
+        elementalBurst,
+      })
 
       if (!parsed6.success) {
         return narrowErrors(parsed6.error.issues)

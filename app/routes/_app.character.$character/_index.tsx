@@ -1,45 +1,44 @@
-import type { LoaderFunction } from '@remix-run/node'
-import { json } from '@remix-run/node'
-import { Outlet, useLoaderData } from '@remix-run/react'
-import Image, { MimeType } from 'remix-image'
+import * as RemixNode from '@remix-run/node'
+import * as RemixReact from '@remix-run/react'
+import * as RemixImage from 'remix-image'
 import invariant from 'tiny-invariant'
 import Tabs from '~/components/Tabs'
-import { validateCharacter } from '~/data/characters'
-import { getImageSrc, useActiveNavigation } from '~/utils'
+import * as CharacterData from '~/data/characters'
+import * as Utils from '~/utils'
 
-type LoaderData = {
+interface LoaderData {
   characterName: string
 }
 
-export const loader: LoaderFunction = async ({ request, params }) => {
+export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
   const { character: characterName } = params
   invariant(characterName)
 
-  const validCharacter = validateCharacter(characterName)
+  const validCharacter = CharacterData.validateCharacter(characterName)
   if (!validCharacter) {
-    throw json(`Character ${characterName} not found`, {
+    throw RemixNode.json(`Character ${characterName} not found`, {
       status: 404,
       statusText: 'Page Not Found',
     })
   }
 
-  return json<LoaderData>({ characterName })
+  return RemixNode.json<LoaderData>({ characterName })
 }
 
 export default function CharacterLayout() {
-  const { characterName } = useLoaderData() as LoaderData
+  const { characterName } = RemixReact.useLoaderData() as LoaderData
 
   const tabs = [
-    { name: 'Required Items', to: '.', active: useActiveNavigation('.') },
+    { name: 'Required Items', to: '.', active: Utils.useActiveNavigation('.') },
     {
       name: 'Inventory Level Up',
       to: './inventory-levelup',
-      active: useActiveNavigation('./inventory-levelup'),
+      active: Utils.useActiveNavigation('./inventory-levelup'),
     },
     {
       name: 'Manual Level Up',
       to: './manual-levelup',
-      active: useActiveNavigation('./manual-levelup'),
+      active: Utils.useActiveNavigation('./manual-levelup'),
     },
   ]
 
@@ -50,12 +49,12 @@ export default function CharacterLayout() {
           {characterName}
         </h1>
         <div className="rounded-full bg-gray-2 p-1">
-          <Image
-            src={`/image/constellation/${getImageSrc(characterName)}.png`}
+          <RemixImage.Image
+            src={`/image/constellation/${Utils.getImageSrc(characterName)}.png`}
             alt=""
             className="h-8 w-8 flex-shrink-0"
             responsive={[{ size: { width: 32, height: 32 } }]}
-            options={{ contentType: MimeType.WEBP }}
+            options={{ contentType: RemixImage.MimeType.WEBP }}
             dprVariants={[1, 2, 3]}
           />
         </div>
@@ -64,7 +63,7 @@ export default function CharacterLayout() {
       <div className="mt-6 sm:mt-2 2xl:mt-5">
         <Tabs tabs={tabs} />
         <main className="pb-16">
-          <Outlet />
+          <RemixReact.Outlet />
         </main>
       </div>
     </div>

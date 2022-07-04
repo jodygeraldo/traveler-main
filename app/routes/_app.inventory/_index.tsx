@@ -1,6 +1,6 @@
-import { Link, Outlet } from '@remix-run/react'
+import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
-import { useActiveNavigation } from '~/utils'
+import * as Utils from '~/utils'
 
 export default function InventoryLayout() {
   return (
@@ -12,7 +12,7 @@ export default function InventoryLayout() {
           </nav>
         </div>
         <main className="lg:col-span-10">
-          <Outlet />
+          <RemixReact.Outlet />
         </main>
       </div>
     </div>
@@ -21,44 +21,48 @@ export default function InventoryLayout() {
 
 function Sidebar() {
   const navigation = [
-    { name: 'All', to: '.', active: useActiveNavigation('.') },
-    { name: 'Common', to: './common', active: useActiveNavigation('./common') },
+    { name: 'All', to: '.', active: Utils.useActiveNavigation('.') },
+    {
+      name: 'Common',
+      to: './common',
+      active: Utils.useActiveNavigation('./common'),
+    },
     {
       name: 'Ascension Gem',
       to: './ascension-gem',
-      active: useActiveNavigation('./ascension-gem'),
+      active: Utils.useActiveNavigation('./ascension-gem'),
     },
     {
       name: 'Ascension Boss',
       to: './ascension-boss',
-      active: useActiveNavigation('./ascension-boss'),
+      active: Utils.useActiveNavigation('./ascension-boss'),
     },
     {
       name: 'Local Specialty',
       to: './local-specialty',
-      active: useActiveNavigation('./local-specialty'),
+      active: Utils.useActiveNavigation('./local-specialty'),
     },
     {
       name: 'Talent Book',
       to: './talent-book',
-      active: useActiveNavigation('./talent-book'),
+      active: Utils.useActiveNavigation('./talent-book'),
     },
     {
       name: 'Talent Boss',
       to: './talent-boss',
-      active: useActiveNavigation('./talent-boss'),
+      active: Utils.useActiveNavigation('./talent-boss'),
     },
     {
       name: 'Special',
       to: './special',
-      active: useActiveNavigation('./special'),
+      active: Utils.useActiveNavigation('./special'),
     },
   ]
 
   return (
     <nav className="space-y-1" aria-label="Sidebar">
       {navigation.map((item) => (
-        <Link
+        <RemixReact.Link
           prefetch="intent"
           key={item.name}
           to={item.to}
@@ -71,7 +75,7 @@ function Sidebar() {
           aria-current={item.active ? 'page' : undefined}
         >
           <span className="truncate">{item.name}</span>
-        </Link>
+        </RemixReact.Link>
       ))}
     </nav>
   )

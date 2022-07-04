@@ -1,54 +1,71 @@
-import type { LoaderFunction } from '@remix-run/node'
-import { json } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
-import { useMemo, useState } from 'react'
-import Image, { MimeType } from 'remix-image'
+import * as RemixNode from '@remix-run/node'
+import * as RemixReact from '@remix-run/react'
+import * as React from 'react'
+import * as RemixImage from 'remix-image'
 import invariant from 'tiny-invariant'
-import { z } from 'zod'
+import * as Zod from 'zod'
 import CharacterCustomFirstCell from '~/components/CharacterCustomFirstCell'
 import CharacterCustomTableHeading from '~/components/CharacterCustomTableHeading'
-import Icon from '~/components/Icon'
-import { ItemTable, ItemTableElementalTraveler } from '~/components/ItemTable'
+import * as Icon from '~/components/Icon'
+import * as ItemTable from '~/components/ItemTable'
 import TableCell from '~/components/TableCell'
 import Tooltip from '~/components/Tooltip'
-import type { CharacterMinimal } from '~/data/characters'
-import { getCharacter, getTravelerRequiredMaterial } from '~/data/characters'
-import { getUserCharacter } from '~/models/character.server'
-import { requireAccountId } from '~/session.server'
-import { getImageSrc, toCapitalized } from '~/utils'
+import * as CharacterData from '~/data/characters'
+import * as CharacterModel from '~/models/character.server'
+import * as Session from '~/session.server'
+import * as Utils from '~/utils'
 
-type LoaderData = {
-  traveler: CharacterMinimal
+interface LoaderData {
+  traveler: CharacterData.CharacterMinimal
   vision: string
-  ascensionMaterial: ReturnType<typeof getTravelerRequiredMaterial>['ascensionMaterial']
-  talentMaterial: ReturnType<typeof getTravelerRequiredMaterial>['talentMaterial']
+  ascensionMaterial: ReturnType<
+    typeof CharacterData.getTravelerRequiredMaterial
+  >['ascensionMaterial']
+  talentMaterial: ReturnType<
+    typeof CharacterData.getTravelerRequiredMaterial
+  >['talentMaterial']
 }
 
-export const loader: LoaderFunction = async ({ request, params }) => {
-  const accId = await requireAccountId(request)
+export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
+  const accId = await Session.requireAccountId(request)
   const { vision } = params
   invariant(vision)
 
-  const visionSchema = z.enum(['Anemo', 'Geo', 'Electro', 'Dendro', 'Hydro', 'Pyro', 'Cryo'])
-  const parsedVision = visionSchema.safeParse(toCapitalized(vision))
+  const visionSchema = Zod.enum([
+    'Anemo',
+    'Geo',
+    'Electro',
+    'Dendro',
+    'Hydro',
+    'Pyro',
+    'Cryo',
+  ])
+  const parsedVision = visionSchema.safeParse(Utils.toCapitalized(vision))
 
   if (!parsedVision.success) {
-    throw json(`Traveler ${parsedVision} not found`, {
+    throw RemixNode.json(`Traveler ${parsedVision} not found`, {
       status: 404,
       statusText: 'Page Not Found',
     })
   }
 
-  const userCharacter = await getUserCharacter({ name: `Traveler ${parsedVision.data}`, accId })
-  const traveler = getCharacter({ name: 'Traveler', characterData: userCharacter })
-  invariant(traveler)
-  const { ascensionMaterial, talentMaterial } = getTravelerRequiredMaterial({
-    vision: parsedVision.data,
+  const userCharacter = await CharacterModel.getUserCharacter({
+    name: `Traveler ${parsedVision.data}`,
+    accId,
   })
+  const traveler = CharacterData.getCharacter({
+    name: 'Traveler',
+    characterData: userCharacter,
+  })
+  invariant(traveler)
+  const { ascensionMaterial, talentMaterial } =
+    CharacterData.getTravelerRequiredMaterial({
+      vision: parsedVision.data,
+    })
 
   console.log(traveler.progression)
 
-  return json<LoaderData>({
+  return RemixNode.json<LoaderData>({
     traveler,
     vision: parsedVision.data,
     ascensionMaterial,
@@ -57,12 +74,13 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 }
 
 export default function TravelerRequiredItemsPage() {
-  const { traveler, vision, ascensionMaterial, talentMaterial } = useLoaderData() as LoaderData
-  const [hideAscension, setHideAscension] = useState(false)
-  const [hideNormalTalent, setHideNormalTalent] = useState(false)
-  const [hideElementalTalent, setHideElementalTalent] = useState(false)
+  const { traveler, vision, ascensionMaterial, talentMaterial } =
+    RemixReact.useLoaderData() as LoaderData
+  const [hideAscension, setHideAscension] = React.useState(false)
+  const [hideNormalTalent, setHideNormalTalent] = React.useState(false)
+  const [hideElementalTalent, setHideElementalTalent] = React.useState(false)
 
-  const ascensionColumns = useMemo(
+  const ascensionColumns = React.useMemo(
     () => [
       {
         Header: 'Phase',
@@ -71,7 +89,7 @@ export default function TravelerRequiredItemsPage() {
           <div className="flex items-center gap-1">
             <span className="tabular-nums">{value.from}</span>
             <span className="sr-only">To</span>
-            <Icon type="solid" name="arrowSmRight" aria-hidden className="h-4 w-4" />
+            <Icon.Solid name="arrowSmRight" aria-hidden className="h-4 w-4" />
             <span className="tabular-nums">{value.to}</span>
           </div>
         ),
@@ -79,7 +97,9 @@ export default function TravelerRequiredItemsPage() {
       {
         Header: 'Mora',
         accessor: 'mora',
-        Cell: ({ value }: { value: number }) => <TableCell quantity={value} text="Mora" />,
+        Cell: ({ value }: { value: number }) => (
+          <TableCell quantity={value} text="Mora" />
+        ),
       },
       {
         Header: 'Common',
@@ -106,7 +126,7 @@ export default function TravelerRequiredItemsPage() {
     []
   )
 
-  const talentColumns = useMemo(
+  const talentColumns = React.useMemo(
     () => [
       {
         Header: 'Level',
@@ -115,7 +135,7 @@ export default function TravelerRequiredItemsPage() {
           <div className="flex items-center gap-1">
             <span className="tabular-nums">{value.from}</span>
             <span className="sr-only">To</span>
-            <Icon type="solid" name="arrowSmRight" aria-hidden className="h-4 w-4" />
+            <Icon.Solid name="arrowSmRight" aria-hidden className="h-4 w-4" />
             <span className="tabular-nums">{value.to}</span>
           </div>
         ),
@@ -123,7 +143,9 @@ export default function TravelerRequiredItemsPage() {
       {
         Header: 'Mora',
         accessor: 'mora',
-        Cell: ({ value }: { value: number }) => <TableCell quantity={value} text="Mora" />,
+        Cell: ({ value }: { value: number }) => (
+          <TableCell quantity={value} text="Mora" />
+        ),
       },
       {
         Header: 'Common',
@@ -157,17 +179,17 @@ export default function TravelerRequiredItemsPage() {
     []
   )
 
-  const ascensionData = useMemo(
+  const ascensionData = React.useMemo(
     () => (hideAscension ? [] : [...ascensionMaterial]),
     [hideAscension, ascensionMaterial]
   )
 
-  const normalTalentData = useMemo(
+  const normalTalentData = React.useMemo(
     () => (hideNormalTalent ? [] : [...talentMaterial.normal]),
     [hideNormalTalent, talentMaterial.normal]
   )
 
-  const elementalSkillTalentData = useMemo(
+  const elementalSkillTalentData = React.useMemo(
     () => (hideElementalTalent ? [] : [...talentMaterial.elemental]),
     [hideElementalTalent, talentMaterial.elemental]
   )
@@ -182,7 +204,7 @@ export default function TravelerRequiredItemsPage() {
 
   return (
     <>
-      <ItemTable
+      <ItemTable.ItemTable
         uid="ascension"
         heading="Ascension"
         switchLabel="Hide ascension table"
@@ -193,7 +215,7 @@ export default function TravelerRequiredItemsPage() {
       />
       {vision === 'Geo' ? (
         <>
-          <ItemTableElementalTraveler
+          <ItemTable.ItemTableElementalTraveler
             uid="normal-talent"
             heading={CustomTableHeading({
               talentName: talent[vision].normalAttack,
@@ -206,10 +228,13 @@ export default function TravelerRequiredItemsPage() {
             data={normalTalentData}
             talentLevel={traveler.progression?.normalAttack ?? 1}
           />
-          <ItemTableElementalTraveler
+          <ItemTable.ItemTableElementalTraveler
             uid="elemental-talent"
             heading={CustomTableHeading({
-              talentName: [talent[vision].elementalSkill, talent[vision].elementalBurst],
+              talentName: [
+                talent[vision].elementalSkill,
+                talent[vision].elementalBurst,
+              ],
               name: `Traveler ${vision}`,
               talent: 'elemental',
             })}
@@ -238,7 +263,7 @@ export default function TravelerRequiredItemsPage() {
           />
         </>
       ) : (
-        <ItemTable
+        <ItemTable.ItemTable
           uid="normal-talent"
           heading={CharacterCustomTableHeading({
             talentName: [
@@ -307,24 +332,24 @@ function CustomTableHeading({
         {talent === 'elemental' ? (
           elemental.map((t, i) => (
             <Tooltip key={talentName[i]} text={talentName[i]}>
-              <Image
-                src={`/image/talent/${t}_${getImageSrc(name)}.png`}
+              <RemixImage.Image
+                src={`/image/talent/${t}_${Utils.getImageSrc(name)}.png`}
                 alt=""
                 className="h-8 w-8 flex-shrink-0"
                 responsive={[{ size: { width: 32, height: 32 } }]}
-                options={{ contentType: MimeType.WEBP }}
+                options={{ contentType: RemixImage.MimeType.WEBP }}
                 dprVariants={[1, 2, 3]}
               />
             </Tooltip>
           ))
         ) : (
           <Tooltip text={talentName}>
-            <Image
+            <RemixImage.Image
               src={`/image/talent/Normal_Attack_Sword.png`}
               alt=""
               className="h-8 w-8 flex-shrink-0"
               responsive={[{ size: { width: 32, height: 32 } }]}
-              options={{ contentType: MimeType.WEBP }}
+              options={{ contentType: RemixImage.MimeType.WEBP }}
               dprVariants={[1, 2, 3]}
             />
           </Tooltip>

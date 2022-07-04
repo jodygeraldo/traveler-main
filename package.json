@@ -28,8 +28,7 @@
   },
   "prettier": {
     "semi": false,
-    "singleQuote": true,
-    "printWidth": 100
+    "singleQuote": true
   },
   "eslintIgnore": [
     "/node_modules",

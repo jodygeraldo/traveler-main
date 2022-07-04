@@ -1,7 +1,7 @@
-import { useLocation, useMatches, useResolvedPath } from '@remix-run/react'
-import { useMemo } from 'react'
+import * as RemixReact from '@remix-run/react'
+import * as React from 'react'
 
-import type { User } from './db.server'
+import type * as DB from './db.server'
 
 export type depromisify<T> = T extends Promise<infer U> ? U : T
 
@@ -35,17 +35,22 @@ export function safeRedirect(
  * @param {string} id The route id
  * @returns {JSON|undefined} The router data or undefined if not found
  */
-export function useMatchesData(id: string): Record<string, unknown> | undefined {
-  const matchingRoutes = useMatches()
-  const route = useMemo(() => matchingRoutes.find((route) => route.id === id), [matchingRoutes, id])
+export function useMatchesData(
+  id: string
+): Record<string, unknown> | undefined {
+  const matchingRoutes = RemixReact.useMatches()
+  const route = React.useMemo(
+    () => matchingRoutes.find((route) => route.id === id),
+    [matchingRoutes, id]
+  )
   return route?.data
 }
 
-function isUser(user: any): user is User {
+function isUser(user: any): user is DB.User {
   return user && typeof user === 'object' && typeof user.email === 'string'
 }
 
-export function useOptionalUser(): User | undefined {
+export function useOptionalUser(): DB.User | undefined {
   const data = useMatchesData('root')
   if (!data || !isUser(data.user)) {
     return undefined
@@ -53,7 +58,7 @@ export function useOptionalUser(): User | undefined {
   return data.user
 }
 
-export function useUser(): User {
+export function useUser(): DB.User {
   const maybeUser = useOptionalUser()
   if (!maybeUser) {
     throw new Error(
@@ -64,8 +69,8 @@ export function useUser(): User {
 }
 
 export function useActiveNavigation(to: string): boolean {
-  const { pathname } = useLocation()
-  return useResolvedPath(to).pathname === pathname
+  const { pathname } = RemixReact.useLocation()
+  return RemixReact.useResolvedPath(to).pathname === pathname
 }
 
 export function validateEmail(email: unknown): email is string {
@@ -78,7 +83,9 @@ export function getImageSrc(str: string): string {
 
 export function toSnakeCase(str: string): string {
   return str
-    .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)!
+    .match(
+      /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g
+    )!
     .map((x) => x.toLowerCase())
     .join('_')
 }
