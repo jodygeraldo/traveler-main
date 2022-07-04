@@ -1,7 +1,15 @@
 import invariant from 'tiny-invariant'
-import { z } from 'zod'
-import type { CharacterInfer, CharactersInfer } from '~/models/character.server'
-import type { CharacterData } from '~/routes/_app.character.traveler.$vision.manual-levelup/_index'
+import * as Zod from 'zod'
+import type * as CharacterModel from '~/models/character.server'
+
+export interface CharacterData {
+	name: string
+	level: number
+	ascension: number
+	normalAttack: number
+	elementalSkill: number
+	elementalBurst: number
+}
 
 type CommonMaterial =
 	| 'Slime'
@@ -604,8 +612,8 @@ export function getCharacters({
 	userCharacters,
 	travelers,
 }: {
-	userCharacters: CharactersInfer
-	travelers: CharactersInfer
+	userCharacters: CharacterModel.CharactersInfer
+	travelers: CharacterModel.CharactersInfer
 }): { characters: Character[]; travelers: Character[] } {
 	invariant(
 		userCharacters,
@@ -676,7 +684,7 @@ export function getCharacter({
 	characterData,
 }: {
 	name: string
-	characterData: CharacterInfer
+	characterData: CharacterModel.CharacterInfer
 }): CharacterMinimal | null {
 	const character = characters.find((character) => character.name === name)
 	if (!character) {
@@ -701,7 +709,7 @@ export function getCharacter({
 	return updatedCharacter
 }
 
-type CharacterMaterial = {
+interface CharacterMaterial {
 	name: string
 	ascension: {
 		gem: string
@@ -1724,7 +1732,7 @@ const travelerMaterial = [
 	},
 ]
 
-export type TravelerAscension = {
+export interface TravelerAscension {
 	phase: { from: number; to: number }
 	mora: number
 	common: { name: string; quantity: number }
@@ -1732,11 +1740,11 @@ export type TravelerAscension = {
 	local: { name: string; quantity: number }
 }
 
-export type CharacterAscension = {
+export interface CharacterAscension extends TravelerAscension {
 	boss?: { name: string; quantity: number }
-} & TravelerAscension
+}
 
-export type CharacterTalent = {
+export interface CharacterTalent {
 	level: { from: number; to: number }
 	mora: number
 	common: { name: string; quantity: number }
@@ -1959,7 +1967,7 @@ function getCharacterTalentMaterial(
 	]
 }
 
-function narrowErrors(errors: z.ZodIssue[]): { [key: string]: string } {
+function narrowErrors(errors: Zod.ZodIssue[]): { [key: string]: string } {
 	return Object.assign(
 		{},
 		...errors.map((error) => ({
@@ -1977,17 +1985,17 @@ export function validateAscensionRequirement({
 }: Omit<CharacterData, 'name'>) {
 	switch (ascension) {
 		case 0:
-			const schema0 = z.object({
-				level: z.number().refine((val) => val <= 20, {
+			const schema0 = Zod.object({
+				level: Zod.number().refine((val) => val <= 20, {
 					message: 'Maximum level on ascension 0 is 20',
 				}),
-				normalAttack: z.number().refine((val) => val <= 1, {
+				normalAttack: Zod.number().refine((val) => val <= 1, {
 					message: 'Maximum normal attack on ascension 0 is 1',
 				}),
-				elementalSkill: z.number().refine((val) => val <= 1, {
+				elementalSkill: Zod.number().refine((val) => val <= 1, {
 					message: 'Maximum elemental skill on ascension 0 is 1',
 				}),
-				elementalBurst: z.number().refine((val) => val <= 1, {
+				elementalBurst: Zod.number().refine((val) => val <= 1, {
 					message: 'Maximum elemental burst on ascension 0 is 1',
 				}),
 			})
@@ -2005,17 +2013,17 @@ export function validateAscensionRequirement({
 
 			return
 		case 1:
-			const schema1 = z.object({
-				level: z.number().refine((val) => val <= 40, {
+			const schema1 = Zod.object({
+				level: Zod.number().refine((val) => val <= 40, {
 					message: 'Maximum level on ascension 1 is 40',
 				}),
-				normalAttack: z.number().refine((val) => val <= 1, {
+				normalAttack: Zod.number().refine((val) => val <= 1, {
 					message: 'Maximum normal attack on ascension 1 is 1',
 				}),
-				elementalSkill: z.number().refine((val) => val <= 1, {
+				elementalSkill: Zod.number().refine((val) => val <= 1, {
 					message: 'Maximum elemental skill on ascension 1 is 1',
 				}),
-				elementalBurst: z.number().refine((val) => val <= 1, {
+				elementalBurst: Zod.number().refine((val) => val <= 1, {
 					message: 'Maximum elemental burst on ascension 1 is 1',
 				}),
 			})
@@ -2033,17 +2041,17 @@ export function validateAscensionRequirement({
 
 			return
 		case 2:
-			const schema2 = z.object({
-				level: z.number().refine((val) => val <= 50, {
+			const schema2 = Zod.object({
+				level: Zod.number().refine((val) => val <= 50, {
 					message: 'Maximum level on ascension 2 is 50',
 				}),
-				normalAttack: z.number().refine((val) => val <= 2, {
+				normalAttack: Zod.number().refine((val) => val <= 2, {
 					message: 'Maximum normal attack on ascension 2 is 2',
 				}),
-				elementalSkill: z.number().refine((val) => val <= 2, {
+				elementalSkill: Zod.number().refine((val) => val <= 2, {
 					message: 'Maximum elemental skill on ascension 2 is 2',
 				}),
-				elementalBurst: z.number().refine((val) => val <= 2, {
+				elementalBurst: Zod.number().refine((val) => val <= 2, {
 					message: 'Maximum elemental burst on ascension 2 is 2',
 				}),
 			})
@@ -2061,17 +2069,17 @@ export function validateAscensionRequirement({
 
 			return
 		case 3:
-			const schema3 = z.object({
-				level: z.number().refine((val) => val <= 60, {
+			const schema3 = Zod.object({
+				level: Zod.number().refine((val) => val <= 60, {
 					message: 'Maximum level on ascension 3 is 60',
 				}),
-				normalAttack: z.number().refine((val) => val <= 4, {
+				normalAttack: Zod.number().refine((val) => val <= 4, {
 					message: 'Maximum normal attack on ascension 3 is 4',
 				}),
-				elementalSkill: z.number().refine((val) => val <= 4, {
+				elementalSkill: Zod.number().refine((val) => val <= 4, {
 					message: 'Maximum elemental skill on ascension 3 is 4',
 				}),
-				elementalBurst: z.number().refine((val) => val <= 4, {
+				elementalBurst: Zod.number().refine((val) => val <= 4, {
 					message: 'Maximum elemental burst on ascension 3 is 4',
 				}),
 			})
@@ -2089,17 +2097,17 @@ export function validateAscensionRequirement({
 
 			return
 		case 4:
-			const schema4 = z.object({
-				level: z.number().refine((val) => val <= 70, {
+			const schema4 = Zod.object({
+				level: Zod.number().refine((val) => val <= 70, {
 					message: 'Maximum level on ascension 4 is 70',
 				}),
-				normalAttack: z.number().refine((val) => val <= 6, {
+				normalAttack: Zod.number().refine((val) => val <= 6, {
 					message: 'Maximum normal attack on ascension 4 is 6',
 				}),
-				elementalSkill: z.number().refine((val) => val <= 6, {
+				elementalSkill: Zod.number().refine((val) => val <= 6, {
 					message: 'Maximum elemental skill on ascension 4 is 6',
 				}),
-				elementalBurst: z.number().refine((val) => val <= 6, {
+				elementalBurst: Zod.number().refine((val) => val <= 6, {
 					message: 'Maximum elemental burst on ascension 4 is 6',
 				}),
 			})
@@ -2117,17 +2125,17 @@ export function validateAscensionRequirement({
 
 			return
 		case 5:
-			const schema5 = z.object({
-				level: z.number().refine((val) => val <= 80, {
+			const schema5 = Zod.object({
+				level: Zod.number().refine((val) => val <= 80, {
 					message: 'Maximum level on ascension 5 is 80',
 				}),
-				normalAttack: z.number().refine((val) => val <= 8, {
+				normalAttack: Zod.number().refine((val) => val <= 8, {
 					message: 'Maximum normal attack on ascension 5 is 8',
 				}),
-				elementalSkill: z.number().refine((val) => val <= 8, {
+				elementalSkill: Zod.number().refine((val) => val <= 8, {
 					message: 'Maximum elemental skill on ascension 5 is 8',
 				}),
-				elementalBurst: z.number().refine((val) => val <= 8, {
+				elementalBurst: Zod.number().refine((val) => val <= 8, {
 					message: 'Maximum elemental burst on ascension 5 is 8',
 				}),
 			})
@@ -2145,17 +2153,17 @@ export function validateAscensionRequirement({
 
 			return
 		case 6:
-			const schema6 = z.object({
-				level: z.number().refine((val) => val <= 90, {
+			const schema6 = Zod.object({
+				level: Zod.number().refine((val) => val <= 90, {
 					message: 'Maximum level on ascension 6 is 90',
 				}),
-				normalAttack: z.number().refine((val) => val <= 10, {
+				normalAttack: Zod.number().refine((val) => val <= 10, {
 					message: 'Maximum normal attack on ascension 6 is 10',
 				}),
-				elementalSkill: z.number().refine((val) => val <= 10, {
+				elementalSkill: Zod.number().refine((val) => val <= 10, {
 					message: 'Maximum elemental skill on ascension 6 is 10',
 				}),
-				elementalBurst: z.number().refine((val) => val <= 10, {
+				elementalBurst: Zod.number().refine((val) => val <= 10, {
 					message: 'Maximum elemental burst on ascension 6 is 10',
 				}),
 			})

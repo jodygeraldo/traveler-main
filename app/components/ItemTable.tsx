@@ -1,27 +1,26 @@
 /* eslint-disable react/jsx-key */
 import clsx from 'clsx'
-import type { Column } from 'react-table'
-import { useTable } from 'react-table'
+import * as ReactTable from 'react-table'
 import Switch from './Switch'
 
-type BaseProps = {
+interface BaseProps {
 	uid: string
 	heading: React.ReactNode
 	switchLabel: string
 	switchState: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
-	columns: Column<any>[]
+	columns: ReactTable.Column<any>[]
 	data: {}[]
-	ascensionPhase?: number
 	customAddionalFirstCellElement?: React.ReactNode[]
 }
 
-type OtherCharacterProps = {
+interface OtherCharacterProps extends BaseProps {
+	ascensionPhase?: number
 	talentLevel?: [number, number, number]
-} & BaseProps
+}
 
-type TravelerProps = {
+interface TravelerProps extends BaseProps {
 	talentLevel: number | [number, number]
-} & Omit<BaseProps, 'ascensionPhase'>
+}
 
 export function ItemTable({
 	heading,
@@ -34,7 +33,7 @@ export function ItemTable({
 	customAddionalFirstCellElement,
 }: OtherCharacterProps) {
 	const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-		useTable({
+		ReactTable.useTable({
 			columns,
 			data,
 		})
@@ -145,7 +144,7 @@ export function ItemTableElementalTraveler({
 	customAddionalFirstCellElement,
 }: TravelerProps) {
 	const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-		useTable({
+		ReactTable.useTable({
 			columns,
 			data,
 		})
@@ -247,3 +246,6 @@ export function ItemTableElementalTraveler({
 		</div>
 	)
 }
+
+export const Table = ItemTable
+export const ElementalTravelerTable = ItemTableElementalTraveler

@@ -1,5 +1,4 @@
-import type { LinkProps } from '@remix-run/react'
-import { Link } from '@remix-run/react'
+import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 import * as React from 'react'
 
@@ -41,7 +40,9 @@ interface ButtonIconProps
 	type?: 'button' | 'submit' | 'reset'
 }
 
-interface ButtonLinkProps extends BaseProps, Omit<LinkProps, keyof BaseProps> {
+interface ButtonLinkProps
+	extends BaseProps,
+		Omit<RemixReact.LinkProps, keyof BaseProps> {
 	focusRing?: 1 | 2 | 3
 }
 
@@ -161,7 +162,7 @@ ButtonIcon.displayName = 'ButtonIcon'
 const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
 	({ focusRing = 2, className, children, ...props }, ref) => {
 		return (
-			<Link
+			<RemixReact.Link
 				ref={ref}
 				className={clsx(
 					baseStyles['buttonLink'],
@@ -171,7 +172,7 @@ const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
 				{...props}
 			>
 				{children}
-			</Link>
+			</RemixReact.Link>
 		)
 	}
 )
@@ -237,3 +238,7 @@ const ButtonGroup = React.forwardRef<HTMLButtonElement, ButtonGroupProps>(
 ButtonGroup.displayName = 'ButtonGroup'
 
 export { Button, ButtonIcon, ButtonLink, ButtonLinkExternal, ButtonGroup }
+export const Icon = ButtonIcon
+export const Link = ButtonLink
+export const LinkExternal = ButtonLinkExternal
+export const Group = ButtonGroup

@@ -1,12 +1,16 @@
-import { Link, useNavigate } from '@remix-run/react'
+import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 
-export default function Tabs({
-	tabs,
-}: {
-	tabs: { name: string; to: string; active: boolean }[]
-}) {
-	const navigate = useNavigate()
+interface Props {
+	tabs: {
+		name: string
+		to: string
+		active: boolean
+	}[]
+}
+
+export default function Tabs({ tabs }: Props) {
+	const navigate = RemixReact.useNavigate()
 
 	return (
 		<div>
@@ -34,7 +38,7 @@ export default function Tabs({
 				<div className="border-b border-gray-6">
 					<nav className="-mb-px flex" aria-label="Tabs">
 						{tabs.map((tab) => (
-							<Link
+							<RemixReact.Link
 								prefetch="intent"
 								key={tab.name}
 								to={tab.to}
@@ -47,7 +51,7 @@ export default function Tabs({
 								aria-current={tab.active ? 'page' : undefined}
 							>
 								{tab.name}
-							</Link>
+							</RemixReact.Link>
 						))}
 					</nav>
 				</div>

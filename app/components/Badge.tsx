@@ -9,7 +9,7 @@ type Variant =
 	| 'warning'
 	| 'info'
 
-type BaseProps = {
+interface BaseProps {
 	className?: string
 	children: React.ReactNode
 }
@@ -83,3 +83,5 @@ export function BadgeRarity({ rarity, children, className }: BadgeRarityProps) {
 		</span>
 	)
 }
+
+export const Rarity = BadgeRarity

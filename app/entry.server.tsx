@@ -1,15 +1,15 @@
-import type { EntryContext } from '@remix-run/node'
-import { RemixServer } from '@remix-run/react'
-import { renderToString } from 'react-dom/server'
+import type * as RemixNode from '@remix-run/node'
+import * as RemixReact from '@remix-run/react'
+import * as ReactDOMServer from 'react-dom/server'
 
 export default function handleRequest(
 	request: Request,
 	responseStatusCode: number,
 	responseHeaders: Headers,
-	remixContext: EntryContext
+	remixContext: RemixNode.EntryContext
 ) {
-	const markup = renderToString(
-		<RemixServer context={remixContext} url={request.url} />
+	const markup = ReactDOMServer.renderToString(
+		<RemixReact.RemixServer context={remixContext} url={request.url} />
 	)
 
 	responseHeaders.set('Content-Type', 'text/html')

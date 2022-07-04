@@ -1,10 +1,14 @@
 import invariant from 'tiny-invariant'
-import { client, e } from '~/db.server'
-import type { depromisify } from '~/utils'
-import { Account } from './user.server'
+import * as DB from '~/db.server'
+import type * as Utils from '~/utils'
+import * as UserModel from './user.server'
 
-export type CharacterInfer = depromisify<ReturnType<typeof getUserCharacter>>
-export type CharactersInfer = depromisify<ReturnType<typeof getUserCharacters>>
+export type CharacterInfer = Utils.depromisify<
+	ReturnType<typeof getUserCharacter>
+>
+export type CharactersInfer = Utils.depromisify<
+	ReturnType<typeof getUserCharacters>
+>
 
 export async function getUserCharacters({
 	accId,
@@ -13,8 +17,8 @@ export async function getUserCharacters({
 	accId: string
 	isTraveler?: boolean
 }) {
-	const userCharacters = await e
-		.select(e.UserCharacter, (userCharacter) => ({
+	const userCharacters = await DB.e
+		.select(DB.e.UserCharacter, (userCharacter) => ({
 			characters: (c) => ({
 				name: true,
 				'@level': true,
@@ -22,11 +26,11 @@ export async function getUserCharacters({
 				'@normal_attack': true,
 				'@elemental_skill': true,
 				'@elemental_burst': true,
-				filter: isTraveler ? e.op(c.name, 'ilike', 'Traveler%') : undefined,
+				filter: isTraveler ? DB.e.op(c.name, 'ilike', 'Traveler%') : undefined,
 			}),
-			filter: e.op(userCharacter.owner, '=', Account(accId)),
+			filter: DB.e.op(userCharacter.owner, '=', UserModel.Account(accId)),
 		}))
-		.run(client)
+		.run(DB.client)
 
 	return userCharacters?.characters
 }
@@ -38,8 +42,8 @@ export async function getUserCharacter({
 	name: string
 	accId: string
 }) {
-	const userCharacters = await e
-		.select(e.UserCharacter, (userCharacter) => ({
+	const userCharacters = await DB.e
+		.select(DB.e.UserCharacter, (userCharacter) => ({
 			characters: (c) => ({
 				name: true,
 				'@level': true,
@@ -47,11 +51,11 @@ export async function getUserCharacter({
 				'@normal_attack': true,
 				'@elemental_skill': true,
 				'@elemental_burst': true,
-				filter: e.op(c.name, '=', name),
+				filter: DB.e.op(c.name, '=', name),
 			}),
-			filter: e.op(userCharacter.owner, '=', Account(accId)),
+			filter: DB.e.op(userCharacter.owner, '=', UserModel.Account(accId)),
 		}))
-		.run(client)
+		.run(DB.client)
 
 	invariant(
 		userCharacters,
@@ -109,55 +113,64 @@ export async function upsertCharacter({
 			}))
 			.concat(travelerToUpsert)
 
-		const charactersToUpsert = e.json(travelersToUpsert)
+		const charactersToUpsert = DB.e.json(travelersToUpsert)
 
-		await e
-			.update(e.UserCharacter, (userCharacter) => ({
-				filter: e.op(userCharacter.owner, '=', Account(accId)),
+		await DB.e
+			.update(DB.e.UserCharacter, (userCharacter) => ({
+				filter: DB.e.op(userCharacter.owner, '=', UserModel.Account(accId)),
 				set: {
 					characters: {
-						'+=': e.op(
+						'+=': DB.e.op(
 							'distinct',
-							e.for(e.json_array_unpack(charactersToUpsert), (character) =>
-								e.select(e.Character, (c) => ({
-									filter: e.op(c.name, '=', e.cast(e.str, character.name)),
-									'@level': e.cast(e.int16, character.level),
-									'@ascension': e.cast(e.int16, character.ascension),
-									'@normal_attack': e.cast(e.int16, character.normal_attack),
-									'@elemental_skill': e.cast(
-										e.int16,
-										character.elemental_skill
-									),
-									'@elemental_burst': e.cast(
-										e.int16,
-										character.elemental_burst
-									),
-								}))
+							DB.e.for(
+								DB.e.json_array_unpack(charactersToUpsert),
+								(character) =>
+									DB.e.select(DB.e.Character, (c) => ({
+										filter: DB.e.op(
+											c.name,
+											'=',
+											DB.e.cast(DB.e.str, character.name)
+										),
+										'@level': DB.e.cast(DB.e.int16, character.level),
+										'@ascension': DB.e.cast(DB.e.int16, character.ascension),
+										'@normal_attack': DB.e.cast(
+											DB.e.int16,
+											character.normal_attack
+										),
+										'@elemental_skill': DB.e.cast(
+											DB.e.int16,
+											character.elemental_skill
+										),
+										'@elemental_burst': DB.e.cast(
+											DB.e.int16,
+											character.elemental_burst
+										),
+									}))
 							)
 						),
 					},
 				},
 			}))
-			.run(client)
+			.run(DB.client)
 
 		return
 	}
 
-	const itemToUpsert = e.select(e.Character, (c) => ({
-		'@level': e.int16(progression.level),
-		'@ascension': e.int16(progression.ascension),
-		'@normal_attack': e.int16(progression.normalAttack),
-		'@elemental_skill': e.int16(progression.elementalSkill),
-		'@elemental_burst': e.int16(progression.elementalBurst),
-		filter: e.op(c.name, '=', name),
+	const itemToUpsert = DB.e.select(DB.e.Character, (c) => ({
+		'@level': DB.e.int16(progression.level),
+		'@ascension': DB.e.int16(progression.ascension),
+		'@normal_attack': DB.e.int16(progression.normalAttack),
+		'@elemental_skill': DB.e.int16(progression.elementalSkill),
+		'@elemental_burst': DB.e.int16(progression.elementalBurst),
+		filter: DB.e.op(c.name, '=', name),
 	}))
 
-	await e
-		.update(e.UserCharacter, (userCharacter) => ({
-			filter: e.op(userCharacter.owner, '=', Account(accId)),
+	await DB.e
+		.update(DB.e.UserCharacter, (userCharacter) => ({
+			filter: DB.e.op(userCharacter.owner, '=', UserModel.Account(accId)),
 			set: {
 				characters: { '+=': itemToUpsert },
 			},
 		}))
-		.run(client)
+		.run(DB.client)
 }

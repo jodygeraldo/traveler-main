@@ -1,16 +1,18 @@
-import Image, { MimeType } from 'remix-image'
-import { getImageSrc } from '~/utils'
+import * as RemixImage from 'remix-image'
+import * as Utils from '~/utils'
 import Tooltip from './Tooltip'
+
+interface Props {
+	talentName: string[]
+	name: string
+	weapon: string
+}
 
 export default function CharacterCustomTableHeading({
 	talentName,
 	name,
 	weapon,
-}: {
-	talentName: string[]
-	name: string
-	weapon: string
-}) {
+}: Props) {
 	const talent = [
 		'Normal_Attack',
 		'Elemental_Skill',
@@ -22,14 +24,14 @@ export default function CharacterCustomTableHeading({
 			<span className="ml-2 inline-flex flex-shrink-0 gap-1 rounded-full bg-gray-2 p-1">
 				{talent.map((t, i) => (
 					<Tooltip key={talentName[i]} text={talentName[i]}>
-						<Image
+						<RemixImage.Image
 							src={`/image/talent/${t}_${
-								t === 'Normal_Attack' ? weapon : getImageSrc(name)
+								t === 'Normal_Attack' ? weapon : Utils.getImageSrc(name)
 							}.png`}
 							alt=""
 							className="h-8 w-8 flex-shrink-0"
 							responsive={[{ size: { width: 32, height: 32 } }]}
-							options={{ contentType: MimeType.WEBP }}
+							options={{ contentType: RemixImage.MimeType.WEBP }}
 							dprVariants={[1, 2, 3]}
 						/>
 					</Tooltip>

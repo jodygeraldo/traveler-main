@@ -1,7 +1,7 @@
 import * as RadixTooltip from '@radix-ui/react-tooltip'
 import * as React from 'react'
 
-type Props = {
+interface Props {
 	text: string
 	children: React.ReactNode
 }

@@ -2,7 +2,7 @@ import type * as RemixReact from '@remix-run/react'
 import * as React from 'react'
 import * as ReactRouter from 'react-router'
 
-type CreateRemixReactMockOptions = {
+interface CreateRemixReactMockOptions {
 	path: string
 	Outlet?: React.ComponentType<React.ComponentProps<typeof RemixReact.Outlet>>
 }

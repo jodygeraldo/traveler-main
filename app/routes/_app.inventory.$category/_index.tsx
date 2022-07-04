@@ -1,26 +1,24 @@
-import type { ErrorBoundaryComponent, LoaderFunction } from '@remix-run/node'
-import { json } from '@remix-run/node'
-import type { ShouldReloadFunction } from '@remix-run/react'
-import { useCatch, useLoaderData } from '@remix-run/react'
-import type { Inventory } from 'dbschema/edgeql-js'
+import * as RemixNode from '@remix-run/node'
+import * as RemixReact from '@remix-run/react'
 import invariant from 'tiny-invariant'
-import { z } from 'zod'
+import * as Zod from 'zod'
 import ItemList from '~/components/ItemList'
-import { getItems } from '~/data/items'
-import { getInventoryCategory } from '~/models/inventory.server'
-import { requireAccountId } from '~/session.server'
-import { toCapitalized, toSnakeCase } from '~/utils'
+import * as ItemData from '~/data/items'
+import type * as DB from '~/db.server'
+import * as InventoryModel from '~/models/inventory.server'
+import * as Session from '~/session.server'
+import * as Utils from '~/utils'
 
 export { action } from '~/actions/inventory'
 
-type LoaderData = {
-	items: ReturnType<typeof getItems>
-	category: keyof Inventory
+interface LoaderData {
+	items: ReturnType<typeof ItemData.getItems>
+	category: keyof DB.Inventory
 }
-export const loader: LoaderFunction = async ({ params, request }) => {
+export const loader: RemixNode.LoaderFunction = async ({ params, request }) => {
 	const { category: categoryParams } = params
 	invariant(categoryParams, 'category is required')
-	const ParamsSchema = z.enum([
+	const ParamsSchema = Zod.enum([
 		'common',
 		'ascension_gem',
 		'ascension_boss',
@@ -30,26 +28,31 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 		'special',
 	])
 
-	const parsedCategory = ParamsSchema.safeParse(toSnakeCase(categoryParams))
+	const parsedCategory = ParamsSchema.safeParse(
+		Utils.toSnakeCase(categoryParams)
+	)
 	if (!parsedCategory.success) {
-		throw json(
+		throw RemixNode.json(
 			{ category: categoryParams },
 			{ status: 404, statusText: 'Page Not Found' }
 		)
 	}
 
-	const accId = await requireAccountId(request)
-	const inventory = await getInventoryCategory({
+	const accId = await Session.requireAccountId(request)
+	const inventory = await InventoryModel.getInventoryCategory({
 		category: parsedCategory.data,
 		accId,
 	})
-	const items = getItems({ category: parsedCategory.data, items: inventory })
+	const items = ItemData.getItems({
+		category: parsedCategory.data,
+		items: inventory,
+	})
 
-	return json<LoaderData>({ items, category: parsedCategory.data })
+	return RemixNode.json<LoaderData>({ items, category: parsedCategory.data })
 }
 
 export default function InventoryCategoryPage() {
-	const { items, category } = useLoaderData<LoaderData>()
+	const { items, category } = RemixReact.useLoaderData<LoaderData>()
 
 	return (
 		<div className="space-y-12">
@@ -59,7 +62,7 @@ export default function InventoryCategoryPage() {
 
 			<div>
 				<h2 className="text-lg font-medium leading-6 text-gray-12">
-					{toCapitalized(category)}
+					{Utils.toCapitalized(category)}
 				</h2>
 				<ItemList items={items} category={category} />
 			</div>
@@ -67,12 +70,14 @@ export default function InventoryCategoryPage() {
 	)
 }
 
-export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
+export const unstable_shouldReload: RemixReact.ShouldReloadFunction = ({
+	submission,
+}) => {
 	return !!submission && submission.method !== 'POST'
 }
 
 export function CatchBoundary() {
-	const caught = useCatch()
+	const caught = RemixReact.useCatch()
 
 	return (
 		<div>
@@ -87,7 +92,7 @@ export function CatchBoundary() {
 	)
 }
 
-export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
+export const ErrorBoundary: RemixNode.ErrorBoundaryComponent = ({ error }) => {
 	return (
 		<div>
 			<h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">

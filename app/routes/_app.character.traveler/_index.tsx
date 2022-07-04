@@ -1,6 +1,6 @@
-import { NavLink, Outlet } from '@remix-run/react'
+import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
-import Image, { MimeType } from 'remix-image'
+import * as RemixImage from 'remix-image'
 
 export default function TravelerLayout() {
 	return (
@@ -11,7 +11,7 @@ export default function TravelerLayout() {
 				</nav>
 			</div>
 			<main className="lg:col-span-10">
-				<Outlet />
+				<RemixReact.Outlet />
 			</main>
 		</div>
 	)
@@ -27,7 +27,7 @@ function Sidebar() {
 	return (
 		<nav className="space-y-1" aria-label="Sidebar">
 			{navigation.map((item) => (
-				<NavLink
+				<RemixReact.NavLink
 					prefetch="intent"
 					key={item.name}
 					to={item.to}
@@ -41,16 +41,16 @@ function Sidebar() {
 					}
 				>
 					<span className="truncate">{item.name}</span>
-					<Image
+					<RemixImage.Image
 						src={`/image/element/${item.name}.png`}
 						alt=""
 						className="h-4 w-4"
 						aria-hidden
 						responsive={[{ size: { width: 16, height: 16 } }]}
-						options={{ contentType: MimeType.WEBP }}
+						options={{ contentType: RemixImage.MimeType.WEBP }}
 						dprVariants={[1, 2, 3]}
 					/>
-				</NavLink>
+				</RemixReact.NavLink>
 			))}
 		</nav>
 	)

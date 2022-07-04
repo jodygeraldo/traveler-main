@@ -1,9 +1,9 @@
-import { Outlet } from '@remix-run/react'
+import * as RemixReact from '@remix-run/react'
 
 export default function CharacterLayout() {
 	return (
 		<div className="py-10">
-			<Outlet />
+			<RemixReact.Outlet />
 		</div>
 	)
 }

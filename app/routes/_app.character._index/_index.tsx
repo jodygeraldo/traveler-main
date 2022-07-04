@@ -1,38 +1,36 @@
 import * as RadixHoverCard from '@radix-ui/react-hover-card'
-import type { LoaderFunction } from '@remix-run/node'
-import { json } from '@remix-run/node'
-import { Link, useLoaderData } from '@remix-run/react'
+import * as RemixNode from '@remix-run/node'
+import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 import * as React from 'react'
-import Image, { MimeType } from 'remix-image'
+import * as RemixImage from 'remix-image'
 import invariant from 'tiny-invariant'
 import Tooltip from '~/components/Tooltip'
-import type { Character } from '~/data/characters'
-import { getCharacters } from '~/data/characters'
-import { getUserCharacters } from '~/models/character.server'
-import { requireAccountId } from '~/session.server'
-import { getImageSrc } from '~/utils'
+import * as CharacterData from '~/data/characters'
+import * as CharacterModel from '~/models/character.server'
+import * as Session from '~/session.server'
+import * as Utils from '~/utils'
 
-type LoaderData = {
-	data: ReturnType<typeof getCharacters>
+interface LoaderData {
+	data: ReturnType<typeof CharacterData.getCharacters>
 }
 
-export const loader: LoaderFunction = async ({ request }) => {
-	const accId = await requireAccountId(request)
+export const loader: RemixNode.LoaderFunction = async ({ request }) => {
+	const accId = await Session.requireAccountId(request)
 
-	const userData = await getUserCharacters({ accId })
+	const userData = await CharacterModel.getUserCharacters({ accId })
 	invariant(userData, 'every account should have an minimum 7 characters')
 	const userTravelers = userData.filter((c) => c.name.includes('Traveler'))
-	const data = getCharacters({
+	const data = CharacterData.getCharacters({
 		userCharacters: userData,
 		travelers: userTravelers,
 	})
 
-	return json<LoaderData>({ data })
+	return RemixNode.json<LoaderData>({ data })
 }
 
 export default function CharactersPage() {
-	const { data } = useLoaderData() as LoaderData
+	const { data } = RemixReact.useLoaderData() as LoaderData
 
 	return (
 		<div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -62,8 +60,8 @@ function CharacterList({
 	characters,
 	travelers,
 }: {
-	characters: Character[]
-	travelers: Character[]
+	characters: CharacterData.Character[]
+	travelers: CharacterData.Character[]
 }) {
 	return (
 		<div>
@@ -76,7 +74,7 @@ function CharacterList({
 								character.name.includes('Traveler') ? travelers : undefined
 							}
 						>
-							<Link to={`./${character.name}`} prefetch="intent">
+							<RemixReact.Link to={`./${character.name}`} prefetch="intent">
 								<div className="group rounded-b-md bg-gray-3 shadow-sm hover:bg-gray-4">
 									<div
 										className={clsx(
@@ -86,14 +84,14 @@ function CharacterList({
 											'rounded-t-md rounded-br-3xl'
 										)}
 									>
-										<Image
-											src={`/image/character/${getImageSrc(
+										<RemixImage.Image
+											src={`/image/character/${Utils.getImageSrc(
 												character.name
 											)}.png`}
 											alt={character.name}
 											className="h-24 w-24 rounded-br-3xl"
 											responsive={[{ size: { width: 96, height: 96 } }]}
-											options={{ contentType: MimeType.WEBP }}
+											options={{ contentType: RemixImage.MimeType.WEBP }}
 											dprVariants={[1, 2, 3]}
 										/>
 									</div>
@@ -115,7 +113,7 @@ function CharacterList({
 										</p>
 									</div>
 								</div>
-							</Link>
+							</RemixReact.Link>
 						</HoverCard>
 					</li>
 				))}
@@ -129,8 +127,8 @@ function HoverCard({
 	travelers,
 	children,
 }: {
-	character: Character
-	travelers?: Character[]
+	character: CharacterData.Character
+	travelers?: CharacterData.Character[]
 	children: React.ReactNode
 }) {
 	return (
@@ -149,13 +147,13 @@ function HoverCard({
 							character.vision.map((vision) => (
 								<div key={`${character.name}-${vision}`}>
 									<span className="sr-only">{character.vision} vision</span>
-									<Image
+									<RemixImage.Image
 										src={`/image/element/${vision.toLowerCase()}.png`}
 										alt=""
 										className="h-4 w-4"
 										aria-hidden
 										responsive={[{ size: { width: 16, height: 16 } }]}
-										options={{ contentType: MimeType.WEBP }}
+										options={{ contentType: RemixImage.MimeType.WEBP }}
 										dprVariants={[1, 2, 3]}
 									/>
 								</div>
@@ -163,13 +161,13 @@ function HoverCard({
 						) : (
 							<div>
 								<span className="sr-only">{character.vision} vision</span>
-								<Image
+								<RemixImage.Image
 									src={`/image/element/${character.vision.toLowerCase()}.png`}
 									alt=""
 									className="h-4 w-4"
 									aria-hidden
 									responsive={[{ size: { width: 16, height: 16 } }]}
-									options={{ contentType: MimeType.WEBP }}
+									options={{ contentType: RemixImage.MimeType.WEBP }}
 									dprVariants={[1, 2, 3]}
 								/>
 							</div>
@@ -284,14 +282,14 @@ function TalentTooltipIcon({
 	  }) {
 	return (
 		<Tooltip key={talentName} text={talentName}>
-			<Image
+			<RemixImage.Image
 				src={`/image/talent/${talent}_${
-					talent === 'Normal_Attack' ? weapon : getImageSrc(name)
+					talent === 'Normal_Attack' ? weapon : Utils.getImageSrc(name)
 				}.png`}
 				alt=""
 				className="h-5 w-5 flex-shrink-0"
 				responsive={[{ size: { width: 20, height: 20 } }]}
-				options={{ contentType: MimeType.WEBP }}
+				options={{ contentType: RemixImage.MimeType.WEBP }}
 				dprVariants={[1, 2, 3]}
 			/>
 		</Tooltip>

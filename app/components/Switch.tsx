@@ -1,8 +1,8 @@
-import { Switch as HeadlessUISwitch } from '@headlessui/react'
+import * as HeadlessUIReact from '@headlessui/react'
 import clsx from 'clsx'
 import * as React from 'react'
 
-type Props = {
+interface Props {
 	label: string
 	state: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
 }
@@ -11,11 +11,11 @@ export default function Switch({ label, state }: Props) {
 	const [enabled, setEnabled] = state
 
 	return (
-		<HeadlessUISwitch.Group as="div" className="flex items-center">
-			<HeadlessUISwitch.Label as="span" className="mr-3">
+		<HeadlessUIReact.Switch.Group as="div" className="flex items-center">
+			<HeadlessUIReact.Switch.Label as="span" className="mr-3">
 				<span className="text-sm font-medium text-gray-12">{label}</span>
-			</HeadlessUISwitch.Label>
-			<HeadlessUISwitch
+			</HeadlessUIReact.Switch.Label>
+			<HeadlessUIReact.Switch
 				checked={enabled}
 				onChange={setEnabled}
 				className={clsx(
@@ -30,7 +30,7 @@ export default function Switch({ label, state }: Props) {
 						'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-gray-12 shadow ring-0 transition duration-200 ease-in-out'
 					)}
 				/>
-			</HeadlessUISwitch>
-		</HeadlessUISwitch.Group>
+			</HeadlessUIReact.Switch>
+		</HeadlessUIReact.Switch.Group>
 	)
 }

@@ -1,6 +1,6 @@
 import logoUrl from '~/assets/logoipsum-logo-15.svg'
 
-type Props = {
+interface Props {
 	logo?: boolean
 	text?: boolean
 }

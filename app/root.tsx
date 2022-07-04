@@ -1,39 +1,26 @@
-import { TooltipProvider } from '@radix-ui/react-tooltip'
-import type {
-	LinksFunction,
-	LoaderFunction,
-	MetaFunction,
-} from '@remix-run/node'
-import { json } from '@remix-run/node'
-import {
-	Links,
-	LiveReload,
-	Meta,
-	Outlet,
-	Scripts,
-	ScrollRestoration,
-} from '@remix-run/react'
-import { getUser } from './session.server'
-
+import * as RadixTooltip from '@radix-ui/react-tooltip'
+import * as RemixNode from '@remix-run/node'
+import * as RemixReact from '@remix-run/react'
+import * as Session from './session.server'
 import tailwindStylesheetUrl from './tailwind.css'
 
-export const links: LinksFunction = () => {
+export const links: RemixNode.LinksFunction = () => {
 	return [{ rel: 'stylesheet', href: tailwindStylesheetUrl }]
 }
 
-export const meta: MetaFunction = () => ({
+export const meta: RemixNode.MetaFunction = () => ({
 	charset: 'utf-8',
 	title: 'Traveler Main',
 	viewport: 'width=device-width,initial-scale=1',
 })
 
-type LoaderData = {
-	user: Awaited<ReturnType<typeof getUser>>
+interface LoaderData {
+	user: Awaited<ReturnType<typeof Session.getUser>>
 }
 
-export const loader: LoaderFunction = async ({ request }) => {
-	return json<LoaderData>({
-		user: await getUser(request),
+export const loader: RemixNode.LoaderFunction = async ({ request }) => {
+	return RemixNode.json<LoaderData>({
+		user: await Session.getUser(request),
 	})
 }
 
@@ -41,16 +28,16 @@ export default function App() {
 	return (
 		<html lang="en" className="h-full">
 			<head>
-				<Meta />
-				<Links />
+				<RemixReact.Meta />
+				<RemixReact.Links />
 			</head>
 			<body className="h-full bg-gray-1">
-				<TooltipProvider delayDuration={500}>
-					<Outlet />
-				</TooltipProvider>
-				<ScrollRestoration />
-				<Scripts />
-				<LiveReload />
+				<RadixTooltip.Provider delayDuration={500}>
+					<RemixReact.Outlet />
+				</RadixTooltip.Provider>
+				<RemixReact.ScrollRestoration />
+				<RemixReact.Scripts />
+				<RemixReact.LiveReload />
 			</body>
 		</html>
 	)

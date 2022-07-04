@@ -1,26 +1,25 @@
-import type { ErrorBoundaryComponent, LoaderFunction } from '@remix-run/node'
-import { json } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
+import * as RemixNode from '@remix-run/node'
+import * as RemixReact from '@remix-run/react'
 import ItemList from '~/components/ItemList'
-import { getAllItems } from '~/data/items'
-import { getInventory } from '~/models/inventory.server'
-import { requireAccountId } from '~/session.server'
+import * as ItemData from '~/data/items'
+import * as InventoryModel from '~/models/inventory.server'
+import * as Session from '~/session.server'
 
 export { action } from '~/actions/inventory'
 
-type LoaderData = {
-	items: ReturnType<typeof getAllItems>
+interface LoaderData {
+	items: ReturnType<typeof ItemData.getAllItems>
 }
-export const loader: LoaderFunction = async ({ request }) => {
-	const accId = await requireAccountId(request)
-	const inventory = await getInventory({ accId })
-	const items = getAllItems(inventory)
+export const loader: RemixNode.LoaderFunction = async ({ request }) => {
+	const accId = await Session.requireAccountId(request)
+	const inventory = await InventoryModel.getInventory({ accId })
+	const items = ItemData.getAllItems(inventory)
 
-	return json<LoaderData>({ items })
+	return RemixNode.json<LoaderData>({ items })
 }
 
 export default function InventoryPage() {
-	const { items } = useLoaderData<LoaderData>()
+	const { items } = RemixReact.useLoaderData<LoaderData>()
 
 	return (
 		<div className="space-y-12">
@@ -76,7 +75,7 @@ export default function InventoryPage() {
 	)
 }
 
-export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
+export const ErrorBoundary: RemixNode.ErrorBoundaryComponent = ({ error }) => {
 	return (
 		<div>
 			<h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">

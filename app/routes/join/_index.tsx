@@ -1,21 +1,14 @@
-import type {
-	ActionFunction,
-	LoaderFunction,
-	MetaFunction,
-} from '@remix-run/node'
-import { json, redirect } from '@remix-run/node'
-import { Form, Link, useActionData, useSearchParams } from '@remix-run/react'
+import * as RemixNode from '@remix-run/node'
+import * as RemixReact from '@remix-run/react'
 import * as React from 'react'
+import * as UserModel from '~/models/user.server'
+import * as Session from '~/session.server'
+import * as Utils from '~/utils'
 
-import { createUserSession, getUserId } from '~/session.server'
-
-import { createUser, getUserByEmail } from '~/models/user.server'
-import { safeRedirect, validateEmail } from '~/utils'
-
-export const loader: LoaderFunction = async ({ request }) => {
-	const userId = await getUserId(request)
-	if (userId) return redirect('/')
-	return json({})
+export const loader: RemixNode.LoaderFunction = async ({ request }) => {
+	const userId = await Session.getUserId(request)
+	if (userId) return RemixNode.redirect('/')
+	return RemixNode.json({})
 }
 
 interface ActionData {
@@ -25,44 +18,44 @@ interface ActionData {
 	}
 }
 
-export const action: ActionFunction = async ({ request }) => {
+export const action: RemixNode.ActionFunction = async ({ request }) => {
 	const formData = await request.formData()
 	const email = formData.get('email')
 	const password = formData.get('password')
-	const redirectTo = safeRedirect(formData.get('redirectTo'), '/')
+	const redirectTo = Utils.safeRedirect(formData.get('redirectTo'), '/')
 
-	if (!validateEmail(email)) {
-		return json<ActionData>(
+	if (!Utils.validateEmail(email)) {
+		return RemixNode.json<ActionData>(
 			{ errors: { email: 'Email is invalid' } },
 			{ status: 400 }
 		)
 	}
 
 	if (typeof password !== 'string') {
-		return json<ActionData>(
+		return RemixNode.json<ActionData>(
 			{ errors: { password: 'Password is required' } },
 			{ status: 400 }
 		)
 	}
 
 	if (password.length < 8) {
-		return json<ActionData>(
+		return RemixNode.json<ActionData>(
 			{ errors: { password: 'Password is too short' } },
 			{ status: 400 }
 		)
 	}
 
-	const existingUser = await getUserByEmail(email)
+	const existingUser = await UserModel.getUserByEmail(email)
 	if (existingUser) {
-		return json<ActionData>(
+		return RemixNode.json<ActionData>(
 			{ errors: { email: 'A user already exists with this email' } },
 			{ status: 400 }
 		)
 	}
 
-	const account = await createUser(email, password)
+	const account = await UserModel.createUser(email, password)
 
-	return createUserSession({
+	return Session.createUserSession({
 		request,
 		userId: account.owner.id,
 		accountId: account.id,
@@ -71,16 +64,16 @@ export const action: ActionFunction = async ({ request }) => {
 	})
 }
 
-export const meta: MetaFunction = () => {
+export const meta: RemixNode.MetaFunction = () => {
 	return {
 		title: 'Sign Up',
 	}
 }
 
 export default function Join() {
-	const [searchParams] = useSearchParams()
+	const [searchParams] = RemixReact.useSearchParams()
 	const redirectTo = searchParams.get('redirectTo') ?? undefined
-	const actionData = useActionData() as ActionData
+	const actionData = RemixReact.useActionData() as ActionData
 	const emailRef = React.useRef<HTMLInputElement>(null)
 	const passwordRef = React.useRef<HTMLInputElement>(null)
 
@@ -95,7 +88,7 @@ export default function Join() {
 	return (
 		<div className="flex min-h-full flex-col justify-center">
 			<div className="mx-auto w-full max-w-md px-8">
-				<Form method="post" className="space-y-6">
+				<RemixReact.Form method="post" className="space-y-6">
 					<div>
 						<label
 							htmlFor="email"
@@ -160,7 +153,7 @@ export default function Join() {
 					<div className="flex items-center justify-center">
 						<div className="text-center text-sm text-gray-500">
 							Already have an account?{' '}
-							<Link
+							<RemixReact.Link
 								className="text-blue-500 underline"
 								to={{
 									pathname: '/login',
@@ -168,10 +161,10 @@ export default function Join() {
 								}}
 							>
 								Log in
-							</Link>
+							</RemixReact.Link>
 						</div>
 					</div>
-				</Form>
+				</RemixReact.Form>
 			</div>
 		</div>
 	)

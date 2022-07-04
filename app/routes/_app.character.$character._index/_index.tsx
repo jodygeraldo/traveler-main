@@ -1,59 +1,65 @@
-import type { LoaderFunction } from '@remix-run/node'
-import { json } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
-import { useMemo, useState } from 'react'
+import * as RemixNode from '@remix-run/node'
+import * as RemixReact from '@remix-run/react'
+import * as React from 'react'
 import invariant from 'tiny-invariant'
 import CharacterCustomFirstCell from '~/components/CharacterCustomFirstCell'
 import CharacterCustomTableHeading from '~/components/CharacterCustomTableHeading'
-import Icon from '~/components/Icon'
-import { ItemTable } from '~/components/ItemTable'
+import * as Icon from '~/components/Icon'
+import * as ItemTable from '~/components/ItemTable'
 import TableCell from '~/components/TableCell'
-import type { CharacterMinimal } from '~/data/characters'
-import { getCharacter, getCharacterRequiredMaterial } from '~/data/characters'
-import { getUserCharacter } from '~/models/character.server'
-import { requireAccountId } from '~/session.server'
+import * as CharacterData from '~/data/characters'
+import * as CharacterModel from '~/models/character.server'
+import * as Session from '~/session.server'
 
-type LoaderData = {
-	character: CharacterMinimal
+interface LoaderData {
+	character: CharacterData.CharacterMinimal
 	ascensionMaterial: ReturnType<
-		typeof getCharacterRequiredMaterial
+		typeof CharacterData.getCharacterRequiredMaterial
 	>['ascensionMaterial']
 	talentMaterial: ReturnType<
-		typeof getCharacterRequiredMaterial
+		typeof CharacterData.getCharacterRequiredMaterial
 	>['talentMaterial']
 }
 
-export const loader: LoaderFunction = async ({ request, params }) => {
-	const accId = await requireAccountId(request)
+export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
+	const accId = await Session.requireAccountId(request)
 	const { character: characterName } = params
 	invariant(characterName)
 
-	const userCharacter = await getUserCharacter({ name: characterName, accId })
-	const character = getCharacter({
+	const userCharacter = await CharacterModel.getUserCharacter({
+		name: characterName,
+		accId,
+	})
+	const character = CharacterData.getCharacter({
 		name: characterName,
 		characterData: userCharacter,
 	})
 	if (!character) {
-		throw json(`Character ${characterName} not found`, {
+		throw RemixNode.json(`Character ${characterName} not found`, {
 			status: 404,
 			statusText: 'Page Not Found',
 		})
 	}
 
-	const { ascensionMaterial, talentMaterial } = getCharacterRequiredMaterial({
-		name: characterName,
-	})
+	const { ascensionMaterial, talentMaterial } =
+		CharacterData.getCharacterRequiredMaterial({
+			name: characterName,
+		})
 
-	return json<LoaderData>({ character, ascensionMaterial, talentMaterial })
+	return RemixNode.json<LoaderData>({
+		character,
+		ascensionMaterial,
+		talentMaterial,
+	})
 }
 
 export default function CharacterPage() {
 	const { character, ascensionMaterial, talentMaterial } =
-		useLoaderData() as LoaderData
-	const [hideAscension, setHideAscension] = useState(false)
-	const [hideTalent, setHideTalent] = useState(false)
+		RemixReact.useLoaderData() as LoaderData
+	const [hideAscension, setHideAscension] = React.useState(false)
+	const [hideTalent, setHideTalent] = React.useState(false)
 
-	const ascensionColumns = useMemo(
+	const ascensionColumns = React.useMemo(
 		() => [
 			{
 				Header: 'Phase',
@@ -62,12 +68,7 @@ export default function CharacterPage() {
 					<div className="flex items-center gap-1">
 						<span className="tabular-nums">{value.from}</span>
 						<span className="sr-only">To</span>
-						<Icon
-							type="solid"
-							name="arrowSmRight"
-							aria-hidden
-							className="h-4 w-4"
-						/>
+						<Icon.Solid name="arrowSmRight" aria-hidden className="h-4 w-4" />
 						<span className="tabular-nums">{value.to}</span>
 					</div>
 				),
@@ -111,7 +112,7 @@ export default function CharacterPage() {
 		[]
 	)
 
-	const talentColumns = useMemo(
+	const talentColumns = React.useMemo(
 		() => [
 			{
 				Header: 'Level',
@@ -120,12 +121,7 @@ export default function CharacterPage() {
 					<div className="flex items-center gap-1">
 						<span className="tabular-nums">{value.from}</span>
 						<span className="sr-only">To</span>
-						<Icon
-							type="solid"
-							name="arrowSmRight"
-							aria-hidden
-							className="h-4 w-4"
-						/>
+						<Icon.Solid name="arrowSmRight" aria-hidden className="h-4 w-4" />
 						<span className="tabular-nums">{value.to}</span>
 					</div>
 				),
@@ -169,12 +165,12 @@ export default function CharacterPage() {
 		[]
 	)
 
-	const ascensionData = useMemo(
+	const ascensionData = React.useMemo(
 		() => (hideAscension ? [] : [...ascensionMaterial]),
 		[hideAscension, ascensionMaterial]
 	)
 
-	const talentData = useMemo(
+	const talentData = React.useMemo(
 		() => (hideTalent ? [] : [...talentMaterial]),
 		[hideTalent, talentMaterial]
 	)
@@ -183,7 +179,7 @@ export default function CharacterPage() {
 
 	return (
 		<>
-			<ItemTable
+			<ItemTable.Table
 				uid="ascension"
 				heading="Ascension"
 				switchLabel="Hide ascension table"
@@ -192,7 +188,7 @@ export default function CharacterPage() {
 				data={ascensionData}
 				ascensionPhase={character.progression?.ascension ?? 0}
 			/>
-			<ItemTable
+			<ItemTable.Table
 				uid="normal-talent"
 				heading={CharacterCustomTableHeading({
 					talentName: talent,

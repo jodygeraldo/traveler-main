@@ -1,12 +1,11 @@
-import { createCookieSessionStorage, redirect } from '@remix-run/node'
+import * as RemixNode from '@remix-run/node'
 import invariant from 'tiny-invariant'
-
-import { getUserById } from '~/models/user.server'
-import type { Account, User } from './db.server'
+import * as UserModel from '~/models/user.server'
+import type * as DB from './db.server'
 
 invariant(process.env.SESSION_SECRET, 'SESSION_SECRET must be set')
 
-export const sessionStorage = createCookieSessionStorage({
+export const sessionStorage = RemixNode.createCookieSessionStorage({
 	cookie: {
 		name: '__session',
 		httpOnly: true,
@@ -28,7 +27,7 @@ export async function getSession(request: Request) {
 
 export async function getUserId(
 	request: Request
-): Promise<User['id'] | undefined> {
+): Promise<DB.User['id'] | undefined> {
 	const session = await getSession(request)
 	const userId = session.get(USER_SESSION_KEY)
 	return userId
@@ -36,7 +35,7 @@ export async function getUserId(
 
 export async function getAccountId(
 	request: Request
-): Promise<Account['id'] | undefined> {
+): Promise<DB.Account['id'] | undefined> {
 	const session = await getSession(request)
 	const accountId = session.get(ACCOUNT_SESSION_KEY)
 	return accountId
@@ -46,7 +45,7 @@ export async function getUser(request: Request) {
 	const userId = await getUserId(request)
 	if (userId === undefined) return null
 
-	const user = await getUserById(userId)
+	const user = await UserModel.getUserById(userId)
 	if (user) return user
 
 	throw await logout(request)
@@ -59,7 +58,7 @@ export async function requireUserId(
 	const userId = await getUserId(request)
 	if (!userId) {
 		const searchParams = new URLSearchParams([['redirectTo', redirectTo]])
-		throw redirect(`/login?${searchParams}`)
+		throw RemixNode.redirect(`/login?${searchParams}`)
 	}
 	return userId
 }
@@ -71,7 +70,7 @@ export async function requireAccountId(
 	const accountId = await getAccountId(request)
 	if (!accountId) {
 		const searchParams = new URLSearchParams([['redirectTo', redirectTo]])
-		throw redirect(`/login?${searchParams}`)
+		throw RemixNode.redirect(`/login?${searchParams}`)
 	}
 	return accountId
 }
@@ -79,7 +78,7 @@ export async function requireAccountId(
 export async function requireUser(request: Request) {
 	const userId = await requireUserId(request)
 
-	const user = await getUserById(userId)
+	const user = await UserModel.getUserById(userId)
 	if (user) return user
 
 	throw await logout(request)
@@ -101,7 +100,7 @@ export async function createUserSession({
 	const session = await getSession(request)
 	session.set(USER_SESSION_KEY, userId)
 	session.set(ACCOUNT_SESSION_KEY, accountId)
-	return redirect(redirectTo, {
+	return RemixNode.redirect(redirectTo, {
 		headers: {
 			'Set-Cookie': await sessionStorage.commitSession(session, {
 				maxAge: remember
@@ -114,7 +113,7 @@ export async function createUserSession({
 
 export async function logout(request: Request) {
 	const session = await getSession(request)
-	return redirect('/', {
+	return RemixNode.redirect('/', {
 		headers: {
 			'Set-Cookie': await sessionStorage.destroySession(session),
 		},
