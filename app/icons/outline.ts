@@ -8,12 +8,12 @@ import search from './outline/search.svg'
 import x from './outline/x.svg'
 
 export default {
-	menu,
-	search,
-	bookmark,
-	bookOpen,
-	filter,
-	dotsVertical,
-	x,
-	informationCircle,
+  menu,
+  search,
+  bookmark,
+  bookOpen,
+  filter,
+  dotsVertical,
+  x,
+  informationCircle,
 }

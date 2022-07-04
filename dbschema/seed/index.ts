@@ -5,20 +5,20 @@ import { seedUser } from './user'
 const client = createClient()
 
 async function seed() {
-	const characters = seedCharacters(client)
-	const items = seedItems(client)
+  const characters = seedCharacters(client)
+  const items = seedItems(client)
 
-	await Promise.all([characters, ...items])
-	await seedUser(client)
+  await Promise.all([characters, ...items])
+  await seedUser(client)
 
-	console.log(`Database has been seeded. 🌱`)
+  console.log(`Database has been seeded. 🌱`)
 }
 
 seed()
-	.catch((e) => {
-		console.error(e)
-		process.exit(1)
-	})
-	.finally(async () => {
-		client.close()
-	})
+  .catch((e) => {
+    console.error(e)
+    process.exit(1)
+  })
+  .finally(async () => {
+    client.close()
+  })

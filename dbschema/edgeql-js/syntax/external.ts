@@ -5,13 +5,13 @@ export {} from './path'
 export { set } from './set'
 export { cast } from './cast'
 export {
-	ASC,
-	DESC,
-	EMPTY_FIRST,
-	EMPTY_LAST,
-	is,
-	delete,
-	select,
+  ASC,
+  DESC,
+  EMPTY_FIRST,
+  EMPTY_LAST,
+  is,
+  delete,
+  select,
 } from './select'
 export { update } from './update'
 export { insert } from './insert'
