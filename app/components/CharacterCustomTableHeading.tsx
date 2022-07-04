@@ -31,7 +31,6 @@ export default function CharacterCustomTableHeading({
               alt=""
               className="h-8 w-8 flex-shrink-0"
               responsive={[{ size: { width: 32, height: 32 } }]}
-              options={{ contentType: RemixImage.MimeType.WEBP }}
               dprVariants={[1, 2, 3]}
             />
           </Tooltip>

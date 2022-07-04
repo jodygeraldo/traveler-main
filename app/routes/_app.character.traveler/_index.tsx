@@ -47,7 +47,6 @@ function Sidebar() {
             className="h-4 w-4"
             aria-hidden
             responsive={[{ size: { width: 16, height: 16 } }]}
-            options={{ contentType: RemixImage.MimeType.WEBP }}
             dprVariants={[1, 2, 3]}
           />
         </RemixReact.NavLink>

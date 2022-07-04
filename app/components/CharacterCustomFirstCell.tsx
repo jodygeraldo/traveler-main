@@ -24,7 +24,6 @@ export default function CharacterCustomFirstCell({
         alt=""
         className="h-6 w-6 flex-shrink-0"
         responsive={[{ size: { width: 24, height: 24 } }]}
-        options={{ contentType: RemixImage.MimeType.WEBP }}
         dprVariants={[1, 2, 3]}
       />
     </Tooltip>

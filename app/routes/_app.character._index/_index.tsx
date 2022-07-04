@@ -91,7 +91,6 @@ function CharacterList({
                       alt={character.name}
                       className="h-24 w-24 rounded-br-3xl"
                       responsive={[{ size: { width: 96, height: 96 } }]}
-                      options={{ contentType: RemixImage.MimeType.WEBP }}
                       dprVariants={[1, 2, 3]}
                     />
                   </div>
@@ -153,7 +152,6 @@ function HoverCard({
                     className="h-4 w-4"
                     aria-hidden
                     responsive={[{ size: { width: 16, height: 16 } }]}
-                    options={{ contentType: RemixImage.MimeType.WEBP }}
                     dprVariants={[1, 2, 3]}
                   />
                 </div>
@@ -167,7 +165,6 @@ function HoverCard({
                   className="h-4 w-4"
                   aria-hidden
                   responsive={[{ size: { width: 16, height: 16 } }]}
-                  options={{ contentType: RemixImage.MimeType.WEBP }}
                   dprVariants={[1, 2, 3]}
                 />
               </div>
@@ -289,7 +286,6 @@ function TalentTooltipIcon({
         alt=""
         className="h-5 w-5 flex-shrink-0"
         responsive={[{ size: { width: 20, height: 20 } }]}
-        options={{ contentType: RemixImage.MimeType.WEBP }}
         dprVariants={[1, 2, 3]}
       />
     </Tooltip>

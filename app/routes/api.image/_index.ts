@@ -7,6 +7,9 @@ const config: RemixImageServer.LoaderConfig = {
   cache: new RemixImageServer.DiskCache(),
   transformer: RemixImageSharp.sharpTransformer,
   fallbackFormat: RemixImageServer.MimeType.PNG,
+  defaultOptions: {
+    contentType: RemixImageServer.MimeType.WEBP,
+  },
 }
 
 export const loader: RemixNode.LoaderFunction = ({ request }) => {

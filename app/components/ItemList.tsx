@@ -39,7 +39,6 @@ export default function ItemList({ items, category }: Props) {
               alt=""
               className="max-h-10 w-10 flex-shrink-0 pl-2"
               responsive={[{ size: { width: 40 } }]}
-              options={{ contentType: RemixImage.MimeType.WEBP }}
               loading="lazy"
               dprVariants={[1, 2, 3]}
             />
