@@ -90,3 +90,18 @@ export function toCapitalized(str: string): string {
 export function splitPerCapitalCase(str: string): string {
   return str.split(/(?=[A-Z])/g).join(' ')
 }
+
+if (process.env.NODE_ENV === 'test' && import.meta.vitest) {
+  const { test } = import.meta.vitest
+  test('validateEmail returns false for non-emails', () => {
+    expect(validateEmail(undefined)).toBe(false)
+    expect(validateEmail(null)).toBe(false)
+    expect(validateEmail('')).toBe(false)
+    expect(validateEmail('not-an-email')).toBe(false)
+    expect(validateEmail('n@')).toBe(false)
+  })
+
+  test('validateEmail returns true for emails', () => {
+    expect(validateEmail('jody@jodygeraldo.com')).toBe(true)
+  })
+}
