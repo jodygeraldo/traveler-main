@@ -1,8 +1,12 @@
 import * as RadixTooltip from '@radix-ui/react-tooltip'
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
+import NProgress from 'nprogress'
+import * as React from 'react'
 import * as Session from './session.server'
 import tailwindStylesheetUrl from './tailwind.css'
+
+NProgress.configure({ showSpinner: false })
 
 export const links: RemixNode.LinksFunction = () => {
   return [{ rel: 'stylesheet', href: tailwindStylesheetUrl }]
@@ -25,6 +29,26 @@ export const loader: RemixNode.LoaderFunction = async ({ request }) => {
 }
 
 export default function App() {
+  const transition = RemixReact.useTransition()
+  const fetchers = RemixReact.useFetchers()
+
+  const state = React.useMemo<'idle' | 'loading'>(
+    function getGlobalState() {
+      let states = [
+        transition.state,
+        ...fetchers.map((fetcher) => fetcher.state),
+      ]
+      if (states.every((state) => state === 'idle')) return 'idle'
+      return 'loading'
+    },
+    [transition.state, fetchers]
+  )
+
+  React.useEffect(() => {
+    if (state === 'loading') NProgress.start()
+    if (state === 'idle') NProgress.done()
+  }, [state])
+
   return (
     <html lang="en" className="h-full">
       <head>
