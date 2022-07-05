@@ -8,7 +8,11 @@ export interface Item {
   quantity?: number | null
 }
 
-const special: Item[] = [{ name: 'Crown of Insight', rarity: 5 }]
+const special: Item[] = [
+  { name: 'Crown of Insight', rarity: 5 },
+  { name: 'Dream Solvent', rarity: 4 },
+  { name: 'Dust of Azoth', rarity: 2 },
+]
 
 const common: Item[] = [
   { name: 'Slime Concentrate', rarity: 3 },

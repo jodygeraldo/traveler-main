@@ -2,10 +2,9 @@ import type { Client } from 'edgedb'
 import e from '~/db.server'
 
 const specialItem = [
-  {
-    name: 'Crown of Insight',
-    rarity: 5,
-  },
+  { name: 'Crown of Insight', rarity: 5 },
+  { name: 'Dream Solvent', rarity: 4 },
+  { name: 'Dust of Azoth', rarity: 2 },
 ]
 
 const commonMaterial = [
