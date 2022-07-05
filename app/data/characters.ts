@@ -1753,91 +1753,124 @@ export interface CharacterTalent {
   special?: { name: string; quantity: number }
 }
 
-export function getTravelerRequiredMaterial({ vision }: { vision: string }) {
+const travelerAscensionMaterial: TravelerAscension[] = [
+  {
+    phase: { from: 0, to: 1 },
+    mora: 20_000,
+    common: { name: 'Damaged Mask', quantity: 3 },
+    gem: { name: 'Brilliant Diamond Sliver', quantity: 1 },
+    local: { name: 'Windwheel Aster', quantity: 3 },
+  },
+  {
+    phase: { from: 1, to: 2 },
+    mora: 40_000,
+    common: { name: 'Damaged Mask', quantity: 15 },
+    gem: { name: 'Brilliant Diamond Fragment', quantity: 3 },
+    local: { name: 'Windwheel Aster', quantity: 10 },
+  },
+  {
+    phase: { from: 2, to: 3 },
+    mora: 60_000,
+    common: { name: 'Stained Mask', quantity: 12 },
+    gem: { name: 'Brilliant Diamond Fragment', quantity: 6 },
+    local: { name: 'Windwheel Aster', quantity: 20 },
+  },
+  {
+    phase: { from: 3, to: 4 },
+    mora: 80_000,
+    common: { name: 'Stained Mask', quantity: 18 },
+    gem: { name: 'Brilliant Diamond Chunk', quantity: 3 },
+    local: { name: 'Windwheel Aster', quantity: 30 },
+  },
+  {
+    phase: { from: 4, to: 5 },
+    mora: 100_000,
+    common: { name: 'Ominous Mask', quantity: 12 },
+    gem: { name: 'Brilliant Diamond Chunk', quantity: 6 },
+    local: { name: 'Windwheel Aster', quantity: 45 },
+  },
+  {
+    phase: { from: 5, to: 6 },
+    mora: 120_000,
+    common: { name: 'Ominous Mask', quantity: 24 },
+    gem: { name: 'Brilliant Diamond Gemstone', quantity: 6 },
+    local: { name: 'Windwheel Aster', quantity: 60 },
+  },
+]
+
+export function getTravelerRequiredMaterial({
+  vision,
+  hideAscension,
+  hideTalentNormal,
+  hideTalentElemental,
+}: {
+  vision: 'Anemo' | 'Geo' | 'Electro'
+  hideAscension: boolean
+  hideTalentNormal: boolean
+  hideTalentElemental: boolean
+}) {
   const traveler = travelerMaterial.find(
     (traveler) => traveler.vision === vision
   )
   invariant(traveler)
 
-  const ascensionMaterial: TravelerAscension[] = [
-    {
-      phase: { from: 0, to: 1 },
-      mora: 20_000,
-      common: { name: 'Damaged Mask', quantity: 3 },
-      gem: { name: 'Brilliant Diamond Sliver', quantity: 1 },
-      local: { name: 'Windwheel Aster', quantity: 3 },
-    },
-    {
-      phase: { from: 1, to: 2 },
-      mora: 40_000,
-      common: { name: 'Damaged Mask', quantity: 15 },
-      gem: { name: 'Brilliant Diamond Fragment', quantity: 3 },
-      local: { name: 'Windwheel Aster', quantity: 10 },
-    },
-    {
-      phase: { from: 2, to: 3 },
-      mora: 60_000,
-      common: { name: 'Stained Mask', quantity: 12 },
-      gem: { name: 'Brilliant Diamond Fragment', quantity: 6 },
-      local: { name: 'Windwheel Aster', quantity: 20 },
-    },
-    {
-      phase: { from: 3, to: 4 },
-      mora: 80_000,
-      common: { name: 'Stained Mask', quantity: 18 },
-      gem: { name: 'Brilliant Diamond Chunk', quantity: 3 },
-      local: { name: 'Windwheel Aster', quantity: 30 },
-    },
-    {
-      phase: { from: 4, to: 5 },
-      mora: 100_000,
-      common: { name: 'Ominous Mask', quantity: 12 },
-      gem: { name: 'Brilliant Diamond Chunk', quantity: 6 },
-      local: { name: 'Windwheel Aster', quantity: 45 },
-    },
-    {
-      phase: { from: 5, to: 6 },
-      mora: 120_000,
-      common: { name: 'Ominous Mask', quantity: 24 },
-      gem: { name: 'Brilliant Diamond Gemstone', quantity: 6 },
-      local: { name: 'Windwheel Aster', quantity: 60 },
-    },
-  ]
+  if (vision === 'Geo') {
+    if (hideAscension && hideTalentNormal && hideTalentElemental) return
+  } else {
+    if (hideAscension && hideTalentNormal) return
+  }
 
   if (Array.isArray(traveler.talent)) {
     return {
-      ascensionMaterial,
-      talentMaterial: {
-        normal: getCharacterTalentMaterial(traveler.talent[0], {
-          isTraveler: true,
-        }),
-        elemental: getCharacterTalentMaterial(traveler.talent[1], {
-          isTraveler: true,
-        }),
+      ascension: hideAscension ? [] : travelerAscensionMaterial,
+      talent: {
+        normal: hideTalentNormal
+          ? []
+          : getCharacterTalentMaterial(traveler.talent[0], {
+              isTraveler: true,
+            }),
+        elemental: hideTalentElemental
+          ? []
+          : getCharacterTalentMaterial(traveler.talent[1], {
+              isTraveler: true,
+            }),
       },
     }
   }
 
   return {
-    ascensionMaterial,
-    talentMaterial: {
-      normal: getCharacterTalentMaterial(traveler.talent, { isTraveler: true }),
-      elemental: getCharacterTalentMaterial(traveler.talent, {
-        isTraveler: true,
-      }),
+    ascension: hideAscension ? [] : travelerAscensionMaterial,
+    talent: {
+      normal: hideTalentNormal
+        ? []
+        : getCharacterTalentMaterial(traveler.talent, {
+            isTraveler: true,
+          }),
     },
   }
 }
 
-export function getCharacterRequiredMaterial({ name }: { name: string }) {
+export function getCharacterRequiredMaterial({
+  name,
+  hideAscension,
+  hideTalent,
+}: {
+  name: string
+  hideAscension: boolean
+  hideTalent: boolean
+}) {
   const character = characterMaterial.find(
     (character) => character.name === name
   )
   invariant(character)
 
+  if (hideAscension && hideTalent) return
+
   return {
-    ascensionMaterial: getCharacterAscensionMaterial(character.ascension),
-    talentMaterial: getCharacterTalentMaterial(character.talent),
+    ascension: hideAscension
+      ? []
+      : getCharacterAscensionMaterial(character.ascension),
+    talent: hideTalent ? [] : getCharacterTalentMaterial(character.talent),
   }
 }
 

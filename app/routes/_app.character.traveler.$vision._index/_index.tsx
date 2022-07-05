@@ -2,6 +2,7 @@ import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as React from 'react'
 import * as RemixImage from 'remix-image'
+import * as RemixParamsHelper from 'remix-params-helper'
 import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import CharacterCustomFirstCell from '~/components/CharacterCustomFirstCell'
@@ -18,12 +19,11 @@ import * as Utils from '~/utils'
 interface LoaderData {
   traveler: CharacterData.CharacterMinimal
   vision: string
-  ascensionMaterial: ReturnType<
-    typeof CharacterData.getTravelerRequiredMaterial
-  >['ascensionMaterial']
-  talentMaterial: ReturnType<
-    typeof CharacterData.getTravelerRequiredMaterial
-  >['talentMaterial']
+  ascensionMaterial: CharacterData.TravelerAscension[]
+  talentMaterial: {
+    normal: CharacterData.CharacterTalent[]
+    elemental: CharacterData.CharacterTalent[]
+  }
 }
 
 export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
@@ -35,10 +35,10 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
     'Anemo',
     'Geo',
     'Electro',
-    'Dendro',
-    'Hydro',
-    'Pyro',
-    'Cryo',
+    // 'Dendro',
+    // 'Hydro',
+    // 'Pyro',
+    // 'Cryo',
   ])
   const parsedVision = visionSchema.safeParse(Utils.toCapitalized(vision))
 
@@ -49,6 +49,17 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
     })
   }
 
+  const paramsSchema = Zod.object({
+    hideAscension: Zod.boolean().optional().default(false),
+    hideTalentNormal: Zod.boolean().optional().default(false),
+    hideTalentElemental: Zod.boolean().optional().default(false),
+  })
+  const result = RemixParamsHelper.getSearchParams(request, paramsSchema)
+  if (!result.success) {
+    invariant(false, 'NOT POSSIBLE')
+  }
+  const { hideAscension, hideTalentNormal, hideTalentElemental } = result.data
+
   const userCharacter = await CharacterModel.getUserCharacter({
     name: `Traveler ${parsedVision.data}`,
     accId,
@@ -58,27 +69,28 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
     characterData: userCharacter,
   })
   invariant(traveler)
-  const { ascensionMaterial, talentMaterial } =
-    CharacterData.getTravelerRequiredMaterial({
-      vision: parsedVision.data,
-    })
 
-  console.log(traveler.progression)
+  const material = CharacterData.getTravelerRequiredMaterial({
+    vision: parsedVision.data,
+    hideAscension,
+    hideTalentNormal,
+    hideTalentElemental,
+  })
 
   return RemixNode.json<LoaderData>({
     traveler,
     vision: parsedVision.data,
-    ascensionMaterial,
-    talentMaterial,
+    ascensionMaterial: material ? material.ascension : [],
+    talentMaterial: {
+      normal: material ? material.talent.normal : [],
+      elemental: material ? material.talent.elemental ?? [] : [],
+    },
   })
 }
 
 export default function TravelerRequiredItemsPage() {
   const { traveler, vision, ascensionMaterial, talentMaterial } =
     RemixReact.useLoaderData() as LoaderData
-  const [hideAscension, setHideAscension] = React.useState(false)
-  const [hideNormalTalent, setHideNormalTalent] = React.useState(false)
-  const [hideElementalTalent, setHideElementalTalent] = React.useState(false)
 
   const ascensionColumns = React.useMemo(
     () => [
@@ -180,18 +192,18 @@ export default function TravelerRequiredItemsPage() {
   )
 
   const ascensionData = React.useMemo(
-    () => (hideAscension ? [] : [...ascensionMaterial]),
-    [hideAscension, ascensionMaterial]
+    () => [...ascensionMaterial],
+    [ascensionMaterial]
   )
 
   const normalTalentData = React.useMemo(
-    () => (hideNormalTalent ? [] : [...talentMaterial.normal]),
-    [hideNormalTalent, talentMaterial.normal]
+    () => [...talentMaterial.normal],
+    [talentMaterial.normal]
   )
 
   const elementalSkillTalentData = React.useMemo(
-    () => (hideElementalTalent ? [] : [...talentMaterial.elemental]),
-    [hideElementalTalent, talentMaterial.elemental]
+    () => [...talentMaterial.elemental],
+    [talentMaterial.elemental]
   )
 
   const talent = traveler.talent as {
@@ -205,10 +217,9 @@ export default function TravelerRequiredItemsPage() {
   return (
     <>
       <ItemTable.ItemTable
-        uid="ascension"
         heading="Ascension"
         switchLabel="Hide ascension table"
-        switchState={[hideAscension, setHideAscension]}
+        switchName="hideAscension"
         columns={ascensionColumns}
         data={ascensionData}
         ascensionPhase={traveler.progression?.ascension ?? 0}
@@ -216,20 +227,18 @@ export default function TravelerRequiredItemsPage() {
       {vision === 'Geo' ? (
         <>
           <ItemTable.ItemTableElementalTraveler
-            uid="normal-talent"
             heading={CustomTableHeading({
               talentName: talent[vision].normalAttack,
               name: `Traveler ${vision}`,
               talent: 'normal',
             })}
             switchLabel="Hide normal talent table"
-            switchState={[hideNormalTalent, setHideNormalTalent]}
+            switchName="hideTalentNormal"
             columns={talentColumns}
             data={normalTalentData}
             talentLevel={traveler.progression?.normalAttack ?? 1}
           />
           <ItemTable.ItemTableElementalTraveler
-            uid="elemental-talent"
             heading={CustomTableHeading({
               talentName: [
                 talent[vision].elementalSkill,
@@ -239,7 +248,7 @@ export default function TravelerRequiredItemsPage() {
               talent: 'elemental',
             })}
             switchLabel="Hide elemental talent table"
-            switchState={[hideElementalTalent, setHideElementalTalent]}
+            switchName="hideTalentElemental"
             columns={talentColumns}
             data={elementalSkillTalentData}
             talentLevel={[
@@ -264,7 +273,6 @@ export default function TravelerRequiredItemsPage() {
         </>
       ) : (
         <ItemTable.ItemTable
-          uid="normal-talent"
           heading={CharacterCustomTableHeading({
             talentName: [
               talent[vision].normalAttack,
@@ -275,7 +283,7 @@ export default function TravelerRequiredItemsPage() {
             weapon: traveler.weapon,
           })}
           switchLabel="Hide talent table"
-          switchState={[hideNormalTalent, setHideNormalTalent]}
+          switchName="hideTalentNormal"
           columns={talentColumns}
           data={normalTalentData}
           talentLevel={[

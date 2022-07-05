@@ -1,7 +1,9 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as React from 'react'
+import * as RemixParamsHelper from 'remix-params-helper'
 import invariant from 'tiny-invariant'
+import * as Zod from 'zod'
 import CharacterCustomFirstCell from '~/components/CharacterCustomFirstCell'
 import CharacterCustomTableHeading from '~/components/CharacterCustomTableHeading'
 import * as Icon from '~/components/Icon'
@@ -13,12 +15,8 @@ import * as Session from '~/session.server'
 
 interface LoaderData {
   character: CharacterData.CharacterMinimal
-  ascensionMaterial: ReturnType<
-    typeof CharacterData.getCharacterRequiredMaterial
-  >['ascensionMaterial']
-  talentMaterial: ReturnType<
-    typeof CharacterData.getCharacterRequiredMaterial
-  >['talentMaterial']
+  ascensionMaterial: CharacterData.TravelerAscension[]
+  talentMaterial: CharacterData.CharacterTalent[]
 }
 
 export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
@@ -41,23 +39,32 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
     })
   }
 
-  const { ascensionMaterial, talentMaterial } =
-    CharacterData.getCharacterRequiredMaterial({
-      name: characterName,
-    })
+  const paramsSchema = Zod.object({
+    hideAscension: Zod.boolean().optional().default(false),
+    hideTalent: Zod.boolean().optional().default(false),
+  })
+  const result = RemixParamsHelper.getSearchParams(request, paramsSchema)
+  if (!result.success) {
+    invariant(false, 'NOT POSSIBLE')
+  }
+  const { hideAscension, hideTalent } = result.data
+
+  const material = CharacterData.getCharacterRequiredMaterial({
+    name: characterName,
+    hideAscension,
+    hideTalent,
+  })
 
   return RemixNode.json<LoaderData>({
     character,
-    ascensionMaterial,
-    talentMaterial,
+    ascensionMaterial: material ? material.ascension : [],
+    talentMaterial: material ? material.talent : [],
   })
 }
 
 export default function CharacterPage() {
   const { character, ascensionMaterial, talentMaterial } =
     RemixReact.useLoaderData() as LoaderData
-  const [hideAscension, setHideAscension] = React.useState(false)
-  const [hideTalent, setHideTalent] = React.useState(false)
 
   const ascensionColumns = React.useMemo(
     () => [
@@ -166,37 +173,32 @@ export default function CharacterPage() {
   )
 
   const ascensionData = React.useMemo(
-    () => (hideAscension ? [] : [...ascensionMaterial]),
-    [hideAscension, ascensionMaterial]
+    () => [...ascensionMaterial],
+    [ascensionMaterial]
   )
 
-  const talentData = React.useMemo(
-    () => (hideTalent ? [] : [...talentMaterial]),
-    [hideTalent, talentMaterial]
-  )
+  const talentData = React.useMemo(() => [...talentMaterial], [talentMaterial])
 
   const talent = character.talent as [string, string, string] // this should be fine because the only time it is an array is because it's traveler but traveler handled on different page
 
   return (
     <>
       <ItemTable.Table
-        uid="ascension"
         heading="Ascension"
         switchLabel="Hide ascension table"
-        switchState={[hideAscension, setHideAscension]}
+        switchName="hideAscension"
         columns={ascensionColumns}
         data={ascensionData}
         ascensionPhase={character.progression?.ascension ?? 0}
       />
       <ItemTable.Table
-        uid="normal-talent"
         heading={CharacterCustomTableHeading({
           talentName: talent,
           name: character.name,
           weapon: character.weapon,
         })}
         switchLabel="Hide talent table"
-        switchState={[hideTalent, setHideTalent]}
+        switchName="hideTalent"
         columns={talentColumns}
         data={talentData}
         talentLevel={[

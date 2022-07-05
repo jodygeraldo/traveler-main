@@ -1,14 +1,20 @@
 import * as HeadlessUIReact from '@headlessui/react'
+import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
-import * as React from 'react'
 
 interface Props {
-  label: string
-  state: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+  label: String
+  name: string
 }
 
-export default function Switch({ label, state }: Props) {
-  const [enabled, setEnabled] = state
+export default function Switch({ label, name }: Props) {
+  const [searchParams, setSearchParams] = RemixReact.useSearchParams()
+  const enabled = searchParams.get(name) === 'true'
+
+  function handleChange(state: boolean) {
+    searchParams.set(name, state ? 'true' : 'false')
+    setSearchParams(searchParams)
+  }
 
   return (
     <HeadlessUIReact.Switch.Group as="div" className="flex items-center">
@@ -17,7 +23,7 @@ export default function Switch({ label, state }: Props) {
       </HeadlessUIReact.Switch.Label>
       <HeadlessUIReact.Switch
         checked={enabled}
-        onChange={setEnabled}
+        onChange={handleChange}
         className={clsx(
           enabled ? 'bg-primary-9' : 'bg-gray-6',
           'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-7 focus:ring-offset-2 focus:ring-offset-gray-1'

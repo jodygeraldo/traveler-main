@@ -4,10 +4,9 @@ import * as ReactTable from 'react-table'
 import Switch from './Switch'
 
 interface BaseProps {
-  uid: string
   heading: React.ReactNode
   switchLabel: string
-  switchState: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+  switchName: string
   columns: ReactTable.Column<any>[]
   data: {}[]
   customAddionalFirstCellElement?: React.ReactNode[]
@@ -25,7 +24,7 @@ interface TravelerProps extends BaseProps {
 export function ItemTable({
   heading,
   switchLabel,
-  switchState,
+  switchName,
   columns,
   data,
   ascensionPhase,
@@ -47,7 +46,7 @@ export function ItemTable({
           </h2>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-          <Switch state={switchState} label={switchLabel} />
+          <Switch label={switchLabel} name={switchName} />
         </div>
       </div>
       {data.length > 0 ? (
@@ -137,7 +136,7 @@ export function ItemTable({
 export function ItemTableElementalTraveler({
   heading,
   switchLabel,
-  switchState,
+  switchName,
   columns,
   data,
   talentLevel,
@@ -158,7 +157,7 @@ export function ItemTableElementalTraveler({
           </h2>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-          <Switch state={switchState} label={switchLabel} />
+          <Switch label={switchLabel} name={switchName} />
         </div>
       </div>
       {data.length > 0 ? (
