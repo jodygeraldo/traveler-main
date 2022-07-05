@@ -235,7 +235,7 @@ export function getItems({
   category,
   items,
 }: {
-  category: keyof DB.Inventory
+  category: keyof DB.Type.Inventory
   items: {
     name: string
     '@quantity': number | null

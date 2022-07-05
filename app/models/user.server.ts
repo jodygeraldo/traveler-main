@@ -1,105 +1,107 @@
 import bcrypt from 'bcryptjs'
-import * as DB from '~/db.server'
+import e, * as DB from '~/db.server'
+
+const client = DB.client
 
 export async function getUserById(id: string) {
-  return await DB.e
-    .select(DB.e.User, (user) => ({
-      ...DB.e.User['*'],
-      accounts: { ...DB.e.Account['*'] },
-      filter: DB.e.op(user.id, '=', DB.e.uuid(id)),
+  return await e
+    .select(e.User, (user) => ({
+      ...e.User['*'],
+      accounts: { ...e.Account['*'] },
+      filter: e.op(user.id, '=', e.uuid(id)),
     }))
-    .run(DB.client)
+    .run(client)
 }
 
 export async function getUserByEmail(email: string) {
-  return await DB.e
-    .select(DB.e.User, (user) => ({
-      ...DB.e.User['*'],
-      accounts: { ...DB.e.Account['*'] },
-      filter: DB.e.op(user.email, '=', email),
+  return await e
+    .select(e.User, (user) => ({
+      ...e.User['*'],
+      accounts: { ...e.Account['*'] },
+      filter: e.op(user.email, '=', email),
     }))
-    .run(DB.client)
+    .run(client)
 }
 
 export async function createUser(email: string, password: string) {
   const hashedPassword = await bcrypt.hash(password, 10)
-  const queryPassword = DB.e.insert(DB.e.Password, {
+  const queryPassword = e.insert(e.Password, {
     hash: hashedPassword,
-    user: DB.e.insert(DB.e.User, {
+    user: e.insert(e.User, {
       email,
     }),
   })
 
-  const { user } = await DB.e
+  const { user } = await e
     .select(queryPassword, () => ({
       user: true,
     }))
-    .run(DB.client)
+    .run(client)
 
-  const queryAccount = DB.e.insert(DB.e.Account, {
-    owner: DB.e.select(DB.e.User, (u) => ({
-      filter: DB.e.op(u.id, '=', DB.e.uuid(user.id)),
+  const queryAccount = e.insert(e.Account, {
+    owner: e.select(e.User, (u) => ({
+      filter: e.op(u.id, '=', e.uuid(user.id)),
     })),
   })
 
-  const account = await DB.e
+  const account = await e
     .select(queryAccount, () => ({
-      ...DB.e.Account['*'],
+      ...e.Account['*'],
       owner: {
-        ...DB.e.User['*'],
+        ...e.User['*'],
       },
     }))
-    .run(DB.client)
+    .run(client)
 
-  const freeCharacters = DB.e.set(
-    DB.e.str('Traveler Anemo'),
-    DB.e.str('Amber'),
-    DB.e.str('Kaeya'),
-    DB.e.str('Lisa'),
-    DB.e.str('Barbara'),
-    DB.e.str('Xiangling'),
-    DB.e.str('Noelle')
+  const freeCharacters = e.set(
+    e.str('Traveler Anemo'),
+    e.str('Amber'),
+    e.str('Kaeya'),
+    e.str('Lisa'),
+    e.str('Barbara'),
+    e.str('Xiangling'),
+    e.str('Noelle')
   )
 
-  const character = DB.e.insert(DB.e.UserCharacter, {
-    owner: DB.e.select(DB.e.Account, (a) => ({
-      filter: DB.e.op(a.id, '=', DB.e.uuid(account.id)),
+  const character = e.insert(e.UserCharacter, {
+    owner: e.select(e.Account, (a) => ({
+      filter: e.op(a.id, '=', e.uuid(account.id)),
     })),
-    characters: DB.e.select(DB.e.Character, (c) => ({
-      filter: DB.e.op(c.name, 'in', freeCharacters),
-    })),
-  })
-
-  const inventory = DB.e.insert(DB.e.Inventory, {
-    owner: DB.e.select(DB.e.Account, (a) => ({
-      filter: DB.e.op(a.id, '=', DB.e.uuid(account.id)),
+    characters: e.select(e.Character, (c) => ({
+      filter: e.op(c.name, 'in', freeCharacters),
     })),
   })
 
-  await Promise.all([inventory.run(DB.client), character.run(DB.client)])
+  const inventory = e.insert(e.Inventory, {
+    owner: e.select(e.Account, (a) => ({
+      filter: e.op(a.id, '=', e.uuid(account.id)),
+    })),
+  })
+
+  await Promise.all([inventory.run(client), character.run(client)])
 
   return account
 }
 
 export async function deleteUserByEmail(email: string) {
-  return DB.e
-    .delete(DB.e.User, (user) => ({
-      filter: DB.e.op(user.email, '=', email),
+  return e
+    .delete(e.User, (user) => ({
+      filter: e.op(user.email, '=', email),
     }))
-    .run(DB.client)
+    .run(client)
 }
 
 export async function verifyLogin(email: string, password: string) {
-  const user = await DB.e
-    .select(DB.e.User, (user) => ({
-      ...DB.e.User['*'],
+  const user = await e
+    .select(e.User, (user) => ({
+      ...e.User['*'],
       accounts: { id: true, name: true },
       password: {
-        ...DB.e.Password['*'],
+        ...e.Password['*'],
       },
-      filter: DB.e.op(user.email, '=', email),
+      filter: e.op(user.email, '=', email),
     }))
-    .run(DB.client)
+    .run(client)
 
   if (!user?.password) {
     return null
@@ -116,7 +118,7 @@ export async function verifyLogin(email: string, password: string) {
 }
 
 export function Account(id: string) {
-  return DB.e.select(DB.e.Account, (acc) => ({
-    filter: DB.e.op(acc.id, '=', DB.e.uuid(id)),
+  return e.select(e.Account, (acc) => ({
+    filter: e.op(acc.id, '=', e.uuid(id)),
   }))
 }

@@ -1,5 +1,6 @@
 import * as EdgeDB from 'edgedb'
 import e from '../dbschema/edgeql-js'
-export * from '../dbschema/edgeql-js'
-export { client, e }
+export * as Type from '../dbschema/edgeql-js'
+export { client }
+export default e
 const client = EdgeDB.createClient()

@@ -29,7 +29,7 @@ export async function getSession(request: Request) {
 
 export async function getUserId(
   request: Request
-): Promise<DB.User['id'] | undefined> {
+): Promise<DB.Type.User['id'] | undefined> {
   const session = await getSession(request)
   const userId = session.get(USER_SESSION_KEY)
   return userId
@@ -37,7 +37,7 @@ export async function getUserId(
 
 export async function getAccountId(
   request: Request
-): Promise<DB.Account['id'] | undefined> {
+): Promise<DB.Type.Account['id'] | undefined> {
   const session = await getSession(request)
   const accountId = session.get(ACCOUNT_SESSION_KEY)
   return accountId

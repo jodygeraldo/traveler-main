@@ -1,8 +1,10 @@
 import invariant from 'tiny-invariant'
-import * as DB from '~/db.server'
+import e, * as DB from '~/db.server'
 import * as UserModel from './user.server'
 
-const query = DB.e.select(DB.e.Inventory, (i) => ({
+const client = DB.client
+
+const query = e.select(e.Inventory, (i) => ({
   ascension_gem: { name: true, '@quantity': true },
   ascension_boss: { name: true, '@quantity': true },
   local_specialty: { name: true, '@quantity': true },
@@ -10,13 +12,13 @@ const query = DB.e.select(DB.e.Inventory, (i) => ({
   talent_book: { name: true, '@quantity': true },
   talent_boss: { name: true, '@quantity': true },
   special: { name: true, '@quantity': true },
-  filter: DB.e.op(i.owner, '=', UserModel.Account('uuid')),
+  filter: e.op(i.owner, '=', UserModel.Account('uuid')),
 }))
-export type InventoryInfer = DB.$infer<typeof query>
+export type InventoryInfer = DB.Type.$infer<typeof query>
 
 export async function getInventory({ accId }: { accId: string }) {
-  const inventory = await DB.e
-    .select(DB.e.Inventory, (inventory) => ({
+  const inventory = await e
+    .select(e.Inventory, (inventory) => ({
       ascension_gem: { name: true, '@quantity': true },
       ascension_boss: { name: true, '@quantity': true },
       local_specialty: { name: true, '@quantity': true },
@@ -24,9 +26,9 @@ export async function getInventory({ accId }: { accId: string }) {
       talent_book: { name: true, '@quantity': true },
       talent_boss: { name: true, '@quantity': true },
       special: { name: true, '@quantity': true },
-      filter: DB.e.op(inventory.owner, '=', UserModel.Account(accId)),
+      filter: e.op(inventory.owner, '=', UserModel.Account(accId)),
     }))
-    .run(DB.client)
+    .run(client)
 
   return inventory
 }
@@ -35,15 +37,15 @@ export async function getInventoryCategory({
   category,
   accId,
 }: {
-  category: keyof DB.Inventory
+  category: keyof DB.Type.Inventory
   accId: string
 }) {
-  const inventory = await DB.e
-    .select(DB.e.Inventory, (inventory) => ({
+  const inventory = await e
+    .select(e.Inventory, (inventory) => ({
       [category]: { name: true, '@quantity': true },
-      filter: DB.e.op(inventory.owner, '=', UserModel.Account(accId)),
+      filter: e.op(inventory.owner, '=', UserModel.Account(accId)),
     }))
-    .run(DB.client)
+    .run(client)
 
   invariant(inventory, "Can't find inventory for this account")
   return inventory[category] as { name: string; '@quantity': number }[]
@@ -56,44 +58,44 @@ export async function upsertItem({
   accId,
 }: {
   name: string
-  category: keyof DB.Inventory
+  category: keyof DB.Type.Inventory
   quantity: number
   accId: string
 }) {
   const selector = getSelector(category)
   invariant(selector, "Can't find selector for category: " + category)
 
-  const itemToUpsert = DB.e.select(selector, (i) => ({
-    '@quantity': DB.e.int16(quantity),
-    filter: DB.e.op(i.name, '=', name),
+  const itemToUpsert = e.select(selector, (i) => ({
+    '@quantity': e.int16(quantity),
+    filter: e.op(i.name, '=', name),
   }))
 
-  await DB.e
-    .update(DB.e.Inventory, (inventory) => ({
-      filter: DB.e.op(inventory.owner, '=', UserModel.Account(accId)),
+  await e
+    .update(e.Inventory, (inventory) => ({
+      filter: e.op(inventory.owner, '=', UserModel.Account(accId)),
       set: {
         [category]: { '+=': itemToUpsert },
       },
     }))
-    .run(DB.client)
+    .run(client)
 }
 
-function getSelector(category: keyof DB.Inventory) {
+function getSelector(category: keyof DB.Type.Inventory) {
   switch (category) {
     case 'ascension_boss':
-      return DB.e.AscensionBossMaterial
+      return e.AscensionBossMaterial
     case 'ascension_gem':
-      return DB.e.AscensionGem
+      return e.AscensionGem
     case 'common':
-      return DB.e.CommonMaterial
+      return e.CommonMaterial
     case 'local_specialty':
-      return DB.e.LocalSpecialty
+      return e.LocalSpecialty
     case 'talent_book':
-      return DB.e.TalentBook
+      return e.TalentBook
     case 'talent_boss':
-      return DB.e.TalentBossMaterial
+      return e.TalentBossMaterial
     case 'special':
-      return DB.e.SpecialItem
+      return e.SpecialItem
     default:
       invariant(false, 'Unknown category: ' + category)
   }
