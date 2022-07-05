@@ -265,7 +265,7 @@ export function IconSolid({ name, ...props }: Props) {
       fill="currentColor"
       {...props}
     >
-    <use href={`/icon/solid/${camelToKebab(name)}.svg#${name}`} />
+      <use href={`/icon/solid/${camelToKebab(name)}.svg#${name}`} />
     </svg>
   )
 }
