@@ -5,12 +5,12 @@ import * as RemixImage from 'remix-image'
 export default function TravelerLayout() {
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-8 lg:px-8">
-      <div className="hidden lg:col-span-2 lg:block">
+      <div className="col-span-12 lg:col-span-2">
         <nav aria-label="Sidebar" className="sticky top-6">
           <Sidebar />
         </nav>
       </div>
-      <main className="lg:col-span-10">
+      <main className="mt-8 lg:col-span-10 lg:mt-0">
         <RemixReact.Outlet />
       </main>
     </div>
