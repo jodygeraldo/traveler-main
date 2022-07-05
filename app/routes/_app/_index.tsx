@@ -2,6 +2,7 @@ import * as HeadlessUIReact from '@headlessui/react'
 import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 import * as React from 'react'
+import * as RemixImage from 'remix-image'
 import * as Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
 import Logo from '~/components/Logo'
@@ -105,8 +106,14 @@ function AppNavbar() {
                   className="relative ml-4 flex-shrink-0"
                 >
                   <div>
-                    <HeadlessUIReact.Menu.Button className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-gray-7 shadow-sm focus:z-10 focus:outline-none focus:ring-2 focus:ring-gray-7 focus:ring-offset-2 focus:ring-offset-gray-1">
-                      {user.accounts[0] && 'A1'}
+                    <HeadlessUIReact.Menu.Button className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-9 shadow-sm focus:z-10 focus:outline-none focus:ring-2 focus:ring-gray-7 focus:ring-offset-2 focus:ring-offset-gray-1">
+                      <RemixImage.Image
+                        src="/image/character/traveler.png"
+                        alt={`Account ${user.accounts[0].name}`}
+                        className="h-8 w-8 rounded-full"
+                        responsive={[{ size: { width: 32, height: 32 } }]}
+                        dprVariants={[1, 2, 3]}
+                      />
                     </HeadlessUIReact.Menu.Button>
                   </div>
                   <HeadlessUIReact.Transition
