@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs'
 import type { Client } from 'edgedb'
-import { e } from '~/db.server'
+import e from '~/db.server'
 
 export async function seedUser(client: Client) {
   const email = 'jody@test.com'

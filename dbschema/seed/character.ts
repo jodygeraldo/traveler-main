@@ -1,5 +1,5 @@
 import type { Client } from 'edgedb'
-import { e } from '~/db.server'
+import e from '~/db.server'
 
 const characters = [
   {
