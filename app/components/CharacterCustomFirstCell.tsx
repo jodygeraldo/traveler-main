@@ -3,10 +3,10 @@ import * as Utils from '~/utils'
 import Tooltip from './Tooltip'
 
 interface Props {
-  talentName: string
+  talentName: string[]
   name: string
   weapon?: string
-  talent: 'Normal_Attack' | 'Elemental_Skill' | 'Elemental_Burst'
+  talent: ('Normal_Attack' | 'Elemental_Skill' | 'Elemental_Burst')[]
 }
 
 export default function CharacterCustomFirstCell({
@@ -15,11 +15,11 @@ export default function CharacterCustomFirstCell({
   weapon,
   talent,
 }: Props) {
-  return (
-    <Tooltip key={talentName} text={talentName}>
+  return talent.map((type, idx) => (
+    <Tooltip key={talentName[idx]} text={talentName[idx]}>
       <RemixImage.Image
-        src={`/image/talent/${talent}_${
-          talent === 'Normal_Attack' ? weapon : Utils.getImageSrc(name)
+        src={`/image/talent/${type}_${
+          type === 'Normal_Attack' ? weapon : Utils.getImageSrc(name)
         }.png`}
         alt=""
         className="h-6 w-6 flex-shrink-0"
@@ -27,5 +27,5 @@ export default function CharacterCustomFirstCell({
         dprVariants={[1, 2, 3]}
       />
     </Tooltip>
-  )
+  ))
 }
