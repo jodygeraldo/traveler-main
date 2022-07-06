@@ -62,8 +62,6 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
       vision: parsedVision.data,
     })
 
-  console.log(traveler.progression)
-
   return RemixNode.json<LoaderData>({
     traveler,
     vision: parsedVision.data,
