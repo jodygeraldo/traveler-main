@@ -31,7 +31,7 @@ interface Props {
   defaultValues: Values
   inputProps: (key: string, options?: any) => RemixParamsHelper.InputPropType
   errors?: { [key: string]: string }
-  hiddenTravelersData?: CharacterData.CharacterData[]
+  hiddenTravelersData?: CharacterData.CharacterProgression[]
   submitSuccess?: boolean
 }
 

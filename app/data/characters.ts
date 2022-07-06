@@ -2,7 +2,7 @@ import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import type * as CharacterModel from '~/models/character.server'
 
-export interface CharacterData {
+export interface CharacterProgression {
   name: string
   level: number
   ascension: number
@@ -11,6 +11,7 @@ export interface CharacterData {
   elementalBurst: number
 }
 
+type Weapon = 'Sword' | 'Claymore' | 'Polearm' | 'Bow' | 'Catalyst'
 type CommonMaterial =
   | 'Slime'
   | 'Hilichurl Masks'
@@ -583,7 +584,7 @@ const characters: Character[] = [
 
 export interface Character {
   name: string
-  weapon: 'Sword' | 'Claymore' | 'Polearm' | 'Bow' | 'Catalyst'
+  weapon: Weapon
   vision: string | string[]
   rarity: 4 | 5
   talent:
@@ -595,7 +596,6 @@ export interface Character {
           elementalBurst: string
         }
       }
-
   progression?: {
     level?: number | null
     ascension?: number | null
@@ -709,21 +709,30 @@ export function getCharacter({
   return updatedCharacter
 }
 
+interface AscensionMaterial {
+  gem: string
+  boss?: string
+  local: string
+  common: string[]
+}
+interface TalentMaterial {
+  book: string[]
+  boss: string
+  common: string[]
+  special: string
+}
+
 interface CharacterMaterial {
   name: string
-  ascension: {
-    gem: string
-    boss?: string
-    local: string
-    common: string[]
-  }
-  talent: {
-    book: string[]
-    boss: string
-    common: string[]
-    special: string
-  }
+  ascension: AscensionMaterial
+  talent: TalentMaterial | TalentMaterial[]
 }
+
+export const validTraveler = [
+  'Traveler Anemo',
+  'Traveler Geo',
+  'Traveler Electro',
+] as const
 
 const characterMaterial: CharacterMaterial[] = [
   {
@@ -1433,6 +1442,112 @@ const characterMaterial: CharacterMaterial[] = [
     },
   },
   {
+    name: 'Traveler Anemo',
+    ascension: {
+      gem: 'Brilliant Diamond',
+      local: 'Windwheel Aster',
+      common: commonMaterials['Hilichurl Masks'],
+    },
+    talent: {
+      book: [
+        'Teachings of Freedom',
+        'Guide to Resistance',
+        'Guide to Ballad',
+        'Guide to Freedom',
+        'Guide to Resistance',
+        'Philosophies of Ballad',
+        'Philosophies of Freedom',
+        'Philosophies of Resistance',
+        'Philosophies of Ballad',
+      ],
+      boss: "Dvalin's Sigh",
+      common: commonMaterials['Samachurl Scrolls'],
+      special: 'Crown of Insight',
+    },
+  },
+  {
+    name: 'Traveler Geo',
+    ascension: {
+      gem: 'Brilliant Diamond',
+      local: 'Windwheel Aster',
+      common: commonMaterials['Hilichurl Masks'],
+    },
+    talent: [
+      {
+        book: [
+          'Teachings of Freedom',
+          'Guide to Resistance',
+          'Guide to Ballad',
+          'Guide to Freedom',
+          'Guide to Resistance',
+          'Philosophies of Ballad',
+          'Philosophies of Freedom',
+          'Philosophies of Resistance',
+          'Philosophies of Ballad',
+        ],
+        boss: "Dvalin's Sigh",
+        common: commonMaterials['Samachurl Scrolls'],
+        special: 'Crown of Insight',
+      },
+      {
+        book: [
+          'Teachings of Prosperity',
+          'Guide to Diligence',
+          'Guide to Gold',
+          'Guide to Prosperity',
+          'Guide to Diligence',
+          'Philosophies of Gold',
+          'Philosophies of Prosperity',
+          'Philosophies of Diligence',
+          'Philosophies of Gold',
+        ],
+        boss: 'Tail of Boreas',
+        common: commonMaterials['Hilichurl Arrowheads'],
+        special: 'Crown of Insight',
+      },
+      {
+        book: [
+          'Teachings of Prosperity',
+          'Guide to Diligence',
+          'Guide to Gold',
+          'Guide to Prosperity',
+          'Guide to Diligence',
+          'Philosophies of Gold',
+          'Philosophies of Prosperity',
+          'Philosophies of Diligence',
+          'Philosophies of Gold',
+        ],
+        boss: 'Tail of Boreas',
+        common: commonMaterials['Hilichurl Arrowheads'],
+        special: 'Crown of Insight',
+      },
+    ],
+  },
+  {
+    name: 'Traveler Electro',
+    ascension: {
+      gem: 'Brilliant Diamond',
+      local: 'Windwheel Aster',
+      common: commonMaterials['Hilichurl Masks'],
+    },
+    talent: {
+      book: [
+        'Teachings of Transience',
+        'Guide to Elegance',
+        'Guide to Light',
+        'Guide to Transience',
+        'Guide to Elegance',
+        'Philosophies of Light',
+        'Philosophies of Transience',
+        'Philosophies of Elegance',
+        'Philosophies of Light',
+      ],
+      boss: "Dragon Lord's Crown",
+      common: commonMaterials['Nobushi Handguards'],
+      special: 'Crown of Insight',
+    },
+  },
+  {
     name: 'Venti',
     ascension: {
       gem: 'Vayuda Turquoise',
@@ -1623,149 +1738,6 @@ const characterMaterial: CharacterMaterial[] = [
   },
 ]
 
-export const validTraveler = [
-  'Traveler Anemo',
-  'Traveler Geo',
-  'Traveler Electro',
-] as const
-
-export function ascensionGemExpander(name: string) {
-  return [
-    `${name} Sliver`,
-    `${name} Fragment`,
-    `${name} Chunk`,
-    `${name} Gemstone`,
-  ]
-}
-
-const travelerMaterial: {
-  vision: 'Anemo' | 'Geo' | 'Electro'
-  ascension: {
-    gem: string
-    local: string
-    common: string[]
-  }
-  talent:
-    | {
-        book: string[]
-        boss: string
-        common: string[]
-        special: string
-      }
-    | {
-        book: string[]
-        boss: string
-        common: string[]
-        special: string
-      }[]
-}[] = [
-  {
-    vision: 'Anemo',
-    ascension: {
-      gem: 'Brilliant Diamond',
-      local: 'Windwheel Aster',
-      common: commonMaterials['Hilichurl Masks'],
-    },
-    talent: {
-      book: [
-        'Teachings of Freedom',
-        'Guide to Resistance',
-        'Guide to Ballad',
-        'Guide to Freedom',
-        'Guide to Resistance',
-        'Philosophies of Ballad',
-        'Philosophies of Freedom',
-        'Philosophies of Resistance',
-        'Philosophies of Ballad',
-      ],
-      boss: "Dvalin's Sigh",
-      common: commonMaterials['Samachurl Scrolls'],
-      special: 'Crown of Insight',
-    },
-  },
-  {
-    vision: 'Geo',
-    ascension: {
-      gem: 'Brilliant Diamond',
-      local: 'Windwheel Aster',
-      common: commonMaterials['Hilichurl Masks'],
-    },
-    talent: [
-      {
-        book: [
-          'Teachings of Freedom',
-          'Guide to Resistance',
-          'Guide to Ballad',
-          'Guide to Freedom',
-          'Guide to Resistance',
-          'Philosophies of Ballad',
-          'Philosophies of Freedom',
-          'Philosophies of Resistance',
-          'Philosophies of Ballad',
-        ],
-        boss: "Dvalin's Sigh",
-        common: commonMaterials['Samachurl Scrolls'],
-        special: 'Crown of Insight',
-      },
-      {
-        book: [
-          'Teachings of Prosperity',
-          'Guide to Diligence',
-          'Guide to Gold',
-          'Guide to Prosperity',
-          'Guide to Diligence',
-          'Philosophies of Gold',
-          'Philosophies of Prosperity',
-          'Philosophies of Diligence',
-          'Philosophies of Gold',
-        ],
-        boss: 'Tail of Boreas',
-        common: commonMaterials['Hilichurl Arrowheads'],
-        special: 'Crown of Insight',
-      },
-      {
-        book: [
-          'Teachings of Prosperity',
-          'Guide to Diligence',
-          'Guide to Gold',
-          'Guide to Prosperity',
-          'Guide to Diligence',
-          'Philosophies of Gold',
-          'Philosophies of Prosperity',
-          'Philosophies of Diligence',
-          'Philosophies of Gold',
-        ],
-        boss: 'Tail of Boreas',
-        common: commonMaterials['Hilichurl Arrowheads'],
-        special: 'Crown of Insight',
-      },
-    ],
-  },
-  {
-    vision: 'Electro',
-    ascension: {
-      gem: 'Brilliant Diamond',
-      local: 'Windwheel Aster',
-      common: commonMaterials['Hilichurl Masks'],
-    },
-    talent: {
-      book: [
-        'Teachings of Transience',
-        'Guide to Elegance',
-        'Guide to Light',
-        'Guide to Transience',
-        'Guide to Elegance',
-        'Philosophies of Light',
-        'Philosophies of Transience',
-        'Philosophies of Elegance',
-        'Philosophies of Light',
-      ],
-      boss: "Dragon Lord's Crown",
-      common: commonMaterials['Nobushi Handguards'],
-      special: 'Crown of Insight',
-    },
-  },
-]
 export interface CharacterAscension {
   phase: { from: number; to: number }
   mora: number
@@ -1784,48 +1756,62 @@ export interface CharacterTalent {
   special?: { name: string; quantity: number }
 }
 
-export function getTravelerRequiredMaterial({ vision }: { vision: string }) {
-  const traveler = travelerMaterial.find(
-    (traveler) => traveler.vision === vision
-  )
-  invariant(traveler)
-
-  const ascensionMaterial = getAscensionMaterial(traveler.ascension)
-
-  if (Array.isArray(traveler.talent)) {
-    return {
-      ascensionMaterial: getAscensionMaterial(traveler.ascension),
-      talentMaterial: {
-        normal: getCharacterTalentMaterial(traveler.talent[0], {
-          isTraveler: true,
-        }),
-        elemental: getCharacterTalentMaterial(traveler.talent[1], {
-          isTraveler: true,
-        }),
-      },
-    }
-  }
-
-  return {
-    ascensionMaterial,
-    talentMaterial: {
-      normal: getCharacterTalentMaterial(traveler.talent, { isTraveler: true }),
-      elemental: getCharacterTalentMaterial(traveler.talent, {
-        isTraveler: true,
-      }),
-    },
-  }
-}
-
-export function getCharacterRequiredMaterial({ name }: { name: string }) {
+export function getRequiredMaterial({
+  name,
+  isTraveler,
+}: {
+  name: string
+  isTraveler?: boolean
+}) {
   const character = characterMaterial.find(
     (character) => character.name === name
   )
   invariant(character)
 
+  const ascensionMaterial = getAscensionMaterial(character.ascension)
+
+  if (isTraveler) {
+    if (Array.isArray(character.talent)) {
+      return {
+        ascensionMaterial,
+        talentMaterial: {
+          normal: getTalentMaterial(character.talent[0], {
+            isTraveler,
+          }),
+          elemental: getTalentMaterial(character.talent[1], {
+            isTraveler,
+          }),
+        },
+      }
+    }
+
+    const talentMaterial = getTalentMaterial(character.talent, {
+      isTraveler,
+    })
+
+    return {
+      ascensionMaterial,
+      talentMaterial: {
+        normal: talentMaterial,
+        elemental: talentMaterial,
+      },
+    }
+  }
+
+  if (Array.isArray(character.talent)) {
+    invariant(
+      false,
+      'This is should not ever happen, you see this message because server trying to access character with difference between normal and elemental talent items requirements(only Traveler Geo) but trying to get it on other character.'
+    )
+  }
+
+  const talentMaterial = getTalentMaterial(character.talent, {
+    isTraveler: false,
+  })
+
   return {
-    ascensionMaterial: getAscensionMaterial(character.ascension),
-    talentMaterial: getCharacterTalentMaterial(character.talent),
+    ascensionMaterial,
+    talentMaterial,
   }
 }
 
@@ -1886,8 +1872,8 @@ function getAscensionMaterial({
   ]
 }
 
-function getCharacterTalentMaterial(
-  { book, boss, common, special }: CharacterMaterial['talent'],
+function getTalentMaterial(
+  { book, boss, common, special }: TalentMaterial,
   options?: { isTraveler: boolean }
 ): CharacterTalent[] {
   const isTraveler = options?.isTraveler ?? false
@@ -1955,218 +1941,118 @@ function getCharacterTalentMaterial(
   ]
 }
 
-function narrowErrors(errors: Zod.ZodIssue[]): { [key: string]: string } {
-  return Object.assign(
-    {},
-    ...errors.map((error) => ({
-      [error.path[0]]: error.message,
-    }))
-  )
-}
-
 export function validateAscensionRequirement({
   level,
   ascension,
   normalAttack,
   elementalSkill,
   elementalBurst,
-}: Omit<CharacterData, 'name'>) {
+}: Omit<CharacterProgression, 'name'>) {
+  function getErrorMessage(
+    on: 'level' | 'normal attack' | 'elemental skill' | 'elemental burst',
+    phase: number,
+    maxLevel: number
+  ) {
+    return `Maximum ${on} on ascension ${phase} is ${maxLevel}`
+  }
+
+  function parseData({
+    phase,
+    maxLevel,
+    maxTalent,
+  }: {
+    phase: number
+    maxLevel: number
+    maxTalent: number
+  }) {
+    const schema = Zod.object({
+      level: Zod.number().refine((val) => val <= maxLevel, {
+        message: getErrorMessage('level', phase, maxLevel),
+      }),
+      normalAttack: Zod.number().refine((val) => val <= maxTalent, {
+        message: getErrorMessage('normal attack', phase, maxTalent),
+      }),
+      elementalSkill: Zod.number().refine((val) => val <= maxTalent, {
+        message: getErrorMessage('elemental skill', phase, maxTalent),
+      }),
+      elementalBurst: Zod.number().refine((val) => val <= maxTalent, {
+        message: getErrorMessage('elemental burst', phase, maxTalent),
+      }),
+    })
+
+    return schema.safeParse({
+      level,
+      normalAttack,
+      elementalSkill,
+      elementalBurst,
+    })
+  }
+
+  function narrowErrors(errors: Zod.ZodIssue[]): { [key: string]: string } {
+    return Object.assign(
+      {},
+      ...errors.map((error) => ({
+        [error.path[0]]: error.message,
+      }))
+    )
+  }
+
   switch (ascension) {
-    case 0:
-      const schema0 = Zod.object({
-        level: Zod.number().refine((val) => val <= 20, {
-          message: 'Maximum level on ascension 0 is 20',
-        }),
-        normalAttack: Zod.number().refine((val) => val <= 1, {
-          message: 'Maximum normal attack on ascension 0 is 1',
-        }),
-        elementalSkill: Zod.number().refine((val) => val <= 1, {
-          message: 'Maximum elemental skill on ascension 0 is 1',
-        }),
-        elementalBurst: Zod.number().refine((val) => val <= 1, {
-          message: 'Maximum elemental burst on ascension 0 is 1',
-        }),
+    case 0: {
+      const parsedData = parseData({
+        phase: ascension,
+        maxLevel: 20,
+        maxTalent: 1,
       })
-
-      const parsed0 = schema0.safeParse({
-        level,
-        normalAttack,
-        elementalSkill,
-        elementalBurst,
-      })
-
-      if (!parsed0.success) {
-        return narrowErrors(parsed0.error.issues)
-      }
-
+      if (!parsedData.success) return narrowErrors(parsedData.error.issues)
       return
-    case 1:
-      const schema1 = Zod.object({
-        level: Zod.number().refine((val) => val <= 40, {
-          message: 'Maximum level on ascension 1 is 40',
-        }),
-        normalAttack: Zod.number().refine((val) => val <= 1, {
-          message: 'Maximum normal attack on ascension 1 is 1',
-        }),
-        elementalSkill: Zod.number().refine((val) => val <= 1, {
-          message: 'Maximum elemental skill on ascension 1 is 1',
-        }),
-        elementalBurst: Zod.number().refine((val) => val <= 1, {
-          message: 'Maximum elemental burst on ascension 1 is 1',
-        }),
+    }
+    case 1: {
+      const parsedData = parseData({
+        phase: ascension,
+        maxLevel: 40,
+        maxTalent: 1,
       })
-
-      const parsed1 = schema1.safeParse({
-        level,
-        normalAttack,
-        elementalSkill,
-        elementalBurst,
-      })
-
-      if (!parsed1.success) {
-        return narrowErrors(parsed1.error.issues)
-      }
-
+      if (!parsedData.success) return narrowErrors(parsedData.error.issues)
       return
-    case 2:
-      const schema2 = Zod.object({
-        level: Zod.number().refine((val) => val <= 50, {
-          message: 'Maximum level on ascension 2 is 50',
-        }),
-        normalAttack: Zod.number().refine((val) => val <= 2, {
-          message: 'Maximum normal attack on ascension 2 is 2',
-        }),
-        elementalSkill: Zod.number().refine((val) => val <= 2, {
-          message: 'Maximum elemental skill on ascension 2 is 2',
-        }),
-        elementalBurst: Zod.number().refine((val) => val <= 2, {
-          message: 'Maximum elemental burst on ascension 2 is 2',
-        }),
+    }
+    case 2: {
+      const parsedData = parseData({
+        phase: ascension,
+        maxLevel: 50,
+        maxTalent: 2,
       })
-
-      const parsed2 = schema2.safeParse({
-        level,
-        normalAttack,
-        elementalSkill,
-        elementalBurst,
-      })
-
-      if (!parsed2.success) {
-        return narrowErrors(parsed2.error.issues)
-      }
-
+      if (!parsedData.success) return narrowErrors(parsedData.error.issues)
       return
-    case 3:
-      const schema3 = Zod.object({
-        level: Zod.number().refine((val) => val <= 60, {
-          message: 'Maximum level on ascension 3 is 60',
-        }),
-        normalAttack: Zod.number().refine((val) => val <= 4, {
-          message: 'Maximum normal attack on ascension 3 is 4',
-        }),
-        elementalSkill: Zod.number().refine((val) => val <= 4, {
-          message: 'Maximum elemental skill on ascension 3 is 4',
-        }),
-        elementalBurst: Zod.number().refine((val) => val <= 4, {
-          message: 'Maximum elemental burst on ascension 3 is 4',
-        }),
+    }
+    case 3: {
+      const parsedData = parseData({
+        phase: ascension,
+        maxLevel: 60,
+        maxTalent: 4,
       })
-
-      const parsed3 = schema3.safeParse({
-        level,
-        normalAttack,
-        elementalSkill,
-        elementalBurst,
-      })
-
-      if (!parsed3.success) {
-        return narrowErrors(parsed3.error.issues)
-      }
-
+      if (!parsedData.success) return narrowErrors(parsedData.error.issues)
       return
-    case 4:
-      const schema4 = Zod.object({
-        level: Zod.number().refine((val) => val <= 70, {
-          message: 'Maximum level on ascension 4 is 70',
-        }),
-        normalAttack: Zod.number().refine((val) => val <= 6, {
-          message: 'Maximum normal attack on ascension 4 is 6',
-        }),
-        elementalSkill: Zod.number().refine((val) => val <= 6, {
-          message: 'Maximum elemental skill on ascension 4 is 6',
-        }),
-        elementalBurst: Zod.number().refine((val) => val <= 6, {
-          message: 'Maximum elemental burst on ascension 4 is 6',
-        }),
+    }
+    case 4: {
+      const parsedData = parseData({
+        phase: ascension,
+        maxLevel: 70,
+        maxTalent: 6,
       })
-
-      const parsed4 = schema4.safeParse({
-        level,
-        normalAttack,
-        elementalSkill,
-        elementalBurst,
-      })
-
-      if (!parsed4.success) {
-        return narrowErrors(parsed4.error.issues)
-      }
-
+      if (!parsedData.success) return narrowErrors(parsedData.error.issues)
       return
-    case 5:
-      const schema5 = Zod.object({
-        level: Zod.number().refine((val) => val <= 80, {
-          message: 'Maximum level on ascension 5 is 80',
-        }),
-        normalAttack: Zod.number().refine((val) => val <= 8, {
-          message: 'Maximum normal attack on ascension 5 is 8',
-        }),
-        elementalSkill: Zod.number().refine((val) => val <= 8, {
-          message: 'Maximum elemental skill on ascension 5 is 8',
-        }),
-        elementalBurst: Zod.number().refine((val) => val <= 8, {
-          message: 'Maximum elemental burst on ascension 5 is 8',
-        }),
+    }
+    case 5: {
+      const parsedData = parseData({
+        phase: ascension,
+        maxLevel: 80,
+        maxTalent: 8,
       })
-
-      const parsed5 = schema5.safeParse({
-        level,
-        normalAttack,
-        elementalSkill,
-        elementalBurst,
-      })
-
-      if (!parsed5.success) {
-        return narrowErrors(parsed5.error.issues)
-      }
-
+      if (!parsedData.success) return narrowErrors(parsedData.error.issues)
       return
+    }
     case 6:
-      const schema6 = Zod.object({
-        level: Zod.number().refine((val) => val <= 90, {
-          message: 'Maximum level on ascension 6 is 90',
-        }),
-        normalAttack: Zod.number().refine((val) => val <= 10, {
-          message: 'Maximum normal attack on ascension 6 is 10',
-        }),
-        elementalSkill: Zod.number().refine((val) => val <= 10, {
-          message: 'Maximum elemental skill on ascension 6 is 10',
-        }),
-        elementalBurst: Zod.number().refine((val) => val <= 10, {
-          message: 'Maximum elemental burst on ascension 6 is 10',
-        }),
-      })
-
-      const parsed6 = schema6.safeParse({
-        level,
-        normalAttack,
-        elementalSkill,
-        elementalBurst,
-      })
-
-      if (!parsed6.success) {
-        return narrowErrors(parsed6.error.issues)
-      }
-
       return
     default:
       invariant(false, 'IMPOSSIBLE')

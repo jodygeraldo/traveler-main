@@ -58,9 +58,13 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
   })
   invariant(traveler)
   const { ascensionMaterial, talentMaterial } =
-    CharacterData.getTravelerRequiredMaterial({
-      vision: parsedVision.data,
+    CharacterData.getRequiredMaterial({
+      name: `Traveler ${parsedVision.data}`,
+      isTraveler: true,
     })
+  console.log(talentMaterial)
+  // traveler always return talentMaterial as object
+  invariant(!Array.isArray(talentMaterial))
 
   return RemixNode.json<LoaderData>({
     traveler,

@@ -38,9 +38,11 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
   }
 
   const { ascensionMaterial, talentMaterial } =
-    CharacterData.getCharacterRequiredMaterial({
+    CharacterData.getRequiredMaterial({
       name: characterName,
     })
+  // only traveler returning object
+  invariant(Array.isArray(talentMaterial))
 
   return RemixNode.json<LoaderData>({
     character,

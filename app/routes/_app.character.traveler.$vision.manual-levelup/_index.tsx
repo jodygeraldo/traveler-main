@@ -75,8 +75,8 @@ export const action: RemixNode.ActionFunction = async ({ request, params }) => {
 }
 
 interface LoaderData {
-  travelerData: CharacterData.CharacterData
-  otherTravelersData: CharacterData.CharacterData[]
+  travelerData: CharacterData.CharacterProgression
+  otherTravelersData: CharacterData.CharacterProgression[]
 }
 
 export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
@@ -99,7 +99,7 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
     (traveler) => traveler !== parsedTraveler
   )
 
-  const travelerData: CharacterData.CharacterData = {
+  const travelerData: CharacterData.CharacterProgression = {
     name: parsedTraveler,
     level: currentTraveler?.['@level'] ?? 1,
     ascension: currentTraveler?.['@ascension'] ?? 0,
@@ -108,7 +108,7 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
     elementalBurst: currentTraveler?.['@elemental_burst'] ?? 1,
   }
 
-  const otherTravelersData: CharacterData.CharacterData[] = otherTravelers.map(
+  const otherTravelersData: CharacterData.CharacterProgression[] = otherTravelers.map(
     (traveler) => {
       const otherTraveler = userTravelers?.find((c) => c.name === traveler)
       return {

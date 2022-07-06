@@ -52,7 +52,7 @@ export const action: RemixNode.ActionFunction = async ({ request, params }) => {
 }
 
 interface LoaderData {
-  characterData: CharacterData.CharacterData
+  characterData: CharacterData.CharacterProgression
 }
 
 export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
@@ -65,7 +65,7 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
     accId,
   })
 
-  const characterData: CharacterData.CharacterData = {
+  const characterData: CharacterData.CharacterProgression = {
     name: characterName,
     level: userCharacter?.['@level'] ?? 1,
     ascension: userCharacter?.['@ascension'] ?? 0,
