@@ -12,7 +12,7 @@ import * as Utils from '~/utils'
 export { action } from '~/actions/inventory'
 
 interface LoaderData {
-  items: ReturnType<typeof ItemData.getItems>
+  items: ReturnType<typeof ItemData.getAllItemsInCategory>
   category: keyof DB.Type.Inventory
 }
 export const loader: RemixNode.LoaderFunction = async ({ params, request }) => {
@@ -43,7 +43,7 @@ export const loader: RemixNode.LoaderFunction = async ({ params, request }) => {
     category: parsedCategory.data,
     accId,
   })
-  const items = ItemData.getItems({
+  const items = ItemData.getAllItemsInCategory({
     category: parsedCategory.data,
     items: inventory,
   })

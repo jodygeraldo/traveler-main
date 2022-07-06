@@ -210,32 +210,38 @@ export function getAllItems(inventory: InventoryModel.InventoryInfer) {
   invariant(inventory, 'cannot find associated inventory for this account')
 
   return {
-    special: getItems({ category: 'special', items: inventory.special }),
-    common: getItems({ category: 'common', items: inventory.common }),
-    ascensionGem: getItems({
+    special: getAllItemsInCategory({
+      category: 'special',
+      items: inventory.special,
+    }),
+    common: getAllItemsInCategory({
+      category: 'common',
+      items: inventory.common,
+    }),
+    ascensionGem: getAllItemsInCategory({
       category: 'ascension_gem',
       items: inventory.ascension_gem,
     }),
-    ascensionBoss: getItems({
+    ascensionBoss: getAllItemsInCategory({
       category: 'ascension_boss',
       items: inventory.ascension_boss,
     }),
-    localSpecialty: getItems({
+    localSpecialty: getAllItemsInCategory({
       category: 'local_specialty',
       items: inventory.local_specialty,
     }),
-    talentBook: getItems({
+    talentBook: getAllItemsInCategory({
       category: 'talent_book',
       items: inventory.talent_book,
     }),
-    talentBoss: getItems({
+    talentBoss: getAllItemsInCategory({
       category: 'talent_boss',
       items: inventory.talent_boss,
     }),
   }
 }
 
-export function getItems({
+export function getAllItemsInCategory({
   category,
   items,
 }: {
