@@ -1,6 +1,8 @@
 import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import type * as CharacterModel from '~/models/character.server'
+import type * as InventoryModel from '~/models/inventory.server'
+import { getItemsInCategory } from './items'
 
 export interface CharacterProgression {
   name: string
@@ -1505,22 +1507,6 @@ const characterMaterial: CharacterMaterial[] = [
         common: commonMaterials['Hilichurl Arrowheads'],
         special: 'Crown of Insight',
       },
-      {
-        book: [
-          'Teachings of Prosperity',
-          'Guide to Diligence',
-          'Guide to Gold',
-          'Guide to Prosperity',
-          'Guide to Diligence',
-          'Philosophies of Gold',
-          'Philosophies of Prosperity',
-          'Philosophies of Diligence',
-          'Philosophies of Gold',
-        ],
-        boss: 'Tail of Boreas',
-        common: commonMaterials['Hilichurl Arrowheads'],
-        special: 'Crown of Insight',
-      },
     ],
   },
   {
@@ -1756,17 +1742,12 @@ export interface CharacterTalent {
   special?: { name: string; quantity: number }
 }
 
-export function getRequiredMaterial({
-  name,
-  isTraveler,
-}: {
-  name: string
-  isTraveler?: boolean
-}) {
+export function getRequiredMaterial({ name }: { name: string }) {
   const character = characterMaterial.find(
     (character) => character.name === name
   )
   invariant(character)
+  const isTraveler = character.name.includes('Traveler')
 
   const ascensionMaterial = getAscensionMaterial(character.ascension)
 
@@ -1825,14 +1806,14 @@ function getAscensionMaterial({
     {
       phase: { from: 0, to: 1 },
       mora: 20_000,
-      common: { name: common[1], quantity: 3 },
+      common: { name: common[0], quantity: 3 },
       gem: { name: `${gem} Sliver`, quantity: 1 },
       local: { name: local, quantity: 3 },
     },
     {
       phase: { from: 1, to: 2 },
       mora: 40_000,
-      common: { name: common[1], quantity: 15 },
+      common: { name: common[0], quantity: 15 },
       gem: { name: `${gem} Fragment`, quantity: 3 },
       local: { name: local, quantity: 10 },
       boss: boss ? { name: boss, quantity: 2 } : undefined,
@@ -2054,6 +2035,771 @@ export function validateAscensionRequirement({
     }
     case 6:
       return
+    default:
+      invariant(false, 'IMPOSSIBLE')
+  }
+}
+
+interface ItemsToRetrieve {
+  ascension: {
+    baseCommon: string[]
+    ascensionGem: string[]
+    ascensionBoss: string | undefined
+    localSpecialty: string
+  }
+  talent: {
+    talentCommon: string[]
+    talentBook: string[]
+    talentBoss: string[]
+    special: string
+  }
+}
+
+export function getItemsToRetrieve({
+  name,
+}: {
+  name: string
+}): ItemsToRetrieve | undefined {
+  const characterData = characterMaterial.find((c) => c.name === name)
+  if (!characterData) {
+    return
+  }
+
+  const { ascension, talent } = characterData
+
+  function getAscensionGems(name: string) {
+    return [
+      `${name} Sliver`,
+      `${name} Fragment`,
+      `${name} Chunk`,
+      `${name} Gemstone`,
+    ]
+  }
+
+  const ascensionMaterial = {
+    baseCommon: ascension.common,
+    ascensionGem: getAscensionGems(ascension.gem),
+    ascensionBoss: ascension.boss,
+    localSpecialty: ascension.local,
+  }
+
+  const talentMaterial = {
+    talentCommon: Array.isArray(talent)
+      ? talent.reduce((prev, cur) => [...prev, ...cur.common], [] as string[])
+      : talent.common,
+    talentBook: Array.isArray(talent)
+      ? talent.reduce((prev, cur) => [...prev, ...cur.book], [] as string[])
+      : talent.book,
+    talentBoss: Array.isArray(talent)
+      ? talent.reduce((prev, cur) => [...prev, cur.boss], [] as string[])
+      : [talent.boss],
+    special: 'Crown of Insight',
+  }
+
+  return {
+    ascension: ascensionMaterial,
+    talent: talentMaterial,
+  }
+}
+
+export function getCurrentRequiredItems({
+  name,
+  characterData,
+  material,
+  requiredItems,
+}: {
+  name: string
+  characterData: CharacterModel.CharacterInfer
+  material: ItemsToRetrieve
+  requiredItems: InventoryModel.RequiredItemsInfer
+}) {
+  const { ascensionMaterial, talentMaterial } = getRequiredMaterial({ name })
+
+  const { ascension, ...talent }: Omit<CharacterProgression, 'name' | 'level'> =
+    characterData
+      ? {
+          ascension: characterData['@ascension'] ?? 0,
+          normalAttack: characterData['@normal_attack'] ?? 1,
+          elementalSkill: characterData['@elemental_skill'] ?? 1,
+          elementalBurst: characterData['@elemental_burst'] ?? 1,
+        }
+      : {
+          ascension: 0,
+          normalAttack: 1,
+          elementalSkill: 1,
+          elementalBurst: 1,
+        }
+
+  function getCurrentMaterial({
+    ascension,
+    talent,
+    skipTalentIfHigherOrEqualThan = 0,
+  }: {
+    ascension: number
+    talent?: {
+      normalAttack: number
+      elementalSkill: number
+      elementalBurst: number
+    }
+    skipTalentIfHigherOrEqualThan?: number
+  }) {
+    const curAscensionMaterial = ascensionMaterial.at(ascension)
+
+    if (!talent) {
+      return {
+        ascension: curAscensionMaterial,
+        talent: {
+          normal: undefined,
+          elementalSkill: undefined,
+          elementalBurst: undefined,
+        },
+      }
+    }
+
+    const { normalAttack, elementalSkill, elementalBurst } = talent
+
+    const curTalentNormalMaterial =
+      normalAttack >= skipTalentIfHigherOrEqualThan
+        ? undefined
+        : Array.isArray(talentMaterial)
+        ? talentMaterial.at(normalAttack - 1)
+        : talentMaterial.normal.at(normalAttack - 1)
+    const curTalentElementalSkillMaterial =
+      elementalSkill >= skipTalentIfHigherOrEqualThan
+        ? undefined
+        : Array.isArray(talentMaterial)
+        ? talentMaterial.at(elementalSkill - 1)
+        : talentMaterial.elemental.at(elementalSkill - 1)
+    const curTalentElementalBurstMaterial =
+      elementalBurst >= skipTalentIfHigherOrEqualThan
+        ? undefined
+        : Array.isArray(talentMaterial)
+        ? talentMaterial.at(elementalBurst - 1)
+        : talentMaterial.elemental.at(elementalBurst - 1)
+
+    return {
+      ascension: curAscensionMaterial,
+      talent: {
+        normal: curTalentNormalMaterial,
+        elementalSkill: curTalentElementalSkillMaterial,
+        elementalBurst: curTalentElementalBurstMaterial,
+      },
+    }
+  }
+
+  function getAscensionRequiredItems(material: ItemsToRetrieve['ascension']) {
+    const common = getItemsInCategory({
+      category: 'common',
+      names: [...material.baseCommon],
+      items: requiredItems.common,
+    })
+    const ascensionGem = getItemsInCategory({
+      category: 'ascension_gem',
+      names: material.ascensionGem,
+      items: requiredItems.ascension_gem,
+    })
+    const ascensionBoss = getItemsInCategory({
+      category: 'ascension_boss',
+      names: [material.ascensionBoss ?? ''],
+      items: requiredItems.ascension_boss,
+    })
+    const localSpecialty = getItemsInCategory({
+      category: 'local_specialty',
+      names: [material.localSpecialty],
+      items: requiredItems.local_specialty,
+    })
+    return [...common, ...ascensionGem, ...ascensionBoss, ...localSpecialty]
+  }
+
+  function getTalentRequiredItems(material: ItemsToRetrieve['talent']) {
+    const common = getItemsInCategory({
+      category: 'common',
+      names: [...material.talentCommon],
+      items: requiredItems.common,
+    })
+    const talentBook = getItemsInCategory({
+      category: 'talent_book',
+      names: material.talentBook,
+      items: requiredItems.talent_book,
+    })
+    const talentBoss = getItemsInCategory({
+      category: 'talent_boss',
+      names: material.talentBoss,
+      items: requiredItems.talent_boss,
+    })
+    const special = getItemsInCategory({
+      category: 'special',
+      names: [material.special],
+      items: requiredItems.special,
+    })
+    return [...common, ...talentBook, ...talentBoss, ...special]
+  }
+
+  const allTalentGreaterThanOrEqualTwo =
+    talent.normalAttack >= 2 &&
+    talent.elementalSkill >= 2 &&
+    talent.elementalBurst >= 2
+
+  const allTalentGreaterThanOrEqualSix =
+    talent.normalAttack >= 6 &&
+    talent.elementalSkill >= 6 &&
+    talent.elementalBurst >= 6
+
+  const allTalentEqualTen =
+    talent.normalAttack === 10 &&
+    talent.elementalSkill === 10 &&
+    talent.elementalBurst === 10
+
+  const normalTalentGreaterThanOrEqualTwo = talent.normalAttack >= 2
+  const elementalTalentGreaterThanOrEqualTwo =
+    talent.elementalSkill >= 2 && talent.elementalBurst >= 2
+
+  const normalTalentGreaterThanOrEqualFour = talent.normalAttack >= 4
+  const elementalTalentGreaterThanOrEqualFour =
+    talent.elementalSkill >= 4 && talent.elementalBurst >= 4
+  const allTalentGreaterThanOrEqualFour =
+    normalTalentGreaterThanOrEqualFour && elementalTalentGreaterThanOrEqualFour
+
+  const normalTalentGreaterThanOrEqualFive = talent.normalAttack >= 5
+  const elementalTalentGreaterThanOrEqualFive =
+    talent.elementalSkill >= 5 && talent.elementalBurst >= 5
+  const allTalentGreaterThanOrEqualFive =
+    normalTalentGreaterThanOrEqualFive && elementalTalentGreaterThanOrEqualFive
+
+  const normalTalentGreaterThanOrEqualSix = talent.normalAttack >= 6
+  const elementalTalentGreaterThanOrEqualSix =
+    talent.elementalSkill >= 6 && talent.elementalBurst >= 6
+
+  const normalTalentGreaterThanOrEqualEight = talent.normalAttack >= 8
+  const elementalTalentGreaterThanOrEqualEight =
+    talent.elementalSkill >= 8 && talent.elementalBurst >= 8
+  const allTalentGreaterThanOrEqualEight =
+    normalTalentGreaterThanOrEqualEight &&
+    elementalTalentGreaterThanOrEqualEight
+
+  const normalTalentGreaterThanOrEqualNine = talent.normalAttack >= 9
+  const elementalTalentGreaterThanOrEqualNine =
+    talent.elementalSkill >= 9 && talent.elementalBurst >= 9
+  const allTalentGreaterThanOrEqualNine =
+    normalTalentGreaterThanOrEqualNine && elementalTalentGreaterThanOrEqualNine
+
+  const normalTalentEqualTen = talent.normalAttack === 10
+  const elementalTalentEqualTen =
+    talent.elementalSkill === 10 && talent.elementalBurst === 10
+
+  switch (ascension) {
+    case 0: {
+      const items = [
+        ...getAscensionRequiredItems(material.ascension),
+        ...getTalentRequiredItems(material.talent),
+      ]
+
+      const currentMaterial = getCurrentMaterial({ ascension })
+
+      // TODO: check if able to ascend // level up talent
+
+      return 
+    }
+    case 1: {
+      const ascensionMaterial: ItemsToRetrieve['ascension'] = {
+        ...material.ascension,
+        ascensionGem: material.ascension.ascensionGem.slice(1),
+      }
+
+      const items = [
+        ...getAscensionRequiredItems(ascensionMaterial),
+        ...getTalentRequiredItems(material.talent),
+      ]
+
+      return getCurrentMaterial({ ascension })
+    }
+    case 2: {
+      const ascensionMaterial: ItemsToRetrieve['ascension'] = {
+        ...material.ascension,
+        baseCommon: material.ascension.baseCommon.slice(1),
+        ascensionGem: material.ascension.ascensionGem.slice(1),
+      }
+
+      let talentMaterial: ItemsToRetrieve['talent'] = {
+        ...material.talent,
+        talentCommon: material.talent.talentCommon.slice(
+          allTalentGreaterThanOrEqualTwo ? 1 : 0
+        ),
+        talentBook: material.talent.talentBook.slice(
+          allTalentGreaterThanOrEqualTwo ? 1 : 0
+        ),
+      }
+
+      // traveler geo
+      if (material.talent.talentBook.length === 18) {
+        const talentNormalCommon = material.talent.talentCommon.filter(
+          (_, i) => i < 3
+        )
+        const talentElementalCommon = material.talent.talentCommon.slice(-3)
+
+        talentMaterial = {
+          ...talentMaterial,
+          talentCommon: [
+            ...talentNormalCommon.slice(
+              normalTalentGreaterThanOrEqualTwo ? 1 : 0
+            ),
+            ...talentElementalCommon.slice(
+              elementalTalentGreaterThanOrEqualTwo ? 1 : 0
+            ),
+          ],
+        }
+      }
+
+      const items = [
+        ...getAscensionRequiredItems(ascensionMaterial),
+        ...getTalentRequiredItems(talentMaterial),
+      ]
+
+      return getCurrentMaterial({
+        ascension,
+        talent,
+        skipTalentIfHigherOrEqualThan: 2,
+      })
+    }
+    case 3: {
+      const ascensionMaterial: ItemsToRetrieve['ascension'] = {
+        ...material.ascension,
+        baseCommon: material.ascension.baseCommon.slice(1),
+        ascensionGem: material.ascension.ascensionGem.slice(2),
+      }
+
+      let talentMaterial: ItemsToRetrieve['talent'] = {
+        ...material.talent,
+        talentCommon: material.talent.talentCommon.slice(
+          allTalentGreaterThanOrEqualTwo ? 1 : 0
+        ),
+        talentBook: material.talent.talentBook.slice(
+          allTalentGreaterThanOrEqualTwo ? 1 : 0
+        ),
+      }
+
+      // traveler
+      if (material.talent.talentBook.length === 9) {
+        talentMaterial = {
+          ...talentMaterial,
+          talentBook: [
+            ...material.talent.talentBook.slice(
+              allTalentGreaterThanOrEqualTwo
+                ? allTalentGreaterThanOrEqualFour
+                  ? 3
+                  : 1
+                : 0
+            ),
+          ],
+        }
+      }
+
+      // traveler geo
+      if (material.talent.talentBook.length === 18) {
+        const talentNormalBook = material.talent.talentBook.filter(
+          (_, i) => i < 9
+        )
+        const talentElementalBook = material.talent.talentBook.slice(-9)
+        const talentNormalCommon = material.talent.talentCommon.filter(
+          (_, i) => i < 3
+        )
+        const talentElementalCommon = material.talent.talentCommon.slice(-3)
+
+        talentMaterial = {
+          ...talentMaterial,
+          talentCommon: [
+            ...talentNormalCommon.slice(
+              normalTalentGreaterThanOrEqualTwo ? 1 : 0
+            ),
+            ...talentElementalCommon.slice(
+              elementalTalentGreaterThanOrEqualTwo ? 1 : 0
+            ),
+          ],
+          talentBook: [
+            ...talentNormalBook.slice(
+              normalTalentGreaterThanOrEqualTwo
+                ? normalTalentGreaterThanOrEqualFour
+                  ? 3
+                  : 1
+                : 0
+            ),
+            ...talentElementalBook.slice(
+              elementalTalentGreaterThanOrEqualTwo
+                ? elementalTalentGreaterThanOrEqualFour
+                  ? 3
+                  : 1
+                : 0
+            ),
+          ],
+        }
+      }
+
+      const items = [
+        ...getAscensionRequiredItems(ascensionMaterial),
+        ...getTalentRequiredItems(talentMaterial),
+      ]
+
+      return getCurrentMaterial({
+        ascension,
+        talent,
+        skipTalentIfHigherOrEqualThan: 4,
+      })
+    }
+    case 4: {
+      const ascensionMaterial: ItemsToRetrieve['ascension'] = {
+        ...material.ascension,
+        baseCommon: material.ascension.baseCommon.slice(2),
+        ascensionGem: material.ascension.ascensionGem.slice(2),
+      }
+
+      let talentMaterial: ItemsToRetrieve['talent'] = {
+        ...material.talent,
+        talentCommon: material.talent.talentCommon.slice(
+          allTalentGreaterThanOrEqualTwo
+            ? allTalentGreaterThanOrEqualSix
+              ? 2
+              : 1
+            : 0
+        ),
+        talentBook: material.talent.talentBook.slice(
+          allTalentGreaterThanOrEqualTwo
+            ? allTalentGreaterThanOrEqualSix
+              ? 2
+              : 1
+            : 0
+        ),
+      }
+
+      // traveler
+      if (material.talent.talentBook.length === 9) {
+        talentMaterial = {
+          ...talentMaterial,
+          talentBook: [
+            ...material.talent.talentBook.slice(
+              allTalentGreaterThanOrEqualTwo
+                ? allTalentGreaterThanOrEqualFour
+                  ? allTalentGreaterThanOrEqualFive
+                    ? allTalentGreaterThanOrEqualSix
+                      ? 5
+                      : 4
+                    : 3
+                  : 1
+                : 0
+            ),
+          ],
+        }
+      }
+
+      // traveler geo
+      if (material.talent.talentBook.length === 18) {
+        const talentNormalBook = material.talent.talentBook.filter(
+          (_, i) => i < 9
+        )
+        const talentElementalBook = material.talent.talentBook.slice(-9)
+        const talentNormalCommon = material.talent.talentCommon.filter(
+          (_, i) => i < 3
+        )
+        const talentElementalCommon = material.talent.talentCommon.slice(-3)
+
+        talentMaterial = {
+          ...talentMaterial,
+          talentCommon: [
+            ...talentNormalCommon.slice(
+              normalTalentGreaterThanOrEqualTwo
+                ? normalTalentGreaterThanOrEqualSix
+                  ? 2
+                  : 1
+                : 0
+            ),
+            ...talentElementalCommon.slice(
+              elementalTalentGreaterThanOrEqualTwo
+                ? elementalTalentGreaterThanOrEqualSix
+                  ? 2
+                  : 1
+                : 0
+            ),
+          ],
+          talentBook: [
+            ...talentNormalBook.slice(
+              normalTalentGreaterThanOrEqualTwo
+                ? normalTalentGreaterThanOrEqualFour
+                  ? normalTalentGreaterThanOrEqualFive
+                    ? normalTalentGreaterThanOrEqualSix
+                      ? 5
+                      : 4
+                    : 3
+                  : 1
+                : 0
+            ),
+            ...talentElementalBook.slice(
+              elementalTalentGreaterThanOrEqualTwo
+                ? elementalTalentGreaterThanOrEqualFour
+                  ? elementalTalentGreaterThanOrEqualFive
+                    ? elementalTalentGreaterThanOrEqualSix
+                      ? 5
+                      : 4
+                    : 3
+                  : 1
+                : 0
+            ),
+          ],
+        }
+      }
+
+      getAscensionRequiredItems(ascensionMaterial)
+      getTalentRequiredItems(talentMaterial)
+
+      return getCurrentMaterial({
+        ascension,
+        talent,
+        skipTalentIfHigherOrEqualThan: 6,
+      })
+    }
+    case 5: {
+      const ascensionMaterial: ItemsToRetrieve['ascension'] = {
+        ...material.ascension,
+        baseCommon: material.ascension.baseCommon.slice(2),
+        ascensionGem: material.ascension.ascensionGem.slice(3),
+      }
+
+      let talentMaterial: ItemsToRetrieve['talent'] = {
+        ...material.talent,
+        talentCommon: material.talent.talentCommon.slice(
+          allTalentGreaterThanOrEqualTwo
+            ? allTalentGreaterThanOrEqualSix
+              ? 2
+              : 1
+            : 0
+        ),
+        talentBook: material.talent.talentBook.slice(
+          allTalentGreaterThanOrEqualTwo
+            ? allTalentGreaterThanOrEqualSix
+              ? 2
+              : 1
+            : 0
+        ),
+      }
+
+      // traveler
+      if (material.talent.talentBook.length === 9) {
+        talentMaterial = {
+          ...talentMaterial,
+          talentBook: [
+            ...material.talent.talentBook.slice(
+              allTalentGreaterThanOrEqualTwo
+                ? allTalentGreaterThanOrEqualFour
+                  ? allTalentGreaterThanOrEqualFive
+                    ? allTalentGreaterThanOrEqualSix
+                      ? allTalentGreaterThanOrEqualEight
+                        ? 7
+                        : 5
+                      : 4
+                    : 3
+                  : 1
+                : 0
+            ),
+          ],
+        }
+      }
+
+      // traveler geo
+      if (material.talent.talentBook.length === 18) {
+        const talentNormalBook = material.talent.talentBook.filter(
+          (_, i) => i < 9
+        )
+        const talentElementalBook = material.talent.talentBook.slice(-9)
+        const talentNormalCommon = material.talent.talentCommon.filter(
+          (_, i) => i < 3
+        )
+        const talentElementalCommon = material.talent.talentCommon.slice(-3)
+
+        talentMaterial = {
+          ...talentMaterial,
+          talentCommon: [
+            ...talentNormalCommon.slice(
+              normalTalentGreaterThanOrEqualTwo
+                ? normalTalentGreaterThanOrEqualSix
+                  ? 2
+                  : 1
+                : 0
+            ),
+            ...talentElementalCommon.slice(
+              elementalTalentGreaterThanOrEqualTwo
+                ? elementalTalentGreaterThanOrEqualSix
+                  ? 2
+                  : 1
+                : 0
+            ),
+          ],
+          talentBook: [
+            ...talentNormalBook.slice(
+              normalTalentGreaterThanOrEqualTwo
+                ? normalTalentGreaterThanOrEqualFour
+                  ? normalTalentGreaterThanOrEqualFive
+                    ? normalTalentGreaterThanOrEqualSix
+                      ? normalTalentGreaterThanOrEqualEight
+                        ? 7
+                        : 5
+                      : 4
+                    : 3
+                  : 1
+                : 0
+            ),
+            ...talentElementalBook.slice(
+              elementalTalentGreaterThanOrEqualTwo
+                ? elementalTalentGreaterThanOrEqualFour
+                  ? elementalTalentGreaterThanOrEqualFive
+                    ? elementalTalentGreaterThanOrEqualSix
+                      ? elementalTalentGreaterThanOrEqualEight
+                        ? 7
+                        : 5
+                      : 4
+                    : 3
+                  : 1
+                : 0
+            ),
+          ],
+        }
+      }
+
+      const items = [
+        ...getAscensionRequiredItems(ascensionMaterial),
+        ...getTalentRequiredItems(talentMaterial),
+      ]
+
+      return getCurrentMaterial({
+        ascension,
+        talent,
+        skipTalentIfHigherOrEqualThan: 8,
+      })
+    }
+    case 6: {
+      if (allTalentEqualTen) {
+        return 'You fucking weeb'
+      }
+
+      let talentMaterial: ItemsToRetrieve['talent'] = {
+        ...material.talent,
+        talentCommon: material.talent.talentCommon.slice(
+          allTalentGreaterThanOrEqualTwo
+            ? allTalentGreaterThanOrEqualSix
+              ? 2
+              : 1
+            : 0
+        ),
+        talentBook: material.talent.talentBook.slice(
+          allTalentGreaterThanOrEqualTwo
+            ? allTalentGreaterThanOrEqualSix
+              ? 2
+              : 1
+            : 0
+        ),
+      }
+
+      // traveler
+      if (material.talent.talentBook.length === 9) {
+        talentMaterial = {
+          ...talentMaterial,
+          talentBook: [
+            ...material.talent.talentBook.slice(
+              allTalentGreaterThanOrEqualTwo
+                ? allTalentGreaterThanOrEqualFour
+                  ? allTalentGreaterThanOrEqualFive
+                    ? allTalentGreaterThanOrEqualSix
+                      ? allTalentGreaterThanOrEqualEight
+                        ? allTalentGreaterThanOrEqualNine
+                          ? 8
+                          : 7
+                        : 5
+                      : 4
+                    : 3
+                  : 1
+                : 0
+            ),
+          ],
+        }
+      }
+
+      // traveler geo
+      if (material.talent.talentBook.length === 18) {
+        const talentNormalBook = material.talent.talentBook.filter(
+          (_, i) => i < 9
+        )
+        const talentElementalBook = material.talent.talentBook.slice(-9)
+        const talentNormalCommon = material.talent.talentCommon.filter(
+          (_, i) => i < 3
+        )
+        const talentElementalCommon = material.talent.talentCommon.slice(-3)
+
+        talentMaterial = {
+          ...talentMaterial,
+          talentCommon: [
+            ...talentNormalCommon.slice(
+              normalTalentGreaterThanOrEqualTwo
+                ? normalTalentGreaterThanOrEqualSix
+                  ? normalTalentEqualTen
+                    ? 3
+                    : 2
+                  : 1
+                : 0
+            ),
+            ...talentElementalCommon.slice(
+              elementalTalentGreaterThanOrEqualTwo
+                ? elementalTalentGreaterThanOrEqualSix
+                  ? elementalTalentEqualTen
+                    ? 3
+                    : 2
+                  : 1
+                : 0
+            ),
+          ],
+          talentBook: [
+            ...talentNormalBook.slice(
+              normalTalentGreaterThanOrEqualTwo
+                ? normalTalentGreaterThanOrEqualFour
+                  ? normalTalentGreaterThanOrEqualFive
+                    ? normalTalentGreaterThanOrEqualSix
+                      ? normalTalentGreaterThanOrEqualEight
+                        ? normalTalentGreaterThanOrEqualNine
+                          ? normalTalentEqualTen
+                            ? 9
+                            : 8
+                          : 7
+                        : 5
+                      : 4
+                    : 3
+                  : 1
+                : 0
+            ),
+            ...talentElementalBook.slice(
+              elementalTalentGreaterThanOrEqualTwo
+                ? elementalTalentGreaterThanOrEqualFour
+                  ? elementalTalentGreaterThanOrEqualFive
+                    ? elementalTalentGreaterThanOrEqualSix
+                      ? elementalTalentGreaterThanOrEqualNine
+                        ? elementalTalentEqualTen
+                          ? 9
+                          : 8
+                        : elementalTalentGreaterThanOrEqualEight
+                        ? 7
+                        : 5
+                      : 4
+                    : 3
+                  : 1
+                : 0
+            ),
+          ],
+        }
+      }
+
+      const items = getTalentRequiredItems(talentMaterial)
+
+      return getCurrentMaterial({
+        ascension,
+        talent,
+        skipTalentIfHigherOrEqualThan: 10,
+      })
+    }
     default:
       invariant(false, 'IMPOSSIBLE')
   }

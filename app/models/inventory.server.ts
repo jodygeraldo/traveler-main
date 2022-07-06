@@ -1,20 +1,17 @@
 import invariant from 'tiny-invariant'
 import e, * as DB from '~/db.server'
+import type * as Utils from '~/utils'
 import * as UserModel from './user.server'
 
 const client = DB.client
 
-const query = e.select(e.Inventory, (i) => ({
-  ascension_gem: { name: true, '@quantity': true },
-  ascension_boss: { name: true, '@quantity': true },
-  local_specialty: { name: true, '@quantity': true },
-  common: { name: true, '@quantity': true },
-  talent_book: { name: true, '@quantity': true },
-  talent_boss: { name: true, '@quantity': true },
-  special: { name: true, '@quantity': true },
-  filter: e.op(i.owner, '=', UserModel.Account('uuid')),
-}))
-export type InventoryInfer = DB.Type.$infer<typeof query>
+export type InventoryInfer = Utils.depromisify<ReturnType<typeof getInventory>>
+export type InventoryCategoryInfer = Utils.depromisify<
+  ReturnType<typeof getInventoryCategory>
+>
+export type RequiredItemsInfer = Utils.depromisify<
+  ReturnType<typeof getRequiredItems>
+>
 
 export async function getInventory({ accId }: { accId: string }) {
   const inventory = await e
@@ -108,7 +105,7 @@ interface RequiredItemsParams {
   ascensionBoss?: string
   talentCommon?: string[]
   talentBook?: string[]
-  talentBoss?: string
+  talentBoss?: string[]
   special?: string
   accId: string
 }
@@ -120,7 +117,7 @@ export async function getRequiredItems({
   ascensionBoss = '',
   talentCommon = [],
   talentBook = [],
-  talentBoss = '',
+  talentBoss = [],
   special = '',
   accId,
 }: RequiredItemsParams) {
@@ -131,48 +128,51 @@ export async function getRequiredItems({
   const ascensionGemSet = e.array_unpack(e.array(['', ...ascensionGem]))
   const ascensionBossSet = e.str(ascensionBoss)
   const localSpecialtySet = e.str(localSpecialty)
-  const talentBossSet = e.str(talentBoss)
+  const talentBossSet = e.array_unpack(e.array(['', ...talentBoss]))
   const specialSet = e.str(special)
   const talentBookSet = e.array_unpack(e.array(['', ...talentBook]))
 
-  return await e
+  const inventory = await e
     .select(e.Inventory, (inventory) => ({
       common: (i) => ({
-        ...e.CommonMaterial['*'],
+        name: true,
         '@quantity': true,
         filter: e.op(i.name, 'in', commonSet),
       }),
       ascension_gem: (i) => ({
-        ...e.AscensionGem['*'],
+        name: true,
         '@quantity': true,
         filter: e.op(i.name, 'in', ascensionGemSet),
       }),
       ascension_boss: (i) => ({
-        ...e.AscensionBossMaterial['*'],
+        name: true,
         '@quantity': true,
         filter: e.op(i.name, '=', ascensionBossSet),
       }),
       local_specialty: (i) => ({
-        ...e.LocalSpecialty['*'],
+        name: true,
         '@quantity': true,
         filter: e.op(i.name, '=', localSpecialtySet),
       }),
       talent_book: (i) => ({
-        ...e.TalentBook['*'],
+        name: true,
         '@quantity': true,
         filter: e.op(i.name, 'in', talentBookSet),
       }),
       talent_boss: (i) => ({
-        ...e.TalentBossMaterial['*'],
+        name: true,
         '@quantity': true,
-        filter: e.op(i.name, '=', talentBossSet),
+        filter: e.op(i.name, 'in', talentBossSet),
       }),
       special: (i) => ({
-        ...e.SpecialItem['*'],
+        name: true,
         '@quantity': true,
         filter: e.op(i.name, '=', specialSet),
       }),
       filter: e.op(inventory.owner, '=', UserModel.Account(accId)),
     }))
     .run(client)
+
+  invariant(inventory, "Can't find inventory for this account")
+  return inventory
 }

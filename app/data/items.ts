@@ -251,80 +251,145 @@ export function getAllItemsInCategory({
     '@quantity': number | null
   }[]
 }) {
+  function getUpdatedItems(itemsToUpdate: Item[]) {
+    return items.forEach((dbItem) => {
+      const idx = itemsToUpdate.findIndex((item) => item.name === dbItem.name)
+      itemsToUpdate[idx].quantity = dbItem['@quantity'] ?? 0
+    })
+  }
+
   if (category === 'special') {
     const updatedItems = special
-
-    items.forEach((dbItem) => {
-      const idx = updatedItems.findIndex((item) => item.name === dbItem.name)
-      updatedItems[idx].quantity = dbItem['@quantity']
-    })
-
+    getUpdatedItems(updatedItems)
     return updatedItems
   }
 
   if (category === 'common') {
     const updatedItems = common
-
-    items.forEach((dbItem) => {
-      const idx = updatedItems.findIndex((item) => item.name === dbItem.name)
-      updatedItems[idx].quantity = dbItem['@quantity']
-    })
-
+    getUpdatedItems(updatedItems)
     return updatedItems
   }
 
   if (category === 'ascension_gem') {
     const updatedItems = ascensionGem
-
-    items.forEach((dbItem) => {
-      const idx = updatedItems.findIndex((item) => item.name === dbItem.name)
-      updatedItems[idx].quantity = dbItem['@quantity']
-    })
-
+    getUpdatedItems(updatedItems)
     return updatedItems
   }
 
   if (category === 'ascension_boss') {
     const updatedItems = ascensionBoss
-
-    items.forEach((dbItem) => {
-      const idx = updatedItems.findIndex((item) => item.name === dbItem.name)
-      updatedItems[idx].quantity = dbItem['@quantity']
-    })
-
+    getUpdatedItems(updatedItems)
     return updatedItems
   }
 
   if (category === 'local_specialty') {
     const updatedItems = localSpecialty
-
-    items.forEach((dbItem) => {
-      const idx = updatedItems.findIndex((item) => item.name === dbItem.name)
-      updatedItems[idx].quantity = dbItem['@quantity']
-    })
-
+    getUpdatedItems(updatedItems)
     return updatedItems
   }
 
   if (category === 'talent_book') {
     const updatedItems = talentBook
-
-    items.forEach((dbItem) => {
-      const idx = updatedItems.findIndex((item) => item.name === dbItem.name)
-      updatedItems[idx].quantity = dbItem['@quantity']
-    })
-
+    getUpdatedItems(updatedItems)
     return updatedItems
   }
 
   if (category === 'talent_boss') {
     const updatedItems = talentBoss
+    getUpdatedItems(updatedItems)
+    return updatedItems
+  }
 
-    items.forEach((dbItem) => {
-      const idx = updatedItems.findIndex((item) => item.name === dbItem.name)
-      updatedItems[idx].quantity = dbItem['@quantity']
+  invariant(false, `Unknown category: ${category}`)
+}
+
+export function getItemsInCategory({
+  category,
+  names,
+  items,
+}: {
+  category: keyof DB.Type.Inventory
+  names: string[]
+  items: {
+    name: string
+    '@quantity': number | null
+  }[]
+}) {
+  function getUpdatedItems(itemsToUpdate: Item[]) {
+    return itemsToUpdate.forEach((item, index) => {
+      const dbItemIndex = items.findIndex((dbItem) => item.name === dbItem.name)
+      if (dbItemIndex === -1) return
+      itemsToUpdate[index].quantity = items[dbItemIndex]['@quantity'] ?? 0
     })
+  }
 
+  if (category === 'special') {
+    const updatedItems = special
+      .filter((item) => names.includes(item.name))
+      .map((item) => {
+        return { ...item, quantity: 0 }
+      })
+    getUpdatedItems(updatedItems)
+    return updatedItems
+  }
+
+  if (category === 'common') {
+    const updatedItems = common
+      .filter((item) => names.includes(item.name))
+      .map((item) => {
+        return { ...item, quantity: 0 }
+      })
+    getUpdatedItems(updatedItems)
+    return updatedItems
+  }
+
+  if (category === 'ascension_gem') {
+    const updatedItems = ascensionGem
+      .filter((item) => names.includes(item.name))
+      .map((item) => {
+        return { ...item, quantity: 0 }
+      })
+    getUpdatedItems(updatedItems)
+    return updatedItems
+  }
+
+  if (category === 'ascension_boss') {
+    const updatedItems = ascensionBoss
+      .filter((item) => names.includes(item.name))
+      .map((item) => {
+        return { ...item, quantity: 0 }
+      })
+    getUpdatedItems(updatedItems)
+    return updatedItems
+  }
+
+  if (category === 'local_specialty') {
+    const updatedItems = localSpecialty
+      .filter((item) => names.includes(item.name))
+      .map((item) => {
+        return { ...item, quantity: 0 }
+      })
+    getUpdatedItems(updatedItems)
+    return updatedItems
+  }
+
+  if (category === 'talent_book') {
+    const updatedItems = talentBook
+      .filter((item) => names.includes(item.name))
+      .map((item) => {
+        return { ...item, quantity: 0 }
+      })
+    getUpdatedItems(updatedItems)
+    return updatedItems
+  }
+
+  if (category === 'talent_boss') {
+    const updatedItems = talentBoss
+      .filter((item) => names.includes(item.name))
+      .map((item) => {
+        return { ...item, quantity: 0 }
+      })
+    getUpdatedItems(updatedItems)
     return updatedItems
   }
 
