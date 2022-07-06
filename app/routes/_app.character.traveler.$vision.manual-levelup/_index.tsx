@@ -46,15 +46,7 @@ export const action: RemixNode.ActionFunction = async ({ request, params }) => {
     )
   }
 
-  const characterSchema = Zod.enum([
-    'Traveler Anemo',
-    'Traveler Geo',
-    'Traveler Electro',
-    // 'Traveler Dendro',
-    // 'Traveler Hydro',
-    // 'Traveler Pyro',
-    // 'Traveler Cryo',
-  ])
+  const characterSchema = Zod.enum(CharacterData.validTraveler)
   const travelersDataSchema = Zod.array(
     Zod.object({
       name: Zod.string(),
@@ -92,17 +84,7 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
   const { vision } = params
   invariant(vision)
 
-  const validTraveler = [
-    'Traveler Anemo',
-    'Traveler Geo',
-    'Traveler Electro',
-    // 'Traveler Dendro',
-    // 'Traveler Hydro',
-    // 'Traveler Pyro',
-    // 'Traveler Cryo',
-  ] as const
-
-  const travelerSchema = Zod.enum(validTraveler)
+  const travelerSchema = Zod.enum(CharacterData.validTraveler)
   const parsedTraveler = travelerSchema.parse(
     Utils.toCapitalized(`Traveler ${vision}`)
   )
@@ -113,7 +95,7 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
   })
   const currentTraveler = userTravelers?.find((c) => c.name === parsedTraveler)
 
-  const otherTravelers = validTraveler.filter(
+  const otherTravelers = CharacterData.validTraveler.filter(
     (traveler) => traveler !== parsedTraveler
   )
 

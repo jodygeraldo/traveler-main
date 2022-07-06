@@ -1623,6 +1623,12 @@ const characterMaterial: CharacterMaterial[] = [
   },
 ]
 
+export const validTraveler = [
+  'Traveler Anemo',
+  'Traveler Geo',
+  'Traveler Electro',
+] as const
+
 const travelerMaterial = [
   {
     vision: 'Anemo',
