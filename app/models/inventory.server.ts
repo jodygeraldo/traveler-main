@@ -100,3 +100,79 @@ function getSelector(category: keyof DB.Type.Inventory) {
       invariant(false, 'Unknown category: ' + category)
   }
 }
+
+interface RequiredItemsParams {
+  baseCommon?: string[]
+  ascensionGem?: string[]
+  localSpecialty?: string
+  ascensionBoss?: string
+  talentCommon?: string[]
+  talentBook?: string[]
+  talentBoss?: string
+  special?: string
+  accId: string
+}
+
+export async function getRequiredItems({
+  baseCommon = [],
+  ascensionGem = [],
+  localSpecialty = '',
+  ascensionBoss = '',
+  talentCommon = [],
+  talentBook = [],
+  talentBoss = '',
+  special = '',
+  accId,
+}: RequiredItemsParams) {
+  const commonSet = e.array_unpack(
+    // there's need to minimum one item in the set
+    e.array(['', ...baseCommon, ...talentCommon])
+  )
+  const ascensionGemSet = e.array_unpack(e.array(['', ...ascensionGem]))
+  const ascensionBossSet = e.str(ascensionBoss)
+  const localSpecialtySet = e.str(localSpecialty)
+  const talentBossSet = e.str(talentBoss)
+  const specialSet = e.str(special)
+  const talentBookSet = e.array_unpack(e.array(['', ...talentBook]))
+
+  return await e
+    .select(e.Inventory, (inventory) => ({
+      common: (i) => ({
+        ...e.CommonMaterial['*'],
+        '@quantity': true,
+        filter: e.op(i.name, 'in', commonSet),
+      }),
+      ascension_gem: (i) => ({
+        ...e.AscensionGem['*'],
+        '@quantity': true,
+        filter: e.op(i.name, 'in', ascensionGemSet),
+      }),
+      ascension_boss: (i) => ({
+        ...e.AscensionBossMaterial['*'],
+        '@quantity': true,
+        filter: e.op(i.name, '=', ascensionBossSet),
+      }),
+      local_specialty: (i) => ({
+        ...e.LocalSpecialty['*'],
+        '@quantity': true,
+        filter: e.op(i.name, '=', localSpecialtySet),
+      }),
+      talent_book: (i) => ({
+        ...e.TalentBook['*'],
+        '@quantity': true,
+        filter: e.op(i.name, 'in', talentBookSet),
+      }),
+      talent_boss: (i) => ({
+        ...e.TalentBossMaterial['*'],
+        '@quantity': true,
+        filter: e.op(i.name, '=', talentBossSet),
+      }),
+      special: (i) => ({
+        ...e.SpecialItem['*'],
+        '@quantity': true,
+        filter: e.op(i.name, '=', specialSet),
+      }),
+      filter: e.op(inventory.owner, '=', UserModel.Account(accId)),
+    }))
+    .run(client)
+}
