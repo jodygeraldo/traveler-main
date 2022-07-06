@@ -713,7 +713,7 @@ interface CharacterMaterial {
   name: string
   ascension: {
     gem: string
-    boss: string
+    boss?: string
     local: string
     common: string[]
   }
@@ -1629,7 +1629,36 @@ export const validTraveler = [
   'Traveler Electro',
 ] as const
 
-const travelerMaterial = [
+export function ascensionGemExpander(name: string) {
+  return [
+    `${name} Sliver`,
+    `${name} Fragment`,
+    `${name} Chunk`,
+    `${name} Gemstone`,
+  ]
+}
+
+const travelerMaterial: {
+  vision: 'Anemo' | 'Geo' | 'Electro'
+  ascension: {
+    gem: string
+    local: string
+    common: string[]
+  }
+  talent:
+    | {
+        book: string[]
+        boss: string
+        common: string[]
+        special: string
+      }
+    | {
+        book: string[]
+        boss: string
+        common: string[]
+        special: string
+      }[]
+}[] = [
   {
     vision: 'Anemo',
     ascension: {
@@ -1658,7 +1687,7 @@ const travelerMaterial = [
     vision: 'Geo',
     ascension: {
       gem: 'Brilliant Diamond',
-      localSpecialty: 'Windwheel Aster',
+      local: 'Windwheel Aster',
       common: commonMaterials['Hilichurl Masks'],
     },
     talent: [
@@ -1716,7 +1745,7 @@ const travelerMaterial = [
     vision: 'Electro',
     ascension: {
       gem: 'Brilliant Diamond',
-      localSpecialty: 'Windwheel Aster',
+      local: 'Windwheel Aster',
       common: commonMaterials['Hilichurl Masks'],
     },
     talent: {
@@ -1737,16 +1766,12 @@ const travelerMaterial = [
     },
   },
 ]
-
-export interface TravelerAscension {
+export interface CharacterAscension {
   phase: { from: number; to: number }
   mora: number
   common: { name: string; quantity: number }
   gem: { name: string; quantity: number }
   local: { name: string; quantity: number }
-}
-
-export interface CharacterAscension extends TravelerAscension {
   boss?: { name: string; quantity: number }
 }
 
@@ -1765,54 +1790,11 @@ export function getTravelerRequiredMaterial({ vision }: { vision: string }) {
   )
   invariant(traveler)
 
-  const ascensionMaterial: TravelerAscension[] = [
-    {
-      phase: { from: 0, to: 1 },
-      mora: 20_000,
-      common: { name: 'Damaged Mask', quantity: 3 },
-      gem: { name: 'Brilliant Diamond Sliver', quantity: 1 },
-      local: { name: 'Windwheel Aster', quantity: 3 },
-    },
-    {
-      phase: { from: 1, to: 2 },
-      mora: 40_000,
-      common: { name: 'Damaged Mask', quantity: 15 },
-      gem: { name: 'Brilliant Diamond Fragment', quantity: 3 },
-      local: { name: 'Windwheel Aster', quantity: 10 },
-    },
-    {
-      phase: { from: 2, to: 3 },
-      mora: 60_000,
-      common: { name: 'Stained Mask', quantity: 12 },
-      gem: { name: 'Brilliant Diamond Fragment', quantity: 6 },
-      local: { name: 'Windwheel Aster', quantity: 20 },
-    },
-    {
-      phase: { from: 3, to: 4 },
-      mora: 80_000,
-      common: { name: 'Stained Mask', quantity: 18 },
-      gem: { name: 'Brilliant Diamond Chunk', quantity: 3 },
-      local: { name: 'Windwheel Aster', quantity: 30 },
-    },
-    {
-      phase: { from: 4, to: 5 },
-      mora: 100_000,
-      common: { name: 'Ominous Mask', quantity: 12 },
-      gem: { name: 'Brilliant Diamond Chunk', quantity: 6 },
-      local: { name: 'Windwheel Aster', quantity: 45 },
-    },
-    {
-      phase: { from: 5, to: 6 },
-      mora: 120_000,
-      common: { name: 'Ominous Mask', quantity: 24 },
-      gem: { name: 'Brilliant Diamond Gemstone', quantity: 6 },
-      local: { name: 'Windwheel Aster', quantity: 60 },
-    },
-  ]
+  const ascensionMaterial = getAscensionMaterial(traveler.ascension)
 
   if (Array.isArray(traveler.talent)) {
     return {
-      ascensionMaterial,
+      ascensionMaterial: getAscensionMaterial(traveler.ascension),
       talentMaterial: {
         normal: getCharacterTalentMaterial(traveler.talent[0], {
           isTraveler: true,
@@ -1842,12 +1824,12 @@ export function getCharacterRequiredMaterial({ name }: { name: string }) {
   invariant(character)
 
   return {
-    ascensionMaterial: getCharacterAscensionMaterial(character.ascension),
+    ascensionMaterial: getAscensionMaterial(character.ascension),
     talentMaterial: getCharacterTalentMaterial(character.talent),
   }
 }
 
-function getCharacterAscensionMaterial({
+function getAscensionMaterial({
   gem,
   boss,
   local,
@@ -1867,7 +1849,7 @@ function getCharacterAscensionMaterial({
       common: { name: common[1], quantity: 15 },
       gem: { name: `${gem} Fragment`, quantity: 3 },
       local: { name: local, quantity: 10 },
-      boss: { name: boss, quantity: 2 },
+      boss: boss ? { name: boss, quantity: 2 } : undefined,
     },
     {
       phase: { from: 2, to: 3 },
@@ -1875,7 +1857,7 @@ function getCharacterAscensionMaterial({
       common: { name: common[1], quantity: 12 },
       gem: { name: `${gem} Fragment`, quantity: 6 },
       local: { name: local, quantity: 20 },
-      boss: { name: boss, quantity: 4 },
+      boss: boss ? { name: boss, quantity: 4 } : undefined,
     },
     {
       phase: { from: 3, to: 4 },
@@ -1883,7 +1865,7 @@ function getCharacterAscensionMaterial({
       common: { name: common[1], quantity: 18 },
       gem: { name: `${gem} Chunk`, quantity: 3 },
       local: { name: local, quantity: 30 },
-      boss: { name: boss, quantity: 8 },
+      boss: boss ? { name: boss, quantity: 8 } : undefined,
     },
     {
       phase: { from: 4, to: 5 },
@@ -1891,7 +1873,7 @@ function getCharacterAscensionMaterial({
       common: { name: common[2], quantity: 12 },
       gem: { name: `${gem} Chunk`, quantity: 6 },
       local: { name: local, quantity: 45 },
-      boss: { name: boss, quantity: 12 },
+      boss: boss ? { name: boss, quantity: 12 } : undefined,
     },
     {
       phase: { from: 5, to: 6 },
@@ -1899,7 +1881,7 @@ function getCharacterAscensionMaterial({
       common: { name: common[2], quantity: 24 },
       gem: { name: `${gem} Gemstone`, quantity: 6 },
       local: { name: local, quantity: 60 },
-      boss: { name: boss, quantity: 20 },
+      boss: boss ? { name: boss, quantity: 20 } : undefined,
     },
   ]
 }
