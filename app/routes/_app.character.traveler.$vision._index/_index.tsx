@@ -18,7 +18,7 @@ import * as Column from './column'
 interface LoaderData {
   traveler: CharacterData.CharacterMinimal
   vision: string
-  ascensionMaterial: CharacterData.TravelerAscension[]
+  ascensionMaterial: CharacterData.CharacterAscension[]
   talentMaterial: {
     normal: CharacterData.CharacterTalent[]
     elemental: CharacterData.CharacterTalent[]
@@ -73,7 +73,9 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
 export default function TravelerRequiredItemsPage() {
   const { traveler, vision, ascensionMaterial, talentMaterial } =
     RemixReact.useLoaderData() as LoaderData
-  const [hideAscension, setHideAscension] = React.useState(false)
+  const [hideAscension, setHideAscension] = React.useState(
+    traveler.progression?.ascension === 6
+  )
   const [hideNormalTalent, setHideNormalTalent] = React.useState(false)
   const [hideElementalTalent, setHideElementalTalent] = React.useState(false)
 
