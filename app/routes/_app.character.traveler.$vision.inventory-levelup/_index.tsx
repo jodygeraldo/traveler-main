@@ -8,6 +8,10 @@ import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
 
+interface LoaderData {
+  data: ReturnType<typeof CharacterData.getCharacterInventoryLevelUpData>
+}
+
 export const loader: RemixNode.LoaderFunction = async ({ params, request }) => {
   const accId = await Session.requireAccountId(request)
   const { vision } = params
@@ -45,19 +49,14 @@ export const loader: RemixNode.LoaderFunction = async ({ params, request }) => {
     }),
   ])
 
-  
-  CharacterData.getCurrentRequiredItems({
+  const data = CharacterData.getCharacterInventoryLevelUpData({
     name: characterName.data,
     characterData: userCharacter,
     material,
     requiredItems: characterRequiredItems,
   })
 
-
-  return RemixNode.json({
-    userCharacter,
-    requiredItems: characterRequiredItems,
-  })
+  return RemixNode.json<LoaderData>({ data })
 }
 
 export default function TravelerInventoryLevelupPage() {

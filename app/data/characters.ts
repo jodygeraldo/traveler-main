@@ -2102,7 +2102,7 @@ export function getItemsToRetrieve({
   }
 }
 
-export function getCurrentRequiredItems({
+export function getCharacterInventoryLevelUpData({
   name,
   characterData,
   material,
@@ -2287,6 +2287,44 @@ export function getCurrentRequiredItems({
     return numberToSlice
   }
 
+  function isPossibleToLevel({
+    inventory,
+    material,
+  }: {
+    inventory: ReturnType<typeof getTalentRequiredItems>
+    material?: CharacterTalent | CharacterAscension
+  }) {
+    if (!material) {
+      return
+    }
+
+    // https://fettblog.eu/typescript-hasownproperty/
+    function hasOwnProperty<X extends {}, Y extends PropertyKey>(
+      obj: X,
+      prop: Y
+    ): obj is X & Record<Y, unknown> {
+      return obj.hasOwnProperty(prop)
+    }
+
+    let materials = [material.common]
+
+    if (hasOwnProperty(material, 'book')) {
+      materials = [...materials, material.book]
+      if (material.boss) materials = [...materials, material.boss]
+      if (material.special) materials = [...materials, material.special]
+    } else {
+      materials = [...materials, material.gem, material.local]
+      if (material.boss) materials = [...materials, material.boss]
+    }
+
+    return materials.every((material) => {
+      const tmp = inventory.find((i) => i.name === material.name)
+      if (!tmp) return false
+      if (tmp.quantity < material.quantity) return false
+      return true
+    })
+  }
+
   switch (ascension) {
     case 0: {
       const items = [
@@ -2296,9 +2334,23 @@ export function getCurrentRequiredItems({
 
       const currentMaterial = getCurrentMaterial({ ascension })
 
-      // TODO: check if able to ascend // level up talent
+      const possibleToLevel = {
+        ascension: isPossibleToLevel({
+          inventory: items,
+          material: currentMaterial.ascension,
+        }),
+        talent: {
+          normal: undefined,
+          elementalSkill: undefined,
+          elementalBurst: undefined,
+        },
+      }
 
-      return
+      return {
+        items,
+        currentMaterial,
+        possibleToLevel,
+      }
     }
     case 1: {
       const ascensionMaterial: ItemsToRetrieve['ascension'] = {
@@ -2311,7 +2363,25 @@ export function getCurrentRequiredItems({
         ...getTalentRequiredItems(material.talent),
       ]
 
-      return getCurrentMaterial({ ascension })
+      const currentMaterial = getCurrentMaterial({ ascension })
+
+      const possibleToLevel = {
+        ascension: isPossibleToLevel({
+          inventory: items,
+          material: currentMaterial.ascension,
+        }),
+        talent: {
+          normal: undefined,
+          elementalSkill: undefined,
+          elementalBurst: undefined,
+        },
+      }
+
+      return {
+        items,
+        currentMaterial,
+        possibleToLevel,
+      }
     }
     case 2: {
       const ascensionMaterial: ItemsToRetrieve['ascension'] = {
@@ -2355,11 +2425,38 @@ export function getCurrentRequiredItems({
         ...getTalentRequiredItems(talentMaterial),
       ]
 
-      return getCurrentMaterial({
+      const currentMaterial = getCurrentMaterial({
         ascension,
         talent,
         skipTalentIfHigherOrEqualThan: 2,
       })
+
+      const possibleToLevel = {
+        ascension: isPossibleToLevel({
+          inventory: items,
+          material: currentMaterial.ascension,
+        }),
+        talent: {
+          normal: isPossibleToLevel({
+            inventory: items,
+            material: currentMaterial.talent.normal,
+          }),
+          elementalSkill: isPossibleToLevel({
+            inventory: items,
+            material: currentMaterial.talent.elementalSkill,
+          }),
+          elementalBurst: isPossibleToLevel({
+            inventory: items,
+            material: currentMaterial.talent.elementalBurst,
+          }),
+        },
+      }
+
+      return {
+        items,
+        currentMaterial,
+        possibleToLevel,
+      }
     }
     case 3: {
       const ascensionMaterial: ItemsToRetrieve['ascension'] = {
@@ -2429,11 +2526,38 @@ export function getCurrentRequiredItems({
         ...getTalentRequiredItems(talentMaterial),
       ]
 
-      return getCurrentMaterial({
+      const currentMaterial = getCurrentMaterial({
         ascension,
         talent,
         skipTalentIfHigherOrEqualThan: 4,
       })
+
+      const possibleToLevel = {
+        ascension: isPossibleToLevel({
+          inventory: items,
+          material: currentMaterial.ascension,
+        }),
+        talent: {
+          normal: isPossibleToLevel({
+            inventory: items,
+            material: currentMaterial.talent.normal,
+          }),
+          elementalSkill: isPossibleToLevel({
+            inventory: items,
+            material: currentMaterial.talent.elementalSkill,
+          }),
+          elementalBurst: isPossibleToLevel({
+            inventory: items,
+            material: currentMaterial.talent.elementalBurst,
+          }),
+        },
+      }
+
+      return {
+        items,
+        currentMaterial,
+        possibleToLevel,
+      }
     }
     case 4: {
       const ascensionMaterial: ItemsToRetrieve['ascension'] = {
@@ -2500,14 +2624,43 @@ export function getCurrentRequiredItems({
         }
       }
 
-      getAscensionRequiredItems(ascensionMaterial)
-      getTalentRequiredItems(talentMaterial)
+      const items = [
+        ...getAscensionRequiredItems(ascensionMaterial),
+        ...getTalentRequiredItems(talentMaterial),
+      ]
 
-      return getCurrentMaterial({
+      const currentMaterial = getCurrentMaterial({
         ascension,
         talent,
         skipTalentIfHigherOrEqualThan: 6,
       })
+
+      const possibleToLevel = {
+        ascension: isPossibleToLevel({
+          inventory: items,
+          material: currentMaterial.ascension,
+        }),
+        talent: {
+          normal: isPossibleToLevel({
+            inventory: items,
+            material: currentMaterial.talent.normal,
+          }),
+          elementalSkill: isPossibleToLevel({
+            inventory: items,
+            material: currentMaterial.talent.elementalSkill,
+          }),
+          elementalBurst: isPossibleToLevel({
+            inventory: items,
+            material: currentMaterial.talent.elementalBurst,
+          }),
+        },
+      }
+
+      return {
+        items,
+        currentMaterial,
+        possibleToLevel,
+      }
     }
     case 5: {
       const ascensionMaterial: ItemsToRetrieve['ascension'] = {
@@ -2579,15 +2732,42 @@ export function getCurrentRequiredItems({
         ...getTalentRequiredItems(talentMaterial),
       ]
 
-      return getCurrentMaterial({
+      const currentMaterial = getCurrentMaterial({
         ascension,
         talent,
         skipTalentIfHigherOrEqualThan: 8,
       })
+
+      const possibleToLevel = {
+        ascension: isPossibleToLevel({
+          inventory: items,
+          material: currentMaterial.ascension,
+        }),
+        talent: {
+          normal: isPossibleToLevel({
+            inventory: items,
+            material: currentMaterial.talent.normal,
+          }),
+          elementalSkill: isPossibleToLevel({
+            inventory: items,
+            material: currentMaterial.talent.elementalSkill,
+          }),
+          elementalBurst: isPossibleToLevel({
+            inventory: items,
+            material: currentMaterial.talent.elementalBurst,
+          }),
+        },
+      }
+
+      return {
+        items,
+        currentMaterial,
+        possibleToLevel,
+      }
     }
     case 6: {
       if (isEqual({ on: 'all', value: 10 })) {
-        return 'You fucking weeb'
+        return undefined
       }
 
       const numberToSlice = getNumberToSlice({
@@ -2674,13 +2854,35 @@ export function getCurrentRequiredItems({
       }
 
       const items = getTalentRequiredItems(talentMaterial)
-      console.log(items)
-
-      return getCurrentMaterial({
+      const currentMaterial = getCurrentMaterial({
         ascension,
         talent,
         skipTalentIfHigherOrEqualThan: 10,
       })
+
+      const possibleToLevel = {
+        ascension: undefined,
+        talent: {
+          normal: isPossibleToLevel({
+            inventory: items,
+            material: currentMaterial.talent.normal,
+          }),
+          elementalSkill: isPossibleToLevel({
+            inventory: items,
+            material: currentMaterial.talent.elementalSkill,
+          }),
+          elementalBurst: isPossibleToLevel({
+            inventory: items,
+            material: currentMaterial.talent.elementalBurst,
+          }),
+        },
+      }
+
+      return {
+        items,
+        currentMaterial,
+        possibleToLevel,
+      }
     }
     default:
       invariant(false, 'IMPOSSIBLE')
