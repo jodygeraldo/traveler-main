@@ -11,7 +11,7 @@ export default function InventoryLayout() {
             <Sidebar />
           </nav>
         </div>
-        <main className="mt-8 lg:mt-0 lg:col-span-10">
+        <main className="mt-8 lg:col-span-10 lg:mt-0">
           <RemixReact.Outlet />
         </main>
       </div>

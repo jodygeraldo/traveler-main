@@ -108,8 +108,8 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
     elementalBurst: currentTraveler?.['@elemental_burst'] ?? 1,
   }
 
-  const otherTravelersData: CharacterData.CharacterProgression[] = otherTravelers.map(
-    (traveler) => {
+  const otherTravelersData: CharacterData.CharacterProgression[] =
+    otherTravelers.map((traveler) => {
       const otherTraveler = userTravelers?.find((c) => c.name === traveler)
       return {
         name: traveler,
@@ -119,8 +119,7 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
         elementalSkill: otherTraveler?.['@elemental_skill'] ?? 1,
         elementalBurst: otherTraveler?.['@elemental_burst'] ?? 1,
       }
-    }
-  )
+    })
 
   return RemixNode.json<LoaderData>({ travelerData, otherTravelersData })
 }
