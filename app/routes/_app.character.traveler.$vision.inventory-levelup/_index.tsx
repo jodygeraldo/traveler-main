@@ -2,8 +2,10 @@ import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 import * as RemixImage from 'remix-image'
+import * as RemixParamsHelper from 'remix-params-helper'
 import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
+import { z } from 'zod'
 import { Button } from '~/components/Button'
 import * as Icon from '~/components/Icon'
 import Tooltip from '~/components/Tooltip'
@@ -12,6 +14,107 @@ import * as CharacterModel from '~/models/character.server'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
+
+const ParamsSchema = Zod.object({
+  characterLevel: Zod.number().min(1).max(90).optional(),
+  level: Zod.number().min(0).max(10),
+  kind: z.enum([
+    'Ascension',
+    'Talent Normal Attack',
+    'Talent Elemental Skill',
+    'Talent Elemental Burst',
+  ]),
+  items: Zod.string(),
+})
+
+export const action: RemixNode.ActionFunction = async ({ params, request }) => {
+  const accId = await Session.requireAccountId(request)
+  const { vision } = params
+  invariant(vision)
+
+  const characterName = Zod.enum(CharacterData.validTraveler).safeParse(
+    Utils.toCapitalized(`Traveler ${vision}`)
+  )
+  if (!characterName.success) {
+    throw RemixNode.json(
+      { name: characterName },
+      { status: 404, statusText: 'Page Not Found' }
+    )
+  }
+
+  const result = await RemixParamsHelper.getFormData(request, ParamsSchema)
+  if (!result.success) {
+    throw new Error('Invalid data')
+  }
+
+  const { level, kind, characterLevel = 1 } = result.data
+
+  const itemsSchema = Zod.array(
+    Zod.object({
+      name: Zod.string(),
+      quantity: Zod.number(),
+      rarity: Zod.number(),
+    })
+  )
+
+  const items = itemsSchema.parse(JSON.parse(result.data.items))
+
+  const AscensionItemType = {
+    0: 'common',
+    1: 'ascension_gem',
+    2: 'local_specialty',
+    3: 'ascension_boss',
+  } as const
+
+  const TalentItemType = {
+    0: 'common',
+    1: 'talent_book',
+    2: 'talent_boss',
+    3: 'special',
+  } as const
+
+  let ascensionItems = [] as CharacterModel.AscensionItem[]
+  let talentItems = [] as CharacterModel.TalentItem[]
+
+  if (kind === 'Ascension') {
+    ascensionItems = items.map((item, idx) => {
+      const idxTyped = Zod.number().min(0).max(3).parse(idx) as 0 | 1 | 2 | 3
+
+      return {
+        name: item.name,
+        quantity: item.quantity,
+        type: AscensionItemType[idxTyped],
+      }
+    })
+  }
+
+  if (kind !== 'Ascension') {
+    talentItems = items.map((item, idx) => {
+      const idxTyped = Zod.number().min(0).max(3).parse(idx) as 0 | 1 | 2 | 3
+
+      return {
+        name: item.name,
+        quantity: item.quantity,
+        type: TalentItemType[idxTyped],
+      }
+    })
+  }
+
+  await CharacterModel.upsertTravelerInventoryLevelUp({
+    kind,
+    name: characterName.data,
+    level: level + 1,
+    characterLevel,
+    accId: accId,
+    // @ts-ignore
+    data: {
+      ascension: kind === 'Ascension',
+      items: kind === 'Ascension' ? ascensionItems : talentItems,
+    },
+  })
+
+  return null
+}
 
 interface LoaderData {
   data: ReturnType<typeof CharacterData.getCharacterInventoryLevelUpData>
@@ -86,6 +189,7 @@ export default function TravelerInventoryLevelupPage() {
   }
 
   const {
+    characterLevel,
     ascension,
     talent,
     currentMaterial,
@@ -109,6 +213,7 @@ export default function TravelerInventoryLevelupPage() {
         level={ascension}
         possibleToLevel={possibleToLevel.ascension ? true : false}
         isAscension={true}
+        characterLevel={characterLevel}
         unlockable={unlockable}
       />
 
@@ -201,6 +306,7 @@ function InventoryLevelUpForm({
   items,
   possibleToLevel,
   isAscension,
+  characterLevel,
   unlockable,
   inventoryItems,
 }: {
@@ -220,6 +326,7 @@ function InventoryLevelUpForm({
   }[]
   possibleToLevel: boolean
   isAscension?: boolean
+  characterLevel?: number
   unlockable?: {
     level: {
       from: number
@@ -250,7 +357,7 @@ function InventoryLevelUpForm({
         {level + 1}
       </h2>
 
-      <div className="mt-1 flex items-center gap-4 text-gray-11">
+      <div className="mt-1 items-center gap-4 space-y-2 text-gray-11 sm:flex sm:space-y-0">
         <ul className="flex flex-wrap gap-2">
           {items.map((item) => (
             <Item key={item.name} item={item} items={inventoryItems} />
@@ -293,10 +400,48 @@ function InventoryLevelUpForm({
             </ul>
           </div>
         ) : null}
-        <RemixReact.Form>
-          <Button type="submit" disabled={busy || !possibleToLevel}>
-            {busy ? 'Leveling up...' : 'Level Up'}
-          </Button>
+        <RemixReact.Form method="post">
+          {isAscension && characterLevel ? (
+            <>
+              <label
+                htmlFor="character-level"
+                className="block text-sm font-medium text-gray-12"
+              >
+                Level <span className="text-sm text-gray-11">*</span>
+              </label>
+              <div className="mt-1 flex gap-2">
+                <input
+                  id="character-level"
+                  type="number"
+                  name="characterLevel"
+                  className="block w-full rounded-md border-gray-7 bg-gray-3 p-2 shadow-sm focus:border-primary-8 focus:ring-gray-8 sm:text-sm"
+                  defaultValue={characterLevel}
+                  min={1}
+                  max={90}
+                />
+                <Button
+                  name="kind"
+                  value={heading}
+                  type="submit"
+                  disabled={busy || !possibleToLevel}
+                  className="min-w-fit"
+                >
+                  {busy ? 'Leveling up...' : 'Level Up'}
+                </Button>
+              </div>
+            </>
+          ) : (
+            <Button
+              name="kind"
+              value={heading}
+              type="submit"
+              disabled={busy || !possibleToLevel}
+            >
+              {busy ? 'Leveling up...' : 'Level Up'}
+            </Button>
+          )}
+          <input type="hidden" name="level" value={level} />
+          <input type="hidden" name="items" value={JSON.stringify(items)} />
         </RemixReact.Form>
       </div>
     </div>

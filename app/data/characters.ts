@@ -2115,23 +2115,27 @@ export function getCharacterInventoryLevelUpData({
 }) {
   const { ascensionMaterial, talentMaterial } = getRequiredMaterial({ name })
 
-  const { ascension, ...talent }: Omit<CharacterProgression, 'name' | 'level'> =
-    characterData
-      ? {
-          ascension: characterData['@ascension'] ?? 0,
-          normalAttack: characterData['@normal_attack'] ?? 1,
-          elementalSkill: characterData['@elemental_skill'] ?? 1,
-          elementalBurst: characterData['@elemental_burst'] ?? 1,
-        }
-      : {
-          ascension: 0,
-          normalAttack: 1,
-          elementalSkill: 1,
-          elementalBurst: 1,
-        }
+  const {
+    level: characterLevel,
+    ascension,
+    ...talent
+  }: Omit<CharacterProgression, 'name'> = characterData
+    ? {
+        level: characterData['@level'] ?? 1,
+        ascension: characterData['@ascension'] ?? 0,
+        normalAttack: characterData['@normal_attack'] ?? 1,
+        elementalSkill: characterData['@elemental_skill'] ?? 1,
+        elementalBurst: characterData['@elemental_burst'] ?? 1,
+      }
+    : {
+        level: 1,
+        ascension: 0,
+        normalAttack: 1,
+        elementalSkill: 1,
+        elementalBurst: 1,
+      }
 
   const levelUnlocked = [
-    { from: 1, to: 20 },
     { from: 20, to: 40 },
     { from: 40, to: 50 },
     { from: 50, to: 60 },
@@ -2141,7 +2145,6 @@ export function getCharacterInventoryLevelUpData({
     { from: 9999, to: 9999 },
   ]
   const talentUnlocked = [
-    { from: 1, to: 1 },
     { from: 1, to: 1 },
     { from: 1, to: 2 },
     { from: 2, to: 4 },
@@ -2483,10 +2486,13 @@ export function getCharacterInventoryLevelUpData({
       const currentMaterial = getCurrentMaterial({ ascension })
 
       const possibleToLevel = {
-        ascension: isPossibleToLevel({
-          inventory: items,
-          material: currentMaterial.ascension,
-        }),
+        ascension:
+          characterLevel === 20
+            ? isPossibleToLevel({
+                inventory: items,
+                material: currentMaterial.ascension,
+              })
+            : false,
         talent: {
           normal: undefined,
           elementalSkill: undefined,
@@ -2497,6 +2503,7 @@ export function getCharacterInventoryLevelUpData({
       const currentItems = getCurrentItems(currentMaterial, items)
 
       return {
+        characterLevel,
         ascension,
         talent,
         items,
@@ -2519,10 +2526,13 @@ export function getCharacterInventoryLevelUpData({
       const currentMaterial = getCurrentMaterial({ ascension })
 
       const possibleToLevel = {
-        ascension: isPossibleToLevel({
-          inventory: items,
-          material: currentMaterial.ascension,
-        }),
+        ascension:
+          characterLevel === 40
+            ? isPossibleToLevel({
+                inventory: items,
+                material: currentMaterial.ascension,
+              })
+            : false,
         talent: {
           normal: undefined,
           elementalSkill: undefined,
@@ -2533,6 +2543,7 @@ export function getCharacterInventoryLevelUpData({
       const currentItems = getCurrentItems(currentMaterial, items)
 
       return {
+        characterLevel,
         ascension,
         talent,
         items,
@@ -2590,10 +2601,13 @@ export function getCharacterInventoryLevelUpData({
       })
 
       const possibleToLevel = {
-        ascension: isPossibleToLevel({
-          inventory: items,
-          material: currentMaterial.ascension,
-        }),
+        ascension:
+          characterLevel === 50
+            ? isPossibleToLevel({
+                inventory: items,
+                material: currentMaterial.ascension,
+              })
+            : false,
         talent: {
           normal: isPossibleToLevel({
             inventory: items,
@@ -2613,6 +2627,7 @@ export function getCharacterInventoryLevelUpData({
       const currentItems = getCurrentItems(currentMaterial, items)
 
       return {
+        characterLevel,
         ascension,
         talent,
         items,
@@ -2696,10 +2711,13 @@ export function getCharacterInventoryLevelUpData({
       })
 
       const possibleToLevel = {
-        ascension: isPossibleToLevel({
-          inventory: items,
-          material: currentMaterial.ascension,
-        }),
+        ascension:
+          characterLevel === 60
+            ? isPossibleToLevel({
+                inventory: items,
+                material: currentMaterial.ascension,
+              })
+            : false,
         talent: {
           normal: isPossibleToLevel({
             inventory: items,
@@ -2719,6 +2737,7 @@ export function getCharacterInventoryLevelUpData({
       const currentItems = getCurrentItems(currentMaterial, items)
 
       return {
+        characterLevel,
         ascension,
         talent,
         items,
@@ -2804,10 +2823,13 @@ export function getCharacterInventoryLevelUpData({
       })
 
       const possibleToLevel = {
-        ascension: isPossibleToLevel({
-          inventory: items,
-          material: currentMaterial.ascension,
-        }),
+        ascension:
+          characterLevel === 70
+            ? isPossibleToLevel({
+                inventory: items,
+                material: currentMaterial.ascension,
+              })
+            : false,
         talent: {
           normal: isPossibleToLevel({
             inventory: items,
@@ -2827,6 +2849,7 @@ export function getCharacterInventoryLevelUpData({
       const currentItems = getCurrentItems(currentMaterial, items)
 
       return {
+        characterLevel,
         ascension,
         talent,
         items,
@@ -2912,10 +2935,13 @@ export function getCharacterInventoryLevelUpData({
       })
 
       const possibleToLevel = {
-        ascension: isPossibleToLevel({
-          inventory: items,
-          material: currentMaterial.ascension,
-        }),
+        ascension:
+          characterLevel === 80
+            ? isPossibleToLevel({
+                inventory: items,
+                material: currentMaterial.ascension,
+              })
+            : false,
         talent: {
           normal: isPossibleToLevel({
             inventory: items,
@@ -2935,6 +2961,7 @@ export function getCharacterInventoryLevelUpData({
       const currentItems = getCurrentItems(currentMaterial, items)
 
       return {
+        characterLevel,
         ascension,
         talent,
         items,
@@ -3059,6 +3086,7 @@ export function getCharacterInventoryLevelUpData({
       const currentItems = getCurrentItems(currentMaterial, items)
 
       return {
+        characterLevel,
         ascension,
         talent,
         items,
