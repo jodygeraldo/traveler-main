@@ -2235,57 +2235,57 @@ export function getCurrentRequiredItems({
     return [...common, ...talentBook, ...talentBoss, ...special]
   }
 
-  const allTalentGreaterThanOrEqualTwo =
-    talent.normalAttack >= 2 &&
-    talent.elementalSkill >= 2 &&
-    talent.elementalBurst >= 2
+  function isEqual({
+    value,
+    on,
+  }: {
+    value: number
+    on: 'all' | 'normal' | 'elemental'
+  }) {
+    const { normalAttack, elementalSkill, elementalBurst } = talent
 
-  const allTalentGreaterThanOrEqualSix =
-    talent.normalAttack >= 6 &&
-    talent.elementalSkill >= 6 &&
-    talent.elementalBurst >= 6
+    let talentArray = [normalAttack, elementalSkill, elementalBurst]
+    if (on === 'normal') talentArray = [normalAttack]
+    if (on === 'elemental') talentArray = [elementalSkill, elementalBurst]
 
-  const allTalentEqualTen =
-    talent.normalAttack === 10 &&
-    talent.elementalSkill === 10 &&
-    talent.elementalBurst === 10
+    return talentArray.every((v) => v === value)
+  }
 
-  const normalTalentGreaterThanOrEqualTwo = talent.normalAttack >= 2
-  const elementalTalentGreaterThanOrEqualTwo =
-    talent.elementalSkill >= 2 && talent.elementalBurst >= 2
+  function getNumberToSlice({
+    on,
+    op,
+    value,
+    expect,
+  }: {
+    on: 'all' | 'normal' | 'elemental'
+    op: '>=' | '==='
+    value: number[]
+    expect: number[]
+  }) {
+    const { normalAttack, elementalSkill, elementalBurst } = talent
 
-  const normalTalentGreaterThanOrEqualFour = talent.normalAttack >= 4
-  const elementalTalentGreaterThanOrEqualFour =
-    talent.elementalSkill >= 4 && talent.elementalBurst >= 4
-  const allTalentGreaterThanOrEqualFour =
-    normalTalentGreaterThanOrEqualFour && elementalTalentGreaterThanOrEqualFour
+    let talentArray = [normalAttack, elementalSkill, elementalBurst]
+    if (on === 'normal') talentArray = [normalAttack]
+    if (on === 'elemental') talentArray = [elementalSkill, elementalBurst]
 
-  const normalTalentGreaterThanOrEqualFive = talent.normalAttack >= 5
-  const elementalTalentGreaterThanOrEqualFive =
-    talent.elementalSkill >= 5 && talent.elementalBurst >= 5
-  const allTalentGreaterThanOrEqualFive =
-    normalTalentGreaterThanOrEqualFive && elementalTalentGreaterThanOrEqualFive
+    let numberToSlice = 0
+    value.every((num, i) => {
+      const tmp = talentArray.every((v) => {
+        if (op === '>=') return v >= num
+        if (op === '===') return v === num
+        return false
+      })
 
-  const normalTalentGreaterThanOrEqualSix = talent.normalAttack >= 6
-  const elementalTalentGreaterThanOrEqualSix =
-    talent.elementalSkill >= 6 && talent.elementalBurst >= 6
+      if (tmp) {
+        numberToSlice = expect[i]
+        return false
+      }
 
-  const normalTalentGreaterThanOrEqualEight = talent.normalAttack >= 8
-  const elementalTalentGreaterThanOrEqualEight =
-    talent.elementalSkill >= 8 && talent.elementalBurst >= 8
-  const allTalentGreaterThanOrEqualEight =
-    normalTalentGreaterThanOrEqualEight &&
-    elementalTalentGreaterThanOrEqualEight
+      return true
+    })
 
-  const normalTalentGreaterThanOrEqualNine = talent.normalAttack >= 9
-  const elementalTalentGreaterThanOrEqualNine =
-    talent.elementalSkill >= 9 && talent.elementalBurst >= 9
-  const allTalentGreaterThanOrEqualNine =
-    normalTalentGreaterThanOrEqualNine && elementalTalentGreaterThanOrEqualNine
-
-  const normalTalentEqualTen = talent.normalAttack === 10
-  const elementalTalentEqualTen =
-    talent.elementalSkill === 10 && talent.elementalBurst === 10
+    return numberToSlice
+  }
 
   switch (ascension) {
     case 0: {
@@ -2298,7 +2298,7 @@ export function getCurrentRequiredItems({
 
       // TODO: check if able to ascend // level up talent
 
-      return 
+      return
     }
     case 1: {
       const ascensionMaterial: ItemsToRetrieve['ascension'] = {
@@ -2320,14 +2320,18 @@ export function getCurrentRequiredItems({
         ascensionGem: material.ascension.ascensionGem.slice(1),
       }
 
+      const numberToSlice = (on: 'all' | 'normal' | 'elemental') =>
+        getNumberToSlice({
+          on,
+          op: '>=',
+          value: [2],
+          expect: [1],
+        })
+
       let talentMaterial: ItemsToRetrieve['talent'] = {
         ...material.talent,
-        talentCommon: material.talent.talentCommon.slice(
-          allTalentGreaterThanOrEqualTwo ? 1 : 0
-        ),
-        talentBook: material.talent.talentBook.slice(
-          allTalentGreaterThanOrEqualTwo ? 1 : 0
-        ),
+        talentCommon: material.talent.talentCommon.slice(numberToSlice('all')),
+        talentBook: material.talent.talentBook.slice(numberToSlice('all')),
       }
 
       // traveler geo
@@ -2340,12 +2344,8 @@ export function getCurrentRequiredItems({
         talentMaterial = {
           ...talentMaterial,
           talentCommon: [
-            ...talentNormalCommon.slice(
-              normalTalentGreaterThanOrEqualTwo ? 1 : 0
-            ),
-            ...talentElementalCommon.slice(
-              elementalTalentGreaterThanOrEqualTwo ? 1 : 0
-            ),
+            ...talentNormalCommon.slice(numberToSlice('normal')),
+            ...talentElementalCommon.slice(numberToSlice('elemental')),
           ],
         }
       }
@@ -2368,14 +2368,26 @@ export function getCurrentRequiredItems({
         ascensionGem: material.ascension.ascensionGem.slice(2),
       }
 
+      const numberToSlice2 = (on: 'all' | 'normal' | 'elemental') =>
+        getNumberToSlice({
+          on,
+          op: '>=',
+          value: [2],
+          expect: [1],
+        })
+
+      const numberToSlice42 = (on: 'all' | 'normal' | 'elemental') =>
+        getNumberToSlice({
+          on,
+          op: '>=',
+          value: [4, 2],
+          expect: [3, 1],
+        })
+
       let talentMaterial: ItemsToRetrieve['talent'] = {
         ...material.talent,
-        talentCommon: material.talent.talentCommon.slice(
-          allTalentGreaterThanOrEqualTwo ? 1 : 0
-        ),
-        talentBook: material.talent.talentBook.slice(
-          allTalentGreaterThanOrEqualTwo ? 1 : 0
-        ),
+        talentCommon: material.talent.talentCommon.slice(numberToSlice2('all')),
+        talentBook: material.talent.talentBook.slice(numberToSlice2('all')),
       }
 
       // traveler
@@ -2383,13 +2395,7 @@ export function getCurrentRequiredItems({
         talentMaterial = {
           ...talentMaterial,
           talentBook: [
-            ...material.talent.talentBook.slice(
-              allTalentGreaterThanOrEqualTwo
-                ? allTalentGreaterThanOrEqualFour
-                  ? 3
-                  : 1
-                : 0
-            ),
+            ...material.talent.talentBook.slice(numberToSlice42('all')),
           ],
         }
       }
@@ -2408,28 +2414,12 @@ export function getCurrentRequiredItems({
         talentMaterial = {
           ...talentMaterial,
           talentCommon: [
-            ...talentNormalCommon.slice(
-              normalTalentGreaterThanOrEqualTwo ? 1 : 0
-            ),
-            ...talentElementalCommon.slice(
-              elementalTalentGreaterThanOrEqualTwo ? 1 : 0
-            ),
+            ...talentNormalCommon.slice(numberToSlice2('normal')),
+            ...talentElementalCommon.slice(numberToSlice2('elemental')),
           ],
           talentBook: [
-            ...talentNormalBook.slice(
-              normalTalentGreaterThanOrEqualTwo
-                ? normalTalentGreaterThanOrEqualFour
-                  ? 3
-                  : 1
-                : 0
-            ),
-            ...talentElementalBook.slice(
-              elementalTalentGreaterThanOrEqualTwo
-                ? elementalTalentGreaterThanOrEqualFour
-                  ? 3
-                  : 1
-                : 0
-            ),
+            ...talentNormalBook.slice(numberToSlice42('normal')),
+            ...talentElementalBook.slice(numberToSlice42('elemental')),
           ],
         }
       }
@@ -2452,22 +2442,28 @@ export function getCurrentRequiredItems({
         ascensionGem: material.ascension.ascensionGem.slice(2),
       }
 
+      const numberToSlice62 = (on: 'all' | 'normal' | 'elemental') =>
+        getNumberToSlice({
+          on,
+          op: '>=',
+          value: [6, 2],
+          expect: [2, 1],
+        })
+
+      const numberToSlice6542 = (on: 'all' | 'normal' | 'elemental') =>
+        getNumberToSlice({
+          on,
+          op: '>=',
+          value: [6, 5, 4, 2],
+          expect: [5, 4, 3, 1],
+        })
+
       let talentMaterial: ItemsToRetrieve['talent'] = {
         ...material.talent,
         talentCommon: material.talent.talentCommon.slice(
-          allTalentGreaterThanOrEqualTwo
-            ? allTalentGreaterThanOrEqualSix
-              ? 2
-              : 1
-            : 0
+          numberToSlice62('all')
         ),
-        talentBook: material.talent.talentBook.slice(
-          allTalentGreaterThanOrEqualTwo
-            ? allTalentGreaterThanOrEqualSix
-              ? 2
-              : 1
-            : 0
-        ),
+        talentBook: material.talent.talentBook.slice(numberToSlice62('all')),
       }
 
       // traveler
@@ -2475,17 +2471,7 @@ export function getCurrentRequiredItems({
         talentMaterial = {
           ...talentMaterial,
           talentBook: [
-            ...material.talent.talentBook.slice(
-              allTalentGreaterThanOrEqualTwo
-                ? allTalentGreaterThanOrEqualFour
-                  ? allTalentGreaterThanOrEqualFive
-                    ? allTalentGreaterThanOrEqualSix
-                      ? 5
-                      : 4
-                    : 3
-                  : 1
-                : 0
-            ),
+            ...material.talent.talentBook.slice(numberToSlice6542('all')),
           ],
         }
       }
@@ -2504,44 +2490,12 @@ export function getCurrentRequiredItems({
         talentMaterial = {
           ...talentMaterial,
           talentCommon: [
-            ...talentNormalCommon.slice(
-              normalTalentGreaterThanOrEqualTwo
-                ? normalTalentGreaterThanOrEqualSix
-                  ? 2
-                  : 1
-                : 0
-            ),
-            ...talentElementalCommon.slice(
-              elementalTalentGreaterThanOrEqualTwo
-                ? elementalTalentGreaterThanOrEqualSix
-                  ? 2
-                  : 1
-                : 0
-            ),
+            ...talentNormalCommon.slice(numberToSlice62('normal')),
+            ...talentElementalCommon.slice(numberToSlice62('elemental')),
           ],
           talentBook: [
-            ...talentNormalBook.slice(
-              normalTalentGreaterThanOrEqualTwo
-                ? normalTalentGreaterThanOrEqualFour
-                  ? normalTalentGreaterThanOrEqualFive
-                    ? normalTalentGreaterThanOrEqualSix
-                      ? 5
-                      : 4
-                    : 3
-                  : 1
-                : 0
-            ),
-            ...talentElementalBook.slice(
-              elementalTalentGreaterThanOrEqualTwo
-                ? elementalTalentGreaterThanOrEqualFour
-                  ? elementalTalentGreaterThanOrEqualFive
-                    ? elementalTalentGreaterThanOrEqualSix
-                      ? 5
-                      : 4
-                    : 3
-                  : 1
-                : 0
-            ),
+            ...talentNormalBook.slice(numberToSlice6542('normal')),
+            ...talentElementalBook.slice(numberToSlice6542('elemental')),
           ],
         }
       }
@@ -2562,22 +2516,28 @@ export function getCurrentRequiredItems({
         ascensionGem: material.ascension.ascensionGem.slice(3),
       }
 
+      const numberToSlice62 = (on: 'all' | 'normal' | 'elemental') =>
+        getNumberToSlice({
+          on,
+          op: '>=',
+          value: [6, 2],
+          expect: [2, 1],
+        })
+
+      const numberToSlice86542 = (on: 'all' | 'normal' | 'elemental') =>
+        getNumberToSlice({
+          on,
+          op: '>=',
+          value: [8, 6, 5, 4, 2],
+          expect: [7, 5, 4, 3, 1],
+        })
+
       let talentMaterial: ItemsToRetrieve['talent'] = {
         ...material.talent,
         talentCommon: material.talent.talentCommon.slice(
-          allTalentGreaterThanOrEqualTwo
-            ? allTalentGreaterThanOrEqualSix
-              ? 2
-              : 1
-            : 0
+          numberToSlice62('all')
         ),
-        talentBook: material.talent.talentBook.slice(
-          allTalentGreaterThanOrEqualTwo
-            ? allTalentGreaterThanOrEqualSix
-              ? 2
-              : 1
-            : 0
-        ),
+        talentBook: material.talent.talentBook.slice(numberToSlice62('all')),
       }
 
       // traveler
@@ -2585,19 +2545,7 @@ export function getCurrentRequiredItems({
         talentMaterial = {
           ...talentMaterial,
           talentBook: [
-            ...material.talent.talentBook.slice(
-              allTalentGreaterThanOrEqualTwo
-                ? allTalentGreaterThanOrEqualFour
-                  ? allTalentGreaterThanOrEqualFive
-                    ? allTalentGreaterThanOrEqualSix
-                      ? allTalentGreaterThanOrEqualEight
-                        ? 7
-                        : 5
-                      : 4
-                    : 3
-                  : 1
-                : 0
-            ),
+            ...material.talent.talentBook.slice(numberToSlice86542('all')),
           ],
         }
       }
@@ -2616,48 +2564,12 @@ export function getCurrentRequiredItems({
         talentMaterial = {
           ...talentMaterial,
           talentCommon: [
-            ...talentNormalCommon.slice(
-              normalTalentGreaterThanOrEqualTwo
-                ? normalTalentGreaterThanOrEqualSix
-                  ? 2
-                  : 1
-                : 0
-            ),
-            ...talentElementalCommon.slice(
-              elementalTalentGreaterThanOrEqualTwo
-                ? elementalTalentGreaterThanOrEqualSix
-                  ? 2
-                  : 1
-                : 0
-            ),
+            ...talentNormalCommon.slice(numberToSlice62('normal')),
+            ...talentElementalCommon.slice(numberToSlice62('elemental')),
           ],
           talentBook: [
-            ...talentNormalBook.slice(
-              normalTalentGreaterThanOrEqualTwo
-                ? normalTalentGreaterThanOrEqualFour
-                  ? normalTalentGreaterThanOrEqualFive
-                    ? normalTalentGreaterThanOrEqualSix
-                      ? normalTalentGreaterThanOrEqualEight
-                        ? 7
-                        : 5
-                      : 4
-                    : 3
-                  : 1
-                : 0
-            ),
-            ...talentElementalBook.slice(
-              elementalTalentGreaterThanOrEqualTwo
-                ? elementalTalentGreaterThanOrEqualFour
-                  ? elementalTalentGreaterThanOrEqualFive
-                    ? elementalTalentGreaterThanOrEqualSix
-                      ? elementalTalentGreaterThanOrEqualEight
-                        ? 7
-                        : 5
-                      : 4
-                    : 3
-                  : 1
-                : 0
-            ),
+            ...talentNormalBook.slice(numberToSlice86542('normal')),
+            ...talentElementalBook.slice(numberToSlice86542('elemental')),
           ],
         }
       }
@@ -2674,49 +2586,34 @@ export function getCurrentRequiredItems({
       })
     }
     case 6: {
-      if (allTalentEqualTen) {
+      if (isEqual({ on: 'all', value: 10 })) {
         return 'You fucking weeb'
       }
 
+      const numberToSlice = getNumberToSlice({
+        on: 'all',
+        op: '>=',
+        value: [6, 2],
+        expect: [2, 1],
+      })
+
       let talentMaterial: ItemsToRetrieve['talent'] = {
         ...material.talent,
-        talentCommon: material.talent.talentCommon.slice(
-          allTalentGreaterThanOrEqualTwo
-            ? allTalentGreaterThanOrEqualSix
-              ? 2
-              : 1
-            : 0
-        ),
-        talentBook: material.talent.talentBook.slice(
-          allTalentGreaterThanOrEqualTwo
-            ? allTalentGreaterThanOrEqualSix
-              ? 2
-              : 1
-            : 0
-        ),
+        talentCommon: material.talent.talentCommon.slice(numberToSlice),
+        talentBook: material.talent.talentBook.slice(numberToSlice),
       }
 
       // traveler
       if (material.talent.talentBook.length === 9) {
+        const numberToSlice = getNumberToSlice({
+          on: 'all',
+          op: '>=',
+          value: [9, 8, 6, 5, 4, 2],
+          expect: [8, 7, 5, 4, 3, 1],
+        })
         talentMaterial = {
           ...talentMaterial,
-          talentBook: [
-            ...material.talent.talentBook.slice(
-              allTalentGreaterThanOrEqualTwo
-                ? allTalentGreaterThanOrEqualFour
-                  ? allTalentGreaterThanOrEqualFive
-                    ? allTalentGreaterThanOrEqualSix
-                      ? allTalentGreaterThanOrEqualEight
-                        ? allTalentGreaterThanOrEqualNine
-                          ? 8
-                          : 7
-                        : 5
-                      : 4
-                    : 3
-                  : 1
-                : 0
-            ),
-          ],
+          talentBook: [...material.talent.talentBook.slice(numberToSlice)],
         }
       }
 
@@ -2731,68 +2628,53 @@ export function getCurrentRequiredItems({
         )
         const talentElementalCommon = material.talent.talentCommon.slice(-3)
 
+        const numberToSliceCommon = (on: 'normal' | 'elemental') =>
+          getNumberToSlice({
+            on,
+            op: '>=',
+            value: [6, 2],
+            expect: [2, 1],
+          })
+
+        const numberToSliceBook = (on: 'normal' | 'elemental') =>
+          getNumberToSlice({
+            on,
+            op: '>=',
+            value: [9, 8, 6, 5, 4, 2],
+            expect: [8, 7, 5, 4, 3, 1],
+          })
+
         talentMaterial = {
           ...talentMaterial,
           talentCommon: [
             ...talentNormalCommon.slice(
-              normalTalentGreaterThanOrEqualTwo
-                ? normalTalentGreaterThanOrEqualSix
-                  ? normalTalentEqualTen
-                    ? 3
-                    : 2
-                  : 1
-                : 0
+              isEqual({ value: 10, on: 'normal' })
+                ? 3
+                : numberToSliceCommon('normal')
             ),
             ...talentElementalCommon.slice(
-              elementalTalentGreaterThanOrEqualTwo
-                ? elementalTalentGreaterThanOrEqualSix
-                  ? elementalTalentEqualTen
-                    ? 3
-                    : 2
-                  : 1
-                : 0
+              isEqual({ value: 10, on: 'elemental' })
+                ? 3
+                : numberToSliceCommon('elemental')
             ),
           ],
           talentBook: [
             ...talentNormalBook.slice(
-              normalTalentGreaterThanOrEqualTwo
-                ? normalTalentGreaterThanOrEqualFour
-                  ? normalTalentGreaterThanOrEqualFive
-                    ? normalTalentGreaterThanOrEqualSix
-                      ? normalTalentGreaterThanOrEqualEight
-                        ? normalTalentGreaterThanOrEqualNine
-                          ? normalTalentEqualTen
-                            ? 9
-                            : 8
-                          : 7
-                        : 5
-                      : 4
-                    : 3
-                  : 1
-                : 0
+              isEqual({ value: 10, on: 'normal' })
+                ? 9
+                : numberToSliceBook('normal')
             ),
             ...talentElementalBook.slice(
-              elementalTalentGreaterThanOrEqualTwo
-                ? elementalTalentGreaterThanOrEqualFour
-                  ? elementalTalentGreaterThanOrEqualFive
-                    ? elementalTalentGreaterThanOrEqualSix
-                      ? elementalTalentGreaterThanOrEqualNine
-                        ? elementalTalentEqualTen
-                          ? 9
-                          : 8
-                        : elementalTalentGreaterThanOrEqualEight
-                        ? 7
-                        : 5
-                      : 4
-                    : 3
-                  : 1
-                : 0
+              isEqual({ value: 10, on: 'elemental' })
+                ? 9
+                : numberToSliceBook('elemental')
             ),
           ],
         }
       }
 
       const items = getTalentRequiredItems(talentMaterial)
+      console.log(items)
 
       return getCurrentMaterial({
         ascension,
