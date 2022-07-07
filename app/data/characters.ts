@@ -2,7 +2,7 @@ import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import type * as CharacterModel from '~/models/character.server'
 import type * as InventoryModel from '~/models/inventory.server'
-import { getItemsInCategory } from './items'
+import * as ItemData from './items'
 
 export interface CharacterProgression {
   name: string
@@ -2130,6 +2130,32 @@ export function getCharacterInventoryLevelUpData({
           elementalBurst: 1,
         }
 
+  const levelUnlocked = [
+    { from: 1, to: 20 },
+    { from: 20, to: 40 },
+    { from: 40, to: 50 },
+    { from: 50, to: 60 },
+    { from: 60, to: 70 },
+    { from: 70, to: 80 },
+    { from: 80, to: 90 },
+    { from: 9999, to: 9999 },
+  ]
+  const talentUnlocked = [
+    { from: 1, to: 1 },
+    { from: 1, to: 1 },
+    { from: 1, to: 2 },
+    { from: 2, to: 4 },
+    { from: 4, to: 6 },
+    { from: 6, to: 8 },
+    { from: 8, to: 10 },
+    { from: 9999, to: 9999 },
+  ]
+
+  const unlockable = {
+    level: levelUnlocked[ascension],
+    talent: talentUnlocked[ascension],
+  }
+
   function getCurrentMaterial({
     ascension,
     talent,
@@ -2188,22 +2214,22 @@ export function getCharacterInventoryLevelUpData({
   }
 
   function getAscensionRequiredItems(material: ItemsToRetrieve['ascension']) {
-    const common = getItemsInCategory({
+    const common = ItemData.getItemsInCategory({
       category: 'common',
       names: [...material.baseCommon],
       items: requiredItems.common,
     })
-    const ascensionGem = getItemsInCategory({
+    const ascensionGem = ItemData.getItemsInCategory({
       category: 'ascension_gem',
       names: material.ascensionGem,
       items: requiredItems.ascension_gem,
     })
-    const ascensionBoss = getItemsInCategory({
+    const ascensionBoss = ItemData.getItemsInCategory({
       category: 'ascension_boss',
       names: [material.ascensionBoss ?? ''],
       items: requiredItems.ascension_boss,
     })
-    const localSpecialty = getItemsInCategory({
+    const localSpecialty = ItemData.getItemsInCategory({
       category: 'local_specialty',
       names: [material.localSpecialty],
       items: requiredItems.local_specialty,
@@ -2212,22 +2238,22 @@ export function getCharacterInventoryLevelUpData({
   }
 
   function getTalentRequiredItems(material: ItemsToRetrieve['talent']) {
-    const common = getItemsInCategory({
+    const common = ItemData.getItemsInCategory({
       category: 'common',
       names: [...material.talentCommon],
       items: requiredItems.common,
     })
-    const talentBook = getItemsInCategory({
+    const talentBook = ItemData.getItemsInCategory({
       category: 'talent_book',
       names: material.talentBook,
       items: requiredItems.talent_book,
     })
-    const talentBoss = getItemsInCategory({
+    const talentBoss = ItemData.getItemsInCategory({
       category: 'talent_boss',
       names: material.talentBoss,
       items: requiredItems.talent_boss,
     })
-    const special = getItemsInCategory({
+    const special = ItemData.getItemsInCategory({
       category: 'special',
       names: [material.special],
       items: requiredItems.special,
@@ -2325,6 +2351,128 @@ export function getCharacterInventoryLevelUpData({
     })
   }
 
+  const itemSchema = Zod.array(
+    Zod.object({
+      name: Zod.string(),
+      quantity: Zod.number(),
+      rarity: Zod.nativeEnum({
+        a: 1,
+        b: 2,
+        c: 3,
+        d: 4,
+        e: 5,
+      } as const),
+    })
+  ).optional()
+  type ItemSchema = Zod.infer<typeof itemSchema>
+
+  function getCurrentItems(
+    currentMaterial: ReturnType<typeof getCurrentMaterial>,
+    items: {
+      quantity: number
+      name: string
+      rarity: 1 | 2 | 3 | 4 | 5
+    }[]
+  ) {
+    let parsedAscensionMaterial: ItemSchema
+    let parsedTalentNormalMaterial: ItemSchema
+    let parsedTalentElSkillMaterial: ItemSchema
+    let parsedTalentElBurstMaterial: ItemSchema
+
+    if (currentMaterial.ascension) {
+      const ascMat = currentMaterial.ascension
+
+      let ascensionMaterial:
+        | { name: string; quantity: number; rarity?: 1 | 2 | 3 | 4 | 5 }[]
+        | undefined
+      ascensionMaterial = [ascMat.common, ascMat.gem, ascMat.local]
+      if (ascMat.boss) {
+        ascensionMaterial = [...ascensionMaterial, ascMat.boss]
+      }
+
+      const tmpAscMat = ascensionMaterial?.map((item) => {
+        const tmp = items.find((i) => i.name === item.name)
+        return {
+          ...item,
+          rarity: tmp ? tmp.rarity : 1,
+        }
+      })
+
+      parsedAscensionMaterial = itemSchema.parse(tmpAscMat)
+    }
+
+    if (currentMaterial.talent.normal) {
+      const talNormMat = currentMaterial.talent.normal
+
+      let talentMaterial:
+        | { name: string; quantity: number; rarity?: 1 | 2 | 3 | 4 | 5 }[]
+        | undefined
+      talentMaterial = [talNormMat.common, talNormMat.book]
+      if (talNormMat.boss) talentMaterial = [...talentMaterial, talNormMat.boss]
+      if (talNormMat.special)
+        talentMaterial = [...talentMaterial, talNormMat.special]
+
+      const tmpTalentMat = talentMaterial?.map((item) => {
+        const tmp = items.find((i) => i.name === item.name)
+        return {
+          ...item,
+          rarity: tmp ? tmp.rarity : 1,
+        }
+      })
+      parsedTalentNormalMaterial = itemSchema.parse(tmpTalentMat)
+    }
+
+    if (currentMaterial.talent.elementalSkill) {
+      const talNormMat = currentMaterial.talent.elementalSkill
+
+      let talentMaterial:
+        | { name: string; quantity: number; rarity?: 1 | 2 | 3 | 4 | 5 }[]
+        | undefined
+      talentMaterial = [talNormMat.common, talNormMat.book]
+      if (talNormMat.boss) talentMaterial = [...talentMaterial, talNormMat.boss]
+      if (talNormMat.special)
+        talentMaterial = [...talentMaterial, talNormMat.special]
+
+      const tmpTalentMat = talentMaterial?.map((item) => {
+        const tmp = items.find((i) => i.name === item.name)
+        return {
+          ...item,
+          rarity: tmp ? tmp.rarity : 1,
+        }
+      })
+      parsedTalentElSkillMaterial = itemSchema.parse(tmpTalentMat)
+    }
+
+    if (currentMaterial.talent.elementalBurst) {
+      const talMat = currentMaterial.talent.elementalBurst
+
+      let talentMaterial:
+        | { name: string; quantity: number; rarity?: 1 | 2 | 3 | 4 | 5 }[]
+        | undefined
+      talentMaterial = [talMat.common, talMat.book]
+      if (talMat.boss) talentMaterial = [...talentMaterial, talMat.boss]
+      if (talMat.special) talentMaterial = [...talentMaterial, talMat.special]
+
+      const tmpTalentMat = talentMaterial?.map((item) => {
+        const tmp = items.find((i) => i.name === item.name)
+        return {
+          ...item,
+          rarity: tmp ? tmp.rarity : 1,
+        }
+      })
+      parsedTalentElBurstMaterial = itemSchema.parse(tmpTalentMat)
+    }
+
+    return {
+      ascension: parsedAscensionMaterial,
+      talent: {
+        normal: parsedTalentNormalMaterial,
+        elementalSkill: parsedTalentElSkillMaterial,
+        elementalBurst: parsedTalentElBurstMaterial,
+      },
+    }
+  }
+
   switch (ascension) {
     case 0: {
       const items = [
@@ -2346,10 +2494,15 @@ export function getCharacterInventoryLevelUpData({
         },
       }
 
+      const currentItems = getCurrentItems(currentMaterial, items)
+
       return {
+        ascension,
+        talent,
         items,
-        currentMaterial,
+        currentMaterial: currentItems,
         possibleToLevel,
+        unlockable,
       }
     }
     case 1: {
@@ -2377,10 +2530,15 @@ export function getCharacterInventoryLevelUpData({
         },
       }
 
+      const currentItems = getCurrentItems(currentMaterial, items)
+
       return {
+        ascension,
+        talent,
         items,
-        currentMaterial,
+        currentMaterial: currentItems,
         possibleToLevel,
+        unlockable,
       }
     }
     case 2: {
@@ -2452,10 +2610,15 @@ export function getCharacterInventoryLevelUpData({
         },
       }
 
+      const currentItems = getCurrentItems(currentMaterial, items)
+
       return {
+        ascension,
+        talent,
         items,
-        currentMaterial,
+        currentMaterial: currentItems,
         possibleToLevel,
+        unlockable,
       }
     }
     case 3: {
@@ -2553,10 +2716,15 @@ export function getCharacterInventoryLevelUpData({
         },
       }
 
+      const currentItems = getCurrentItems(currentMaterial, items)
+
       return {
+        ascension,
+        talent,
         items,
-        currentMaterial,
+        currentMaterial: currentItems,
         possibleToLevel,
+        unlockable,
       }
     }
     case 4: {
@@ -2656,10 +2824,15 @@ export function getCharacterInventoryLevelUpData({
         },
       }
 
+      const currentItems = getCurrentItems(currentMaterial, items)
+
       return {
+        ascension,
+        talent,
         items,
-        currentMaterial,
+        currentMaterial: currentItems,
         possibleToLevel,
+        unlockable,
       }
     }
     case 5: {
@@ -2759,10 +2932,15 @@ export function getCharacterInventoryLevelUpData({
         },
       }
 
+      const currentItems = getCurrentItems(currentMaterial, items)
+
       return {
+        ascension,
+        talent,
         items,
-        currentMaterial,
+        currentMaterial: currentItems,
         possibleToLevel,
+        unlockable,
       }
     }
     case 6: {
@@ -2878,10 +3056,15 @@ export function getCharacterInventoryLevelUpData({
         },
       }
 
+      const currentItems = getCurrentItems(currentMaterial, items)
+
       return {
+        ascension,
+        talent,
         items,
-        currentMaterial,
+        currentMaterial: currentItems,
         possibleToLevel,
+        unlockable,
       }
     }
     default:
