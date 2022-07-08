@@ -98,8 +98,8 @@ model Inventory {
   id String @id @default(cuid())
   quantity Int @db.UnsignedSmallInt
 
-  item   Item   @relation(fields: [itemId], references: [id])
-  itemId String @map("item_id")
+  item   Item   @relation(fields: [itemName], references: [name])
+  itemName String @map("item_name")
 
   account Account @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId String  @map("owner_id")
@@ -108,8 +108,8 @@ model Inventory {
 model UserCharacter {
   id String @id @default(cuid())
 
-  character   Character @relation(fields: [characterId], references: [id])
-  characterId String    @map("character_id")
+  character   Character @relation(fields: [characterName], references: [name])
+  characterName String    @map("character_name")
 
   account Account @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId String  @map("owner_id")
