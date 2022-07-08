@@ -18,9 +18,11 @@ interface LoaderData {
 export const loader: RemixNode.LoaderFunction = async ({ request }) => {
   const accId = await Session.requireAccountId(request)
 
-  const userData = await CharacterModel.getUserCharacters({ accId })
+  const userData = await CharacterModel.getUserCharacters({ accountId: accId })
   invariant(userData, 'every account should have an minimum 7 characters')
-  const userTravelers = userData.filter((c) => c.name.includes('Traveler'))
+  const userTravelers = userData.filter((c) =>
+    c.characterName.includes('Traveler')
+  )
   const data = CharacterData.getCharacters({
     userCharacters: userData,
     travelers: userTravelers,
