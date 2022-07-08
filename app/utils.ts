@@ -46,11 +46,11 @@ export function useMatchesData(
   return route?.data
 }
 
-function isUser(user: any): user is DB.Type.User {
+function isUser(user: any): user is DB.Type1.User {
   return user && typeof user === 'object' && typeof user.email === 'string'
 }
 
-export function useOptionalUser(): DB.Type.User | undefined {
+export function useOptionalUser(): DB.Type1.User | undefined {
   const data = useMatchesData('root')
   if (!data || !isUser(data.user)) {
     return undefined
@@ -58,7 +58,7 @@ export function useOptionalUser(): DB.Type.User | undefined {
   return data.user
 }
 
-export function useUser(): DB.Type.User {
+export function useUser(): DB.Type1.User {
   const maybeUser = useOptionalUser()
   if (!maybeUser) {
     throw new Error(

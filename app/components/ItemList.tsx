@@ -9,7 +9,7 @@ import * as Utils from '~/utils'
 
 interface Props {
   items: ItemData.Item[]
-  category: keyof DB.Type.Inventory
+  category: keyof DB.Type1.Inventory
 }
 
 export default function ItemList({ items, category }: Props) {

@@ -245,7 +245,7 @@ export function getAllItemsInCategory({
   category,
   items,
 }: {
-  category: keyof DB.Type.Inventory
+  category: keyof DB.Type1.Inventory
   items: {
     name: string
     '@quantity': number | null
@@ -308,7 +308,7 @@ export function getItemsInCategory({
   names,
   items,
 }: {
-  category: keyof DB.Type.Inventory
+  category: keyof DB.Type1.Inventory
   names: string[]
   items: {
     name: string

@@ -13,7 +13,7 @@ export { action } from '~/actions/inventory'
 
 interface LoaderData {
   items: ReturnType<typeof ItemData.getAllItemsInCategory>
-  category: keyof DB.Type.Inventory
+  category: keyof DB.Type1.Inventory
 }
 export const loader: RemixNode.LoaderFunction = async ({ params, request }) => {
   const { category: categoryParams } = params
