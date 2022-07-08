@@ -46,15 +46,7 @@ export const action: RemixNode.ActionFunction = async ({ request, params }) => {
     )
   }
 
-  const characterSchema = Zod.enum([
-    'Traveler Anemo',
-    'Traveler Geo',
-    'Traveler Electro',
-    // 'Traveler Dendro',
-    // 'Traveler Hydro',
-    // 'Traveler Pyro',
-    // 'Traveler Cryo',
-  ])
+  const characterSchema = Zod.enum(CharacterData.validTraveler)
   const travelersDataSchema = Zod.array(
     Zod.object({
       name: Zod.string(),
@@ -83,8 +75,8 @@ export const action: RemixNode.ActionFunction = async ({ request, params }) => {
 }
 
 interface LoaderData {
-  travelerData: CharacterData.CharacterData
-  otherTravelersData: CharacterData.CharacterData[]
+  travelerData: CharacterData.CharacterProgression
+  otherTravelersData: CharacterData.CharacterProgression[]
 }
 
 export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
@@ -92,17 +84,7 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
   const { vision } = params
   invariant(vision)
 
-  const validTraveler = [
-    'Traveler Anemo',
-    'Traveler Geo',
-    'Traveler Electro',
-    // 'Traveler Dendro',
-    // 'Traveler Hydro',
-    // 'Traveler Pyro',
-    // 'Traveler Cryo',
-  ] as const
-
-  const travelerSchema = Zod.enum(validTraveler)
+  const travelerSchema = Zod.enum(CharacterData.validTraveler)
   const parsedTraveler = travelerSchema.parse(
     Utils.toCapitalized(`Traveler ${vision}`)
   )
@@ -113,11 +95,11 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
   })
   const currentTraveler = userTravelers?.find((c) => c.name === parsedTraveler)
 
-  const otherTravelers = validTraveler.filter(
+  const otherTravelers = CharacterData.validTraveler.filter(
     (traveler) => traveler !== parsedTraveler
   )
 
-  const travelerData: CharacterData.CharacterData = {
+  const travelerData: CharacterData.CharacterProgression = {
     name: parsedTraveler,
     level: currentTraveler?.['@level'] ?? 1,
     ascension: currentTraveler?.['@ascension'] ?? 0,
@@ -126,8 +108,8 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
     elementalBurst: currentTraveler?.['@elemental_burst'] ?? 1,
   }
 
-  const otherTravelersData: CharacterData.CharacterData[] = otherTravelers.map(
-    (traveler) => {
+  const otherTravelersData: CharacterData.CharacterProgression[] =
+    otherTravelers.map((traveler) => {
       const otherTraveler = userTravelers?.find((c) => c.name === traveler)
       return {
         name: traveler,
@@ -137,8 +119,7 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
         elementalSkill: otherTraveler?.['@elemental_skill'] ?? 1,
         elementalBurst: otherTraveler?.['@elemental_burst'] ?? 1,
       }
-    }
-  )
+    })
 
   return RemixNode.json<LoaderData>({ travelerData, otherTravelersData })
 }

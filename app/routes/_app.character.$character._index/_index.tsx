@@ -38,9 +38,11 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
   }
 
   const { ascensionMaterial, talentMaterial } =
-    CharacterData.getCharacterRequiredMaterial({
+    CharacterData.getRequiredMaterial({
       name: characterName,
     })
+  // only traveler returning object
+  invariant(Array.isArray(talentMaterial))
 
   return RemixNode.json<LoaderData>({
     character,
@@ -52,7 +54,9 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
 export default function CharacterPage() {
   const { character, ascensionMaterial, talentMaterial } =
     RemixReact.useLoaderData() as LoaderData
-  const [hideAscension, setHideAscension] = React.useState(false)
+  const [hideAscension, setHideAscension] = React.useState(
+    character.progression?.ascension === 6
+  )
   const [hideTalent, setHideTalent] = React.useState(false)
 
   const ascensionTable = ReactTable.useReactTable({

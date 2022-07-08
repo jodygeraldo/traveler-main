@@ -8,7 +8,7 @@ import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import type * as CharacterData from '~/data/characters'
 import * as Utils from '~/utils'
-import * as Button from './Button'
+import Button from './Button'
 import * as Icon from './Icon'
 
 const newDataSchema = Zod.object({
@@ -31,7 +31,7 @@ interface Props {
   defaultValues: Values
   inputProps: (key: string, options?: any) => RemixParamsHelper.InputPropType
   errors?: { [key: string]: string }
-  hiddenTravelersData?: CharacterData.CharacterData[]
+  hiddenTravelersData?: CharacterData.CharacterProgression[]
   submitSuccess?: boolean
 }
 
@@ -136,14 +136,14 @@ export default function ManualLevelForm({
           value={JSON.stringify(hiddenTravelersData)}
         />
         <div className="mt-8 text-right">
-          <Button.Button
+          <Button
             type={hydrated ? 'button' : 'submit'}
             onClick={hydrated ? handleClick : undefined}
             focusRing={1}
             disabled={busy}
           >
             {busy ? 'Saving...' : 'Save'}
-          </Button.Button>
+          </Button>
         </div>
       </RemixReact.Form>
       <Alert
@@ -306,21 +306,21 @@ function Alert({
                   </div>
                 </div>
                 <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                  <Button.Button
+                  <Button
                     className="w-full sm:ml-3 sm:w-auto"
                     variant="info"
                     onClick={handleSubmit}
                   >
                     Confirm changes
-                  </Button.Button>
-                  <Button.Button
+                  </Button>
+                  <Button
                     className="mt-3 w-full sm:mt-0 sm:ml-3 sm:w-auto"
                     variant="basic"
                     onClick={() => setOpen(false)}
                     ref={cancelButtonRef}
                   >
                     Cancel
-                  </Button.Button>
+                  </Button>
                 </div>
               </HeadlessUIReact.Dialog.Panel>
             </HeadlessUIReact.Transition.Child>
