@@ -21,17 +21,23 @@ const ParamsSchema = Zod.object({
 
 export const action: RemixNode.ActionFunction = async ({ params, request }) => {
   const accId = await Session.requireAccountId(request)
-  const { vision } = params
-  invariant(vision)
+  const { vision, character } = params
+  let characterName = ''
 
-  const characterName = Zod.enum(CharacterData.validTraveler).safeParse(
-    Utils.toCapitalized(`Traveler ${vision}`)
-  )
-  if (!characterName.success) {
-    throw RemixNode.json(
-      { name: characterName },
-      { status: 404, statusText: 'Page Not Found' }
+  if (vision) {
+    characterName = Zod.enum(CharacterData.validTraveler).parse(
+      Utils.toCapitalized(`Traveler ${vision}`)
     )
+  } else {
+    invariant(character)
+    const validCharacter = CharacterData.validateCharacter(character)
+    if (!validCharacter) {
+      throw RemixNode.json(
+        { name: character },
+        { status: 404, statusText: 'Page Not Found' }
+      )
+    }
+    characterName = character
   }
 
   const result = await RemixParamsHelper.getFormData(request, ParamsSchema)
@@ -94,7 +100,7 @@ export const action: RemixNode.ActionFunction = async ({ params, request }) => {
 
   await CharacterModel.upsertTravelerInventoryLevelUp({
     kind,
-    name: characterName.data,
+    name: characterName,
     level: level + 1,
     characterLevel,
     accId: accId,
