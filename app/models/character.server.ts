@@ -30,7 +30,7 @@ export async function getUserCharacters({
         '@elemental_burst': true,
         filter: isTraveler ? e.op(c.name, 'ilike', 'Traveler%') : undefined,
       }),
-      filter: e.op(userCharacter.owner, '=', UserModel.Account(accId)),
+      filter: e.op(userCharacter.owner, '=', UserModel.getAccountById(accId)),
     }))
     .run(client)
 
@@ -55,7 +55,7 @@ export async function getUserCharacter({
         '@elemental_burst': true,
         filter: e.op(c.name, '=', name),
       }),
-      filter: e.op(userCharacter.owner, '=', UserModel.Account(accId)),
+      filter: e.op(userCharacter.owner, '=', UserModel.getAccountById(accId)),
     }))
     .run(client)
 
@@ -119,7 +119,7 @@ export async function upsertCharacter({
 
     await e
       .update(e.UserCharacter, (userCharacter) => ({
-        filter: e.op(userCharacter.owner, '=', UserModel.Account(accId)),
+        filter: e.op(userCharacter.owner, '=', UserModel.getAccountById(accId)),
         set: {
           characters: {
             '+=': e.op(
@@ -160,7 +160,7 @@ export async function upsertCharacter({
 
   await e
     .update(e.UserCharacter, (userCharacter) => ({
-      filter: e.op(userCharacter.owner, '=', UserModel.Account(accId)),
+      filter: e.op(userCharacter.owner, '=', UserModel.getAccountById(accId)),
       set: {
         characters: { '+=': itemToUpsert },
       },

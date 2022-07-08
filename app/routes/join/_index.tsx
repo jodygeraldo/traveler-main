@@ -53,12 +53,12 @@ export const action: RemixNode.ActionFunction = async ({ request }) => {
     )
   }
 
-  const account = await UserModel.createUser(email, password)
+  const user = await UserModel.createUser(email, password)
 
   return Session.createUserSession({
     request,
-    userId: account.owner.id,
-    accountId: account.id,
+    userId: user.id,
+    accountId: user.accounts[0].id,
     remember: false,
     redirectTo,
   })

@@ -23,7 +23,7 @@ export async function getInventory({ accId }: { accId: string }) {
       talent_book: { name: true, '@quantity': true },
       talent_boss: { name: true, '@quantity': true },
       special: { name: true, '@quantity': true },
-      filter: e.op(inventory.owner, '=', UserModel.Account(accId)),
+      filter: e.op(inventory.owner, '=', UserModel.getAccountById(accId)),
     }))
     .run(client)
 
@@ -34,13 +34,13 @@ export async function getInventoryCategory({
   category,
   accId,
 }: {
-  category: keyof DB.Type.Inventory
+  category: keyof DB.Type1.Inventory
   accId: string
 }) {
   const inventory = await e
     .select(e.Inventory, (inventory) => ({
       [category]: { name: true, '@quantity': true },
-      filter: e.op(inventory.owner, '=', UserModel.Account(accId)),
+      filter: e.op(inventory.owner, '=', UserModel.getAccountById(accId)),
     }))
     .run(client)
 
@@ -55,7 +55,7 @@ export async function upsertItem({
   accId,
 }: {
   name: string
-  category: keyof DB.Type.Inventory
+  category: keyof DB.Type1.Inventory
   quantity: number
   accId: string
 }) {
@@ -69,7 +69,7 @@ export async function upsertItem({
 
   await e
     .update(e.Inventory, (inventory) => ({
-      filter: e.op(inventory.owner, '=', UserModel.Account(accId)),
+      filter: e.op(inventory.owner, '=', UserModel.getAccountById(accId)),
       set: {
         [category]: { '+=': itemToUpsert },
       },
@@ -77,7 +77,7 @@ export async function upsertItem({
     .run(client)
 }
 
-function getSelector(category: keyof DB.Type.Inventory) {
+function getSelector(category: keyof DB.Type1.Inventory) {
   switch (category) {
     case 'ascension_boss':
       return e.AscensionBossMaterial
@@ -169,7 +169,7 @@ export async function getRequiredItems({
         '@quantity': true,
         filter: e.op(i.name, '=', specialSet),
       }),
-      filter: e.op(inventory.owner, '=', UserModel.Account(accId)),
+      filter: e.op(inventory.owner, '=', UserModel.getAccountById(accId)),
     }))
     .run(client)
 

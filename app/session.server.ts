@@ -1,8 +1,8 @@
 import * as RemixNode from '@remix-run/node'
 import dotenv from 'dotenv'
 import invariant from 'tiny-invariant'
+import type * as DB from '~/db.server'
 import * as UserModel from '~/models/user.server'
-import type * as DB from './db.server'
 
 dotenv.config()
 invariant(process.env.SESSION_SECRET, 'SESSION_SECRET must be set')
@@ -14,7 +14,7 @@ export const sessionStorage = RemixNode.createCookieSessionStorage({
     maxAge: 0,
     path: '/',
     sameSite: 'lax',
-    secrets: [process.env.SESSION_SECRET!],
+    secrets: [process.env.SESSION_SECRET],
     secure: process.env.NODE_ENV === 'production',
   },
 })
@@ -27,9 +27,7 @@ export async function getSession(request: Request) {
   return sessionStorage.getSession(cookie)
 }
 
-export async function getUserId(
-  request: Request
-): Promise<DB.Type.User['id'] | undefined> {
+export async function getUserId(request: Request): Promise<string | undefined> {
   const session = await getSession(request)
   const userId = session.get(USER_SESSION_KEY)
   return userId
@@ -37,13 +35,13 @@ export async function getUserId(
 
 export async function getAccountId(
   request: Request
-): Promise<DB.Type.Account['id'] | undefined> {
+): Promise<string | undefined> {
   const session = await getSession(request)
   const accountId = session.get(ACCOUNT_SESSION_KEY)
   return accountId
 }
 
-export async function getUser(request: Request) {
+export async function getUser(request: Request): Promise<DB.Type.User | null> {
   const userId = await getUserId(request)
   if (userId === undefined) return null
 
@@ -56,7 +54,7 @@ export async function getUser(request: Request) {
 export async function requireUserId(
   request: Request,
   redirectTo: string = new URL(request.url).pathname
-) {
+): Promise<string> {
   const userId = await getUserId(request)
   if (!userId) {
     const searchParams = new URLSearchParams([['redirectTo', redirectTo]])
@@ -68,7 +66,7 @@ export async function requireUserId(
 export async function requireAccountId(
   request: Request,
   redirectTo: string = new URL(request.url).pathname
-) {
+): Promise<string> {
   const accountId = await getAccountId(request)
   if (!accountId) {
     const searchParams = new URLSearchParams([['redirectTo', redirectTo]])
@@ -105,9 +103,7 @@ export async function createUserSession({
   return RemixNode.redirect(redirectTo, {
     headers: {
       'Set-Cookie': await sessionStorage.commitSession(session, {
-        maxAge: remember
-          ? 60 * 60 * 24 * 7 // 7 days
-          : undefined,
+        maxAge: remember ? 60 * 60 * 24 * 7 : undefined,
       }),
     },
   })
