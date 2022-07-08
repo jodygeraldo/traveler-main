@@ -90,6 +90,8 @@ function CharacterList({
                       )}.png`}
                       alt={character.name}
                       className="h-24 w-24 rounded-br-3xl"
+                      width={96}
+                      height={96}
                       responsive={[{ size: { width: 96, height: 96 } }]}
                       dprVariants={[1, 2, 3]}
                     />
@@ -151,6 +153,8 @@ function HoverCard({
                     alt=""
                     className="h-4 w-4"
                     aria-hidden
+                    width={16}
+                    height={16}
                     responsive={[{ size: { width: 16, height: 16 } }]}
                     dprVariants={[1, 2, 3]}
                   />
@@ -164,6 +168,8 @@ function HoverCard({
                   alt=""
                   className="h-4 w-4"
                   aria-hidden
+                  width={16}
+                  height={16}
                   responsive={[{ size: { width: 16, height: 16 } }]}
                   dprVariants={[1, 2, 3]}
                 />
@@ -285,6 +291,8 @@ function TalentTooltipIcon({
         }.png`}
         alt=""
         className="h-5 w-5 flex-shrink-0"
+        width={20}
+        height={20}
         responsive={[{ size: { width: 20, height: 20 } }]}
         dprVariants={[1, 2, 3]}
       />

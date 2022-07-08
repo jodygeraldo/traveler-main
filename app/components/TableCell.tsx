@@ -19,6 +19,8 @@ export default function TableCell({ quantity, text }: Props) {
           src={`/image/item/${Utils.getImageSrc(text)}.png`}
           alt={text}
           className="h-8 w-8 flex-shrink-0"
+          width={32}
+          height={32}
           responsive={[{ size: { width: 32, height: 32 } }]}
           dprVariants={[1, 2, 3]}
         />

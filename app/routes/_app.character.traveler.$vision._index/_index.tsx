@@ -217,6 +217,8 @@ function CustomTableHeading({
                 src={`/image/talent/${t}_${Utils.getImageSrc(name)}.png`}
                 alt=""
                 className="h-8 w-8 flex-shrink-0"
+                width={32}
+                height={32}
                 responsive={[{ size: { width: 32, height: 32 } }]}
                 dprVariants={[1, 2, 3]}
               />
@@ -228,6 +230,8 @@ function CustomTableHeading({
               src={`/image/talent/Normal_Attack_Sword.png`}
               alt=""
               className="h-8 w-8 flex-shrink-0"
+              width={32}
+              height={32}
               responsive={[{ size: { width: 32, height: 32 } }]}
               dprVariants={[1, 2, 3]}
             />

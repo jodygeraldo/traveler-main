@@ -32,6 +32,8 @@ export default function TravelerVisionLayout() {
               src="/image/constellation/Aether.png"
               alt=""
               className="h-8 w-8 flex-shrink-0"
+              width={32}
+              height={32}
               responsive={[{ size: { width: 32, height: 32 } }]}
               dprVariants={[1, 2, 3]}
             />
@@ -41,6 +43,8 @@ export default function TravelerVisionLayout() {
               src="/image/constellation/Lumine.png"
               alt=""
               className="h-8 w-8 flex-shrink-0"
+              width={32}
+              height={32}
               responsive={[{ size: { width: 32, height: 32 } }]}
               dprVariants={[1, 2, 3]}
             />

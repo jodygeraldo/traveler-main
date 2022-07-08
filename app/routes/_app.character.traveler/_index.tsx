@@ -46,6 +46,8 @@ function Sidebar() {
             alt=""
             className="h-4 w-4"
             aria-hidden
+            width={16}
+            height={16}
             responsive={[{ size: { width: 16, height: 16 } }]}
             dprVariants={[1, 2, 3]}
           />
