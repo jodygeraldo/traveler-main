@@ -27,8 +27,8 @@ model Password {
 }
 
 model Account {
-  id   String @id @default(cuid())
-  name String
+  id      String  @id @default(cuid())
+  name    String
   default Boolean @default(false)
 
   inventory  Inventory[]
@@ -95,10 +95,10 @@ model Character {
 }
 
 model Inventory {
-  id String @id @default(cuid())
-  quantity Int @db.UnsignedSmallInt
+  id       String @id @default(cuid())
+  quantity Int    @db.UnsignedSmallInt
 
-  item   Item   @relation(fields: [itemName], references: [name])
+  item     Item   @relation(fields: [itemName], references: [name])
   itemName String @map("item_name")
 
   account Account @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -106,9 +106,14 @@ model Inventory {
 }
 
 model UserCharacter {
-  id String @id @default(cuid())
+  id             String @id @default(cuid())
+  level          Int    @db.UnsignedSmallInt
+  ascension      Int    @db.UnsignedSmallInt
+  normalAttack   Int    @map("normal_attack") @db.UnsignedSmallInt
+  elementalSkill Int    @map("elemental_skill") @db.UnsignedSmallInt
+  elementalBurst Int    @map("elemental_burst") @db.UnsignedSmallInt
 
-  character   Character @relation(fields: [characterName], references: [name])
+  character     Character @relation(fields: [characterName], references: [name])
   characterName String    @map("character_name")
 
   account Account @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
