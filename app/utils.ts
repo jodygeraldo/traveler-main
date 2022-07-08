@@ -46,11 +46,11 @@ export function useMatchesData(
   return route?.data
 }
 
-function isUser(user: any): user is DB.Type1.User {
+function isUser(user: any): user is DB.User {
   return user && typeof user === 'object' && typeof user.email === 'string'
 }
 
-export function useOptionalUser(): DB.Type1.User | undefined {
+export function useOptionalUser(): DB.User | undefined {
   const data = useMatchesData('root')
   if (!data || !isUser(data.user)) {
     return undefined
@@ -58,7 +58,7 @@ export function useOptionalUser(): DB.Type1.User | undefined {
   return data.user
 }
 
-export function useUser(): DB.Type1.User {
+export function useUser(): DB.User {
   const maybeUser = useOptionalUser()
   if (!maybeUser) {
     throw new Error(
@@ -91,7 +91,14 @@ export function toSnakeCase(str: string): string {
 }
 
 export function toCapitalized(str: string): string {
-  return str.replace(/_/g, ' ').replace(/\b\w/g, (x) => x.toUpperCase())
+  return str
+    .toLowerCase()
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (x) => x.toUpperCase())
+}
+
+export function toConstCase(str: string): string {
+  return str.replace(/-/g, '_').toUpperCase()
 }
 
 export function splitPerCapitalCase(str: string): string {

@@ -4,7 +4,7 @@ import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import ItemList from '~/components/ItemList'
 import * as ItemData from '~/data/items'
-import type * as DB from '~/db.server'
+import * as DB from '~/db.server'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
@@ -12,47 +12,41 @@ import * as Utils from '~/utils'
 export { action } from '~/actions/inventory'
 
 interface LoaderData {
-  items: ReturnType<typeof ItemData.getAllItemsInCategory>
-  category: keyof DB.Type1.Inventory
+  items: ItemData.ItemWithQuantity[]
+  type: DB.ItemType
 }
 export const loader: RemixNode.LoaderFunction = async ({ params, request }) => {
-  const { category: categoryParams } = params
-  invariant(categoryParams, 'category is required')
-  const ParamsSchema = Zod.enum([
-    'common',
-    'ascension_gem',
-    'ascension_boss',
-    'local_specialty',
-    'talent_book',
-    'talent_boss',
-    'special',
-  ])
-
-  const parsedCategory = ParamsSchema.safeParse(
-    Utils.toSnakeCase(categoryParams)
+  const { type: typeParams } = params
+  invariant(typeParams, 'type is required')
+  const parsedType = Zod.nativeEnum(DB.ItemType).safeParse(
+    Utils.toConstCase(typeParams)
   )
-  if (!parsedCategory.success) {
+
+  if (!parsedType.success) {
     throw RemixNode.json(
-      { category: categoryParams },
+      { category: typeParams },
       { status: 404, statusText: 'Page Not Found' }
     )
   }
+  const type = parsedType.data
 
-  const accId = await Session.requireAccountId(request)
-  const inventory = await InventoryModel.getInventoryCategory({
-    category: parsedCategory.data,
-    accId,
-  })
-  const items = ItemData.getAllItemsInCategory({
-    category: parsedCategory.data,
-    items: inventory,
+  const accountId = await Session.requireAccountId(request)
+  const inventory = await InventoryModel.getInventoryByType({
+    type,
+    accountId,
   })
 
-  return RemixNode.json<LoaderData>({ items, category: parsedCategory.data })
+  const items = ItemData.getItemsByType({
+    type,
+    userItems: inventory,
+  })
+
+  return RemixNode.json<LoaderData>({ items, type })
 }
 
 export default function InventoryCategoryPage() {
-  const { items, category } = RemixReact.useLoaderData<LoaderData>()
+  const { items, type } = RemixReact.useLoaderData<LoaderData>()
+  console.log(items, type)
 
   return (
     <div className="space-y-12">
@@ -62,9 +56,9 @@ export default function InventoryCategoryPage() {
 
       <div>
         <h2 className="text-lg font-medium leading-6 text-gray-12">
-          {Utils.toCapitalized(category)}
+          {Utils.toCapitalized(type)}
         </h2>
-        <ItemList items={items} category={category} />
+        <ItemList items={items} />
       </div>
     </div>
   )
