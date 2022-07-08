@@ -24,6 +24,9 @@
     "typecheck": "tsc -b",
     "validate": "run-p test:* lint typecheck"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed/index.ts"
+  },
   "prettier": {
     "semi": false,
     "singleQuote": true
@@ -37,6 +40,7 @@
   "dependencies": {
     "@headlessui/react": "^1.6.5",
     "@next-boost/hybrid-disk-cache": "^0.3.0",
+    "@prisma/client": "^4.0.0",
     "@radix-ui/react-hover-card": "^0.1.6-rc.41",
     "@radix-ui/react-tooltip": "^0.1.8-rc.46",
     "@remix-run/node": "^1.6.0",
@@ -86,6 +90,7 @@
     "postcss": "^8.4.14",
     "prettier": "^2.7.0",
     "prettier-plugin-tailwindcss": "^0.1.11",
+    "prisma": "^4.0.0",
     "remix-flat-routes": "^0.4.3",
     "tailwindcss": "^3.1.4",
     "tsx": "^3.4.3",
