@@ -1,12 +1,5 @@
 import * as Prisma from '@prisma/client'
-import * as EdgeDB from 'edgedb'
-import e from '../dbschema/edgeql-js'
 export * as Type from '@prisma/client'
-export * as Type1 from '../dbschema/edgeql-js'
-export { client }
-export { prisma }
-export default e
-const client = EdgeDB.createClient()
 
 let prisma: Prisma.PrismaClient
 
@@ -27,3 +20,5 @@ if (process.env.NODE_ENV === 'production') {
   prisma = global.__db__
   prisma.$connect()
 }
+
+export default prisma
