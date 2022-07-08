@@ -20,6 +20,7 @@ export function cast<
   Target extends CastableNonArrayType | CastableArrayType,
   Expr extends TypeSet
 >(target: Target, expr: orScalarLiteral<Expr>): $expr_Cast<Target, Expr>;
+
 export function cast(target: BaseType, expr: any) {
   const cleanedExpr = expr === null ? null : literalToTypeSet(expr);
   return $expressionify({

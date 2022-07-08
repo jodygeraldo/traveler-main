@@ -13,17 +13,26 @@ interface Props {
 }
 
 export default function ItemList({ items, category }: Props) {
+  const { pathname } = RemixReact.useLocation()
   const { Form, submit } = RemixReact.useFetcher()
 
   let timerRef = React.useRef<NodeJS.Timeout>()
-  function handleChange(e: React.FormEvent<HTMLFormElement>) {
+  function handleChange(e: React.FormEvent<HTMLFormElement>, itemName: string) {
     if (timerRef.current) clearTimeout(timerRef.current)
     let $form = e.currentTarget
-    const quantity = ($form.querySelector('#quantity') as HTMLInputElement)
-      .value
+    const quantity = (
+      $form.querySelector(
+        `#quantity-${Utils.toSnakeCase(itemName)}`
+      ) as HTMLInputElement
+    ).value
     if (quantity === '') return
     let timer = setTimeout(
-      () => submit($form, { method: 'post', replace: true }),
+      () =>
+        submit($form, {
+          method: 'post',
+          replace: true,
+          action: pathname === '/inventory' ? `${pathname}?index` : undefined,
+        }),
       500
     )
     timerRef.current = timer
@@ -54,17 +63,24 @@ export default function ItemList({ items, category }: Props) {
                 <span className="ml-1">{item.rarity}</span>
               </Badge.Rarity>
             </div>
-            <Form method="post" onChange={handleChange} className="w-20 pr-2">
+            <Form
+              method="post"
+              onChange={(e) => handleChange(e, item.name)}
+              className="w-20 pr-2"
+            >
               <input type="hidden" name="name" value={item.name} />
               <input type="hidden" name="category" value={category} />
               <div>
-                <label htmlFor="quantity" className="sr-only">
+                <label
+                  htmlFor={`quantity-${Utils.toSnakeCase(item.name)}`}
+                  className="sr-only"
+                >
                   {item.name} Quantity
                 </label>
                 <input
                   type="number"
                   name="quantity"
-                  id="quantity"
+                  id={`quantity-${Utils.toSnakeCase(item.name)}`}
                   className="w-full rounded-md border-gray-7 bg-gray-2 tabular-nums text-gray-11 shadow-sm focus:border-gray-8 focus:text-gray-12 focus:ring-gray-8 sm:text-sm"
                   defaultValue={item.quantity ?? 0}
                   required
