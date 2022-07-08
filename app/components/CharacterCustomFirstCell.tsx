@@ -23,6 +23,8 @@ export default function CharacterCustomFirstCell({
         }.png`}
         alt=""
         className="h-6 w-6 flex-shrink-0"
+        width={24}
+        height={24}
         responsive={[{ size: { width: 24, height: 24 } }]}
         dprVariants={[1, 2, 3]}
       />

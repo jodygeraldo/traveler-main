@@ -50,6 +50,8 @@ export default function ItemWithImage({ item, items }: Props) {
               src={`/image/item/${Utils.getImageSrc(item.name)}.png`}
               alt={item.name}
               className="h-16 w-16 rounded-br-2xl"
+              width={64}
+              height={64}
               responsive={[{ size: { width: 64, height: 64 } }]}
               dprVariants={[1, 2, 3]}
             />

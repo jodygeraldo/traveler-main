@@ -47,6 +47,7 @@ export default function ItemList({ items, category }: Props) {
               src={`/image/item/${Utils.getImageSrc(item.name)}.png`}
               alt=""
               className="max-h-10 w-10 flex-shrink-0 pl-2"
+              width={40}
               responsive={[{ size: { width: 40 } }]}
               loading="lazy"
               dprVariants={[1, 2, 3]}
