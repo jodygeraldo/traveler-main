@@ -8,3 +8,109 @@ datasource db {
   url                  = env("DATABASE_URL")
   referentialIntegrity = "prisma"
 }
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  password Password?
+  accounts Account[]
+}
+
+model Password {
+  hash String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String @unique @map("user_id")
+}
+
+model Account {
+  id   String @id @default(cuid())
+  name String
+  default Boolean @default(false)
+
+  inventory  Inventory[]
+  characters UserCharacter[]
+
+  user    User   @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ownerId String @unique @map("owner_id")
+}
+
+enum ItemType {
+  COMMON
+  ASCENSION_GEM
+  ASCENSION_BOSS
+  LOCAL_SPECIALTY
+  TALENT_BOOK
+  TALENT_BOSS
+  SPECIAL
+}
+
+model Item {
+  id        String      @id @default(cuid())
+  name      String      @unique
+  type      ItemType
+  Inventory Inventory[]
+}
+
+enum Region {
+  MONDSTADT
+  LIYUE
+  INAZUMA
+  SUMERU
+  FONTAINE
+  NATLAN
+  SNEZHNAYA
+  UNKNOWN
+}
+
+enum Vision {
+  ANEMO
+  CRYO
+  DENDRO
+  ELECTRO
+  GEO
+  HYDRO
+  PYRO
+}
+
+enum Weapon {
+  BOW
+  CATALYST
+  CLAYMORE
+  POLEARM
+  SWORD
+}
+
+model Character {
+  id            String          @id @default(cuid())
+  name          String          @unique
+  region        Region
+  vision        Vision
+  weapon        Weapon
+  rarity        Int             @db.TinyInt
+  UserCharacter UserCharacter[]
+}
+
+model Inventory {
+  id String @id @default(cuid())
+  quantity Int @db.UnsignedSmallInt
+
+  item   Item   @relation(fields: [itemId], references: [id])
+  itemId String @map("item_id")
+
+  account Account @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ownerId String  @map("owner_id")
+}
+
+model UserCharacter {
+  id String @id @default(cuid())
+
+  character   Character @relation(fields: [characterId], references: [id])
+  characterId String    @map("character_id")
+
+  account Account @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ownerId String  @map("owner_id")
+}
