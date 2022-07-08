@@ -75,7 +75,11 @@ export async function requireAccountId(
   return accountId
 }
 
-export async function requireUser(request: Request) {
+export async function requireUser(request: Request): Promise<
+  DB.Type.User & {
+    accounts: DB.Type.Account[]
+  }
+> {
   const userId = await requireUserId(request)
 
   const user = await UserModel.getUserById(userId)
@@ -96,7 +100,7 @@ export async function createUserSession({
   accountId: string
   remember: boolean
   redirectTo: string
-}) {
+}): Promise<Response> {
   const session = await getSession(request)
   session.set(USER_SESSION_KEY, userId)
   session.set(ACCOUNT_SESSION_KEY, accountId)
@@ -109,7 +113,7 @@ export async function createUserSession({
   })
 }
 
-export async function logout(request: Request) {
+export async function logout(request: Request): Promise<Response> {
   const session = await getSession(request)
   return RemixNode.redirect('/', {
     headers: {

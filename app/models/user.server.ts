@@ -4,6 +4,7 @@ import * as DB from '~/db.server'
 export async function getUserById(id: string) {
   return DB.prisma.user.findUnique({
     where: { id },
+    include: { accounts: true },
   })
 }
 
