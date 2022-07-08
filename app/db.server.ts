@@ -1,5 +1,5 @@
 import * as Prisma from '@prisma/client'
-export * as Type from '@prisma/client'
+export * from '@prisma/client'
 
 let prisma: Prisma.PrismaClient
 

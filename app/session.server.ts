@@ -41,7 +41,7 @@ export async function getAccountId(
   return accountId
 }
 
-export async function getUser(request: Request): Promise<DB.Type.User | null> {
+export async function getUser(request: Request): Promise<DB.User | null> {
   const userId = await getUserId(request)
   if (userId === undefined) return null
 
@@ -76,8 +76,8 @@ export async function requireAccountId(
 }
 
 export async function requireUser(request: Request): Promise<
-  DB.Type.User & {
-    accounts: DB.Type.Account[]
+  DB.User & {
+    accounts: DB.Account[]
   }
 > {
   const userId = await requireUserId(request)
