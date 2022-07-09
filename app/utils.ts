@@ -78,9 +78,7 @@ export function validateEmail(email: unknown): email is string {
 }
 
 export function getImageSrc(str: string): string {
-  return str
-    .toLowerCase()
-    .replace(/ /g, '_')
+  return str.toLowerCase().replace(/ /g, '_')
 }
 
 export function toSnakeCase(str: string): string {

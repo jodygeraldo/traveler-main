@@ -19,7 +19,9 @@ export default function CharacterCustomFirstCell({
     <Tooltip key={talentName[idx]} text={talentName[idx]}>
       <RemixImage.Image
         src={`/image/talent/${type}_${
-          type === 'normal_attack' ? weapon?.toLowerCase() : Utils.getImageSrc(name)
+          type === 'normal_attack'
+            ? weapon?.toLowerCase()
+            : Utils.getImageSrc(name)
         }.png`}
         alt=""
         className="h-6 w-6 flex-shrink-0"

@@ -49,7 +49,7 @@ export default function CharacterLayout() {
           {name}
         </h1>
         {name.includes('Traveler') ? (
-          <div className="flex items-center bg-gray-2 p-1 rounded-full">
+          <div className="flex items-center rounded-full bg-gray-2 p-1">
             <ConstellationImage name="aether" />
             <ConstellationImage name="lumine" />
           </div>

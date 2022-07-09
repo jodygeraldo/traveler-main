@@ -1,6 +1,6 @@
-import type * as ReactTable from '@tanstack/react-table';
-import * as Icon from '~/components/Icon';
-import TableCell from '~/components/TableCell';
+import type * as ReactTable from '@tanstack/react-table'
+import * as Icon from '~/components/Icon'
+import TableCell from '~/components/TableCell'
 
 interface Ascension {
   phase: { from: number; to: number }
