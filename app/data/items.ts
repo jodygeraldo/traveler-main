@@ -303,7 +303,9 @@ const items: ItemWithQuantity[] = [
   { name: 'The Meaning of Aeons', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
 ]
 
-export function getAllItems(inventory: DB.Inventory[]) {
+export function getAllItems(
+  inventory: Pick<DB.Inventory, 'itemName' | 'quantity'>[]
+) {
   return {
     special: getItemsByType({
       type: DB.ItemType.SPECIAL,
@@ -341,7 +343,7 @@ export function getItemsByType({
   userItems,
 }: {
   type: DB.ItemType
-  userItems: DB.Inventory[]
+  userItems: Pick<DB.Inventory, 'itemName' | 'quantity'>[]
 }) {
   const result = items.filter((item) => item.type === type)
 

@@ -8,6 +8,14 @@ export async function getUserCharacters({ accountId }: { accountId: string }) {
     where: {
       ownerId: accountId,
     },
+    select: {
+      characterName: true,
+      level: true,
+      ascension: true,
+      normalAttack: true,
+      elementalSkill: true,
+      elementalBurst: true,
+    },
   })
 }
 
@@ -22,6 +30,13 @@ export async function getUserCharacter({
     where: {
       ownerId: accountId,
       characterName: name,
+    },
+    select: {
+      level: true,
+      ascension: true,
+      normalAttack: true,
+      elementalSkill: true,
+      elementalBurst: true,
     },
   })
 }

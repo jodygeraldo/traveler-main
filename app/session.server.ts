@@ -1,7 +1,6 @@
 import * as RemixNode from '@remix-run/node'
 import dotenv from 'dotenv'
 import invariant from 'tiny-invariant'
-import type * as DB from '~/db.server'
 import * as UserModel from '~/models/user.server'
 
 dotenv.config()
@@ -41,7 +40,14 @@ export async function getAccountId(
   return accountId
 }
 
-export async function getUser(request: Request): Promise<DB.User | null> {
+export async function getUser(request: Request): Promise<{
+  id: string
+  email: string
+  accounts: {
+    id: string
+    name: string
+  }[]
+} | null> {
   const userId = await getUserId(request)
   if (userId === undefined) return null
 
@@ -75,11 +81,14 @@ export async function requireAccountId(
   return accountId
 }
 
-export async function requireUser(request: Request): Promise<
-  DB.User & {
-    accounts: DB.Account[]
-  }
-> {
+export async function requireUser(request: Request): Promise<{
+  id: string
+  email: string
+  accounts: {
+    id: string
+    name: string
+  }[]
+}> {
   const userId = await requireUserId(request)
 
   const user = await UserModel.getUserById(userId)

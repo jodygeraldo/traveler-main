@@ -33,7 +33,7 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
   })
   const character = CharacterData.getCharacter({
     name,
-    userCharacter,
+    progression: userCharacter,
   })
 
   const { ascensionMaterial, talentMaterial } =

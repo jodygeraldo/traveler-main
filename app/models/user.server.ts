@@ -4,7 +4,16 @@ import prisma from '~/db.server'
 export async function getUserById(id: string) {
   return prisma.user.findUnique({
     where: { id },
-    include: { accounts: true },
+    select: {
+      id: true,
+      email: true,
+      accounts: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
   })
 }
 
@@ -38,11 +47,15 @@ export async function createUser(email: string, password: string) {
         },
       },
     },
-    include: {
+    select: {
+      id: true,
       accounts: {
         take: 1,
         where: {
           default: true,
+        },
+        select: {
+          id: true,
         },
       },
     },
@@ -58,10 +71,15 @@ export async function deleteUserByEmail(email: string) {
 export async function verifyLogin(email: string, password: string) {
   const userWithPassword = await prisma.user.findUnique({
     where: { email },
-    include: {
-      accounts: true,
+    select: {
+      id: true,
+      accounts: {
+        select: {
+          id: true,
+        },
+      },
       password: true,
-    },
+    }
   })
 
   if (!userWithPassword?.password) {
