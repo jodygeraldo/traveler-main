@@ -14,9 +14,9 @@ export function CharacterCustomTableHeading({
   weapon,
 }: Props) {
   const talent = [
-    'Normal_Attack',
-    'Elemental_Skill',
-    'Elemental_Burst',
+    'normal_attack',
+    'elemental_skill',
+    'elemental_burst',
   ] as const
   return (
     <>
@@ -26,7 +26,9 @@ export function CharacterCustomTableHeading({
           <Tooltip key={talentName[i]} text={talentName[i]}>
             <RemixImage.Image
               src={`/image/talent/${t}_${
-                t === 'Normal_Attack' ? weapon : Utils.getImageSrc(name)
+                t === 'normal_attack'
+                  ? weapon.toLowerCase()
+                  : Utils.getImageSrc(name)
               }.png`}
               alt=""
               className="h-8 w-8 flex-shrink-0"
@@ -57,7 +59,7 @@ export function TravelerGeoCustomTableHeading({
       name: string
       talent: 'normal'
     }) {
-  const elemental = ['Elemental_Skill', 'Elemental_Burst'] as const
+  const elemental = ['elemental_skill', 'elemental_burst'] as const
   return (
     <>
       {talent === 'normal' ? 'Normal Attack' : 'Elemental'} Talent
@@ -79,7 +81,7 @@ export function TravelerGeoCustomTableHeading({
         ) : (
           <Tooltip text={talentName}>
             <RemixImage.Image
-              src={`/image/talent/Normal_Attack_Sword.png`}
+              src={`/image/talent/normal_attack_sword.png`}
               alt=""
               className="h-8 w-8 flex-shrink-0"
               width={32}

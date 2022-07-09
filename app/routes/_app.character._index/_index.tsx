@@ -4,7 +4,6 @@ import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 import * as React from 'react'
 import * as RemixImage from 'remix-image'
-import Tooltip from '~/components/Tooltip'
 import * as CharacterData from '~/data/characters'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
@@ -139,26 +138,42 @@ function HoverCard({
             <p>Ascension {character.progression?.ascension ?? 0}</p>
             <div className="flex w-full items-center gap-3">
               <span className="inline-flex items-center gap-0.5">
-                <TalentTooltipIcon
-                  talentName={(character.talent as [string, string, string])[0]}
-                  talent="Normal_Attack"
-                  weapon="Sword"
+                <RemixImage.Image
+                  src={`/image/talent/normal_attack_${character.weapon.toLowerCase()}.png`}
+                  alt={character.talent[0]}
+                  className="h-5 w-5 flex-shrink-0"
+                  width={20}
+                  height={20}
+                  responsive={[{ size: { width: 20, height: 20 } }]}
+                  dprVariants={[1, 2, 3]}
                 />
                 <span>{character.progression?.normalAttack ?? 1}</span>
               </span>
               <span className="inline-flex items-center gap-0.5">
-                <TalentTooltipIcon
-                  talentName={(character.talent as [string, string, string])[1]}
-                  talent="Elemental_Skill"
-                  name={character.name}
+                <RemixImage.Image
+                  src={`/image/talent/elemental_skill_${Utils.getImageSrc(
+                    character.name
+                  )}.png`}
+                  alt={character.talent[1]}
+                  className="h-5 w-5 flex-shrink-0"
+                  width={20}
+                  height={20}
+                  responsive={[{ size: { width: 20, height: 20 } }]}
+                  dprVariants={[1, 2, 3]}
                 />
                 <span>{character.progression?.elementalSkill ?? 1}</span>
               </span>
               <span className="inline-flex items-center gap-0.5">
-                <TalentTooltipIcon
-                  talentName={(character.talent as [string, string, string])[2]}
-                  talent="Elemental_Burst"
-                  name={character.name}
+                <RemixImage.Image
+                  src={`/image/talent/elemental_skill_${Utils.getImageSrc(
+                    character.name
+                  )}.png`}
+                  alt={character.talent[2]}
+                  className="h-5 w-5 flex-shrink-0"
+                  width={20}
+                  height={20}
+                  responsive={[{ size: { width: 20, height: 20 } }]}
+                  dprVariants={[1, 2, 3]}
                 />
                 <span>{character.progression?.elementalBurst ?? 1}</span>
               </span>
@@ -168,40 +183,5 @@ function HoverCard({
         <RadixHoverCard.Arrow className="fill-gray-3" />
       </RadixHoverCard.Content>
     </RadixHoverCard.Root>
-  )
-}
-
-function TalentTooltipIcon({
-  talentName,
-  name,
-  weapon,
-  talent,
-}:
-  | {
-      talentName: string
-      weapon?: undefined
-      name: string
-      talent: 'Elemental_Skill' | 'Elemental_Burst'
-    }
-  | {
-      talentName: string
-      weapon: string
-      name?: undefined
-      talent: 'Normal_Attack'
-    }) {
-  return (
-    <Tooltip key={talentName} text={talentName}>
-      <RemixImage.Image
-        src={`/image/talent/${talent}_${
-          talent === 'Normal_Attack' ? weapon : Utils.getImageSrc(name)
-        }.png`}
-        alt=""
-        className="h-5 w-5 flex-shrink-0"
-        width={20}
-        height={20}
-        responsive={[{ size: { width: 20, height: 20 } }]}
-        dprVariants={[1, 2, 3]}
-      />
-    </Tooltip>
   )
 }

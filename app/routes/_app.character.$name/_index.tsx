@@ -48,19 +48,16 @@ export default function CharacterLayout() {
         <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
           {name}
         </h1>
-        <div className="rounded-full bg-gray-2 p-1">
-          <RemixImage.Image
-            src={`/image/constellation/${Utils.getImageSrc(
-              name.includes('Traveler') ? 'Traveler' : name
-            )}.png`}
-            alt=""
-            className="h-8 w-8 flex-shrink-0"
-            width={32}
-            height={32}
-            responsive={[{ size: { width: 32, height: 32 } }]}
-            dprVariants={[1, 2, 3]}
-          />
-        </div>
+        {name.includes('Traveler') ? (
+          <div className="flex items-center bg-gray-2 p-1 rounded-full">
+            <ConstellationImage name="aether" />
+            <ConstellationImage name="lumine" />
+          </div>
+        ) : (
+          <div className="rounded-full bg-gray-2 p-1">
+            <ConstellationImage name={name} />
+          </div>
+        )}
       </div>
 
       <div className="mt-6 sm:mt-2 2xl:mt-5">
@@ -70,5 +67,19 @@ export default function CharacterLayout() {
         </main>
       </div>
     </div>
+  )
+}
+
+function ConstellationImage({ name }: { name: string }) {
+  return (
+    <RemixImage.Image
+      src={`/image/constellation/${Utils.getImageSrc(name)}.png`}
+      alt=""
+      className="h-8 w-8 flex-shrink-0"
+      width={32}
+      height={32}
+      responsive={[{ size: { width: 32, height: 32 } }]}
+      dprVariants={[1, 2, 3]}
+    />
   )
 }

@@ -109,7 +109,7 @@ export default function CharacterPage() {
           customAddionalFirstCellElement={CharacterCustomFirstCell({
             name: character.name,
             weapon: character.weapon,
-            talent: ['Normal_Attack', 'Elemental_Skill', 'Elemental_Burst'],
+            talent: ['normal_attack', 'elemental_skill', 'elemental_burst'],
             talentName: character.talent,
           })}
         />
@@ -153,7 +153,7 @@ export default function CharacterPage() {
         ]}
         customAddionalFirstCellElement={CharacterCustomFirstCell({
           name: character.name,
-          talent: ['Elemental_Skill', 'Elemental_Burst'],
+          talent: ['elemental_skill', 'elemental_burst'],
           talentName: [character.talent[1], character.talent[2]],
         })}
       />
