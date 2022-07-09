@@ -10,7 +10,7 @@ interface LoaderData {
   characterName: string
 }
 
-export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
+export const loader: RemixNode.LoaderFunction = async ({ params }) => {
   const { character: characterName } = params
   invariant(characterName)
 

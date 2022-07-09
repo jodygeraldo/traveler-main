@@ -50,7 +50,7 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
 
   const userCharacter = await CharacterModel.getUserCharacter({
     name: `Traveler ${parsedVision.data}`,
-    accId,
+    accountId: accId,
   })
   const traveler = CharacterData.getCharacter({
     name: 'Traveler',

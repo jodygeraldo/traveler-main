@@ -32,7 +32,7 @@ export const loader: RemixNode.LoaderFunction = async ({ params, request }) => {
   const [userCharacter, characterRequiredItems] = await Promise.all([
     CharacterModel.getUserCharacter({
       name: characterName,
-      accId,
+      accountId: accId,
     }),
     InventoryModel.getRequiredItems({
       ...material.ascension,

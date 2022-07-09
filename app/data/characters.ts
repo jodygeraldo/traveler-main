@@ -1,5 +1,6 @@
 import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
+import * as DB from '~/db.server'
 import type * as CharacterModel from '~/models/character.server'
 import type * as InventoryModel from '~/models/inventory.server'
 import * as ItemData from './items'
@@ -13,7 +14,6 @@ export interface CharacterProgression {
   elementalBurst: number
 }
 
-type Weapon = 'Sword' | 'Claymore' | 'Polearm' | 'Bow' | 'Catalyst'
 type CommonMaterial =
   | 'Slime'
   | 'Hilichurl Masks'
@@ -70,8 +70,8 @@ const commonMaterials: Record<CommonMaterial, string[]> = {
 const characters: Character[] = [
   {
     name: 'Albedo',
-    weapon: 'Sword',
-    vision: 'Geo',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.GEO,
     rarity: 5,
     talent: [
       'Normal Attack: Favonius Bladework - Weiss',
@@ -81,22 +81,22 @@ const characters: Character[] = [
   },
   {
     name: 'Aloy',
-    weapon: 'Bow',
-    vision: 'Cryo',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.CRYO,
     rarity: 5,
     talent: ['Normal Attack: Rapid Fire', 'Frozen Wilds', 'Prophecies of Dawn'],
   },
   {
     name: 'Amber',
-    weapon: 'Bow',
-    vision: 'Pyro',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.PYRO,
     rarity: 4,
     talent: ['Normal Attack: Sharpshooter', 'Explosive Puppet', 'Fiery Rain'],
   },
   {
     name: 'Arataki Itto',
-    weapon: 'Claymore',
-    vision: 'Geo',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.GEO,
     rarity: 5,
     talent: [
       'Normal Attack: Fight Club Legend',
@@ -106,8 +106,8 @@ const characters: Character[] = [
   },
   {
     name: 'Barbara',
-    weapon: 'Catalyst',
-    vision: 'Hydro',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.HYDRO,
     rarity: 4,
     talent: [
       'Normal Attack: Whisper of Water',
@@ -117,15 +117,15 @@ const characters: Character[] = [
   },
   {
     name: 'Beidou',
-    weapon: 'Claymore',
-    vision: 'Electro',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.ELECTRO,
     rarity: 4,
     talent: ['Normal Attack: Oceanborne', 'Tidecaller', 'Stormbreaker'],
   },
   {
     name: 'Bennett',
-    weapon: 'Sword',
-    vision: 'Pyro',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.PYRO,
     rarity: 4,
     talent: [
       'Normal Attack: Strike of Fortune',
@@ -135,8 +135,8 @@ const characters: Character[] = [
   },
   {
     name: 'Chongyun',
-    weapon: 'Claymore',
-    vision: 'Cryo',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.CRYO,
     rarity: 4,
     talent: [
       'Normal Attack: Demonbane',
@@ -146,22 +146,22 @@ const characters: Character[] = [
   },
   {
     name: 'Diluc',
-    weapon: 'Claymore',
-    vision: 'Pyro',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.PYRO,
     rarity: 5,
     talent: ['Normal Attack: Tempered Sword', 'Searing Onslaught', 'Dawn'],
   },
   {
     name: 'Diona',
-    weapon: 'Bow',
-    vision: 'Cryo',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.CRYO,
     rarity: 4,
     talent: ['Normal Attack: Kätzlein Style', 'Icy Paws', 'Signature Mix'],
   },
   {
     name: 'Eula',
-    weapon: 'Claymore',
-    vision: 'Cryo',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.CRYO,
     rarity: 5,
     talent: [
       'Normal Attack: Favonius Bladework - Edel',
@@ -171,8 +171,8 @@ const characters: Character[] = [
   },
   {
     name: 'Fischl',
-    weapon: 'Bow',
-    vision: 'Electro',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.ELECTRO,
     rarity: 4,
     talent: [
       'Normal Attack: Bolts of Downfall',
@@ -182,8 +182,8 @@ const characters: Character[] = [
   },
   {
     name: 'Ganyu',
-    weapon: 'Bow',
-    vision: 'Cryo',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.CRYO,
     rarity: 5,
     talent: [
       'Normal Attack: Liutian Archery',
@@ -193,8 +193,8 @@ const characters: Character[] = [
   },
   {
     name: 'Gorou',
-    weapon: 'Bow',
-    vision: 'Geo',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.GEO,
     rarity: 4,
     talent: [
       'Normal Attack: Ripping Fang Fletching',
@@ -204,8 +204,8 @@ const characters: Character[] = [
   },
   {
     name: 'Hu Tao',
-    weapon: 'Polearm',
-    vision: 'Pyro',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.PYRO,
     rarity: 5,
     talent: [
       'Normal Attack: Secret Spear of Wangsheng',
@@ -215,8 +215,8 @@ const characters: Character[] = [
   },
   {
     name: 'Jean',
-    weapon: 'Sword',
-    vision: 'Anemo',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.ANEMO,
     rarity: 5,
     talent: [
       'Normal Attack: Favonius Bladework',
@@ -226,15 +226,15 @@ const characters: Character[] = [
   },
   {
     name: 'Kaedehara Kazuha',
-    weapon: 'Sword',
-    vision: 'Anemo',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.ANEMO,
     rarity: 5,
     talent: ['Normal Attack: Garyuu Bladework', 'Chihayaburu', 'Kazuha Slash'],
   },
   {
     name: 'Kaeya',
-    weapon: 'Sword',
-    vision: 'Cryo',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.CRYO,
     rarity: 4,
     talent: [
       'Normal Attack: Ceremonial Bladework',
@@ -244,8 +244,8 @@ const characters: Character[] = [
   },
   {
     name: 'Kamisato Ayaka',
-    weapon: 'Sword',
-    vision: 'Cryo',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.CRYO,
     rarity: 5,
     talent: [
       'Normal Attack: Kamisato Art - Kabuki',
@@ -255,8 +255,8 @@ const characters: Character[] = [
   },
   {
     name: 'Kamisato Ayato',
-    weapon: 'Sword',
-    vision: 'Hydro',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.HYDRO,
     rarity: 5,
     talent: [
       'Normal Attack: Kamisato Art - Marobashi',
@@ -266,8 +266,8 @@ const characters: Character[] = [
   },
   {
     name: 'Keqing',
-    weapon: 'Sword',
-    vision: 'Electro',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.ELECTRO,
     rarity: 5,
     talent: [
       'Normal Attack: Yunlai Swordsmanship',
@@ -277,15 +277,15 @@ const characters: Character[] = [
   },
   {
     name: 'Klee',
-    weapon: 'Catalyst',
-    vision: 'Pyro',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.PYRO,
     rarity: 5,
     talent: ['Normal Attack: Kaboom!', 'Jumpy Dumpty', "Sparks 'n' Splash"],
   },
   {
     name: 'Kujou Sara',
-    weapon: 'Bow',
-    vision: 'Electro',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.ELECTRO,
     rarity: 4,
     talent: [
       'Normal Attack: Tengu Bowmanship',
@@ -295,8 +295,8 @@ const characters: Character[] = [
   },
   {
     name: 'Kuki Shinobu',
-    weapon: 'Sword',
-    vision: 'Electro',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.ELECTRO,
     rarity: 4,
     talent: [
       "Normal Attack: Shinobu's Shadowsword",
@@ -306,15 +306,15 @@ const characters: Character[] = [
   },
   {
     name: 'Lisa',
-    weapon: 'Catalyst',
-    vision: 'Electro',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.ELECTRO,
     rarity: 4,
     talent: ['Normal Attack: Lightning Touch', 'Violet Arc', 'Lightning Rose'],
   },
   {
     name: 'Mona',
-    weapon: 'Catalyst',
-    vision: 'Hydro',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.HYDRO,
     rarity: 5,
     talent: [
       'Normal Attack: Ripple of Fate',
@@ -324,15 +324,15 @@ const characters: Character[] = [
   },
   {
     name: 'Ningguang',
-    weapon: 'Catalyst',
-    vision: 'Geo',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.GEO,
     rarity: 4,
     talent: ['Normal Attack: Sparkling Scatter', 'Jade Screen', 'Starshatter'],
   },
   {
     name: 'Noelle',
-    weapon: 'Claymore',
-    vision: 'Geo',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.GEO,
     rarity: 4,
     talent: [
       'Normal Attack: Favonius Bladework - Maid',
@@ -342,8 +342,8 @@ const characters: Character[] = [
   },
   {
     name: 'Qiqi',
-    weapon: 'Sword',
-    vision: 'Cryo',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.CRYO,
     rarity: 5,
     talent: [
       'Normal Attack: Ancient Sword Art',
@@ -353,8 +353,8 @@ const characters: Character[] = [
   },
   {
     name: 'Raiden Shogun',
-    weapon: 'Polearm',
-    vision: 'Electro',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.ELECTRO,
     rarity: 5,
     talent: [
       'Normal Attack: Origin',
@@ -364,15 +364,15 @@ const characters: Character[] = [
   },
   {
     name: 'Razor',
-    weapon: 'Claymore',
-    vision: 'Electro',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.ELECTRO,
     rarity: 4,
     talent: ['Normal Attack: Steel Fang', 'Claw and Thunder', 'Lightning Fang'],
   },
   {
     name: 'Rosaria',
-    weapon: 'Polearm',
-    vision: 'Cryo',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.CRYO,
     rarity: 4,
     talent: [
       'Normal Attack: Spear of the Church',
@@ -382,8 +382,8 @@ const characters: Character[] = [
   },
   {
     name: 'Sangonomiya Kokomi',
-    weapon: 'Catalyst',
-    vision: 'Hydro',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.HYDRO,
     rarity: 5,
     talent: [
       'Normal Attack: The Shape of Water',
@@ -393,8 +393,8 @@ const characters: Character[] = [
   },
   {
     name: 'Sayu',
-    weapon: 'Claymore',
-    vision: 'Anemo',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.ANEMO,
     rarity: 4,
     talent: [
       'Normal Attack: Shuumatsuban Ninja Blade',
@@ -404,8 +404,8 @@ const characters: Character[] = [
   },
   {
     name: 'Shenhe',
-    weapon: 'Polearm',
-    vision: 'Cryo',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.CRYO,
     rarity: 5,
     talent: [
       'Normal Attack: Dawnstar Piercer',
@@ -415,8 +415,8 @@ const characters: Character[] = [
   },
   {
     name: 'Sucrose',
-    weapon: 'Catalyst',
-    vision: 'Anemo',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.ANEMO,
     rarity: 4,
     talent: [
       'Normal Attack: Wind Spirit Creation',
@@ -426,8 +426,8 @@ const characters: Character[] = [
   },
   {
     name: 'Tartaglia',
-    weapon: 'Bow',
-    vision: 'Hydro',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.HYDRO,
     rarity: 5,
     talent: [
       'Normal Attack: Cutting Torrent',
@@ -437,8 +437,8 @@ const characters: Character[] = [
   },
   {
     name: 'Thoma',
-    weapon: 'Polearm',
-    vision: 'Pyro',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.PYRO,
     rarity: 4,
     talent: [
       'Normal Attack: Swiftshatter Spear',
@@ -448,8 +448,8 @@ const characters: Character[] = [
   },
   {
     name: 'Traveler',
-    weapon: 'Sword',
-    vision: ['Anemo', 'Geo', 'Electro'],
+    weapon: DB.Weapon.SWORD,
+    vision: [DB.Vision.ANEMO, DB.Vision.GEO, DB.Vision.ELECTRO],
     rarity: 5,
     talent: {
       Anemo: {
@@ -471,8 +471,8 @@ const characters: Character[] = [
   },
   {
     name: 'Venti',
-    weapon: 'Bow',
-    vision: 'Anemo',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.ANEMO,
     rarity: 5,
     talent: [
       'Normal Attack: Divine Marksmanship',
@@ -482,15 +482,15 @@ const characters: Character[] = [
   },
   {
     name: 'Xiangling',
-    weapon: 'Polearm',
-    vision: 'Pyro',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.PYRO,
     rarity: 4,
     talent: ['Normal Attack: Dough-Fu', 'Guoba Attack', 'Pyronado'],
   },
   {
     name: 'Xiao',
-    weapon: 'Polearm',
-    vision: 'Anemo',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.ANEMO,
     rarity: 5,
     talent: [
       'Normal Attack: Whirlwind Thrust',
@@ -500,8 +500,8 @@ const characters: Character[] = [
   },
   {
     name: 'Xingqiu',
-    weapon: 'Sword',
-    vision: 'Hydro',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.HYDRO,
     rarity: 4,
     talent: [
       'Normal Attack: Guhua Style',
@@ -511,8 +511,8 @@ const characters: Character[] = [
   },
   {
     name: 'Xinyan',
-    weapon: 'Claymore',
-    vision: 'Pyro',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.PYRO,
     rarity: 4,
     talent: [
       'Normal Attack: Dance on Fire',
@@ -522,8 +522,8 @@ const characters: Character[] = [
   },
   {
     name: 'Yae Miko',
-    weapon: 'Catalyst',
-    vision: 'Electro',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.ELECTRO,
     rarity: 5,
     talent: [
       'Normal Attack: Spiritfox Sin-Eater',
@@ -533,15 +533,15 @@ const characters: Character[] = [
   },
   {
     name: 'Yanfei',
-    weapon: 'Catalyst',
-    vision: 'Pyro',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.PYRO,
     rarity: 4,
     talent: ['Normal Attack: Seal of Approval', 'Signed Edict', 'Done Deal'],
   },
   {
     name: 'Yelan',
-    weapon: 'Bow',
-    vision: 'Hydro',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.HYDRO,
     rarity: 5,
     talent: [
       'Normal Attack: Stealthy Bowshot',
@@ -551,8 +551,8 @@ const characters: Character[] = [
   },
   {
     name: 'Yoimiya',
-    weapon: 'Bow',
-    vision: 'Pyro',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.PYRO,
     rarity: 5,
     talent: [
       'Normal Attack: Firework Flare-Up',
@@ -562,8 +562,8 @@ const characters: Character[] = [
   },
   {
     name: 'Yun Jin',
-    weapon: 'Polearm',
-    vision: 'Geo',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.GEO,
     rarity: 4,
     talent: [
       'Normal Attack: Cloud-Grazing Strike',
@@ -573,8 +573,8 @@ const characters: Character[] = [
   },
   {
     name: 'Zhongli',
-    weapon: 'Polearm',
-    vision: 'Geo',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.GEO,
     rarity: 5,
     talent: [
       'Normal Attack: Rain of Stone',
@@ -586,8 +586,8 @@ const characters: Character[] = [
 
 export interface Character {
   name: string
-  weapon: Weapon
-  vision: string | string[]
+  weapon: DB.Weapon
+  vision: DB.Vision | DB.Vision[]
   rarity: 4 | 5
   talent:
     | [string, string, string]
@@ -614,34 +614,18 @@ export function getCharacters({
   userCharacters,
   travelers,
 }: {
-  userCharacters: CharacterModel.CharactersInfer
-  travelers: CharacterModel.CharactersInfer
+  userCharacters: DB.UserCharacter[]
+  travelers: DB.UserCharacter[]
 }): { characters: Character[]; travelers: Character[] } {
-  invariant(
-    userCharacters,
-    'there is no characters associated with this account'
-  )
-  invariant(travelers, 'there is no travelers associated with this account')
-
   const updatedCharacters = [...characters]
 
   userCharacters.forEach((character) => {
-    const idx = updatedCharacters.findIndex((c) => c.name === character.name)
-
-    if (idx === -1) {
-      return
-    }
-
-    updatedCharacters[idx].progression = {
-      level: character['@level'],
-      ascension: character['@ascension'],
-      normalAttack: character['@normal_attack'],
-      elementalSkill: character['@elemental_skill'],
-      elementalBurst: character['@elemental_burst'],
-    }
+    const { id, ownerId, characterName, ...progression } = character
+    const idx = updatedCharacters.findIndex((c) => c.name === characterName)
+    if (idx !== -1) updatedCharacters[idx].progression = progression
   })
 
-  const travelerVision = ['Anemo', 'Geo', 'Electro']
+  const travelerVision = [DB.Vision.ANEMO, DB.Vision.GEO, DB.Vision.ELECTRO]
 
   const travelerData = characters.find((c) => c.name === 'Traveler')
   invariant(travelerData, 'Traveler is missing from the character list')
@@ -649,7 +633,12 @@ export function getCharacters({
   const updatedTravelers: Character[] = []
 
   travelerVision.forEach((vision) => {
-    const traveler = travelers.find((t) => t.name.includes(vision))
+    const updatedVision = vision[0] + vision.toLowerCase().slice(1)
+    const traveler = travelers.find((t) =>
+      t.characterName.includes(updatedVision)
+    )
+
+    console.log(traveler)
     let talent: [string, string, string] = ['', '', '']
 
     if (!Array.isArray(travelerData.talent)) {
@@ -660,16 +649,16 @@ export function getCharacters({
 
     updatedTravelers.push({
       name: `Traveler ${vision}`,
-      weapon: 'Sword',
+      weapon: DB.Weapon.SWORD,
       vision,
       rarity: 5,
       talent,
       progression: {
-        level: traveler?.['@level'] ?? 1,
-        ascension: traveler?.['@ascension'] ?? 0,
-        normalAttack: traveler?.['@normal_attack'] ?? 1,
-        elementalSkill: traveler?.['@elemental_skill'] ?? 1,
-        elementalBurst: traveler?.['@elemental_burst'] ?? 1,
+        level: traveler?.level ?? 1,
+        ascension: traveler?.ascension ?? 0,
+        normalAttack: traveler?.normalAttack ?? 1,
+        elementalSkill: traveler?.elementalSkill ?? 1,
+        elementalBurst: traveler?.elementalBurst ?? 1,
       },
     })
   })
@@ -683,28 +672,26 @@ export function validateCharacter(name: string) {
 
 export function getCharacter({
   name,
-  characterData,
+  userCharacter,
 }: {
   name: string
-  characterData: CharacterModel.CharacterInfer
-}): CharacterMinimal | null {
+  userCharacter: DB.UserCharacter | null
+}) {
   const character = characters.find((character) => character.name === name)
-  if (!character) {
-    return null
-  }
+  invariant(character, 'Character not found')
 
   const { weapon, talent } = character
-  const updatedCharacter = characterData
+  const updatedCharacter: CharacterMinimal = userCharacter
     ? {
         name,
         weapon,
         talent,
         progression: {
-          level: characterData['@level'],
-          ascension: characterData['@ascension'],
-          normalAttack: characterData['@normal_attack'],
-          elementalSkill: characterData['@elemental_skill'],
-          elementalBurst: characterData['@elemental_burst'],
+          level: userCharacter.level,
+          ascension: userCharacter.ascension,
+          normalAttack: userCharacter.normalAttack,
+          elementalSkill: userCharacter.elementalSkill,
+          elementalBurst: userCharacter.elementalBurst,
         },
       }
     : { name, weapon, talent }

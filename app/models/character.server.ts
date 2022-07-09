@@ -11,36 +11,20 @@ export async function getUserCharacters({ accountId }: { accountId: string }) {
   })
 }
 
-// export async function getUserCharacter({
-//   name,
-//   accId,
-// }: {
-//   name: string
-//   accId: string
-// }) {
-//   const userCharacters = await e
-//     .select(e.UserCharacter, (userCharacter) => ({
-//       characters: (c) => ({
-//         name: true,
-//         '@level': true,
-//         '@ascension': true,
-//         '@normal_attack': true,
-//         '@elemental_skill': true,
-//         '@elemental_burst': true,
-//         filter: e.op(c.name, '=', name),
-//       }),
-//       filter: e.op(userCharacter.owner, '=', UserModel.getAccountById(accId)),
-//     }))
-//     .run(client)
-
-//   invariant(
-//     userCharacters,
-//     'there is no characters associated with this account'
-//   )
-//   return userCharacters.characters.length > 0
-//     ? userCharacters?.characters[0]
-//     : null
-// }
+export async function getUserCharacter({
+  name,
+  accountId,
+}: {
+  name: string
+  accountId: string
+}) {
+  return prisma.userCharacter.findFirst({
+    where: {
+      ownerId: accountId,
+      characterName: name,
+    },
+  })
+}
 
 // export async function upsertCharacter({
 //   name,

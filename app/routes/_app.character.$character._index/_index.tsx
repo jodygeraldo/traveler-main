@@ -18,24 +18,26 @@ interface LoaderData {
 }
 
 export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
-  const accId = await Session.requireAccountId(request)
+  const accountId = await Session.requireAccountId(request)
   const { character: characterName } = params
   invariant(characterName)
 
-  const userCharacter = await CharacterModel.getUserCharacter({
-    name: characterName,
-    accId,
-  })
-  const character = CharacterData.getCharacter({
-    name: characterName,
-    characterData: userCharacter,
-  })
-  if (!character) {
+  const validCharacter = CharacterData.validateCharacter(characterName)
+  if (!validCharacter) {
     throw RemixNode.json(`Character ${characterName} not found`, {
       status: 404,
       statusText: 'Page Not Found',
     })
   }
+
+  const userCharacter = await CharacterModel.getUserCharacter({
+    name: characterName,
+    accountId,
+  })
+  const character = CharacterData.getCharacter({
+    name: characterName,
+    userCharacter,
+  })
 
   const { ascensionMaterial, talentMaterial } =
     CharacterData.getRequiredMaterial({
