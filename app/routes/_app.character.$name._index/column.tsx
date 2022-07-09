@@ -1,6 +1,6 @@
-import type * as ReactTable from '@tanstack/react-table'
-import * as Icon from '~/components/Icon'
-import TableCell from '~/components/TableCell'
+import type * as ReactTable from '@tanstack/react-table';
+import * as Icon from '~/components/Icon';
+import TableCell from '~/components/TableCell';
 
 interface Ascension {
   phase: { from: number; to: number }
@@ -8,14 +8,21 @@ interface Ascension {
   common: { name: string; quantity: number }
   gem: { name: string; quantity: number }
   local: { name: string; quantity: number }
-  boss: { name: string; quantity: number }
+  boss?: { name: string; quantity: number }
 }
 
 export const ascension: ReactTable.ColumnDef<Ascension>[] = [
   {
     header: 'Phase',
     accessorKey: 'phase',
-    cell: ({ getValue }) => (
+    cell: ({
+      getValue,
+    }: {
+      getValue: () => {
+        from: number
+        to: number
+      }
+    }) => (
       <div className="flex items-center gap-1">
         <span className="tabular-nums">{getValue().from}</span>
         <span className="sr-only">To</span>
@@ -32,30 +39,50 @@ export const ascension: ReactTable.ColumnDef<Ascension>[] = [
   {
     header: 'Common',
     accessorKey: 'common',
-    cell: ({ getValue }) => (
-      <TableCell quantity={getValue().quantity} text={getValue().name} />
-    ),
+    cell: ({
+      getValue,
+    }: {
+      getValue: () => {
+        name: string
+        quantity: number
+      }
+    }) => <TableCell quantity={getValue().quantity} text={getValue().name} />,
   },
   {
     header: 'Gem',
     accessorKey: 'gem',
-    cell: ({ getValue }) => (
-      <TableCell quantity={getValue().quantity} text={getValue().name} />
-    ),
+    cell: ({
+      getValue,
+    }: {
+      getValue: () => {
+        name: string
+        quantity: number
+      }
+    }) => <TableCell quantity={getValue().quantity} text={getValue().name} />,
   },
   {
     header: 'Local Specialty',
     accessorKey: 'local',
-    cell: ({ getValue }) => (
-      <TableCell quantity={getValue().quantity} text={getValue().name} />
-    ),
+    cell: ({
+      getValue,
+    }: {
+      getValue: () => {
+        name: string
+        quantity: number
+      }
+    }) => <TableCell quantity={getValue().quantity} text={getValue().name} />,
   },
   {
     header: 'Boss',
     accessorKey: 'boss',
-    cell: ({ getValue }) => (
-      <TableCell quantity={getValue()?.quantity} text={getValue()?.name} />
-    ),
+    cell: ({
+      getValue,
+    }: {
+      getValue: () => {
+        name?: string
+        quantity?: number
+      }
+    }) => <TableCell quantity={getValue()?.quantity} text={getValue()?.name} />,
   },
 ]
 
@@ -72,7 +99,14 @@ export const talent: ReactTable.ColumnDef<Talent>[] = [
   {
     header: 'Level',
     accessorKey: 'level',
-    cell: ({ getValue }) => (
+    cell: ({
+      getValue,
+    }: {
+      getValue: () => {
+        from: number
+        to: number
+      }
+    }) => (
       <div className="flex items-center gap-1">
         <span className="tabular-nums">{getValue().from}</span>
         <span className="sr-only">To</span>
@@ -89,29 +123,49 @@ export const talent: ReactTable.ColumnDef<Talent>[] = [
   {
     header: 'Common',
     accessorKey: 'common',
-    cell: ({ getValue }) => (
-      <TableCell quantity={getValue().quantity} text={getValue().name} />
-    ),
+    cell: ({
+      getValue,
+    }: {
+      getValue: () => {
+        name: string
+        quantity: number
+      }
+    }) => <TableCell quantity={getValue().quantity} text={getValue().name} />,
   },
   {
     header: 'Book',
     accessorKey: 'book',
-    cell: ({ getValue }) => (
-      <TableCell quantity={getValue().quantity} text={getValue().name} />
-    ),
+    cell: ({
+      getValue,
+    }: {
+      getValue: () => {
+        name: string
+        quantity: number
+      }
+    }) => <TableCell quantity={getValue().quantity} text={getValue().name} />,
   },
   {
     header: 'Boss',
     accessorKey: 'boss',
-    cell: ({ getValue }) => (
-      <TableCell quantity={getValue()?.quantity} text={getValue()?.name} />
-    ),
+    cell: ({
+      getValue,
+    }: {
+      getValue: () => {
+        name?: string
+        quantity?: number
+      }
+    }) => <TableCell quantity={getValue()?.quantity} text={getValue()?.name} />,
   },
   {
     header: 'Special',
     accessorKey: 'special',
-    cell: ({ getValue }) => (
-      <TableCell quantity={getValue()?.quantity} text={getValue()?.name} />
-    ),
+    cell: ({
+      getValue,
+    }: {
+      getValue: () => {
+        name?: string
+        quantity?: number
+      }
+    }) => <TableCell quantity={getValue()?.quantity} text={getValue()?.name} />,
   },
 ]

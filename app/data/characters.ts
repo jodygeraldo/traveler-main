@@ -79,9 +79,6 @@ export interface Character {
   }
 }
 
-export interface CharacterMinimal
-  extends Omit<Character, 'vision' | 'rarity'> {}
-
 const characters: Character[] = [
   {
     name: 'Albedo',
@@ -631,26 +628,13 @@ export function getCharacter({
 }: {
   name: string
   userCharacter: DB.UserCharacter | null
-}) {
+}): Character {
   const character = characters.find((character) => character.name === name)
   invariant(character, 'Character not found')
 
-  const { weapon, talent } = character
-  const updatedCharacter: CharacterMinimal = userCharacter
-    ? {
-        name,
-        weapon,
-        talent,
-        progression: {
-          level: userCharacter.level,
-          ascension: userCharacter.ascension,
-          normalAttack: userCharacter.normalAttack,
-          elementalSkill: userCharacter.elementalSkill,
-          elementalBurst: userCharacter.elementalBurst,
-        },
-      }
-    : { name, weapon, talent }
-  return updatedCharacter
+  if (!userCharacter) return character
+  const { id, ownerId, characterName, ...progression } = userCharacter
+  return { ...character, progression }
 }
 
 interface AscensionMaterial {
@@ -671,12 +655,6 @@ interface CharacterMaterial {
   ascension: AscensionMaterial
   talent: TalentMaterial | TalentMaterial[]
 }
-
-export const validTraveler = [
-  'Traveler Anemo',
-  'Traveler Geo',
-  'Traveler Electro',
-] as const
 
 const characterMaterial: CharacterMaterial[] = [
   {
@@ -1693,43 +1671,22 @@ export function getRequiredMaterial({ name }: { name: string }) {
 
   const ascensionMaterial = getAscensionMaterial(character.ascension)
 
-  if (isTraveler) {
-    if (Array.isArray(character.talent)) {
-      return {
-        ascensionMaterial,
-        talentMaterial: {
-          normal: getTalentMaterial(character.talent[0], {
-            isTraveler,
-          }),
-          elemental: getTalentMaterial(character.talent[1], {
-            isTraveler,
-          }),
-        },
-      }
-    }
-
-    const talentMaterial = getTalentMaterial(character.talent, {
-      isTraveler,
-    })
-
+  if (Array.isArray(character.talent)) {
     return {
       ascensionMaterial,
       talentMaterial: {
-        normal: talentMaterial,
-        elemental: talentMaterial,
+        normal: getTalentMaterial(character.talent[0], {
+          isTraveler,
+        }),
+        elemental: getTalentMaterial(character.talent[1], {
+          isTraveler,
+        }),
       },
     }
   }
 
-  if (Array.isArray(character.talent)) {
-    invariant(
-      false,
-      'This is should not ever happen, you see this message because server trying to access character with difference between normal and elemental talent items requirements(only Traveler Geo) but trying to get it on other character.'
-    )
-  }
-
   const talentMaterial = getTalentMaterial(character.talent, {
-    isTraveler: false,
+    isTraveler,
   })
 
   return {

@@ -7,26 +7,26 @@ import * as CharacterData from '~/data/characters'
 import * as Utils from '~/utils'
 
 interface LoaderData {
-  characterName: string
+  name: string
 }
 
 export const loader: RemixNode.LoaderFunction = async ({ params }) => {
-  const { character: characterName } = params
-  invariant(characterName)
+  const { name } = params
+  invariant(name)
 
-  const validCharacter = CharacterData.validateCharacter(characterName)
+  const validCharacter = CharacterData.validateCharacter(name)
   if (!validCharacter) {
-    throw RemixNode.json(`Character ${characterName} not found`, {
+    throw RemixNode.json(`Character ${name} not found`, {
       status: 404,
       statusText: 'Page Not Found',
     })
   }
 
-  return RemixNode.json<LoaderData>({ characterName })
+  return RemixNode.json<LoaderData>({ name })
 }
 
 export default function CharacterLayout() {
-  const { characterName } = RemixReact.useLoaderData() as LoaderData
+  const { name } = RemixReact.useLoaderData() as LoaderData
 
   const tabs = [
     { name: 'Required Items', to: '.', active: Utils.useActiveNavigation('.') },
@@ -46,11 +46,13 @@ export default function CharacterLayout() {
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
       <div className="flex items-center gap-2">
         <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
-          {characterName}
+          {name}
         </h1>
         <div className="rounded-full bg-gray-2 p-1">
           <RemixImage.Image
-            src={`/image/constellation/${Utils.getImageSrc(characterName)}.png`}
+            src={`/image/constellation/${Utils.getImageSrc(
+              name.includes('Traveler') ? 'Traveler' : name
+            )}.png`}
             alt=""
             className="h-8 w-8 flex-shrink-0"
             width={32}
