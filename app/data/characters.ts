@@ -2,15 +2,6 @@ import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import * as DB from '~/db.server'
 
-export interface CharacterProgression {
-  name: string
-  level: number
-  ascension: number
-  normalAttack: number
-  elementalSkill: number
-  elementalBurst: number
-}
-
 type CommonMaterial =
   | 'Slime'
   | 'Hilichurl Masks'
@@ -1822,33 +1813,35 @@ function getTalentMaterial(
 }
 
 export function validateAscensionRequirement({
-  level,
-  ascension,
-  normalAttack,
-  elementalSkill,
-  elementalBurst,
-}: Omit<CharacterProgression, 'name'>) {
+  progression,
+}: Pick<Character, 'progression'>) {
   function getErrorMessage(
     on: 'level' | 'normal attack' | 'elemental skill' | 'elemental burst',
     phase: number,
-    maxLevel: number
+    maxLevel: number,
+    minLevel?: number
   ) {
+    if (minLevel)
+      return `${on} on ascension ${phase} is between ${minLevel} and ${maxLevel}`
     return `Maximum ${on} on ascension ${phase} is ${maxLevel}`
   }
 
   function parseData({
     phase,
+    minLevel,
     maxLevel,
     maxTalent,
   }: {
     phase: number
+    minLevel: number
     maxLevel: number
     maxTalent: number
   }) {
     const schema = Zod.object({
-      level: Zod.number().refine((val) => val <= maxLevel, {
-        message: getErrorMessage('level', phase, maxLevel),
+      level: Zod.number().refine((val) => val <= maxLevel && val >= minLevel, {
+        message: getErrorMessage('level', phase, maxLevel, minLevel),
       }),
+      ascension: Zod.number(),
       normalAttack: Zod.number().refine((val) => val <= maxTalent, {
         message: getErrorMessage('normal attack', phase, maxTalent),
       }),
@@ -1860,12 +1853,7 @@ export function validateAscensionRequirement({
       }),
     })
 
-    return schema.safeParse({
-      level,
-      normalAttack,
-      elementalSkill,
-      elementalBurst,
-    })
+    return schema.safeParse(progression)
   }
 
   function narrowErrors(errors: Zod.ZodIssue[]): { [key: string]: string } {
@@ -1877,10 +1865,11 @@ export function validateAscensionRequirement({
     )
   }
 
-  switch (ascension) {
+  switch (progression?.ascension ?? 0) {
     case 0: {
       const parsedData = parseData({
-        phase: ascension,
+        phase: 0,
+        minLevel: 1,
         maxLevel: 20,
         maxTalent: 1,
       })
@@ -1889,7 +1878,8 @@ export function validateAscensionRequirement({
     }
     case 1: {
       const parsedData = parseData({
-        phase: ascension,
+        phase: 1,
+        minLevel: 20,
         maxLevel: 40,
         maxTalent: 1,
       })
@@ -1898,7 +1888,8 @@ export function validateAscensionRequirement({
     }
     case 2: {
       const parsedData = parseData({
-        phase: ascension,
+        phase: 2,
+        minLevel: 40,
         maxLevel: 50,
         maxTalent: 2,
       })
@@ -1907,7 +1898,8 @@ export function validateAscensionRequirement({
     }
     case 3: {
       const parsedData = parseData({
-        phase: ascension,
+        phase: 3,
+        minLevel: 50,
         maxLevel: 60,
         maxTalent: 4,
       })
@@ -1916,7 +1908,8 @@ export function validateAscensionRequirement({
     }
     case 4: {
       const parsedData = parseData({
-        phase: ascension,
+        phase: 4,
+        minLevel: 60,
         maxLevel: 70,
         maxTalent: 6,
       })
@@ -1925,7 +1918,8 @@ export function validateAscensionRequirement({
     }
     case 5: {
       const parsedData = parseData({
-        phase: ascension,
+        phase: 5,
+        minLevel: 70,
         maxLevel: 80,
         maxTalent: 8,
       })
@@ -1933,6 +1927,13 @@ export function validateAscensionRequirement({
       return
     }
     case 6:
+      const parsedData = parseData({
+        phase: 6,
+        minLevel: 80,
+        maxLevel: 90,
+        maxTalent: 10,
+      })
+      if (!parsedData.success) return narrowErrors(parsedData.error.issues)
       return
     default:
       invariant(false, 'IMPOSSIBLE')

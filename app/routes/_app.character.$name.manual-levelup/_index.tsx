@@ -22,9 +22,9 @@ interface ActionData {
 }
 
 export const action: RemixNode.ActionFunction = async ({ request, params }) => {
-  const accId = await Session.requireAccountId(request)
-  const { character: characterName } = params
-  invariant(characterName)
+  const accountId = await Session.requireAccountId(request)
+  const { name } = params
+  invariant(name)
 
   const result = await RemixParamsHelper.getFormData(request, ParamsSchema)
   if (!result.success) {
@@ -34,9 +34,10 @@ export const action: RemixNode.ActionFunction = async ({ request, params }) => {
     )
   }
 
-  const errors = CharacterData.validateAscensionRequirement(result.data)
+  const errors = CharacterData.validateAscensionRequirement({
+    progression: result.data,
+  })
   if (errors) {
-    console.log(errors)
     return RemixNode.json<ActionData>(
       { success: false, errors },
       { status: 400 }
@@ -44,41 +45,37 @@ export const action: RemixNode.ActionFunction = async ({ request, params }) => {
   }
 
   await CharacterModel.upsertCharacter({
-    name: characterName,
+    name,
     progression: result.data,
-    accId,
+    accountId,
   })
   return RemixNode.json<ActionData>({ success: true })
 }
 
 interface LoaderData {
-  characterData: CharacterData.CharacterProgression
+  character: CharacterData.Character
 }
 
 export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
   const accId = await Session.requireAccountId(request)
-  const { character: characterName } = params
-  invariant(characterName)
+  const { name } = params
+  invariant(name)
 
   const userCharacter = await CharacterModel.getUserCharacter({
-    name: characterName,
+    name,
     accountId: accId,
   })
 
-  const characterData: CharacterData.CharacterProgression = {
-    name: characterName,
-    level: userCharacter?.['@level'] ?? 1,
-    ascension: userCharacter?.['@ascension'] ?? 0,
-    normalAttack: userCharacter?.['@normal_attack'] ?? 1,
-    elementalSkill: userCharacter?.['@elemental_skill'] ?? 1,
-    elementalBurst: userCharacter?.['@elemental_burst'] ?? 1,
-  }
+  const character = CharacterData.getCharacter({
+    name,
+    userCharacter,
+  })
 
-  return RemixNode.json<LoaderData>({ characterData })
+  return RemixNode.json<LoaderData>({ character })
 }
 
 export default function CharacterManualLevelupPage() {
-  const { characterData } = RemixReact.useLoaderData() as LoaderData
+  const { character } = RemixReact.useLoaderData() as LoaderData
   const actionData = RemixReact.useActionData<ActionData>()
   const inputProps = RemixParamsHelper.useFormInputProps(ParamsSchema)
 
@@ -86,7 +83,7 @@ export default function CharacterManualLevelupPage() {
     <ManualLevelForm
       inputProps={inputProps}
       errors={actionData?.errors}
-      defaultValues={characterData}
+      progression={character.progression}
       submitSuccess={actionData?.success}
     />
   )

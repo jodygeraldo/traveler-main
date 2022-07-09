@@ -26,105 +26,110 @@ export async function getUserCharacter({
   })
 }
 
-// export async function upsertCharacter({
-//   name,
-//   progression,
-//   accId,
-//   otherTravelers,
-// }: {
-//   name: string
-//   progression: {
-//     level: number
-//     ascension: number
-//     normalAttack: number
-//     elementalSkill: number
-//     elementalBurst: number
-//   }
-//   accId: string
-//   otherTravelers?: {
-//     name: string
-//     level: number
-//     ascension: number
-//     normalAttack: number
-//     elementalSkill: number
-//     elementalBurst: number
-//   }[]
-// }) {
-//   if (otherTravelers) {
-//     const travelerToUpsert = [
-//       {
-//         name,
-//         level: progression.level,
-//         ascension: progression.ascension,
-//         normal_attack: progression.normalAttack,
-//         elemental_skill: progression.elementalSkill,
-//         elemental_burst: progression.elementalBurst,
-//       },
-//     ]
+export async function upsertCharacter({
+  name,
+  progression,
+  accountId,
+}: {
+  name: string
+  progression: {
+    level: number
+    ascension: number
+    normalAttack: number
+    elementalSkill: number
+    elementalBurst: number
+  }
+  accountId: string
+}) {
+  if (name.includes('Traveler')) {
+    return await prisma.$transaction(async (tx) => {
+      const characters = await tx.userCharacter.findMany({
+        where: {
+          ownerId: accountId,
+          characterName: {
+            contains: 'Traveler',
+          },
+        },
+      })
 
-//     const travelersToUpsert = otherTravelers
-//       .map((traveler) => ({
-//         name: traveler.name,
-//         level: progression.level,
-//         ascension: progression.ascension,
-//         normal_attack: traveler.normalAttack,
-//         elemental_skill: traveler.elementalSkill,
-//         elemental_burst: traveler.elementalBurst,
-//       }))
-//       .concat(travelerToUpsert)
+      let names = ['Traveler Geo', 'Traveler Electro']
+      if (name.includes('Geo')) names[0] = 'Traveler Anemo'
+      if (name.includes('Electro')) names[1] = 'Traveler Geo'
 
-//     const charactersToUpsert = e.json(travelersToUpsert)
+      if (characters.length === 0) {
+        const defaultTalent = {
+          normalAttack: 1,
+          elementalSkill: 1,
+          elementalBurst: 1,
+        }
 
-//     await e
-//       .update(e.UserCharacter, (userCharacter) => ({
-//         filter: e.op(userCharacter.owner, '=', UserModel.getAccountById(accId)),
-//         set: {
-//           characters: {
-//             '+=': e.op(
-//               'distinct',
-//               e.for(e.json_array_unpack(charactersToUpsert), (character) =>
-//                 e.select(e.Character, (c) => ({
-//                   filter: e.op(c.name, '=', e.cast(e.str, character.name)),
-//                   '@level': e.cast(e.int16, character.level),
-//                   '@ascension': e.cast(e.int16, character.ascension),
-//                   '@normal_attack': e.cast(e.int16, character.normal_attack),
-//                   '@elemental_skill': e.cast(
-//                     e.int16,
-//                     character.elemental_skill
-//                   ),
-//                   '@elemental_burst': e.cast(
-//                     e.int16,
-//                     character.elemental_burst
-//                   ),
-//                 }))
-//               )
-//             ),
-//           },
-//         },
-//       }))
-//       .run(client)
+        await tx.userCharacter.createMany({
+          data: [
+            {
+              ownerId: accountId,
+              characterName: name,
+              ...progression,
+            },
+            {
+              ownerId: accountId,
+              characterName: names[0],
+              ...progression,
+              ...defaultTalent,
+            },
+            {
+              ownerId: accountId,
+              characterName: names[1],
+              ...progression,
+              ...defaultTalent,
+            },
+          ],
+        })
+      } else {
+        await tx.userCharacter.update({
+          where: { id: characters.find((c) => c.characterName === name)!.id },
+          data: { ...progression },
+        })
 
-//     return
-//   }
+        await tx.userCharacter.updateMany({
+          where: {
+            ownerId: accountId,
+            characterName: {
+              contains: 'Traveler',
+            },
+          },
+          data: {
+            level: progression.level,
+            ascension: progression.ascension,
+          },
+        })
+      }
+    })
+  }
 
-//   const itemToUpsert = e.select(e.Character, (c) => ({
-//     '@level': e.int16(progression.level),
-//     '@ascension': e.int16(progression.ascension),
-//     '@normal_attack': e.int16(progression.normalAttack),
-//     '@elemental_skill': e.int16(progression.elementalSkill),
-//     '@elemental_burst': e.int16(progression.elementalBurst),
-//     filter: e.op(c.name, '=', name),
-//   }))
+  await prisma.$transaction(async (tx) => {
+    const character = await tx.userCharacter.findFirst({
+      where: {
+        ownerId: accountId,
+        characterName: name,
+      },
+    })
 
-//   await e
-//     .update(e.UserCharacter, (userCharacter) => ({
-//       filter: e.op(userCharacter.owner, '=', UserModel.getAccountById(accId)),
-//       set: {
-//         characters: { '+=': itemToUpsert },
-//       },
-//     }))
-//     .run(client)
-// }
+    if (character) {
+      await tx.userCharacter.update({
+        where: { id: character.id },
+        data: { ...progression },
+      })
+    } else {
+      await tx.userCharacter.create({
+        data: {
+          ownerId: accountId,
+          characterName: name,
+          ...progression,
+        },
+      })
+    }
+  })
+}
 
 // export interface AscensionItem {
 //   name: string
