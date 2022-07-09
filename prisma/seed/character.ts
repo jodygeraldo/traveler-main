@@ -1,10 +1,9 @@
 import * as Prisma from '@prisma/client'
 
 export async function seed(prisma: Prisma.PrismaClient) {
-  await prisma.character.deleteMany()
-
   return prisma.character.createMany({
     data: characters,
+    skipDuplicates: true,
   })
 }
 
