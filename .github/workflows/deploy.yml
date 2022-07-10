@@ -189,19 +189,11 @@ jobs:
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
 
-      - name: ⬇️ Checkout repo
-        uses: actions/checkout@v3
-
-      - name: 👀 Read app name
-        uses: SebRollen/toml-action@v1.0.0
-        id: app_name
-        with:
-          file: 'fly.toml'
-          field: 'app'
-
       - name: 🚀 Deploy Staging
         if: ${{ github.ref == 'refs/heads/dev' }}
         steps: 
+          - name: ⬇️ Checkout repo
+            uses: actions/checkout@v3
           - name: setup flyctl
             uses: superfly/flyctl-actions/setup-flyctl@master
           - name: Deploy staging
