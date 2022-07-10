@@ -49,13 +49,20 @@ export async function upsertCharacter({
   name: string
   progression: {
     level: number
-    ascension: number
-    normalAttack: number
-    elementalSkill: number
-    elementalBurst: number
+    ascension?: number
+    normalAttack?: number
+    elementalSkill?: number
+    elementalBurst?: number
   }
   accountId: string
 }) {
+  const defaultProgression = {
+    ascension: 0,
+    normalAttack: 1,
+    elementalSkill: 1,
+    elementalBurst: 1,
+  }
+
   if (name.includes('Traveler')) {
     return await prisma.$transaction(async (tx) => {
       const characters = await tx.userCharacter.findMany({
@@ -72,30 +79,25 @@ export async function upsertCharacter({
       if (name.includes('Electro')) names[1] = 'Traveler Geo'
 
       if (characters.length === 0) {
-        const defaultTalent = {
-          normalAttack: 1,
-          elementalSkill: 1,
-          elementalBurst: 1,
-        }
-
         await tx.userCharacter.createMany({
           data: [
             {
               ownerId: accountId,
               characterName: name,
+              ...defaultProgression,
               ...progression,
             },
             {
               ownerId: accountId,
               characterName: names[0],
               ...progression,
-              ...defaultTalent,
+              ...defaultProgression,
             },
             {
               ownerId: accountId,
               characterName: names[1],
               ...progression,
-              ...defaultTalent,
+              ...defaultProgression,
             },
           ],
         })
@@ -139,6 +141,7 @@ export async function upsertCharacter({
         data: {
           ownerId: accountId,
           characterName: name,
+          ...defaultProgression,
           ...progression,
         },
       })
