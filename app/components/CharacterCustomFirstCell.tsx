@@ -6,7 +6,7 @@ interface Props {
   talentName: string[]
   name: string
   weapon?: string
-  talent: ('Normal_Attack' | 'Elemental_Skill' | 'Elemental_Burst')[]
+  talent: ('normal_attack' | 'elemental_skill' | 'elemental_burst')[]
 }
 
 export default function CharacterCustomFirstCell({
@@ -19,7 +19,9 @@ export default function CharacterCustomFirstCell({
     <Tooltip key={talentName[idx]} text={talentName[idx]}>
       <RemixImage.Image
         src={`/image/talent/${type}_${
-          type === 'Normal_Attack' ? weapon : Utils.getImageSrc(name)
+          type === 'normal_attack'
+            ? weapon?.toLowerCase()
+            : Utils.getImageSrc(name)
         }.png`}
         alt=""
         className="h-6 w-6 flex-shrink-0"

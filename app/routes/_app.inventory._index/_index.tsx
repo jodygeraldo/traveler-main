@@ -11,8 +11,8 @@ interface LoaderData {
   items: ReturnType<typeof ItemData.getAllItems>
 }
 export const loader: RemixNode.LoaderFunction = async ({ request }) => {
-  const accId = await Session.requireAccountId(request)
-  const inventory = await InventoryModel.getInventory({ accId })
+  const accountId = await Session.requireAccountId(request)
+  const inventory = await InventoryModel.getInventory({ accountId })
   const items = ItemData.getAllItems(inventory)
 
   return RemixNode.json<LoaderData>({ items })
@@ -29,47 +29,47 @@ export default function InventoryPage() {
 
       <div>
         <h2 className="text-lg font-medium leading-6 text-gray-12">Common</h2>
-        <ItemList items={items.common} category="common" />
+        <ItemList items={items.common} />
       </div>
 
       <div>
         <h2 className="text-lg font-medium leading-6 text-gray-12">
           Ascension Gem
         </h2>
-        <ItemList items={items.ascensionGem} category="ascension_gem" />
+        <ItemList items={items.ascensionGem} />
       </div>
 
       <div>
         <h2 className="text-lg font-medium leading-6 text-gray-12">
           Ascension Boss
         </h2>
-        <ItemList items={items.ascensionBoss} category="ascension_boss" />
+        <ItemList items={items.ascensionBoss} />
       </div>
 
       <div>
         <h2 className="text-lg font-medium leading-6 text-gray-12">
           Local Specialty
         </h2>
-        <ItemList items={items.localSpecialty} category="local_specialty" />
+        <ItemList items={items.localSpecialty} />
       </div>
 
       <div>
         <h2 className="text-lg font-medium leading-6 text-gray-12">
           Talent Book
         </h2>
-        <ItemList items={items.talentBook} category="talent_book" />
+        <ItemList items={items.talentBook} />
       </div>
 
       <div>
         <h2 className="text-lg font-medium leading-6 text-gray-12">
           Talent Boss
         </h2>
-        <ItemList items={items.talentBoss} category="talent_boss" />
+        <ItemList items={items.talentBoss} />
       </div>
 
       <div>
         <h2 className="text-lg font-medium leading-6 text-gray-12">Special</h2>
-        <ItemList items={items.special} category="special" />
+        <ItemList items={items.special} />
       </div>
     </div>
   )

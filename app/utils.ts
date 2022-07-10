@@ -1,10 +1,6 @@
 import * as RemixReact from '@remix-run/react'
 import * as React from 'react'
 
-import type * as DB from './db.server'
-
-export type depromisify<T> = T extends Promise<infer U> ? U : T
-
 const DEFAULT_REDIRECT = '/'
 
 /**
@@ -46,11 +42,27 @@ export function useMatchesData(
   return route?.data
 }
 
-function isUser(user: any): user is DB.Type.User {
+function isUser(user: any): user is {
+  id: string
+  email: string
+  accounts: {
+    id: string
+    name: string
+  }[]
+} {
   return user && typeof user === 'object' && typeof user.email === 'string'
 }
 
-export function useOptionalUser(): DB.Type.User | undefined {
+export function useOptionalUser():
+  | {
+      id: string
+      email: string
+      accounts: {
+        id: string
+        name: string
+      }[]
+    }
+  | undefined {
   const data = useMatchesData('root')
   if (!data || !isUser(data.user)) {
     return undefined
@@ -58,7 +70,14 @@ export function useOptionalUser(): DB.Type.User | undefined {
   return data.user
 }
 
-export function useUser(): DB.Type.User {
+export function useUser(): {
+  id: string
+  email: string
+  accounts: {
+    id: string
+    name: string
+  }[]
+} {
   const maybeUser = useOptionalUser()
   if (!maybeUser) {
     throw new Error(
@@ -78,11 +97,7 @@ export function validateEmail(email: unknown): email is string {
 }
 
 export function getImageSrc(str: string): string {
-  return str
-    .toLowerCase()
-    .replace(/ /g, ' ')
-    .replace(/\b\w/g, (x) => x.toUpperCase())
-    .replace(/ /g, '_')
+  return str.toLowerCase().replace(/ /g, '_')
 }
 
 export function toSnakeCase(str: string): string {
@@ -95,7 +110,14 @@ export function toSnakeCase(str: string): string {
 }
 
 export function toCapitalized(str: string): string {
-  return str.replace(/_/g, ' ').replace(/\b\w/g, (x) => x.toUpperCase())
+  return str
+    .toLowerCase()
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (x) => x.toUpperCase())
+}
+
+export function toConstCase(str: string): string {
+  return str.replace(/-/g, '_').toUpperCase()
 }
 
 export function splitPerCapitalCase(str: string): string {

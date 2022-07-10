@@ -1,397 +1,377 @@
-import invariant from 'tiny-invariant'
-import type * as DB from '~/db.server'
-import type * as InventoryModel from '~/models/inventory.server'
+import * as DB from '~/db.server'
 
-export interface Item {
+export interface ItemWithQuantity {
   name: string
+  type: DB.ItemType
   rarity: 1 | 2 | 3 | 4 | 5
-  quantity?: number | null
+  quantity?: number
 }
 
-const special: Item[] = [
-  { name: 'Crown of Insight', rarity: 5 },
-  { name: 'Dream Solvent', rarity: 4 },
-  { name: 'Dust of Azoth', rarity: 2 },
+const items: ItemWithQuantity[] = [
+  { name: 'Crown of Insight', type: DB.ItemType.SPECIAL, rarity: 5 },
+  { name: 'Dream Solvent', type: DB.ItemType.SPECIAL, rarity: 4 },
+  { name: 'Dust of Azoth', type: DB.ItemType.SPECIAL, rarity: 2 },
+  { name: 'Slime Concentrate', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Slime Secretions', type: DB.ItemType.COMMON, rarity: 2 },
+  { name: 'Slime Condensate', type: DB.ItemType.COMMON, rarity: 1 },
+  { name: 'Ominous Mask', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Stained Mask', type: DB.ItemType.COMMON, rarity: 2 },
+  { name: 'Damaged Mask', type: DB.ItemType.COMMON, rarity: 1 },
+  { name: 'Forbidden Curse Scroll', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Sealed Scroll', type: DB.ItemType.COMMON, rarity: 2 },
+  { name: 'Divining Scroll', type: DB.ItemType.COMMON, rarity: 1 },
+  { name: 'Weathered Arrowhead', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Sharp Arrowhead', type: DB.ItemType.COMMON, rarity: 2 },
+  { name: 'Firm Arrowhead', type: DB.ItemType.COMMON, rarity: 1 },
+  { name: 'Black Crystal Horn', type: DB.ItemType.COMMON, rarity: 4 },
+  { name: 'Black Bronze Horn', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Heavy Horn', type: DB.ItemType.COMMON, rarity: 2 },
+  { name: 'Ley Line Sprout', type: DB.ItemType.COMMON, rarity: 4 },
+  { name: 'Dead Ley Line Leaves', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Dead Ley Line Branch', type: DB.ItemType.COMMON, rarity: 2 },
+  { name: 'Chaos Core', type: DB.ItemType.COMMON, rarity: 4 },
+  { name: 'Chaos Circuit', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Chaos Device', type: DB.ItemType.COMMON, rarity: 2 },
+  { name: 'Mist Grass Wick', type: DB.ItemType.COMMON, rarity: 4 },
+  { name: 'Mist Grass', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Mist Grass Pollen', type: DB.ItemType.COMMON, rarity: 2 },
+  {
+    name: "Inspector's Sacrificial Knife",
+    type: DB.ItemType.COMMON,
+    rarity: 4,
+  },
+  { name: "Agent's Sacrificial Knife", type: DB.ItemType.COMMON, rarity: 3 },
+  { name: "Hunter's Sacrificial Knife", type: DB.ItemType.COMMON, rarity: 2 },
+  { name: "Lieutenant's Insignia", type: DB.ItemType.COMMON, rarity: 3 },
+  { name: "Sergeant's Insignia", type: DB.ItemType.COMMON, rarity: 2 },
+  { name: "Recruit's Insignia", type: DB.ItemType.COMMON, rarity: 1 },
+  { name: 'Golden Raven Insignia', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Silver Raven Insignia', type: DB.ItemType.COMMON, rarity: 2 },
+  { name: 'Treasure Hoarder Insignia', type: DB.ItemType.COMMON, rarity: 1 },
+  { name: 'Energy Nectar', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Shimmering Nectar', type: DB.ItemType.COMMON, rarity: 2 },
+  { name: 'Whopperflower Nectar', type: DB.ItemType.COMMON, rarity: 1 },
+  { name: 'Fossilized Bone Shard', type: DB.ItemType.COMMON, rarity: 4 },
+  { name: 'Sturdy Bone Shard', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Fragile Bone Shard', type: DB.ItemType.COMMON, rarity: 2 },
+  { name: 'Famed Handguard', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Kageuchi Handguard', type: DB.ItemType.COMMON, rarity: 2 },
+  { name: 'Old Handguard', type: DB.ItemType.COMMON, rarity: 1 },
+  { name: 'Chaos Oculus', type: DB.ItemType.COMMON, rarity: 4 },
+  { name: 'Chaos Axis', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Chaos Gear', type: DB.ItemType.COMMON, rarity: 2 },
+  { name: 'Polarizing Prism', type: DB.ItemType.COMMON, rarity: 4 },
+  { name: 'Crystal Prism', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Dismal Prism', type: DB.ItemType.COMMON, rarity: 2 },
+  { name: 'Spectral Nucleus', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Spectral Heart', type: DB.ItemType.COMMON, rarity: 2 },
+  { name: 'Spectral Husk', type: DB.ItemType.COMMON, rarity: 1 },
+  { name: 'Concealed Talon', type: DB.ItemType.COMMON, rarity: 4 },
+  { name: 'Concealed Unguis', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Concealed Claw', type: DB.ItemType.COMMON, rarity: 2 },
+  { name: 'Deathly Statuette', type: DB.ItemType.COMMON, rarity: 4 },
+  { name: 'Dark Statuette', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Gloomy Statuette', type: DB.ItemType.COMMON, rarity: 2 },
+  { name: 'Crystalline Cyst Dust', type: DB.ItemType.COMMON, rarity: 3 },
+  { name: 'Luminescent Pollen', type: DB.ItemType.COMMON, rarity: 2 },
+  { name: 'Fungal Spores', type: DB.ItemType.COMMON, rarity: 1 },
+  {
+    name: 'Brilliant Diamond Gemstone',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 5,
+  },
+  {
+    name: 'Brilliant Diamond Chunk',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 4,
+  },
+  {
+    name: 'Brilliant Diamond Fragment',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 3,
+  },
+  {
+    name: 'Brilliant Diamond Sliver',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 2,
+  },
+  {
+    name: 'Agnidus Agate Gemstone',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 5,
+  },
+  { name: 'Agnidus Agate Chunk', type: DB.ItemType.ASCENSION_GEM, rarity: 4 },
+  {
+    name: 'Agnidus Agate Fragment',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 3,
+  },
+  { name: 'Agnidus Agate Sliver', type: DB.ItemType.ASCENSION_GEM, rarity: 2 },
+  {
+    name: 'Varunada Lazurite Gemstone',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 5,
+  },
+  {
+    name: 'Varunada Lazurite Chunk',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 4,
+  },
+  {
+    name: 'Varunada Lazurite Fragment',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 3,
+  },
+  {
+    name: 'Varunada Lazurite Sliver',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 2,
+  },
+  {
+    name: 'Vajrada Amethyst Gemstone',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 5,
+  },
+  {
+    name: 'Vajrada Amethyst Chunk',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 4,
+  },
+  {
+    name: 'Vajrada Amethyst Fragment',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 3,
+  },
+  {
+    name: 'Vajrada Amethyst Sliver',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 2,
+  },
+  {
+    name: 'Vayuda Turquoise Gemstone',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 5,
+  },
+  {
+    name: 'Vayuda Turquoise Chunk',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 4,
+  },
+  {
+    name: 'Vayuda Turquoise Fragment',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 3,
+  },
+  {
+    name: 'Vayuda Turquoise Sliver',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 2,
+  },
+  { name: 'Shivada Jade Gemstone', type: DB.ItemType.ASCENSION_GEM, rarity: 5 },
+  { name: 'Shivada Jade Chunk', type: DB.ItemType.ASCENSION_GEM, rarity: 4 },
+  { name: 'Shivada Jade Fragment', type: DB.ItemType.ASCENSION_GEM, rarity: 3 },
+  { name: 'Shivada Jade Sliver', type: DB.ItemType.ASCENSION_GEM, rarity: 2 },
+  {
+    name: 'Prithiva Topaz Gemstone',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 5,
+  },
+  { name: 'Prithiva Topaz Chunk', type: DB.ItemType.ASCENSION_GEM, rarity: 4 },
+  {
+    name: 'Prithiva Topaz Fragment',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 3,
+  },
+  { name: 'Prithiva Topaz Sliver', type: DB.ItemType.ASCENSION_GEM, rarity: 2 },
+  { name: 'Hurricane Seed', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
+  { name: 'Lightning Prism', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
+  { name: 'Basalt Pillar', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
+  { name: 'Hoarfrost Core', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
+  { name: 'Everflame Seed', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
+  { name: 'Cleansing Heart', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
+  { name: 'Juvenile Jade', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
+  { name: 'Crystalline Bloom', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
+  { name: 'Marionette Core', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
+  { name: 'Perpetual Heart', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
+  { name: 'Smoldering Pearl', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
+  { name: 'Dew of Repudiation', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
+  { name: 'Storm Beads', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
+  { name: 'Riftborn Regalia', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
+  {
+    name: "Dragonheir's False Fin",
+    type: DB.ItemType.ASCENSION_BOSS,
+    rarity: 4,
+  },
+  { name: 'Runic Fang', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
+  { name: 'Calla Lily', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Wolfhook', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Valberry', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Cecilia', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Windwheel Aster', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Philanemo Mushroom', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Jueyun Chili', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Noctilucous Jade', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Silk Flower', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Glaze Lily', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Qingxin', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Starconch', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Violetgrass', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Small Lamp Grass', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Dandelion Seed', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Cor Lapis', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Onikabuto', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Sakura Bloom', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Crystal Marrow', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Dendrobium', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Naku Weed', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Sea Ganoderma', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Sango Pearl', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Amakumo Fruit', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Fluorescent Fungus', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
+  { name: 'Philosophies of Freedom', type: DB.ItemType.TALENT_BOOK, rarity: 4 },
+  { name: 'Guide to Freedom', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
+  { name: 'Teachings of Freedom', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
+  {
+    name: 'Philosophies of Prosperity',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 4,
+  },
+  { name: 'Guide to Prosperity', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
+  { name: 'Teachings of Prosperity', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
+  {
+    name: 'Philosophies of Transience',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 4,
+  },
+  { name: 'Guide to Transience', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
+  { name: 'Teachings of Transience', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
+  {
+    name: 'Philosophies of Elegance',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 4,
+  },
+  { name: 'Guide to Elegance', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
+  { name: 'Teachings of Elegance', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
+  {
+    name: 'Philosophies of Resistance',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 4,
+  },
+  { name: 'Guide to Resistance', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
+  { name: 'Teachings of Resistance', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
+  {
+    name: 'Philosophies of Diligence',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 4,
+  },
+  { name: 'Guide to Diligence', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
+  { name: 'Teachings of Diligence', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
+  { name: 'Philosophies of Ballad', type: DB.ItemType.TALENT_BOOK, rarity: 4 },
+  { name: 'Guide to Ballad', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
+  { name: 'Teachings of Ballad', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
+  { name: 'Philosophies of Gold', type: DB.ItemType.TALENT_BOOK, rarity: 4 },
+  { name: 'Guide to Gold', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
+  { name: 'Teachings of Gold', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
+  { name: 'Philosophies of Light', type: DB.ItemType.TALENT_BOOK, rarity: 4 },
+  { name: 'Guide to Light', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
+  { name: 'Teachings of Light', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
+  { name: "Dvalin's Plume", type: DB.ItemType.TALENT_BOSS, rarity: 5 },
+  { name: "Dvalin's Claw", type: DB.ItemType.TALENT_BOSS, rarity: 5 },
+  { name: "Dvalin's Sigh", type: DB.ItemType.TALENT_BOSS, rarity: 5 },
+  { name: 'Tail of Boreas', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
+  { name: 'Ring of Boreas', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
+  { name: 'Spirit Locket of Boreas', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
+  { name: 'Tusk of Monoceros Caeli', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
+  { name: 'Shard of a Foul Legacy', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
+  { name: 'Shadow of the Warrior', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
+  { name: "Dragon Lord's Crown", type: DB.ItemType.TALENT_BOSS, rarity: 5 },
+  { name: 'Bloodjade Branch', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
+  { name: 'Gilded Scale', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
+  { name: 'Molten Moment', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
+  { name: 'Ashen Heart', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
+  { name: 'Hellfire Butterfly', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
+  {
+    name: 'Mudra of the Malefic General',
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+  },
+  {
+    name: 'Tears of the Calamitous God',
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+  },
+  { name: 'The Meaning of Aeons', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
 ]
 
-const common: Item[] = [
-  { name: 'Slime Concentrate', rarity: 3 },
-  { name: 'Slime Secretions', rarity: 2 },
-  { name: 'Slime Condensate', rarity: 1 },
-  { name: 'Ominous Mask', rarity: 3 },
-  { name: 'Stained Mask', rarity: 2 },
-  { name: 'Damaged Mask', rarity: 1 },
-  { name: 'Forbidden Curse Scroll', rarity: 3 },
-  { name: 'Sealed Scroll', rarity: 2 },
-  { name: 'Divining Scroll', rarity: 1 },
-  { name: 'Weathered Arrowhead', rarity: 3 },
-  { name: 'Sharp Arrowhead', rarity: 2 },
-  { name: 'Firm Arrowhead', rarity: 1 },
-  { name: 'Black Crystal Horn', rarity: 4 },
-  { name: 'Black Bronze Horn', rarity: 3 },
-  { name: 'Heavy Horn', rarity: 2 },
-  { name: 'Ley Line Sprout', rarity: 4 },
-  { name: 'Dead Ley Line Leaves', rarity: 3 },
-  { name: 'Dead Ley Line Branch', rarity: 2 },
-  { name: 'Chaos Core', rarity: 4 },
-  { name: 'Chaos Circuit', rarity: 3 },
-  { name: 'Chaos Device', rarity: 2 },
-  { name: 'Mist Grass Wick', rarity: 4 },
-  { name: 'Mist Grass', rarity: 3 },
-  { name: 'Mist Grass Pollen', rarity: 2 },
-  { name: "Inspector's Sacrificial Knife", rarity: 4 },
-  { name: "Agent's Sacrificial Knife", rarity: 3 },
-  { name: "Hunter's Sacrificial Knife", rarity: 2 },
-  { name: "Lieutenant's Insignia", rarity: 3 },
-  { name: "Sergeant's Insignia", rarity: 2 },
-  { name: "Recruit's Insignia", rarity: 1 },
-  { name: 'Golden Raven Insignia', rarity: 3 },
-  { name: 'Silver Raven Insignia', rarity: 2 },
-  { name: 'Treasure Hoarder Insignia', rarity: 1 },
-  { name: 'Energy Nectar', rarity: 3 },
-  { name: 'Shimmering Nectar', rarity: 2 },
-  { name: 'Whopperflower Nectar', rarity: 1 },
-  { name: 'Fossilized Bone Shard', rarity: 4 },
-  { name: 'Sturdy Bone Shard', rarity: 3 },
-  { name: 'Fragile Bone Shard', rarity: 2 },
-  { name: 'Famed Handguard', rarity: 3 },
-  { name: 'Kageuchi Handguard', rarity: 2 },
-  { name: 'Old Handguard', rarity: 1 },
-  { name: 'Chaos Oculus', rarity: 4 },
-  { name: 'Chaos Axis', rarity: 3 },
-  { name: 'Chaos Gear', rarity: 2 },
-  { name: 'Polarizing Prism', rarity: 4 },
-  { name: 'Crystal Prism', rarity: 3 },
-  { name: 'Dismal Prism', rarity: 2 },
-  { name: 'Spectral Nucleus', rarity: 3 },
-  { name: 'Spectral Heart', rarity: 2 },
-  { name: 'Spectral Husk', rarity: 1 },
-  { name: 'Concealed Talon', rarity: 4 },
-  { name: 'Concealed Unguis', rarity: 3 },
-  { name: 'Concealed Claw', rarity: 2 },
-  { name: 'Deathly Statuette', rarity: 4 },
-  { name: 'Dark Statuette', rarity: 3 },
-  { name: 'Gloomy Statuette', rarity: 2 },
-  { name: 'Crystalline Cyst Dust', rarity: 3 },
-  { name: 'Luminescent Pollen', rarity: 2 },
-  { name: 'Fungal Spores', rarity: 1 },
-]
-
-const ascensionGem: Item[] = [
-  { name: 'Brilliant Diamond Gemstone', rarity: 5 },
-  { name: 'Brilliant Diamond Chunk', rarity: 4 },
-  { name: 'Brilliant Diamond Fragment', rarity: 3 },
-  { name: 'Brilliant Diamond Sliver', rarity: 2 },
-  { name: 'Agnidus Agate Gemstone', rarity: 5 },
-  { name: 'Agnidus Agate Chunk', rarity: 4 },
-  { name: 'Agnidus Agate Fragment', rarity: 3 },
-  { name: 'Agnidus Agate Sliver', rarity: 2 },
-  { name: 'Varunada Lazurite Gemstone', rarity: 5 },
-  { name: 'Varunada Lazurite Chunk', rarity: 4 },
-  { name: 'Varunada Lazurite Fragment', rarity: 3 },
-  { name: 'Varunada Lazurite Sliver', rarity: 2 },
-  { name: 'Vajrada Amethyst Gemstone', rarity: 5 },
-  { name: 'Vajrada Amethyst Chunk', rarity: 4 },
-  { name: 'Vajrada Amethyst Fragment', rarity: 3 },
-  { name: 'Vajrada Amethyst Sliver', rarity: 2 },
-  { name: 'Vayuda Turquoise Gemstone', rarity: 5 },
-  { name: 'Vayuda Turquoise Chunk', rarity: 4 },
-  { name: 'Vayuda Turquoise Fragment', rarity: 3 },
-  { name: 'Vayuda Turquoise Sliver', rarity: 2 },
-  { name: 'Shivada Jade Gemstone', rarity: 5 },
-  { name: 'Shivada Jade Chunk', rarity: 4 },
-  { name: 'Shivada Jade Fragment', rarity: 3 },
-  { name: 'Shivada Jade Sliver', rarity: 2 },
-  { name: 'Prithiva Topaz Gemstone', rarity: 5 },
-  { name: 'Prithiva Topaz Chunk', rarity: 4 },
-  { name: 'Prithiva Topaz Fragment', rarity: 3 },
-  { name: 'Prithiva Topaz Sliver', rarity: 2 },
-]
-
-const ascensionBoss: Item[] = [
-  { name: 'Hurricane Seed', rarity: 4 },
-  { name: 'Lightning Prism', rarity: 4 },
-  { name: 'Basalt Pillar', rarity: 4 },
-  { name: 'Hoarfrost Core', rarity: 4 },
-  { name: 'Everflame Seed', rarity: 4 },
-  { name: 'Cleansing Heart', rarity: 4 },
-  { name: 'Juvenile Jade', rarity: 4 },
-  { name: 'Crystalline Bloom', rarity: 4 },
-  { name: 'Marionette Core', rarity: 4 },
-  { name: 'Perpetual Heart', rarity: 4 },
-  { name: 'Smoldering Pearl', rarity: 4 },
-  { name: 'Dew of Repudiation', rarity: 4 },
-  { name: 'Storm Beads', rarity: 4 },
-  { name: 'Riftborn Regalia', rarity: 4 },
-  { name: "Dragonheir's False Fin", rarity: 4 },
-  { name: 'Runic Fang', rarity: 4 },
-]
-
-const localSpecialty: Item[] = [
-  { name: 'Calla Lily', rarity: 1 },
-  { name: 'Wolfhook', rarity: 1 },
-  { name: 'Valberry', rarity: 1 },
-  { name: 'Cecilia', rarity: 1 },
-  { name: 'Windwheel Aster', rarity: 1 },
-  { name: 'Philanemo Mushroom', rarity: 1 },
-  { name: 'Jueyun Chili', rarity: 1 },
-  { name: 'Noctilucous Jade', rarity: 1 },
-  { name: 'Silk Flower', rarity: 1 },
-  { name: 'Glaze Lily', rarity: 1 },
-  { name: 'Qingxin', rarity: 1 },
-  { name: 'Starconch', rarity: 1 },
-  { name: 'Violetgrass', rarity: 1 },
-  { name: 'Small Lamp Grass', rarity: 1 },
-  { name: 'Dandelion Seed', rarity: 1 },
-  { name: 'Cor Lapis', rarity: 1 },
-  { name: 'Onikabuto', rarity: 1 },
-  { name: 'Sakura Bloom', rarity: 1 },
-  { name: 'Crystal Marrow', rarity: 1 },
-  { name: 'Dendrobium', rarity: 1 },
-  { name: 'Naku Weed', rarity: 1 },
-  { name: 'Sea Ganoderma', rarity: 1 },
-  { name: 'Sango Pearl', rarity: 1 },
-  { name: 'Amakumo Fruit', rarity: 1 },
-  { name: 'Fluorescent Fungus', rarity: 1 },
-]
-
-const talentBook: Item[] = [
-  { name: 'Philosophies of Freedom', rarity: 4 },
-  { name: 'Guide to Freedom', rarity: 3 },
-  { name: 'Teachings of Freedom', rarity: 2 },
-  { name: 'Philosophies of Prosperity', rarity: 4 },
-  { name: 'Guide to Prosperity', rarity: 3 },
-  { name: 'Teachings of Prosperity', rarity: 2 },
-  { name: 'Philosophies of Transience', rarity: 4 },
-  { name: 'Guide to Transience', rarity: 3 },
-  { name: 'Teachings of Transience', rarity: 2 },
-  { name: 'Philosophies of Elegance', rarity: 4 },
-  { name: 'Guide to Elegance', rarity: 3 },
-  { name: 'Teachings of Elegance', rarity: 2 },
-  { name: 'Philosophies of Resistance', rarity: 4 },
-  { name: 'Guide to Resistance', rarity: 3 },
-  { name: 'Teachings of Resistance', rarity: 2 },
-  { name: 'Philosophies of Diligence', rarity: 4 },
-  { name: 'Guide to Diligence', rarity: 3 },
-  { name: 'Teachings of Diligence', rarity: 2 },
-  { name: 'Philosophies of Ballad', rarity: 4 },
-  { name: 'Guide to Ballad', rarity: 3 },
-  { name: 'Teachings of Ballad', rarity: 2 },
-  { name: 'Philosophies of Gold', rarity: 4 },
-  { name: 'Guide to Gold', rarity: 3 },
-  { name: 'Teachings of Gold', rarity: 2 },
-  { name: 'Philosophies of Light', rarity: 4 },
-  { name: 'Guide to Light', rarity: 3 },
-  { name: 'Teachings of Light', rarity: 2 },
-]
-
-const talentBoss: Item[] = [
-  { name: "Dvalin's Plume", rarity: 5 },
-  { name: "Dvalin's Claw", rarity: 5 },
-  { name: "Dvalin's Sigh", rarity: 5 },
-  { name: 'Tail of Boreas', rarity: 5 },
-  { name: 'Ring of Boreas', rarity: 5 },
-  { name: 'Spirit Locket of Boreas', rarity: 5 },
-  { name: 'Tusk of Monoceros Caeli', rarity: 5 },
-  { name: 'Shard of a Foul Legacy', rarity: 5 },
-  { name: 'Shadow of the Warrior', rarity: 5 },
-  { name: "Dragon Lord's Crown", rarity: 5 },
-  { name: 'Bloodjade Branch', rarity: 5 },
-  { name: 'Gilded Scale', rarity: 5 },
-  { name: 'Molten Moment', rarity: 5 },
-  { name: 'Ashen Heart', rarity: 5 },
-  { name: 'Hellfire Butterfly', rarity: 5 },
-  { name: 'Mudra of the Malefic General', rarity: 5 },
-  { name: 'Tears of the Calamitous God', rarity: 5 },
-  { name: 'The Meaning of Aeons', rarity: 5 },
-]
-
-export function getAllItems(inventory: InventoryModel.InventoryInfer) {
-  invariant(inventory, 'cannot find associated inventory for this account')
-
+export function getAllItems(
+  inventory: Pick<DB.Inventory, 'itemName' | 'quantity'>[]
+) {
   return {
-    special: getAllItemsInCategory({
-      category: 'special',
-      items: inventory.special,
+    special: getItemsByType({
+      type: DB.ItemType.SPECIAL,
+      userItems: inventory,
     }),
-    common: getAllItemsInCategory({
-      category: 'common',
-      items: inventory.common,
+    common: getItemsByType({
+      type: DB.ItemType.COMMON,
+      userItems: inventory,
     }),
-    ascensionGem: getAllItemsInCategory({
-      category: 'ascension_gem',
-      items: inventory.ascension_gem,
+    ascensionGem: getItemsByType({
+      type: DB.ItemType.ASCENSION_GEM,
+      userItems: inventory,
     }),
-    ascensionBoss: getAllItemsInCategory({
-      category: 'ascension_boss',
-      items: inventory.ascension_boss,
+    ascensionBoss: getItemsByType({
+      type: DB.ItemType.ASCENSION_BOSS,
+      userItems: inventory,
     }),
-    localSpecialty: getAllItemsInCategory({
-      category: 'local_specialty',
-      items: inventory.local_specialty,
+    localSpecialty: getItemsByType({
+      type: DB.ItemType.LOCAL_SPECIALTY,
+      userItems: inventory,
     }),
-    talentBook: getAllItemsInCategory({
-      category: 'talent_book',
-      items: inventory.talent_book,
+    talentBook: getItemsByType({
+      type: DB.ItemType.LOCAL_SPECIALTY,
+      userItems: inventory,
     }),
-    talentBoss: getAllItemsInCategory({
-      category: 'talent_boss',
-      items: inventory.talent_boss,
+    talentBoss: getItemsByType({
+      type: DB.ItemType.TALENT_BOSS,
+      userItems: inventory,
     }),
   }
 }
 
-export function getAllItemsInCategory({
-  category,
-  items,
+export function getItemsByType({
+  type,
+  userItems,
 }: {
-  category: keyof DB.Type.Inventory
-  items: {
-    name: string
-    '@quantity': number | null
-  }[]
+  type: DB.ItemType
+  userItems: Pick<DB.Inventory, 'itemName' | 'quantity'>[]
 }) {
-  function getUpdatedItems(itemsToUpdate: Item[]) {
-    return items.forEach((dbItem) => {
-      const idx = itemsToUpdate.findIndex((item) => item.name === dbItem.name)
-      itemsToUpdate[idx].quantity = dbItem['@quantity'] ?? 0
-    })
-  }
+  const result = items.filter((item) => item.type === type)
 
-  if (category === 'special') {
-    const updatedItems = special
-    getUpdatedItems(updatedItems)
-    return updatedItems
-  }
+  userItems.forEach((userItem) => {
+    const itemIndex = result.findIndex(
+      (item) => item.name === userItem.itemName
+    )
+    if (itemIndex !== -1) result[itemIndex].quantity = userItem.quantity
+  })
 
-  if (category === 'common') {
-    const updatedItems = common
-    getUpdatedItems(updatedItems)
-    return updatedItems
-  }
-
-  if (category === 'ascension_gem') {
-    const updatedItems = ascensionGem
-    getUpdatedItems(updatedItems)
-    return updatedItems
-  }
-
-  if (category === 'ascension_boss') {
-    const updatedItems = ascensionBoss
-    getUpdatedItems(updatedItems)
-    return updatedItems
-  }
-
-  if (category === 'local_specialty') {
-    const updatedItems = localSpecialty
-    getUpdatedItems(updatedItems)
-    return updatedItems
-  }
-
-  if (category === 'talent_book') {
-    const updatedItems = talentBook
-    getUpdatedItems(updatedItems)
-    return updatedItems
-  }
-
-  if (category === 'talent_boss') {
-    const updatedItems = talentBoss
-    getUpdatedItems(updatedItems)
-    return updatedItems
-  }
-
-  invariant(false, `Unknown category: ${category}`)
+  return result
 }
 
-export function getItemsInCategory({
-  category,
+export function getItemsByNames({
   names,
-  items,
+  userItems,
 }: {
-  category: keyof DB.Type.Inventory
   names: string[]
-  items: {
-    name: string
-    '@quantity': number | null
-  }[]
+  userItems: Pick<DB.Inventory, 'itemName' | 'quantity'>[]
 }) {
-  function getUpdatedItems(itemsToUpdate: Item[]) {
-    return itemsToUpdate.forEach((item, index) => {
-      const dbItemIndex = items.findIndex((dbItem) => item.name === dbItem.name)
-      if (dbItemIndex === -1) return
-      itemsToUpdate[index].quantity = items[dbItemIndex]['@quantity'] ?? 0
-    })
-  }
+  const result = items.filter((item) => names.includes(item.name))
 
-  if (category === 'special') {
-    const updatedItems = special
-      .filter((item) => names.includes(item.name))
-      .map((item) => {
-        return { ...item, quantity: 0 }
-      })
-    getUpdatedItems(updatedItems)
-    return updatedItems
-  }
+  result.forEach((item, index) => {
+    const itemIndex = userItems.findIndex(
+      (userItem) => item.name === userItem.itemName
+    )
+    if (itemIndex !== -1) result[index].quantity = userItems[itemIndex].quantity
+  })
 
-  if (category === 'common') {
-    const updatedItems = common
-      .filter((item) => names.includes(item.name))
-      .map((item) => {
-        return { ...item, quantity: 0 }
-      })
-    getUpdatedItems(updatedItems)
-    return updatedItems
-  }
-
-  if (category === 'ascension_gem') {
-    const updatedItems = ascensionGem
-      .filter((item) => names.includes(item.name))
-      .map((item) => {
-        return { ...item, quantity: 0 }
-      })
-    getUpdatedItems(updatedItems)
-    return updatedItems
-  }
-
-  if (category === 'ascension_boss') {
-    const updatedItems = ascensionBoss
-      .filter((item) => names.includes(item.name))
-      .map((item) => {
-        return { ...item, quantity: 0 }
-      })
-    getUpdatedItems(updatedItems)
-    return updatedItems
-  }
-
-  if (category === 'local_specialty') {
-    const updatedItems = localSpecialty
-      .filter((item) => names.includes(item.name))
-      .map((item) => {
-        return { ...item, quantity: 0 }
-      })
-    getUpdatedItems(updatedItems)
-    return updatedItems
-  }
-
-  if (category === 'talent_book') {
-    const updatedItems = talentBook
-      .filter((item) => names.includes(item.name))
-      .map((item) => {
-        return { ...item, quantity: 0 }
-      })
-    getUpdatedItems(updatedItems)
-    return updatedItems
-  }
-
-  if (category === 'talent_boss') {
-    const updatedItems = talentBoss
-      .filter((item) => names.includes(item.name))
-      .map((item) => {
-        return { ...item, quantity: 0 }
-      })
-    getUpdatedItems(updatedItems)
-    return updatedItems
-  }
-
-  invariant(false, `Unknown category: ${category}`)
+  return result
 }

@@ -1,19 +1,8 @@
 import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
-import type * as CharacterModel from '~/models/character.server'
-import type * as InventoryModel from '~/models/inventory.server'
-import * as ItemData from './items'
+import * as DB from '~/db.server'
+import type * as ItemData from './items'
 
-export interface CharacterProgression {
-  name: string
-  level: number
-  ascension: number
-  normalAttack: number
-  elementalSkill: number
-  elementalBurst: number
-}
-
-type Weapon = 'Sword' | 'Claymore' | 'Polearm' | 'Bow' | 'Catalyst'
 type CommonMaterial =
   | 'Slime'
   | 'Hilichurl Masks'
@@ -67,11 +56,26 @@ const commonMaterials: Record<CommonMaterial, string[]> = {
   ],
 }
 
+export interface Character {
+  name: string
+  weapon: DB.Weapon
+  vision: DB.Vision
+  rarity: 4 | 5
+  talent: [string, string, string]
+  progression?: {
+    level: number
+    ascension: number
+    normalAttack: number
+    elementalSkill: number
+    elementalBurst: number
+  }
+}
+
 const characters: Character[] = [
   {
     name: 'Albedo',
-    weapon: 'Sword',
-    vision: 'Geo',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.GEO,
     rarity: 5,
     talent: [
       'Normal Attack: Favonius Bladework - Weiss',
@@ -81,22 +85,22 @@ const characters: Character[] = [
   },
   {
     name: 'Aloy',
-    weapon: 'Bow',
-    vision: 'Cryo',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.CRYO,
     rarity: 5,
     talent: ['Normal Attack: Rapid Fire', 'Frozen Wilds', 'Prophecies of Dawn'],
   },
   {
     name: 'Amber',
-    weapon: 'Bow',
-    vision: 'Pyro',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.PYRO,
     rarity: 4,
     talent: ['Normal Attack: Sharpshooter', 'Explosive Puppet', 'Fiery Rain'],
   },
   {
     name: 'Arataki Itto',
-    weapon: 'Claymore',
-    vision: 'Geo',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.GEO,
     rarity: 5,
     talent: [
       'Normal Attack: Fight Club Legend',
@@ -106,8 +110,8 @@ const characters: Character[] = [
   },
   {
     name: 'Barbara',
-    weapon: 'Catalyst',
-    vision: 'Hydro',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.HYDRO,
     rarity: 4,
     talent: [
       'Normal Attack: Whisper of Water',
@@ -117,15 +121,15 @@ const characters: Character[] = [
   },
   {
     name: 'Beidou',
-    weapon: 'Claymore',
-    vision: 'Electro',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.ELECTRO,
     rarity: 4,
     talent: ['Normal Attack: Oceanborne', 'Tidecaller', 'Stormbreaker'],
   },
   {
     name: 'Bennett',
-    weapon: 'Sword',
-    vision: 'Pyro',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.PYRO,
     rarity: 4,
     talent: [
       'Normal Attack: Strike of Fortune',
@@ -135,8 +139,8 @@ const characters: Character[] = [
   },
   {
     name: 'Chongyun',
-    weapon: 'Claymore',
-    vision: 'Cryo',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.CRYO,
     rarity: 4,
     talent: [
       'Normal Attack: Demonbane',
@@ -146,22 +150,22 @@ const characters: Character[] = [
   },
   {
     name: 'Diluc',
-    weapon: 'Claymore',
-    vision: 'Pyro',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.PYRO,
     rarity: 5,
     talent: ['Normal Attack: Tempered Sword', 'Searing Onslaught', 'Dawn'],
   },
   {
     name: 'Diona',
-    weapon: 'Bow',
-    vision: 'Cryo',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.CRYO,
     rarity: 4,
     talent: ['Normal Attack: Kätzlein Style', 'Icy Paws', 'Signature Mix'],
   },
   {
     name: 'Eula',
-    weapon: 'Claymore',
-    vision: 'Cryo',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.CRYO,
     rarity: 5,
     talent: [
       'Normal Attack: Favonius Bladework - Edel',
@@ -171,8 +175,8 @@ const characters: Character[] = [
   },
   {
     name: 'Fischl',
-    weapon: 'Bow',
-    vision: 'Electro',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.ELECTRO,
     rarity: 4,
     talent: [
       'Normal Attack: Bolts of Downfall',
@@ -182,8 +186,8 @@ const characters: Character[] = [
   },
   {
     name: 'Ganyu',
-    weapon: 'Bow',
-    vision: 'Cryo',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.CRYO,
     rarity: 5,
     talent: [
       'Normal Attack: Liutian Archery',
@@ -193,8 +197,8 @@ const characters: Character[] = [
   },
   {
     name: 'Gorou',
-    weapon: 'Bow',
-    vision: 'Geo',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.GEO,
     rarity: 4,
     talent: [
       'Normal Attack: Ripping Fang Fletching',
@@ -204,8 +208,8 @@ const characters: Character[] = [
   },
   {
     name: 'Hu Tao',
-    weapon: 'Polearm',
-    vision: 'Pyro',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.PYRO,
     rarity: 5,
     talent: [
       'Normal Attack: Secret Spear of Wangsheng',
@@ -215,8 +219,8 @@ const characters: Character[] = [
   },
   {
     name: 'Jean',
-    weapon: 'Sword',
-    vision: 'Anemo',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.ANEMO,
     rarity: 5,
     talent: [
       'Normal Attack: Favonius Bladework',
@@ -226,15 +230,15 @@ const characters: Character[] = [
   },
   {
     name: 'Kaedehara Kazuha',
-    weapon: 'Sword',
-    vision: 'Anemo',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.ANEMO,
     rarity: 5,
     talent: ['Normal Attack: Garyuu Bladework', 'Chihayaburu', 'Kazuha Slash'],
   },
   {
     name: 'Kaeya',
-    weapon: 'Sword',
-    vision: 'Cryo',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.CRYO,
     rarity: 4,
     talent: [
       'Normal Attack: Ceremonial Bladework',
@@ -244,8 +248,8 @@ const characters: Character[] = [
   },
   {
     name: 'Kamisato Ayaka',
-    weapon: 'Sword',
-    vision: 'Cryo',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.CRYO,
     rarity: 5,
     talent: [
       'Normal Attack: Kamisato Art - Kabuki',
@@ -255,8 +259,8 @@ const characters: Character[] = [
   },
   {
     name: 'Kamisato Ayato',
-    weapon: 'Sword',
-    vision: 'Hydro',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.HYDRO,
     rarity: 5,
     talent: [
       'Normal Attack: Kamisato Art - Marobashi',
@@ -266,8 +270,8 @@ const characters: Character[] = [
   },
   {
     name: 'Keqing',
-    weapon: 'Sword',
-    vision: 'Electro',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.ELECTRO,
     rarity: 5,
     talent: [
       'Normal Attack: Yunlai Swordsmanship',
@@ -277,15 +281,15 @@ const characters: Character[] = [
   },
   {
     name: 'Klee',
-    weapon: 'Catalyst',
-    vision: 'Pyro',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.PYRO,
     rarity: 5,
     talent: ['Normal Attack: Kaboom!', 'Jumpy Dumpty', "Sparks 'n' Splash"],
   },
   {
     name: 'Kujou Sara',
-    weapon: 'Bow',
-    vision: 'Electro',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.ELECTRO,
     rarity: 4,
     talent: [
       'Normal Attack: Tengu Bowmanship',
@@ -295,8 +299,8 @@ const characters: Character[] = [
   },
   {
     name: 'Kuki Shinobu',
-    weapon: 'Sword',
-    vision: 'Electro',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.ELECTRO,
     rarity: 4,
     talent: [
       "Normal Attack: Shinobu's Shadowsword",
@@ -306,15 +310,15 @@ const characters: Character[] = [
   },
   {
     name: 'Lisa',
-    weapon: 'Catalyst',
-    vision: 'Electro',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.ELECTRO,
     rarity: 4,
     talent: ['Normal Attack: Lightning Touch', 'Violet Arc', 'Lightning Rose'],
   },
   {
     name: 'Mona',
-    weapon: 'Catalyst',
-    vision: 'Hydro',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.HYDRO,
     rarity: 5,
     talent: [
       'Normal Attack: Ripple of Fate',
@@ -324,15 +328,15 @@ const characters: Character[] = [
   },
   {
     name: 'Ningguang',
-    weapon: 'Catalyst',
-    vision: 'Geo',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.GEO,
     rarity: 4,
     talent: ['Normal Attack: Sparkling Scatter', 'Jade Screen', 'Starshatter'],
   },
   {
     name: 'Noelle',
-    weapon: 'Claymore',
-    vision: 'Geo',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.GEO,
     rarity: 4,
     talent: [
       'Normal Attack: Favonius Bladework - Maid',
@@ -342,8 +346,8 @@ const characters: Character[] = [
   },
   {
     name: 'Qiqi',
-    weapon: 'Sword',
-    vision: 'Cryo',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.CRYO,
     rarity: 5,
     talent: [
       'Normal Attack: Ancient Sword Art',
@@ -353,8 +357,8 @@ const characters: Character[] = [
   },
   {
     name: 'Raiden Shogun',
-    weapon: 'Polearm',
-    vision: 'Electro',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.ELECTRO,
     rarity: 5,
     talent: [
       'Normal Attack: Origin',
@@ -364,15 +368,15 @@ const characters: Character[] = [
   },
   {
     name: 'Razor',
-    weapon: 'Claymore',
-    vision: 'Electro',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.ELECTRO,
     rarity: 4,
     talent: ['Normal Attack: Steel Fang', 'Claw and Thunder', 'Lightning Fang'],
   },
   {
     name: 'Rosaria',
-    weapon: 'Polearm',
-    vision: 'Cryo',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.CRYO,
     rarity: 4,
     talent: [
       'Normal Attack: Spear of the Church',
@@ -382,8 +386,8 @@ const characters: Character[] = [
   },
   {
     name: 'Sangonomiya Kokomi',
-    weapon: 'Catalyst',
-    vision: 'Hydro',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.HYDRO,
     rarity: 5,
     talent: [
       'Normal Attack: The Shape of Water',
@@ -393,8 +397,8 @@ const characters: Character[] = [
   },
   {
     name: 'Sayu',
-    weapon: 'Claymore',
-    vision: 'Anemo',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.ANEMO,
     rarity: 4,
     talent: [
       'Normal Attack: Shuumatsuban Ninja Blade',
@@ -404,8 +408,8 @@ const characters: Character[] = [
   },
   {
     name: 'Shenhe',
-    weapon: 'Polearm',
-    vision: 'Cryo',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.CRYO,
     rarity: 5,
     talent: [
       'Normal Attack: Dawnstar Piercer',
@@ -415,8 +419,8 @@ const characters: Character[] = [
   },
   {
     name: 'Sucrose',
-    weapon: 'Catalyst',
-    vision: 'Anemo',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.ANEMO,
     rarity: 4,
     talent: [
       'Normal Attack: Wind Spirit Creation',
@@ -426,8 +430,8 @@ const characters: Character[] = [
   },
   {
     name: 'Tartaglia',
-    weapon: 'Bow',
-    vision: 'Hydro',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.HYDRO,
     rarity: 5,
     talent: [
       'Normal Attack: Cutting Torrent',
@@ -437,8 +441,8 @@ const characters: Character[] = [
   },
   {
     name: 'Thoma',
-    weapon: 'Polearm',
-    vision: 'Pyro',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.PYRO,
     rarity: 4,
     talent: [
       'Normal Attack: Swiftshatter Spear',
@@ -447,32 +451,42 @@ const characters: Character[] = [
     ],
   },
   {
-    name: 'Traveler',
-    weapon: 'Sword',
-    vision: ['Anemo', 'Geo', 'Electro'],
+    name: 'Traveler Anemo',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.ANEMO,
     rarity: 5,
-    talent: {
-      Anemo: {
-        normalAttack: 'Normal Attack: Foreign Thundershock',
-        elementalSkill: 'Palm Vortex',
-        elementalBurst: 'Gust Surge',
-      },
-      Geo: {
-        normalAttack: 'Normal Attack: Foreign Thundershock',
-        elementalSkill: 'Starfell Sword',
-        elementalBurst: 'Wake of Earth',
-      },
-      Electro: {
-        normalAttack: 'Normal Attack: Foreign Thundershock',
-        elementalSkill: 'Lightning Blade',
-        elementalBurst: 'Bellowing Thunder',
-      },
-    },
+    talent: [
+      'Normal Attack: Foreign Thundershock',
+      'Palm Vortex',
+      'Gust Surge',
+    ],
+  },
+  {
+    name: 'Traveler Geo',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.GEO,
+    rarity: 5,
+    talent: [
+      'Normal Attack: Foreign Thundershock',
+      'Starfell Sword',
+      'Wake of Earth',
+    ],
+  },
+  {
+    name: 'Traveler Electro',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.ELECTRO,
+    rarity: 5,
+    talent: [
+      'Normal Attack: Foreign Thundershock',
+      'Lightning Blade',
+      'Bellowing Thunder',
+    ],
   },
   {
     name: 'Venti',
-    weapon: 'Bow',
-    vision: 'Anemo',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.ANEMO,
     rarity: 5,
     talent: [
       'Normal Attack: Divine Marksmanship',
@@ -482,15 +496,15 @@ const characters: Character[] = [
   },
   {
     name: 'Xiangling',
-    weapon: 'Polearm',
-    vision: 'Pyro',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.PYRO,
     rarity: 4,
     talent: ['Normal Attack: Dough-Fu', 'Guoba Attack', 'Pyronado'],
   },
   {
     name: 'Xiao',
-    weapon: 'Polearm',
-    vision: 'Anemo',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.ANEMO,
     rarity: 5,
     talent: [
       'Normal Attack: Whirlwind Thrust',
@@ -500,8 +514,8 @@ const characters: Character[] = [
   },
   {
     name: 'Xingqiu',
-    weapon: 'Sword',
-    vision: 'Hydro',
+    weapon: DB.Weapon.SWORD,
+    vision: DB.Vision.HYDRO,
     rarity: 4,
     talent: [
       'Normal Attack: Guhua Style',
@@ -511,8 +525,8 @@ const characters: Character[] = [
   },
   {
     name: 'Xinyan',
-    weapon: 'Claymore',
-    vision: 'Pyro',
+    weapon: DB.Weapon.CLAYMORE,
+    vision: DB.Vision.PYRO,
     rarity: 4,
     talent: [
       'Normal Attack: Dance on Fire',
@@ -522,8 +536,8 @@ const characters: Character[] = [
   },
   {
     name: 'Yae Miko',
-    weapon: 'Catalyst',
-    vision: 'Electro',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.ELECTRO,
     rarity: 5,
     talent: [
       'Normal Attack: Spiritfox Sin-Eater',
@@ -533,15 +547,15 @@ const characters: Character[] = [
   },
   {
     name: 'Yanfei',
-    weapon: 'Catalyst',
-    vision: 'Pyro',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.PYRO,
     rarity: 4,
     talent: ['Normal Attack: Seal of Approval', 'Signed Edict', 'Done Deal'],
   },
   {
     name: 'Yelan',
-    weapon: 'Bow',
-    vision: 'Hydro',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.HYDRO,
     rarity: 5,
     talent: [
       'Normal Attack: Stealthy Bowshot',
@@ -551,8 +565,8 @@ const characters: Character[] = [
   },
   {
     name: 'Yoimiya',
-    weapon: 'Bow',
-    vision: 'Pyro',
+    weapon: DB.Weapon.BOW,
+    vision: DB.Vision.PYRO,
     rarity: 5,
     talent: [
       'Normal Attack: Firework Flare-Up',
@@ -562,8 +576,8 @@ const characters: Character[] = [
   },
   {
     name: 'Yun Jin',
-    weapon: 'Polearm',
-    vision: 'Geo',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.GEO,
     rarity: 4,
     talent: [
       'Normal Attack: Cloud-Grazing Strike',
@@ -573,8 +587,8 @@ const characters: Character[] = [
   },
   {
     name: 'Zhongli',
-    weapon: 'Polearm',
-    vision: 'Geo',
+    weapon: DB.Weapon.POLEARM,
+    vision: DB.Vision.GEO,
     rarity: 5,
     talent: [
       'Normal Attack: Rain of Stone',
@@ -584,97 +598,18 @@ const characters: Character[] = [
   },
 ]
 
-export interface Character {
-  name: string
-  weapon: Weapon
-  vision: string | string[]
-  rarity: 4 | 5
-  talent:
-    | [string, string, string]
-    | {
-        [key: string]: {
-          normalAttack: string
-          elementalSkill: string
-          elementalBurst: string
-        }
-      }
-  progression?: {
-    level?: number | null
-    ascension?: number | null
-    normalAttack?: number | null
-    elementalSkill?: number | null
-    elementalBurst?: number | null
-  }
-}
-
-export interface CharacterMinimal
-  extends Omit<Character, 'vision' | 'rarity'> {}
-
-export function getCharacters({
-  userCharacters,
-  travelers,
-}: {
-  userCharacters: CharacterModel.CharactersInfer
-  travelers: CharacterModel.CharactersInfer
-}): { characters: Character[]; travelers: Character[] } {
-  invariant(
-    userCharacters,
-    'there is no characters associated with this account'
-  )
-  invariant(travelers, 'there is no travelers associated with this account')
-
+export function getCharacters(
+  userCharacters: Omit<DB.UserCharacter, 'id' | 'ownerId'>[]
+) {
   const updatedCharacters = [...characters]
 
   userCharacters.forEach((character) => {
-    const idx = updatedCharacters.findIndex((c) => c.name === character.name)
-
-    if (idx === -1) {
-      return
-    }
-
-    updatedCharacters[idx].progression = {
-      level: character['@level'],
-      ascension: character['@ascension'],
-      normalAttack: character['@normal_attack'],
-      elementalSkill: character['@elemental_skill'],
-      elementalBurst: character['@elemental_burst'],
-    }
+    const { characterName, ...progression } = character
+    const idx = updatedCharacters.findIndex((c) => c.name === characterName)
+    if (idx !== -1) updatedCharacters[idx].progression = progression
   })
 
-  const travelerVision = ['Anemo', 'Geo', 'Electro']
-
-  const travelerData = characters.find((c) => c.name === 'Traveler')
-  invariant(travelerData, 'Traveler is missing from the character list')
-
-  const updatedTravelers: Character[] = []
-
-  travelerVision.forEach((vision) => {
-    const traveler = travelers.find((t) => t.name.includes(vision))
-    let talent: [string, string, string] = ['', '', '']
-
-    if (!Array.isArray(travelerData.talent)) {
-      talent[0] = travelerData.talent[vision].normalAttack
-      talent[1] = travelerData.talent[vision].elementalSkill
-      talent[2] = travelerData.talent[vision].elementalBurst
-    }
-
-    updatedTravelers.push({
-      name: `Traveler ${vision}`,
-      weapon: 'Sword',
-      vision,
-      rarity: 5,
-      talent,
-      progression: {
-        level: traveler?.['@level'] ?? 1,
-        ascension: traveler?.['@ascension'] ?? 0,
-        normalAttack: traveler?.['@normal_attack'] ?? 1,
-        elementalSkill: traveler?.['@elemental_skill'] ?? 1,
-        elementalBurst: traveler?.['@elemental_burst'] ?? 1,
-      },
-    })
-  })
-
-  return { characters: updatedCharacters, travelers: updatedTravelers }
+  return updatedCharacters
 }
 
 export function validateCharacter(name: string) {
@@ -683,32 +618,16 @@ export function validateCharacter(name: string) {
 
 export function getCharacter({
   name,
-  characterData,
+  progression,
 }: {
   name: string
-  characterData: CharacterModel.CharacterInfer
-}): CharacterMinimal | null {
+  progression: Omit<DB.UserCharacter, 'id' | 'ownerId' | 'characterName'> | null
+}) {
   const character = characters.find((character) => character.name === name)
-  if (!character) {
-    return null
-  }
+  invariant(character, 'Character not found')
 
-  const { weapon, talent } = character
-  const updatedCharacter = characterData
-    ? {
-        name,
-        weapon,
-        talent,
-        progression: {
-          level: characterData['@level'],
-          ascension: characterData['@ascension'],
-          normalAttack: characterData['@normal_attack'],
-          elementalSkill: characterData['@elemental_skill'],
-          elementalBurst: characterData['@elemental_burst'],
-        },
-      }
-    : { name, weapon, talent }
-  return updatedCharacter
+  if (!progression) return character
+  return { ...character, progression }
 }
 
 interface AscensionMaterial {
@@ -729,12 +648,6 @@ interface CharacterMaterial {
   ascension: AscensionMaterial
   talent: TalentMaterial | TalentMaterial[]
 }
-
-export const validTraveler = [
-  'Traveler Anemo',
-  'Traveler Geo',
-  'Traveler Electro',
-] as const
 
 const characterMaterial: CharacterMaterial[] = [
   {
@@ -1751,43 +1664,22 @@ export function getRequiredMaterial({ name }: { name: string }) {
 
   const ascensionMaterial = getAscensionMaterial(character.ascension)
 
-  if (isTraveler) {
-    if (Array.isArray(character.talent)) {
-      return {
-        ascensionMaterial,
-        talentMaterial: {
-          normal: getTalentMaterial(character.talent[0], {
-            isTraveler,
-          }),
-          elemental: getTalentMaterial(character.talent[1], {
-            isTraveler,
-          }),
-        },
-      }
-    }
-
-    const talentMaterial = getTalentMaterial(character.talent, {
-      isTraveler,
-    })
-
+  if (Array.isArray(character.talent)) {
     return {
       ascensionMaterial,
       talentMaterial: {
-        normal: talentMaterial,
-        elemental: talentMaterial,
+        normal: getTalentMaterial(character.talent[0], {
+          isTraveler,
+        }),
+        elemental: getTalentMaterial(character.talent[1], {
+          isTraveler,
+        }),
       },
     }
   }
 
-  if (Array.isArray(character.talent)) {
-    invariant(
-      false,
-      'This is should not ever happen, you see this message because server trying to access character with difference between normal and elemental talent items requirements(only Traveler Geo) but trying to get it on other character.'
-    )
-  }
-
   const talentMaterial = getTalentMaterial(character.talent, {
-    isTraveler: false,
+    isTraveler,
   })
 
   return {
@@ -1923,33 +1815,35 @@ function getTalentMaterial(
 }
 
 export function validateAscensionRequirement({
-  level,
-  ascension,
-  normalAttack,
-  elementalSkill,
-  elementalBurst,
-}: Omit<CharacterProgression, 'name'>) {
+  progression,
+}: Pick<Character, 'progression'>) {
   function getErrorMessage(
     on: 'level' | 'normal attack' | 'elemental skill' | 'elemental burst',
     phase: number,
-    maxLevel: number
+    maxLevel: number,
+    minLevel?: number
   ) {
+    if (minLevel)
+      return `${on} on ascension ${phase} is between ${minLevel} and ${maxLevel}`
     return `Maximum ${on} on ascension ${phase} is ${maxLevel}`
   }
 
   function parseData({
     phase,
+    minLevel,
     maxLevel,
     maxTalent,
   }: {
     phase: number
+    minLevel: number
     maxLevel: number
     maxTalent: number
   }) {
     const schema = Zod.object({
-      level: Zod.number().refine((val) => val <= maxLevel, {
-        message: getErrorMessage('level', phase, maxLevel),
+      level: Zod.number().refine((val) => val <= maxLevel && val >= minLevel, {
+        message: getErrorMessage('level', phase, maxLevel, minLevel),
       }),
+      ascension: Zod.number(),
       normalAttack: Zod.number().refine((val) => val <= maxTalent, {
         message: getErrorMessage('normal attack', phase, maxTalent),
       }),
@@ -1961,12 +1855,7 @@ export function validateAscensionRequirement({
       }),
     })
 
-    return schema.safeParse({
-      level,
-      normalAttack,
-      elementalSkill,
-      elementalBurst,
-    })
+    return schema.safeParse(progression)
   }
 
   function narrowErrors(errors: Zod.ZodIssue[]): { [key: string]: string } {
@@ -1978,10 +1867,11 @@ export function validateAscensionRequirement({
     )
   }
 
-  switch (ascension) {
+  switch (progression?.ascension ?? 0) {
     case 0: {
       const parsedData = parseData({
-        phase: ascension,
+        phase: 0,
+        minLevel: 1,
         maxLevel: 20,
         maxTalent: 1,
       })
@@ -1990,7 +1880,8 @@ export function validateAscensionRequirement({
     }
     case 1: {
       const parsedData = parseData({
-        phase: ascension,
+        phase: 1,
+        minLevel: 20,
         maxLevel: 40,
         maxTalent: 1,
       })
@@ -1999,7 +1890,8 @@ export function validateAscensionRequirement({
     }
     case 2: {
       const parsedData = parseData({
-        phase: ascension,
+        phase: 2,
+        minLevel: 40,
         maxLevel: 50,
         maxTalent: 2,
       })
@@ -2008,7 +1900,8 @@ export function validateAscensionRequirement({
     }
     case 3: {
       const parsedData = parseData({
-        phase: ascension,
+        phase: 3,
+        minLevel: 50,
         maxLevel: 60,
         maxTalent: 4,
       })
@@ -2017,7 +1910,8 @@ export function validateAscensionRequirement({
     }
     case 4: {
       const parsedData = parseData({
-        phase: ascension,
+        phase: 4,
+        minLevel: 60,
         maxLevel: 70,
         maxTalent: 6,
       })
@@ -2026,7 +1920,8 @@ export function validateAscensionRequirement({
     }
     case 5: {
       const parsedData = parseData({
-        phase: ascension,
+        phase: 5,
+        minLevel: 70,
         maxLevel: 80,
         maxTalent: 8,
       })
@@ -2034,36 +1929,22 @@ export function validateAscensionRequirement({
       return
     }
     case 6:
+      const parsedData = parseData({
+        phase: 6,
+        minLevel: 80,
+        maxLevel: 90,
+        maxTalent: 10,
+      })
+      if (!parsedData.success) return narrowErrors(parsedData.error.issues)
       return
     default:
       invariant(false, 'IMPOSSIBLE')
   }
 }
 
-interface ItemsToRetrieve {
-  ascension: {
-    baseCommon: string[]
-    ascensionGem: string[]
-    ascensionBoss: string | undefined
-    localSpecialty: string
-  }
-  talent: {
-    talentCommon: string[]
-    talentBook: string[]
-    talentBoss: string[]
-    special: string
-  }
-}
-
-export function getItemsToRetrieve({
-  name,
-}: {
-  name: string
-}): ItemsToRetrieve | undefined {
+export function getItemsToRetrieve(name: string) {
   const characterData = characterMaterial.find((c) => c.name === name)
-  if (!characterData) {
-    return
-  }
+  invariant(characterData)
 
   const { ascension, talent } = characterData
 
@@ -2076,65 +1957,31 @@ export function getItemsToRetrieve({
     ]
   }
 
-  const ascensionMaterial = {
-    baseCommon: ascension.common,
-    ascensionGem: getAscensionGems(ascension.gem),
-    ascensionBoss: ascension.boss,
-    localSpecialty: ascension.local,
-  }
-
   const talentMaterial = {
-    talentCommon: Array.isArray(talent)
+    common: Array.isArray(talent)
       ? talent.reduce((prev, cur) => [...prev, ...cur.common], [] as string[])
       : talent.common,
-    talentBook: Array.isArray(talent)
+    book: Array.isArray(talent)
       ? talent.reduce((prev, cur) => [...prev, ...cur.book], [] as string[])
       : talent.book,
-    talentBoss: Array.isArray(talent)
+    boss: Array.isArray(talent)
       ? talent.reduce((prev, cur) => [...prev, cur.boss], [] as string[])
       : [talent.boss],
-    special: 'Crown of Insight',
   }
 
-  return {
-    ascension: ascensionMaterial,
-    talent: talentMaterial,
-  }
+  return [
+    ascension.common,
+    getAscensionGems(ascension.gem),
+    ascension.local,
+    ascension.boss ?? [],
+    talentMaterial.common,
+    talentMaterial.book,
+    talentMaterial.boss,
+    'Crown of Insight',
+  ].flat()
 }
 
-export function getCharacterInventoryLevelUpData({
-  name,
-  characterData,
-  material,
-  requiredItems,
-}: {
-  name: string
-  characterData: CharacterModel.CharacterInfer
-  material: ItemsToRetrieve
-  requiredItems: InventoryModel.RequiredItemsInfer
-}) {
-  const { ascensionMaterial, talentMaterial } = getRequiredMaterial({ name })
-
-  const {
-    level: characterLevel,
-    ascension,
-    ...talent
-  }: Omit<CharacterProgression, 'name'> = characterData
-    ? {
-        level: characterData['@level'] ?? 1,
-        ascension: characterData['@ascension'] ?? 0,
-        normalAttack: characterData['@normal_attack'] ?? 1,
-        elementalSkill: characterData['@elemental_skill'] ?? 1,
-        elementalBurst: characterData['@elemental_burst'] ?? 1,
-      }
-    : {
-        level: 1,
-        ascension: 0,
-        normalAttack: 1,
-        elementalSkill: 1,
-        elementalBurst: 1,
-      }
-
+export function getUnlock(ascension: number) {
   const levelUnlocked = [
     { from: 20, to: 40 },
     { from: 40, to: 50 },
@@ -2142,7 +1989,6 @@ export function getCharacterInventoryLevelUpData({
     { from: 60, to: 70 },
     { from: 70, to: 80 },
     { from: 80, to: 90 },
-    { from: 9999, to: 9999 },
   ]
   const talentUnlocked = [
     { from: 1, to: 1 },
@@ -2151,56 +1997,197 @@ export function getCharacterInventoryLevelUpData({
     { from: 4, to: 6 },
     { from: 6, to: 8 },
     { from: 8, to: 10 },
-    { from: 9999, to: 9999 },
   ]
 
-  const unlockable = {
-    level: levelUnlocked[ascension],
-    talent: talentUnlocked[ascension],
+  return ascension === 6
+    ? undefined
+    : {
+        level: levelUnlocked[ascension],
+        talent: talentUnlocked[ascension],
+      }
+}
+
+export function checkAscend({
+  ascension = 0,
+  level = 1,
+}: {
+  ascension?: number
+  level?: number
+}) {
+  if (ascension === 0)
+    return { isAbleToAscend: level === 20, requiredLevel: 20 }
+  if (ascension === 1)
+    return { isAbleToAscend: level === 40, requiredLevel: 40 }
+  if (ascension === 2)
+    return { isAbleToAscend: level === 50, requiredLevel: 50 }
+  if (ascension === 3)
+    return { isAbleToAscend: level === 60, requiredLevel: 60 }
+  if (ascension === 4)
+    return { isAbleToAscend: level === 70, requiredLevel: 70 }
+  if (ascension === 5)
+    return { isAbleToAscend: level === 80, requiredLevel: 80 }
+  // just a placeholder
+  return { isAbleToAscend: true, requiredLevel: 90 }
+}
+
+export function getCharacterInventoryLevelUpData({
+  name,
+  progression,
+  itemNames,
+  userItems,
+}: {
+  name: string
+  progression: Omit<DB.UserCharacter, 'id' | 'ownerId' | 'characterName'> | null
+  itemNames: string[]
+  userItems: ItemData.ItemWithQuantity[]
+}) {
+  const defaultProgression = {
+    level: 1,
+    ascension: 0,
+    normalAttack: 1,
+    elementalSkill: 1,
+    elementalBurst: 1,
   }
 
-  function getCurrentMaterial({
-    ascension,
-    talent,
-    skipTalentIfHigherOrEqualThan = 0,
-  }: {
-    ascension: number
-    talent?: {
-      normalAttack: number
-      elementalSkill: number
-      elementalBurst: number
+  const { ascension, normalAttack, elementalSkill, elementalBurst } =
+    progression ? progression : defaultProgression
+
+  function isTalentGreaterThan(
+    talent: 'all' | 'normal' | 'elemental',
+    level: number
+  ) {
+    if (talent === 'all')
+      return (
+        normalAttack > level && elementalSkill > level && elementalBurst > level
+      )
+    if (talent === 'normal') return normalAttack > level
+    if (talent === 'elemental')
+      return elementalSkill > level && elementalBurst > level
+  }
+
+  const excludedAscensionItems: string[] = []
+  if (ascension > 0) excludedAscensionItems.push(itemNames[3])
+  if (ascension > 1 && name.includes('Traveler'))
+    excludedAscensionItems.push(itemNames[0])
+  if (ascension > 2) excludedAscensionItems.push(itemNames[4])
+  if (ascension > 3 && name.includes('Traveler'))
+    excludedAscensionItems.push(itemNames[1])
+  if (ascension > 4) excludedAscensionItems.push(itemNames[5])
+  if (ascension > 5) excludedAscensionItems.push(itemNames[6], itemNames[7])
+  if (ascension > 5 && name.includes('Traveler'))
+    excludedAscensionItems.push(itemNames[2])
+  if (ascension > 5 && !name.includes('Traveler'))
+    excludedAscensionItems.push(itemNames[8])
+
+  function getExcludedTalentItems() {
+    const excludedTalentItems: string[] = []
+
+    // Characters (-Traveler)
+    if (itemNames.length === 17) {
+      if (isTalentGreaterThan('all', 1))
+        excludedTalentItems.push(itemNames[9], itemNames[12])
+      if (isTalentGreaterThan('all', 5))
+        excludedTalentItems.push(itemNames[10], itemNames[13])
+      if (isTalentGreaterThan('all', 9))
+        excludedTalentItems.push(
+          itemNames[11],
+          itemNames[14],
+          itemNames[15],
+          itemNames[16]
+        )
     }
-    skipTalentIfHigherOrEqualThan?: number
-  }) {
+
+    // Travelers (-Geo vision)
+    if (itemNames.length === 22) {
+      if (isTalentGreaterThan('all', 1))
+        excludedTalentItems.push(itemNames[8], itemNames[11])
+      if (isTalentGreaterThan('all', 3)) excludedTalentItems.push(itemNames[13])
+      if (isTalentGreaterThan('all', 4)) excludedTalentItems.push(itemNames[14])
+      if (isTalentGreaterThan('all', 5))
+        excludedTalentItems.push(itemNames[9], itemNames[15])
+      if (isTalentGreaterThan('all', 7)) excludedTalentItems.push(itemNames[17])
+      if (isTalentGreaterThan('all', 8)) excludedTalentItems.push(itemNames[18])
+      if (isTalentGreaterThan('all', 9))
+        excludedTalentItems.push(
+          itemNames[10],
+          itemNames[19],
+          itemNames[20],
+          itemNames[21]
+        )
+    }
+
+    // Traveler Geo
+    if (itemNames.length === 35) {
+      if (isTalentGreaterThan('normal', 1))
+        excludedTalentItems.push(itemNames[8], itemNames[14])
+      if (isTalentGreaterThan('normal', 3))
+        excludedTalentItems.push(itemNames[16])
+      if (isTalentGreaterThan('normal', 4))
+        excludedTalentItems.push(itemNames[17])
+      if (isTalentGreaterThan('normal', 5))
+        excludedTalentItems.push(itemNames[9], itemNames[18])
+      if (isTalentGreaterThan('normal', 7))
+        excludedTalentItems.push(itemNames[20])
+      if (isTalentGreaterThan('normal', 8))
+        excludedTalentItems.push(itemNames[21])
+      if (isTalentGreaterThan('normal', 9))
+        excludedTalentItems.push(itemNames[10], itemNames[22], itemNames[32])
+      if (isTalentGreaterThan('elemental', 1))
+        excludedTalentItems.push(itemNames[11], itemNames[23])
+      if (isTalentGreaterThan('elemental', 3))
+        excludedTalentItems.push(itemNames[25])
+      if (isTalentGreaterThan('elemental', 4))
+        excludedTalentItems.push(itemNames[26])
+      if (isTalentGreaterThan('elemental', 5))
+        excludedTalentItems.push(itemNames[12], itemNames[27])
+      if (isTalentGreaterThan('elemental', 7))
+        excludedTalentItems.push(itemNames[29])
+      if (isTalentGreaterThan('elemental', 8))
+        excludedTalentItems.push(itemNames[30])
+      if (isTalentGreaterThan('elemental', 9))
+        excludedTalentItems.push(itemNames[13], itemNames[31], itemNames[33])
+      if (isTalentGreaterThan('all', 9)) excludedTalentItems.push(itemNames[34])
+    }
+
+    return excludedTalentItems
+  }
+
+  const excludedTalentItems = getExcludedTalentItems()
+
+  const excludedItems = [...excludedAscensionItems, ...excludedTalentItems]
+  const items = userItems.filter((item) => !excludedItems.includes(item.name))
+
+  const materials = getCurrentMaterial()
+  const possibleToLevel = {
+    ascension: isPossibleToLevel(materials.ascension),
+    normalAttack: isPossibleToLevel(materials.talent.normal),
+    elementalSkill: isPossibleToLevel(materials.talent.elementalSkill),
+    elementalBurst: isPossibleToLevel(materials.talent.elementalBurst),
+  }
+  const material = getCurrentItems(items)
+
+  return { items, material, possibleToLevel }
+
+  function getCurrentMaterial() {
+    const { ascensionMaterial, talentMaterial } = getRequiredMaterial({ name })
     const curAscensionMaterial = ascensionMaterial.at(ascension)
 
-    if (!talent) {
-      return {
-        ascension: curAscensionMaterial,
-        talent: {
-          normal: undefined,
-          elementalSkill: undefined,
-          elementalBurst: undefined,
-        },
-      }
-    }
-
-    const { normalAttack, elementalSkill, elementalBurst } = talent
+    const skipTalent = [0, 0, 2, 4, 6, 8, 10]
 
     const curTalentNormalMaterial =
-      normalAttack >= skipTalentIfHigherOrEqualThan
+      normalAttack >= skipTalent[ascension]
         ? undefined
         : Array.isArray(talentMaterial)
         ? talentMaterial.at(normalAttack - 1)
         : talentMaterial.normal.at(normalAttack - 1)
     const curTalentElementalSkillMaterial =
-      elementalSkill >= skipTalentIfHigherOrEqualThan
+      elementalSkill >= skipTalent[ascension]
         ? undefined
         : Array.isArray(talentMaterial)
         ? talentMaterial.at(elementalSkill - 1)
         : talentMaterial.elemental.at(elementalSkill - 1)
     const curTalentElementalBurstMaterial =
-      elementalBurst >= skipTalentIfHigherOrEqualThan
+      elementalBurst >= skipTalent[ascension]
         ? undefined
         : Array.isArray(talentMaterial)
         ? talentMaterial.at(elementalBurst - 1)
@@ -2216,113 +2203,7 @@ export function getCharacterInventoryLevelUpData({
     }
   }
 
-  function getAscensionRequiredItems(material: ItemsToRetrieve['ascension']) {
-    const common = ItemData.getItemsInCategory({
-      category: 'common',
-      names: [...material.baseCommon],
-      items: requiredItems.common,
-    })
-    const ascensionGem = ItemData.getItemsInCategory({
-      category: 'ascension_gem',
-      names: material.ascensionGem,
-      items: requiredItems.ascension_gem,
-    })
-    const ascensionBoss = ItemData.getItemsInCategory({
-      category: 'ascension_boss',
-      names: [material.ascensionBoss ?? ''],
-      items: requiredItems.ascension_boss,
-    })
-    const localSpecialty = ItemData.getItemsInCategory({
-      category: 'local_specialty',
-      names: [material.localSpecialty],
-      items: requiredItems.local_specialty,
-    })
-    return [...common, ...ascensionGem, ...ascensionBoss, ...localSpecialty]
-  }
-
-  function getTalentRequiredItems(material: ItemsToRetrieve['talent']) {
-    const common = ItemData.getItemsInCategory({
-      category: 'common',
-      names: [...material.talentCommon],
-      items: requiredItems.common,
-    })
-    const talentBook = ItemData.getItemsInCategory({
-      category: 'talent_book',
-      names: material.talentBook,
-      items: requiredItems.talent_book,
-    })
-    const talentBoss = ItemData.getItemsInCategory({
-      category: 'talent_boss',
-      names: material.talentBoss,
-      items: requiredItems.talent_boss,
-    })
-    const special = ItemData.getItemsInCategory({
-      category: 'special',
-      names: [material.special],
-      items: requiredItems.special,
-    })
-    return [...common, ...talentBook, ...talentBoss, ...special]
-  }
-
-  function isEqual({
-    value,
-    on,
-  }: {
-    value: number
-    on: 'all' | 'normal' | 'elemental'
-  }) {
-    const { normalAttack, elementalSkill, elementalBurst } = talent
-
-    let talentArray = [normalAttack, elementalSkill, elementalBurst]
-    if (on === 'normal') talentArray = [normalAttack]
-    if (on === 'elemental') talentArray = [elementalSkill, elementalBurst]
-
-    return talentArray.every((v) => v === value)
-  }
-
-  function getNumberToSlice({
-    on,
-    op,
-    value,
-    expect,
-  }: {
-    on: 'all' | 'normal' | 'elemental'
-    op: '>=' | '==='
-    value: number[]
-    expect: number[]
-  }) {
-    const { normalAttack, elementalSkill, elementalBurst } = talent
-
-    let talentArray = [normalAttack, elementalSkill, elementalBurst]
-    if (on === 'normal') talentArray = [normalAttack]
-    if (on === 'elemental') talentArray = [elementalSkill, elementalBurst]
-
-    let numberToSlice = 0
-    value.every((num, i) => {
-      const tmp = talentArray.every((v) => {
-        if (op === '>=') return v >= num
-        if (op === '===') return v === num
-        return false
-      })
-
-      if (tmp) {
-        numberToSlice = expect[i]
-        return false
-      }
-
-      return true
-    })
-
-    return numberToSlice
-  }
-
-  function isPossibleToLevel({
-    inventory,
-    material,
-  }: {
-    inventory: ReturnType<typeof getTalentRequiredItems>
-    material?: CharacterTalent | CharacterAscension
-  }) {
+  function isPossibleToLevel(material?: CharacterTalent | CharacterAscension) {
     if (!material) {
       return
     }
@@ -2347,43 +2228,39 @@ export function getCharacterInventoryLevelUpData({
     }
 
     return materials.every((material) => {
-      const tmp = inventory.find((i) => i.name === material.name)
+      const tmp = items.find((i) => i.name === material.name)
       if (!tmp) return false
-      if (tmp.quantity < material.quantity) return false
+      const tmpQuantity = tmp.quantity ?? 0
+      if (tmpQuantity < material.quantity) return false
       return true
     })
   }
 
-  const itemSchema = Zod.array(
-    Zod.object({
-      name: Zod.string(),
-      quantity: Zod.number(),
-      rarity: Zod.nativeEnum({
-        a: 1,
-        b: 2,
-        c: 3,
-        d: 4,
-        e: 5,
-      } as const),
-    })
-  ).optional()
-  type ItemSchema = Zod.infer<typeof itemSchema>
+  function getCurrentItems(items: ItemData.ItemWithQuantity[]) {
+    const itemSchema = Zod.array(
+      Zod.object({
+        name: Zod.string(),
+        type: Zod.nativeEnum(DB.ItemType),
+        quantity: Zod.number(),
+        rarity: Zod.nativeEnum({
+          a: 1,
+          b: 2,
+          c: 3,
+          d: 4,
+          e: 5,
+        } as const),
+      })
+    ).optional()
+    type ItemSchema = Zod.infer<typeof itemSchema>
 
-  function getCurrentItems(
-    currentMaterial: ReturnType<typeof getCurrentMaterial>,
-    items: {
-      quantity: number
-      name: string
-      rarity: 1 | 2 | 3 | 4 | 5
-    }[]
-  ) {
+    const material = getCurrentMaterial()
     let parsedAscensionMaterial: ItemSchema
     let parsedTalentNormalMaterial: ItemSchema
     let parsedTalentElSkillMaterial: ItemSchema
     let parsedTalentElBurstMaterial: ItemSchema
 
-    if (currentMaterial.ascension) {
-      const ascMat = currentMaterial.ascension
+    if (material.ascension) {
+      const ascMat = material.ascension
 
       let ascensionMaterial:
         | { name: string; quantity: number; rarity?: 1 | 2 | 3 | 4 | 5 }[]
@@ -2394,18 +2271,20 @@ export function getCharacterInventoryLevelUpData({
       }
 
       const tmpAscMat = ascensionMaterial?.map((item) => {
-        const tmp = items.find((i) => i.name === item.name)
+        const correspondingItem = items.find((i) => i.name === item.name)
+        invariant(correspondingItem)
         return {
           ...item,
-          rarity: tmp ? tmp.rarity : 1,
+          type: correspondingItem.type,
+          rarity: correspondingItem.rarity,
         }
       })
 
       parsedAscensionMaterial = itemSchema.parse(tmpAscMat)
     }
 
-    if (currentMaterial.talent.normal) {
-      const talNormMat = currentMaterial.talent.normal
+    if (material.talent.normal) {
+      const talNormMat = material.talent.normal
 
       let talentMaterial:
         | { name: string; quantity: number; rarity?: 1 | 2 | 3 | 4 | 5 }[]
@@ -2416,17 +2295,19 @@ export function getCharacterInventoryLevelUpData({
         talentMaterial = [...talentMaterial, talNormMat.special]
 
       const tmpTalentMat = talentMaterial?.map((item) => {
-        const tmp = items.find((i) => i.name === item.name)
+        const correspondingItem = items.find((i) => i.name === item.name)
+        invariant(correspondingItem)
         return {
           ...item,
-          rarity: tmp ? tmp.rarity : 1,
+          type: correspondingItem.type,
+          rarity: correspondingItem.rarity,
         }
       })
       parsedTalentNormalMaterial = itemSchema.parse(tmpTalentMat)
     }
 
-    if (currentMaterial.talent.elementalSkill) {
-      const talNormMat = currentMaterial.talent.elementalSkill
+    if (material.talent.elementalSkill) {
+      const talNormMat = material.talent.elementalSkill
 
       let talentMaterial:
         | { name: string; quantity: number; rarity?: 1 | 2 | 3 | 4 | 5 }[]
@@ -2437,17 +2318,19 @@ export function getCharacterInventoryLevelUpData({
         talentMaterial = [...talentMaterial, talNormMat.special]
 
       const tmpTalentMat = talentMaterial?.map((item) => {
-        const tmp = items.find((i) => i.name === item.name)
+        const correspondingItem = items.find((i) => i.name === item.name)
+        invariant(correspondingItem)
         return {
           ...item,
-          rarity: tmp ? tmp.rarity : 1,
+          type: correspondingItem.type,
+          rarity: correspondingItem.rarity,
         }
       })
       parsedTalentElSkillMaterial = itemSchema.parse(tmpTalentMat)
     }
 
-    if (currentMaterial.talent.elementalBurst) {
-      const talMat = currentMaterial.talent.elementalBurst
+    if (material.talent.elementalBurst) {
+      const talMat = material.talent.elementalBurst
 
       let talentMaterial:
         | { name: string; quantity: number; rarity?: 1 | 2 | 3 | 4 | 5 }[]
@@ -2457,10 +2340,12 @@ export function getCharacterInventoryLevelUpData({
       if (talMat.special) talentMaterial = [...talentMaterial, talMat.special]
 
       const tmpTalentMat = talentMaterial?.map((item) => {
-        const tmp = items.find((i) => i.name === item.name)
+        const correspondingItem = items.find((i) => i.name === item.name)
+        invariant(correspondingItem)
         return {
           ...item,
-          rarity: tmp ? tmp.rarity : 1,
+          type: correspondingItem.type,
+          rarity: correspondingItem.rarity,
         }
       })
       parsedTalentElBurstMaterial = itemSchema.parse(tmpTalentMat)
@@ -2474,628 +2359,5 @@ export function getCharacterInventoryLevelUpData({
         elementalBurst: parsedTalentElBurstMaterial,
       },
     }
-  }
-
-  switch (ascension) {
-    case 0: {
-      const items = [
-        ...getAscensionRequiredItems(material.ascension),
-        ...getTalentRequiredItems(material.talent),
-      ]
-
-      const currentMaterial = getCurrentMaterial({ ascension })
-
-      const possibleToLevel = {
-        ascension:
-          characterLevel === 20
-            ? isPossibleToLevel({
-                inventory: items,
-                material: currentMaterial.ascension,
-              })
-            : false,
-        talent: {
-          normal: undefined,
-          elementalSkill: undefined,
-          elementalBurst: undefined,
-        },
-      }
-
-      const currentItems = getCurrentItems(currentMaterial, items)
-
-      return {
-        characterLevel,
-        ascension,
-        talent,
-        items,
-        currentMaterial: currentItems,
-        possibleToLevel,
-        unlockable,
-      }
-    }
-    case 1: {
-      const ascensionMaterial: ItemsToRetrieve['ascension'] = {
-        ...material.ascension,
-        ascensionGem: material.ascension.ascensionGem.slice(1),
-      }
-
-      const items = [
-        ...getAscensionRequiredItems(ascensionMaterial),
-        ...getTalentRequiredItems(material.talent),
-      ]
-
-      const currentMaterial = getCurrentMaterial({ ascension })
-
-      const possibleToLevel = {
-        ascension:
-          characterLevel === 40
-            ? isPossibleToLevel({
-                inventory: items,
-                material: currentMaterial.ascension,
-              })
-            : false,
-        talent: {
-          normal: undefined,
-          elementalSkill: undefined,
-          elementalBurst: undefined,
-        },
-      }
-
-      const currentItems = getCurrentItems(currentMaterial, items)
-
-      return {
-        characterLevel,
-        ascension,
-        talent,
-        items,
-        currentMaterial: currentItems,
-        possibleToLevel,
-        unlockable,
-      }
-    }
-    case 2: {
-      const ascensionMaterial: ItemsToRetrieve['ascension'] = {
-        ...material.ascension,
-        baseCommon: material.ascension.baseCommon.slice(1),
-        ascensionGem: material.ascension.ascensionGem.slice(1),
-      }
-
-      const numberToSlice = (on: 'all' | 'normal' | 'elemental') =>
-        getNumberToSlice({
-          on,
-          op: '>=',
-          value: [2],
-          expect: [1],
-        })
-
-      let talentMaterial: ItemsToRetrieve['talent'] = {
-        ...material.talent,
-        talentCommon: material.talent.talentCommon.slice(numberToSlice('all')),
-        talentBook: material.talent.talentBook.slice(numberToSlice('all')),
-      }
-
-      // traveler geo
-      if (material.talent.talentBook.length === 18) {
-        const talentNormalCommon = material.talent.talentCommon.filter(
-          (_, i) => i < 3
-        )
-        const talentElementalCommon = material.talent.talentCommon.slice(-3)
-
-        talentMaterial = {
-          ...talentMaterial,
-          talentCommon: [
-            ...talentNormalCommon.slice(numberToSlice('normal')),
-            ...talentElementalCommon.slice(numberToSlice('elemental')),
-          ],
-        }
-      }
-
-      const items = [
-        ...getAscensionRequiredItems(ascensionMaterial),
-        ...getTalentRequiredItems(talentMaterial),
-      ]
-
-      const currentMaterial = getCurrentMaterial({
-        ascension,
-        talent,
-        skipTalentIfHigherOrEqualThan: 2,
-      })
-
-      const possibleToLevel = {
-        ascension:
-          characterLevel === 50
-            ? isPossibleToLevel({
-                inventory: items,
-                material: currentMaterial.ascension,
-              })
-            : false,
-        talent: {
-          normal: isPossibleToLevel({
-            inventory: items,
-            material: currentMaterial.talent.normal,
-          }),
-          elementalSkill: isPossibleToLevel({
-            inventory: items,
-            material: currentMaterial.talent.elementalSkill,
-          }),
-          elementalBurst: isPossibleToLevel({
-            inventory: items,
-            material: currentMaterial.talent.elementalBurst,
-          }),
-        },
-      }
-
-      const currentItems = getCurrentItems(currentMaterial, items)
-
-      return {
-        characterLevel,
-        ascension,
-        talent,
-        items,
-        currentMaterial: currentItems,
-        possibleToLevel,
-        unlockable,
-      }
-    }
-    case 3: {
-      const ascensionMaterial: ItemsToRetrieve['ascension'] = {
-        ...material.ascension,
-        baseCommon: material.ascension.baseCommon.slice(1),
-        ascensionGem: material.ascension.ascensionGem.slice(2),
-      }
-
-      const numberToSlice2 = (on: 'all' | 'normal' | 'elemental') =>
-        getNumberToSlice({
-          on,
-          op: '>=',
-          value: [2],
-          expect: [1],
-        })
-
-      const numberToSlice42 = (on: 'all' | 'normal' | 'elemental') =>
-        getNumberToSlice({
-          on,
-          op: '>=',
-          value: [4, 2],
-          expect: [3, 1],
-        })
-
-      let talentMaterial: ItemsToRetrieve['talent'] = {
-        ...material.talent,
-        talentCommon: material.talent.talentCommon.slice(numberToSlice2('all')),
-        talentBook: material.talent.talentBook.slice(numberToSlice2('all')),
-      }
-
-      // traveler
-      if (material.talent.talentBook.length === 9) {
-        talentMaterial = {
-          ...talentMaterial,
-          talentBook: [
-            ...material.talent.talentBook.slice(numberToSlice42('all')),
-          ],
-        }
-      }
-
-      // traveler geo
-      if (material.talent.talentBook.length === 18) {
-        const talentNormalBook = material.talent.talentBook.filter(
-          (_, i) => i < 9
-        )
-        const talentElementalBook = material.talent.talentBook.slice(-9)
-        const talentNormalCommon = material.talent.talentCommon.filter(
-          (_, i) => i < 3
-        )
-        const talentElementalCommon = material.talent.talentCommon.slice(-3)
-
-        talentMaterial = {
-          ...talentMaterial,
-          talentCommon: [
-            ...talentNormalCommon.slice(numberToSlice2('normal')),
-            ...talentElementalCommon.slice(numberToSlice2('elemental')),
-          ],
-          talentBook: [
-            ...talentNormalBook.slice(numberToSlice42('normal')),
-            ...talentElementalBook.slice(numberToSlice42('elemental')),
-          ],
-        }
-      }
-
-      const items = [
-        ...getAscensionRequiredItems(ascensionMaterial),
-        ...getTalentRequiredItems(talentMaterial),
-      ]
-
-      const currentMaterial = getCurrentMaterial({
-        ascension,
-        talent,
-        skipTalentIfHigherOrEqualThan: 4,
-      })
-
-      const possibleToLevel = {
-        ascension:
-          characterLevel === 60
-            ? isPossibleToLevel({
-                inventory: items,
-                material: currentMaterial.ascension,
-              })
-            : false,
-        talent: {
-          normal: isPossibleToLevel({
-            inventory: items,
-            material: currentMaterial.talent.normal,
-          }),
-          elementalSkill: isPossibleToLevel({
-            inventory: items,
-            material: currentMaterial.talent.elementalSkill,
-          }),
-          elementalBurst: isPossibleToLevel({
-            inventory: items,
-            material: currentMaterial.talent.elementalBurst,
-          }),
-        },
-      }
-
-      const currentItems = getCurrentItems(currentMaterial, items)
-
-      return {
-        characterLevel,
-        ascension,
-        talent,
-        items,
-        currentMaterial: currentItems,
-        possibleToLevel,
-        unlockable,
-      }
-    }
-    case 4: {
-      const ascensionMaterial: ItemsToRetrieve['ascension'] = {
-        ...material.ascension,
-        baseCommon: material.ascension.baseCommon.slice(2),
-        ascensionGem: material.ascension.ascensionGem.slice(2),
-      }
-
-      const numberToSlice62 = (on: 'all' | 'normal' | 'elemental') =>
-        getNumberToSlice({
-          on,
-          op: '>=',
-          value: [6, 2],
-          expect: [2, 1],
-        })
-
-      const numberToSlice6542 = (on: 'all' | 'normal' | 'elemental') =>
-        getNumberToSlice({
-          on,
-          op: '>=',
-          value: [6, 5, 4, 2],
-          expect: [5, 4, 3, 1],
-        })
-
-      let talentMaterial: ItemsToRetrieve['talent'] = {
-        ...material.talent,
-        talentCommon: material.talent.talentCommon.slice(
-          numberToSlice62('all')
-        ),
-        talentBook: material.talent.talentBook.slice(numberToSlice62('all')),
-      }
-
-      // traveler
-      if (material.talent.talentBook.length === 9) {
-        talentMaterial = {
-          ...talentMaterial,
-          talentBook: [
-            ...material.talent.talentBook.slice(numberToSlice6542('all')),
-          ],
-        }
-      }
-
-      // traveler geo
-      if (material.talent.talentBook.length === 18) {
-        const talentNormalBook = material.talent.talentBook.filter(
-          (_, i) => i < 9
-        )
-        const talentElementalBook = material.talent.talentBook.slice(-9)
-        const talentNormalCommon = material.talent.talentCommon.filter(
-          (_, i) => i < 3
-        )
-        const talentElementalCommon = material.talent.talentCommon.slice(-3)
-
-        talentMaterial = {
-          ...talentMaterial,
-          talentCommon: [
-            ...talentNormalCommon.slice(numberToSlice62('normal')),
-            ...talentElementalCommon.slice(numberToSlice62('elemental')),
-          ],
-          talentBook: [
-            ...talentNormalBook.slice(numberToSlice6542('normal')),
-            ...talentElementalBook.slice(numberToSlice6542('elemental')),
-          ],
-        }
-      }
-
-      const items = [
-        ...getAscensionRequiredItems(ascensionMaterial),
-        ...getTalentRequiredItems(talentMaterial),
-      ]
-
-      const currentMaterial = getCurrentMaterial({
-        ascension,
-        talent,
-        skipTalentIfHigherOrEqualThan: 6,
-      })
-
-      const possibleToLevel = {
-        ascension:
-          characterLevel === 70
-            ? isPossibleToLevel({
-                inventory: items,
-                material: currentMaterial.ascension,
-              })
-            : false,
-        talent: {
-          normal: isPossibleToLevel({
-            inventory: items,
-            material: currentMaterial.talent.normal,
-          }),
-          elementalSkill: isPossibleToLevel({
-            inventory: items,
-            material: currentMaterial.talent.elementalSkill,
-          }),
-          elementalBurst: isPossibleToLevel({
-            inventory: items,
-            material: currentMaterial.talent.elementalBurst,
-          }),
-        },
-      }
-
-      const currentItems = getCurrentItems(currentMaterial, items)
-
-      return {
-        characterLevel,
-        ascension,
-        talent,
-        items,
-        currentMaterial: currentItems,
-        possibleToLevel,
-        unlockable,
-      }
-    }
-    case 5: {
-      const ascensionMaterial: ItemsToRetrieve['ascension'] = {
-        ...material.ascension,
-        baseCommon: material.ascension.baseCommon.slice(2),
-        ascensionGem: material.ascension.ascensionGem.slice(3),
-      }
-
-      const numberToSlice62 = (on: 'all' | 'normal' | 'elemental') =>
-        getNumberToSlice({
-          on,
-          op: '>=',
-          value: [6, 2],
-          expect: [2, 1],
-        })
-
-      const numberToSlice86542 = (on: 'all' | 'normal' | 'elemental') =>
-        getNumberToSlice({
-          on,
-          op: '>=',
-          value: [8, 6, 5, 4, 2],
-          expect: [7, 5, 4, 3, 1],
-        })
-
-      let talentMaterial: ItemsToRetrieve['talent'] = {
-        ...material.talent,
-        talentCommon: material.talent.talentCommon.slice(
-          numberToSlice62('all')
-        ),
-        talentBook: material.talent.talentBook.slice(numberToSlice62('all')),
-      }
-
-      // traveler
-      if (material.talent.talentBook.length === 9) {
-        talentMaterial = {
-          ...talentMaterial,
-          talentBook: [
-            ...material.talent.talentBook.slice(numberToSlice86542('all')),
-          ],
-        }
-      }
-
-      // traveler geo
-      if (material.talent.talentBook.length === 18) {
-        const talentNormalBook = material.talent.talentBook.filter(
-          (_, i) => i < 9
-        )
-        const talentElementalBook = material.talent.talentBook.slice(-9)
-        const talentNormalCommon = material.talent.talentCommon.filter(
-          (_, i) => i < 3
-        )
-        const talentElementalCommon = material.talent.talentCommon.slice(-3)
-
-        talentMaterial = {
-          ...talentMaterial,
-          talentCommon: [
-            ...talentNormalCommon.slice(numberToSlice62('normal')),
-            ...talentElementalCommon.slice(numberToSlice62('elemental')),
-          ],
-          talentBook: [
-            ...talentNormalBook.slice(numberToSlice86542('normal')),
-            ...talentElementalBook.slice(numberToSlice86542('elemental')),
-          ],
-        }
-      }
-
-      const items = [
-        ...getAscensionRequiredItems(ascensionMaterial),
-        ...getTalentRequiredItems(talentMaterial),
-      ]
-
-      const currentMaterial = getCurrentMaterial({
-        ascension,
-        talent,
-        skipTalentIfHigherOrEqualThan: 8,
-      })
-
-      const possibleToLevel = {
-        ascension:
-          characterLevel === 80
-            ? isPossibleToLevel({
-                inventory: items,
-                material: currentMaterial.ascension,
-              })
-            : false,
-        talent: {
-          normal: isPossibleToLevel({
-            inventory: items,
-            material: currentMaterial.talent.normal,
-          }),
-          elementalSkill: isPossibleToLevel({
-            inventory: items,
-            material: currentMaterial.talent.elementalSkill,
-          }),
-          elementalBurst: isPossibleToLevel({
-            inventory: items,
-            material: currentMaterial.talent.elementalBurst,
-          }),
-        },
-      }
-
-      const currentItems = getCurrentItems(currentMaterial, items)
-
-      return {
-        characterLevel,
-        ascension,
-        talent,
-        items,
-        currentMaterial: currentItems,
-        possibleToLevel,
-        unlockable,
-      }
-    }
-    case 6: {
-      if (isEqual({ on: 'all', value: 10 })) {
-        return undefined
-      }
-
-      const numberToSlice = getNumberToSlice({
-        on: 'all',
-        op: '>=',
-        value: [6, 2],
-        expect: [2, 1],
-      })
-
-      let talentMaterial: ItemsToRetrieve['talent'] = {
-        ...material.talent,
-        talentCommon: material.talent.talentCommon.slice(numberToSlice),
-        talentBook: material.talent.talentBook.slice(numberToSlice),
-      }
-
-      // traveler
-      if (material.talent.talentBook.length === 9) {
-        const numberToSlice = getNumberToSlice({
-          on: 'all',
-          op: '>=',
-          value: [9, 8, 6, 5, 4, 2],
-          expect: [8, 7, 5, 4, 3, 1],
-        })
-        talentMaterial = {
-          ...talentMaterial,
-          talentBook: [...material.talent.talentBook.slice(numberToSlice)],
-        }
-      }
-
-      // traveler geo
-      if (material.talent.talentBook.length === 18) {
-        const talentNormalBook = material.talent.talentBook.filter(
-          (_, i) => i < 9
-        )
-        const talentElementalBook = material.talent.talentBook.slice(-9)
-        const talentNormalCommon = material.talent.talentCommon.filter(
-          (_, i) => i < 3
-        )
-        const talentElementalCommon = material.talent.talentCommon.slice(-3)
-
-        const numberToSliceCommon = (on: 'normal' | 'elemental') =>
-          getNumberToSlice({
-            on,
-            op: '>=',
-            value: [6, 2],
-            expect: [2, 1],
-          })
-
-        const numberToSliceBook = (on: 'normal' | 'elemental') =>
-          getNumberToSlice({
-            on,
-            op: '>=',
-            value: [9, 8, 6, 5, 4, 2],
-            expect: [8, 7, 5, 4, 3, 1],
-          })
-
-        talentMaterial = {
-          ...talentMaterial,
-          talentCommon: [
-            ...talentNormalCommon.slice(
-              isEqual({ value: 10, on: 'normal' })
-                ? 3
-                : numberToSliceCommon('normal')
-            ),
-            ...talentElementalCommon.slice(
-              isEqual({ value: 10, on: 'elemental' })
-                ? 3
-                : numberToSliceCommon('elemental')
-            ),
-          ],
-          talentBook: [
-            ...talentNormalBook.slice(
-              isEqual({ value: 10, on: 'normal' })
-                ? 9
-                : numberToSliceBook('normal')
-            ),
-            ...talentElementalBook.slice(
-              isEqual({ value: 10, on: 'elemental' })
-                ? 9
-                : numberToSliceBook('elemental')
-            ),
-          ],
-        }
-      }
-
-      const items = getTalentRequiredItems(talentMaterial)
-      const currentMaterial = getCurrentMaterial({
-        ascension,
-        talent,
-        skipTalentIfHigherOrEqualThan: 10,
-      })
-
-      const possibleToLevel = {
-        ascension: undefined,
-        talent: {
-          normal: isPossibleToLevel({
-            inventory: items,
-            material: currentMaterial.talent.normal,
-          }),
-          elementalSkill: isPossibleToLevel({
-            inventory: items,
-            material: currentMaterial.talent.elementalSkill,
-          }),
-          elementalBurst: isPossibleToLevel({
-            inventory: items,
-            material: currentMaterial.talent.elementalBurst,
-          }),
-        },
-      }
-
-      const currentItems = getCurrentItems(currentMaterial, items)
-
-      return {
-        characterLevel,
-        ascension,
-        talent,
-        items,
-        currentMaterial: currentItems,
-        possibleToLevel,
-        unlockable,
-      }
-    }
-    default:
-      invariant(false, 'IMPOSSIBLE')
   }
 }

@@ -4,15 +4,13 @@ import * as RemixImage from 'remix-image'
 import * as Badge from '~/components/Badge'
 import * as Icon from '~/components/Icon'
 import type * as ItemData from '~/data/items'
-import type * as DB from '~/db.server'
 import * as Utils from '~/utils'
 
 interface Props {
-  items: ItemData.Item[]
-  category: keyof DB.Type.Inventory
+  items: ItemData.ItemWithQuantity[]
 }
 
-export default function ItemList({ items, category }: Props) {
+export default function ItemList({ items }: Props) {
   const { pathname } = RemixReact.useLocation()
   const { Form, submit } = RemixReact.useFetcher()
 
@@ -70,7 +68,6 @@ export default function ItemList({ items, category }: Props) {
               className="w-20 pr-2"
             >
               <input type="hidden" name="name" value={item.name} />
-              <input type="hidden" name="category" value={category} />
               <div>
                 <label
                   htmlFor={`quantity-${Utils.toSnakeCase(item.name)}`}
