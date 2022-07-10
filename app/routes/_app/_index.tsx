@@ -108,7 +108,7 @@ function AppNavbar() {
                   <div>
                     <HeadlessUIReact.Menu.Button className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-9 shadow-sm focus:z-10 focus:outline-none focus:ring-2 focus:ring-gray-7 focus:ring-offset-2 focus:ring-offset-gray-1">
                       <RemixImage.Image
-                        src="/image/character/Traveler.png"
+                        src="/image/character/traveler.png"
                         alt={`Account ${user.accounts[0].name}`}
                         className="h-8 w-8 rounded-full"
                         width={32}
