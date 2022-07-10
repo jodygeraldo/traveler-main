@@ -4,12 +4,10 @@ import * as React from 'react'
 import * as Icon from './Icon'
 
 export default function Notification({ success }: { success?: boolean }) {
-  const [show, setShow] = React.useState(false)
+  const [show, setShow] = React.useState(success !== undefined)
 
   React.useEffect(() => {
     if (success !== undefined) {
-      setShow(true)
-
       const timer = setTimeout(() => {
         setShow(false)
       }, 3000)
