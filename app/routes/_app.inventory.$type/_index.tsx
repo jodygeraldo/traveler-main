@@ -46,7 +46,6 @@ export const loader: RemixNode.LoaderFunction = async ({ params, request }) => {
 
 export default function InventoryCategoryPage() {
   const { items, type } = RemixReact.useLoaderData<LoaderData>()
-  console.log(items, type)
 
   return (
     <div className="space-y-12">
