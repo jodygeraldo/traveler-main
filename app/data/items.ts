@@ -357,95 +357,21 @@ export function getItemsByType({
   return result
 }
 
-// export function getItemsInCategory({
-//   category,
-//   names,
-//   items,
-// }: {
-//   category: keyof DB.Type1.Inventory
-//   names: string[]
-//   items: {
-//     name: string
-//     '@quantity': number | null
-//   }[]
-// }) {
-//   function getUpdatedItems(itemsToUpdate: Item[]) {
-//     return itemsToUpdate.forEach((item, index) => {
-//       const dbItemIndex = items.findIndex((dbItem) => item.name === dbItem.name)
-//       if (dbItemIndex === -1) return
-//       itemsToUpdate[index].quantity = items[dbItemIndex]['@quantity'] ?? 0
-//     })
-//   }
+export function getItemsByNames({
+  names,
+  userItems,
+}: {
+  names: string[]
+  userItems: Pick<DB.Inventory, 'itemName' | 'quantity'>[]
+}) {
+  const result = items.filter((item) => names.includes(item.name))
 
-//   if (category === 'special') {
-//     const updatedItems = special
-//       .filter((item) => names.includes(item.name))
-//       .map((item) => {
-//         return { ...item, quantity: 0 }
-//       })
-//     getUpdatedItems(updatedItems)
-//     return updatedItems
-//   }
+  result.forEach((item, index) => {
+    const itemIndex = userItems.findIndex(
+      (userItem) => item.name === userItem.itemName
+    )
+    if (itemIndex !== -1) result[index].quantity = userItems[itemIndex].quantity
+  })
 
-//   if (category === 'common') {
-//     const updatedItems = common
-//       .filter((item) => names.includes(item.name))
-//       .map((item) => {
-//         return { ...item, quantity: 0 }
-//       })
-//     getUpdatedItems(updatedItems)
-//     return updatedItems
-//   }
-
-//   if (category === 'ascension_gem') {
-//     const updatedItems = ascensionGem
-//       .filter((item) => names.includes(item.name))
-//       .map((item) => {
-//         return { ...item, quantity: 0 }
-//       })
-//     getUpdatedItems(updatedItems)
-//     return updatedItems
-//   }
-
-//   if (category === 'ascension_boss') {
-//     const updatedItems = ascensionBoss
-//       .filter((item) => names.includes(item.name))
-//       .map((item) => {
-//         return { ...item, quantity: 0 }
-//       })
-//     getUpdatedItems(updatedItems)
-//     return updatedItems
-//   }
-
-//   if (category === 'local_specialty') {
-//     const updatedItems = localSpecialty
-//       .filter((item) => names.includes(item.name))
-//       .map((item) => {
-//         return { ...item, quantity: 0 }
-//       })
-//     getUpdatedItems(updatedItems)
-//     return updatedItems
-//   }
-
-//   if (category === 'talent_book') {
-//     const updatedItems = talentBook
-//       .filter((item) => names.includes(item.name))
-//       .map((item) => {
-//         return { ...item, quantity: 0 }
-//       })
-//     getUpdatedItems(updatedItems)
-//     return updatedItems
-//   }
-
-//   if (category === 'talent_boss') {
-//     const updatedItems = talentBoss
-//       .filter((item) => names.includes(item.name))
-//       .map((item) => {
-//         return { ...item, quantity: 0 }
-//       })
-//     getUpdatedItems(updatedItems)
-//     return updatedItems
-//   }
-
-//   invariant(false, `Unknown category: ${category}`)
-// }
+  return result
+}
