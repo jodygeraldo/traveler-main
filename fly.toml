@@ -1,4 +1,4 @@
-app = "edgedb-remix"
+app = "traveler-main"
 
 kill_signal = "SIGINT"
 kill_timeout = 5
