@@ -9,7 +9,7 @@ export async function getInventory({ accountId }: { accountId: string }) {
     select: {
       itemName: true,
       quantity: true,
-    }
+    },
   })
 }
 
@@ -28,7 +28,7 @@ export async function getInventoryByType({
     select: {
       itemName: true,
       quantity: true,
-    }
+    },
   })
 }
 
@@ -81,6 +81,6 @@ export async function getRequiredItems({
     select: {
       itemName: true,
       quantity: true,
-    }
+    },
   })
 }

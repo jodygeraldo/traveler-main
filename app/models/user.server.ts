@@ -79,7 +79,7 @@ export async function verifyLogin(email: string, password: string) {
         },
       },
       password: true,
-    }
+    },
   })
 
   if (!userWithPassword?.password) {
