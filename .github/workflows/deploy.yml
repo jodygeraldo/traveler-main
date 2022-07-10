@@ -201,10 +201,13 @@ jobs:
 
       - name: 🚀 Deploy Staging
         if: ${{ github.ref == 'refs/heads/dev' }}
-        uses: superfly/flyctl-actions/setup-flyctl@master
-        run: flyctl deploy --remote-only --app traveler-main-staging
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        steps: 
+          - name: setup flyctl
+            uses: superfly/flyctl-actions/setup-flyctl@master
+          - name: Deploy staging
+            run: flyctl deploy --remote-only --app traveler-main-staging
+            env:
+              FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: 🚀 Deploy Production
         if: ${{ github.ref == 'refs/heads/main' }}
