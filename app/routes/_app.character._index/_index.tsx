@@ -157,7 +157,7 @@ function HoverCard({
               </span>
               <span className="inline-flex items-center gap-0.5">
                 <Image
-                  src={`/image/talent/elemental_skill_${Utils.getImageSrc(
+                  src={`/image/talent/elemental_burst_${Utils.getImageSrc(
                     character.name
                   )}.png`}
                   alt={character.talent[2]}
