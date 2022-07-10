@@ -38,4 +38,4 @@ COPY --from=build /myapp/build /myapp/build
 COPY --from=build /myapp/public /myapp/public
 ADD . .
 
-ENTRYPOINT [ "./start.sh" ]
+CMD [ "npm", "start" ]
