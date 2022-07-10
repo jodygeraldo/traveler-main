@@ -1,11 +1,9 @@
-import * as HeadlessUIReact from '@headlessui/react'
 import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
-import * as React from 'react'
 import type * as RemixParamsHelper from 'remix-params-helper'
 import type * as CharacterData from '~/data/characters'
 import Button from './Button'
-import * as Icon from './Icon'
+import Notification from './Notification'
 
 interface Props {
   progression: CharacterData.Character['progression']
@@ -20,7 +18,6 @@ export default function ManualLevelForm({
   errors,
   submitSuccess,
 }: Props) {
-  const notificationState = React.useState(false)
   const location = RemixReact.useLocation()
   const transition = RemixReact.useTransition()
   const busy = transition.state === 'submitting'
@@ -86,11 +83,7 @@ export default function ManualLevelForm({
           </Button>
         </div>
       </RemixReact.Form>
-      <Notification
-        key={location.key}
-        state={notificationState}
-        success={submitSuccess}
-      />
+      <Notification key={location.key} success={submitSuccess} />
     </div>
   )
 }
@@ -136,91 +129,5 @@ function InputField({
         {error}
       </p>
     </>
-  )
-}
-
-function Notification({
-  success,
-  state,
-}: {
-  success?: boolean
-  state: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
-}) {
-  const [show, setShow] = state
-
-  React.useEffect(() => {
-    if (success !== undefined) {
-      setShow(true)
-
-      const timer = setTimeout(() => {
-        setShow(false)
-      }, 3000)
-
-      return () => clearTimeout(timer)
-    }
-  }, [success, setShow])
-
-  if (success === undefined) {
-    return null
-  }
-
-  return (
-    <HeadlessUIReact.Portal>
-      <div
-        aria-live="assertive"
-        className="pointer-events-none fixed inset-0 z-10 flex items-end px-4 py-6 sm:items-start sm:p-6"
-      >
-        <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
-          <HeadlessUIReact.Transition
-            show={show}
-            as={React.Fragment}
-            enter="transform ease-out duration-300 transition"
-            enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-            enterTo="translate-y-0 opacity-100 sm:translate-x-0"
-            leave="transition ease-in duration-100"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div
-              className={clsx(
-                success ? 'bg-success-11' : 'bg-danger-11',
-                'pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg shadow-lg ring-1 ring-gray-7 ring-opacity-5'
-              )}
-            >
-              <div className="p-4">
-                <div className="flex items-center">
-                  <div className="flex w-0 flex-1 justify-between">
-                    <p className="w-0 flex-1 text-sm font-medium text-white">
-                      {success ? 'Level up successful' : 'Level up failed'}
-                    </p>
-                  </div>
-                  <div className="ml-4 flex flex-shrink-0">
-                    <button
-                      type="button"
-                      className={clsx(
-                        success
-                          ? 'bg-success-11 focus:ring-offset-success-11'
-                          : 'bg-danger-11 focus:ring-offset-danger-11',
-                        'inline-flex rounded-md text-white focus:outline-none focus:ring-2 focus:ring-primary-8 focus:ring-offset-2'
-                      )}
-                      onClick={() => {
-                        setShow(false)
-                      }}
-                    >
-                      <span className="sr-only">Close</span>
-                      <Icon.Outline
-                        name="x"
-                        className="h-5 w-5"
-                        aria-hidden="true"
-                      />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </HeadlessUIReact.Transition>
-        </div>
-      </div>
-    </HeadlessUIReact.Portal>
   )
 }
