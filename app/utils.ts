@@ -1,9 +1,5 @@
-import { useMatches, useLocation, useResolvedPath } from '@remix-run/react'
-import { useMemo } from 'react'
-
-import type { User } from './db.server'
-
-export type depromisify<T> = T extends Promise<infer U> ? U : T
+import * as RemixReact from '@remix-run/react'
+import * as React from 'react'
 
 const DEFAULT_REDIRECT = '/'
 
@@ -35,17 +31,38 @@ export function safeRedirect(
  * @param {string} id The route id
  * @returns {JSON|undefined} The router data or undefined if not found
  */
-export function useMatchesData(id: string): Record<string, unknown> | undefined {
-  const matchingRoutes = useMatches()
-  const route = useMemo(() => matchingRoutes.find((route) => route.id === id), [matchingRoutes, id])
+export function useMatchesData(
+  id: string
+): Record<string, unknown> | undefined {
+  const matchingRoutes = RemixReact.useMatches()
+  const route = React.useMemo(
+    () => matchingRoutes.find((route) => route.id === id),
+    [matchingRoutes, id]
+  )
   return route?.data
 }
 
-function isUser(user: any): user is User {
+function isUser(user: any): user is {
+  id: string
+  email: string
+  accounts: {
+    id: string
+    name: string
+  }[]
+} {
   return user && typeof user === 'object' && typeof user.email === 'string'
 }
 
-export function useOptionalUser(): User | undefined {
+export function useOptionalUser():
+  | {
+      id: string
+      email: string
+      accounts: {
+        id: string
+        name: string
+      }[]
+    }
+  | undefined {
   const data = useMatchesData('root')
   if (!data || !isUser(data.user)) {
     return undefined
@@ -53,7 +70,14 @@ export function useOptionalUser(): User | undefined {
   return data.user
 }
 
-export function useUser(): User {
+export function useUser(): {
+  id: string
+  email: string
+  accounts: {
+    id: string
+    name: string
+  }[]
+} {
   const maybeUser = useOptionalUser()
   if (!maybeUser) {
     throw new Error(
@@ -64,8 +88,8 @@ export function useUser(): User {
 }
 
 export function useActiveNavigation(to: string): boolean {
-  const { pathname } = useLocation()
-  return useResolvedPath(to).pathname === pathname
+  const { pathname } = RemixReact.useLocation()
+  return RemixReact.useResolvedPath(to).pathname === pathname
 }
 
 export function validateEmail(email: unknown): email is string {
@@ -73,16 +97,44 @@ export function validateEmail(email: unknown): email is string {
 }
 
 export function getImageSrc(str: string): string {
-  return str.replace(/ /g, '_').toLowerCase()
+  return str.toLowerCase().replace(/ /g, '_')
 }
 
 export function toSnakeCase(str: string): string {
   return str
-    .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)!
+    .match(
+      /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g
+    )!
     .map((x) => x.toLowerCase())
     .join('_')
 }
 
 export function toCapitalized(str: string): string {
-  return str.replace(/_/g, ' ').replace(/\b\w/g, (x) => x.toUpperCase())
+  return str
+    .toLowerCase()
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (x) => x.toUpperCase())
+}
+
+export function toConstCase(str: string): string {
+  return str.replace(/-/g, '_').toUpperCase()
+}
+
+export function splitPerCapitalCase(str: string): string {
+  return str.split(/(?=[A-Z])/g).join(' ')
+}
+
+if (process.env.NODE_ENV === 'test' && import.meta.vitest) {
+  const { test } = import.meta.vitest
+  test('validateEmail returns false for non-emails', () => {
+    expect(validateEmail(undefined)).toBe(false)
+    expect(validateEmail(null)).toBe(false)
+    expect(validateEmail('')).toBe(false)
+    expect(validateEmail('not-an-email')).toBe(false)
+    expect(validateEmail('n@')).toBe(false)
+  })
+
+  test('validateEmail returns true for emails', () => {
+    expect(validateEmail('jody@jodygeraldo.com')).toBe(true)
+  })
 }

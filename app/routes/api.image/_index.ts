@@ -1,16 +1,17 @@
-import type { LoaderFunction } from '@remix-run/node'
-import { sharpTransformer } from 'remix-image-sharp'
-import type { LoaderConfig } from 'remix-image/server'
-import { MimeType } from 'remix-image/server'
-import { DiskCache, imageLoader } from 'remix-image/server'
+import type * as RemixNode from '@remix-run/node'
+import * as RemixImageSharp from 'remix-image-sharp'
+import * as RemixImageServer from 'remix-image/server'
 
-const config: LoaderConfig = {
+const config: RemixImageServer.LoaderConfig = {
   selfUrl: 'http://localhost:3000',
-  cache: new DiskCache(),
-  transformer: sharpTransformer,
-  fallbackFormat: MimeType.PNG,
+  cache: new RemixImageServer.DiskCache(),
+  transformer: RemixImageSharp.sharpTransformer,
+  fallbackFormat: RemixImageServer.MimeType.PNG,
+  defaultOptions: {
+    contentType: RemixImageServer.MimeType.WEBP,
+  },
 }
 
-export const loader: LoaderFunction = ({ request }) => {
-  return imageLoader(config, request)
+export const loader: RemixNode.LoaderFunction = ({ request }) => {
+  return RemixImageServer.imageLoader(config, request)
 }

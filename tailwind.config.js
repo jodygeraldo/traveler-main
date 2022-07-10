@@ -126,6 +126,9 @@ module.exports = {
       },
     },
     backgroundImage: {
+      'image-rarity-1': "url('/image/background/bg-rarity-1.webp')",
+      'image-rarity-2': "url('/image/background/bg-rarity-2.webp')",
+      'image-rarity-3': "url('/image/background/bg-rarity-3.webp')",
       'image-rarity-4': "url('/image/background/bg-rarity-4.webp')",
       'image-rarity-5': "url('/image/background/bg-rarity-5.webp')",
       'image-rarity-5s': "url('/image/background/bg-rarity-5s.webp')",

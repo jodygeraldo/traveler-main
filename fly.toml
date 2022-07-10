@@ -1,4 +1,4 @@
-app = "edgedb-remix"
+app = "traveler-main"
 
 kill_signal = "SIGINT"
 kill_timeout = 5
@@ -7,8 +7,6 @@ processes = []
 [experimental]
 allowed_public_ports = []
 auto_rollback = true
-cmd = "start.sh"
-entrypoint = "sh"
 
 [[services]]
 internal_port = 8080
@@ -23,13 +21,12 @@ type = "connections"
 
 [[services.http_checks]]
 grace_period = "5s"
-interval = 10000
+interval = "10s"
 method = "get"
 path = "/healthcheck"
 protocol = "http"
-timeout = 2000
+timeout = "2s"
 tls_skip_verify = false
-
 [services.http_checks.headers]
 
 [[services.ports]]

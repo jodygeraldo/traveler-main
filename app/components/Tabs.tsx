@@ -1,8 +1,16 @@
-import { Link, useNavigate } from '@remix-run/react'
+import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 
-export default function Tabs({ tabs }: { tabs: { name: string; to: string; active: boolean }[] }) {
-  const navigate = useNavigate()
+interface Props {
+  tabs: {
+    name: string
+    to: string
+    active: boolean
+  }[]
+}
+
+export default function Tabs({ tabs }: Props) {
+  const navigate = RemixReact.useNavigate()
 
   return (
     <div>
@@ -15,7 +23,11 @@ export default function Tabs({ tabs }: { tabs: { name: string; to: string; activ
           name="tabs"
           className="block w-full rounded-md border-gray-7 bg-gray-3 text-gray-11 focus:border-gray-8 focus:text-gray-12 focus:ring-gray-8"
           defaultValue={tabs.find((tab) => tab.active)?.name}
-          onChange={(e) => navigate(`./${e.target.value === tabs[0].name ? '.' : e.target.value}`)}
+          onChange={(e) =>
+            navigate(
+              `./${e.target.value === tabs[0].name ? '.' : e.target.value}`
+            )
+          }
         >
           {tabs.map((tab) => (
             <option key={tab.name}>{tab.name}</option>
@@ -26,7 +38,8 @@ export default function Tabs({ tabs }: { tabs: { name: string; to: string; activ
         <div className="border-b border-gray-6">
           <nav className="-mb-px flex" aria-label="Tabs">
             {tabs.map((tab) => (
-              <Link
+              <RemixReact.Link
+                prefetch="intent"
                 key={tab.name}
                 to={tab.to}
                 className={clsx(
@@ -38,7 +51,7 @@ export default function Tabs({ tabs }: { tabs: { name: string; to: string; activ
                 aria-current={tab.active ? 'page' : undefined}
               >
                 {tab.name}
-              </Link>
+              </RemixReact.Link>
             ))}
           </nav>
         </div>

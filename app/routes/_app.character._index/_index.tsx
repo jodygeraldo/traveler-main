@@ -1,31 +1,31 @@
 import * as RadixHoverCard from '@radix-ui/react-hover-card'
-import type { LoaderFunction } from '@remix-run/node'
-import { json } from '@remix-run/node'
-import { Link, useLoaderData } from '@remix-run/react'
+import * as RemixNode from '@remix-run/node'
+import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 import * as React from 'react'
-import Image, { MimeType } from 'remix-image'
-import type { Character } from '~/data/characters'
-import { getCharacters } from '~/data/characters'
-import { getUserCharacters } from '~/models/character.server'
-import { requireAccountId } from '~/session.server'
-import { getImageSrc } from '~/utils'
+import * as RemixImage from 'remix-image'
+import * as CharacterData from '~/data/characters'
+import * as CharacterModel from '~/models/character.server'
+import * as Session from '~/session.server'
+import * as Utils from '~/utils'
 
-type LoaderData = {
-  characters: ReturnType<typeof getCharacters>
+interface LoaderData {
+  characters: CharacterData.Character[]
 }
 
-export const loader: LoaderFunction = async ({ request }) => {
-  const accId = await requireAccountId(request)
+export const loader: RemixNode.LoaderFunction = async ({ request }) => {
+  const accId = await Session.requireAccountId(request)
 
-  const userCharacters = await getUserCharacters({ accId })
-  const characters = getCharacters(userCharacters)
+  const userCharacters = await CharacterModel.getUserCharacters({
+    accountId: accId,
+  })
+  const characters = CharacterData.getCharacters(userCharacters)
 
-  return json<LoaderData>({ characters })
+  return RemixNode.json<LoaderData>({ characters })
 }
 
 export default function CharactersPage() {
-  const { characters } = useLoaderData() as LoaderData
+  const { characters } = RemixReact.useLoaderData() as LoaderData
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -48,38 +48,66 @@ const backgroundImage: Record<4 | 5 | '5s', string> = {
   '5s': 'bg-image-rarity-5s',
 }
 
-function CharacterList({ characters }: { characters: Character[] }) {
+function CharacterList({
+  characters,
+}: {
+  characters: CharacterData.Character[]
+}) {
   return (
     <div>
       <ul className="flex flex-wrap gap-5">
         {characters.map((character) => (
           <li key={character.name}>
             <HoverCard character={character}>
-              <Link to={`./${character.name}`} prefetch="intent">
-                <div className="group rounded-b-md bg-gray-3 shadow-sm hover:bg-gray-4">
+              <RemixReact.Link to={`./${character.name}`} prefetch="intent">
+                <div className="group relative rounded-b-md bg-gray-3 shadow-sm hover:bg-gray-4">
+                  <div className="absolute top-0 left-0">
+                    <span className="sr-only">{character.vision} vision</span>
+                    <RemixImage.Image
+                      src={`/image/element/${character.vision.toLowerCase()}.png`}
+                      alt=""
+                      className="h-6 w-6"
+                      aria-hidden
+                      width={24}
+                      height={24}
+                      responsive={[{ size: { width: 24, height: 24 } }]}
+                      dprVariants={[1, 2, 3]}
+                    />
+                  </div>
+
                   <div
                     className={clsx(
-                      backgroundImage[character.name === 'Aloy' ? '5s' : character.rarity],
+                      backgroundImage[
+                        character.name === 'Aloy' ? '5s' : character.rarity
+                      ],
                       'rounded-t-md rounded-br-3xl'
                     )}
                   >
-                    <Image
-                      src={`/image/character/${getImageSrc(character.name)}.png`}
+                    <RemixImage.Image
+                      src={`/image/character/${Utils.getImageSrc(
+                        character.name
+                      )}.png`}
                       alt={character.name}
                       className="h-24 w-24 rounded-br-3xl"
+                      width={96}
+                      height={96}
                       responsive={[{ size: { width: 96, height: 96 } }]}
-                      options={{ contentType: MimeType.WEBP }}
                       dprVariants={[1, 2, 3]}
                     />
                   </div>
                   <div className="mt-1 text-center">
-                    <span className="sr-only">Level {character.progression?.level ?? 1}</span>
-                    <p className="text-sm text-gray-11 group-hover:text-gray-12" aria-hidden>
+                    <span className="sr-only">
+                      Level {character.progression?.level ?? 1}
+                    </span>
+                    <p
+                      className="text-sm text-gray-11 group-hover:text-gray-12"
+                      aria-hidden
+                    >
                       Lv. {character.progression?.level ?? 1}
                     </p>
                   </div>
                 </div>
-              </Link>
+              </RemixReact.Link>
             </HoverCard>
           </li>
         ))}
@@ -88,7 +116,13 @@ function CharacterList({ characters }: { characters: Character[] }) {
   )
 }
 
-function HoverCard({ character, children }: { character: Character; children: React.ReactNode }) {
+function HoverCard({
+  character,
+  children,
+}: {
+  character: CharacterData.Character
+  children: React.ReactNode
+}) {
   return (
     <RadixHoverCard.Root openDelay={300}>
       <RadixHoverCard.Trigger asChild>{children}</RadixHoverCard.Trigger>
@@ -96,45 +130,55 @@ function HoverCard({ character, children }: { character: Character; children: Re
         side="top"
         className="motion-safe:slideAndFade rounded-md bg-gray-3 p-4 shadow-lg"
       >
-        <div className="flex items-center space-x-2">
-          <h2 className="text-lg font-medium leading-6 text-primary-12">{character.name}</h2>
-          <div className="flex shrink-0 items-center space-x-1">
-            {Array.isArray(character.vision) ? (
-              character.vision.map((vision) => (
-                <div key={`${character.name}-${vision}`}>
-                  <span className="sr-only">{character.vision} vision</span>
-                  <Image
-                    src={`/image/element/${vision.toLowerCase()}.png`}
-                    alt=""
-                    className="h-4 w-4"
-                    aria-hidden
-                    responsive={[{ size: { width: 16, height: 16 } }]}
-                    options={{ contentType: MimeType.WEBP }}
-                    dprVariants={[1, 2, 3]}
-                  />
-                </div>
-              ))
-            ) : (
-              <div>
-                <span className="sr-only">{character.vision} vision</span>
-                <Image
-                  src={`/image/element/${character.vision.toLowerCase()}.png`}
-                  alt=""
-                  className="h-4 w-4"
-                  aria-hidden
-                  responsive={[{ size: { width: 16, height: 16 } }]}
-                  options={{ contentType: MimeType.WEBP }}
+        <h2 className="text-lg font-medium leading-6 text-primary-12">
+          {character.name}
+        </h2>
+        <div className="flex items-center gap-4">
+          <div className="mt-1 w-full text-gray-11">
+            <p>Ascension {character.progression?.ascension ?? 0}</p>
+            <div className="flex w-full items-center gap-3">
+              <span className="inline-flex items-center gap-0.5">
+                <RemixImage.Image
+                  src={`/image/talent/normal_attack_${character.weapon.toLowerCase()}.png`}
+                  alt={character.talent[0]}
+                  className="h-5 w-5 flex-shrink-0"
+                  width={20}
+                  height={20}
+                  responsive={[{ size: { width: 20, height: 20 } }]}
                   dprVariants={[1, 2, 3]}
                 />
-              </div>
-            )}
+                <span>{character.progression?.normalAttack ?? 1}</span>
+              </span>
+              <span className="inline-flex items-center gap-0.5">
+                <RemixImage.Image
+                  src={`/image/talent/elemental_skill_${Utils.getImageSrc(
+                    character.name
+                  )}.png`}
+                  alt={character.talent[1]}
+                  className="h-5 w-5 flex-shrink-0"
+                  width={20}
+                  height={20}
+                  responsive={[{ size: { width: 20, height: 20 } }]}
+                  dprVariants={[1, 2, 3]}
+                />
+                <span>{character.progression?.elementalSkill ?? 1}</span>
+              </span>
+              <span className="inline-flex items-center gap-0.5">
+                <RemixImage.Image
+                  src={`/image/talent/elemental_skill_${Utils.getImageSrc(
+                    character.name
+                  )}.png`}
+                  alt={character.talent[2]}
+                  className="h-5 w-5 flex-shrink-0"
+                  width={20}
+                  height={20}
+                  responsive={[{ size: { width: 20, height: 20 } }]}
+                  dprVariants={[1, 2, 3]}
+                />
+                <span>{character.progression?.elementalBurst ?? 1}</span>
+              </span>
+            </div>
           </div>
-        </div>
-        <div className="mt-1 text-gray-11">
-          <p>Ascension: {character.progression?.ascension ?? 0}</p>
-          <p>Normal attack: {character.progression?.normalAttack ?? 1}</p>
-          <p>Elemental Skill: {character.progression?.elementalSkill ?? 1}</p>
-          <p>Elemental Burst: {character.progression?.elementalBurst ?? 1}</p>
         </div>
         <RadixHoverCard.Arrow className="fill-gray-3" />
       </RadixHoverCard.Content>

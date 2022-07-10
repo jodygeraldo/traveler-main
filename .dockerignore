@@ -1,7 +1,19 @@
-/node_modules
 *.log
 .DS_Store
+
+/node_modules
 .env
-/.cache
-/public/build
-/build
+
+# Remix output
+.cache
+/build/
+/public/build/
+
+# Remix image output
+/tmp
+
+# Test
+/coverage
+
+# Fly configuration
+fly.toml

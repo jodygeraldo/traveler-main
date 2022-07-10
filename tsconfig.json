@@ -1,13 +1,12 @@
 {
-  "exclude": ["./cypress", "./dbschema/edgeql-js"],
   "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
-    "types": ["vitest/globals"],
+    "types": ["vitest/importMeta", "vitest/globals"],
+    "module": "ESNext",
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
-    "module": "CommonJS",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "target": "ES2019",

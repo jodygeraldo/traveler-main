@@ -1,32 +1,24 @@
-import type { ActionFunction } from '@remix-run/node'
-import { getFormDataOrFail } from 'remix-params-helper'
-import { z } from 'zod'
-import { upsertItem } from '~/models/inventory.server'
-import { requireAccountId } from '~/session.server'
+import type * as RemixNode from '@remix-run/node'
+import * as RemixParamsHelper from 'remix-params-helper'
+import * as Zod from 'zod'
+import * as InventoryModel from '~/models/inventory.server'
+import * as Session from '~/session.server'
 
-export const action: ActionFunction = async ({ request }) => {
-  const accId = await requireAccountId(request)
+export const action: RemixNode.ActionFunction = async ({ request }) => {
+  const accountId = await Session.requireAccountId(request)
 
-  const ParamsSchema = z.object({
-    name: z.string(),
-    category: z.enum([
-      'common',
-      'ascension_gem',
-      'ascension_boss',
-      'local_specialty',
-      'talent_book',
-      'talent_boss',
-      'special',
-    ]),
-    quantity: z.number().min(0).max(9999),
+  const ParamsSchema = Zod.object({
+    name: Zod.string(),
+    quantity: Zod.number().min(0).max(9999),
   })
 
-  const { name, category, quantity } = await getFormDataOrFail(request, ParamsSchema)
-  console.log(name, category, quantity)
+  const { name, quantity } = await RemixParamsHelper.getFormDataOrFail(
+    request,
+    ParamsSchema
+  )
 
-  await upsertItem({
-    accId,
-    category,
+  await InventoryModel.upsertInventoryItem({
+    accountId,
     name,
     quantity,
   })
