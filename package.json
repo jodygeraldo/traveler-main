@@ -1,9 +1,8 @@
 {
-  "name": "edgedb-remix",
-  "version": "1.0.0",
-  "private": true,
-  "description": "",
-  "license": "",
+  "name": "traveler-main",
+  "version": "0.1.0",
+  "description": "Genshin Impact to the max",
+  "license": "MIT",
   "sideEffects": false,
   "scripts": {
     "build": "run-s build:*",
@@ -32,8 +31,7 @@
   "eslintIgnore": [
     "/node_modules",
     "/build",
-    "/public/build",
-    "/dbschema/edgeql-js"
+    "/public/build"
   ],
   "dependencies": {
     "@headlessui/react": "^1.6.5",
