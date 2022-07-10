@@ -8,9 +8,3 @@
 .cache
 /build/
 /public/build/
-
-# Remix image output
-/tmp
-
-# Test
-/coverage
