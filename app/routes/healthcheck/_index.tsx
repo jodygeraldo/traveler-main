@@ -1,7 +1,7 @@
 import type * as RemixNode from '@remix-run/node'
 import prisma from '~/db.server'
 
-export const loader: RemixNode.LoaderFunction = async ({ request }) => {
+export const loader: RemixNode.LoaderFunction = async () => {
   try {
     await prisma.user.count()
     return new Response('OK')
