@@ -1,12 +1,12 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
-import * as RemixImage from 'remix-image'
 import * as RemixParamsHelper from 'remix-params-helper'
 import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
+import Image from '~/components/Image'
 import Notification from '~/components/Notification'
 import Tooltip from '~/components/Tooltip'
 import * as CharacterData from '~/data/characters'
@@ -274,14 +274,12 @@ function ItemWithImage({
               'rounded-t-md rounded-br-2xl bg-contain'
             )}
           >
-            <RemixImage.Image
+            <Image
               src={`/image/item/${Utils.getImageSrc(item.name)}.png`}
               alt={item.name}
               className="h-16 w-16 rounded-br-2xl"
               width={64}
               height={64}
-              responsive={[{ size: { width: 64, height: 64 } }]}
-              dprVariants={[1, 2, 3]}
             />
           </div>
           <div className="text-center">
