@@ -103,6 +103,7 @@ let config: PlaywrightTestConfig = {
   webServer: process.env.URL
     ? undefined
     : {
+        reuseExistingServer: !process.env.CI,
         command: 'npm run build && npm run start',
         port: 3000,
       },
