@@ -89,7 +89,8 @@ export function useUser(): {
 
 export function useActiveNavigation(to: string): boolean {
   const { pathname } = RemixReact.useLocation()
-  return RemixReact.useResolvedPath(to).pathname === pathname
+  const resolvedPath = RemixReact.useResolvedPath(to).pathname
+  return resolvedPath === pathname || `${resolvedPath}/` === pathname
 }
 
 export function validateEmail(email: unknown): email is string {
