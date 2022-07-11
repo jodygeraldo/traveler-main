@@ -93,3 +93,4 @@ export function TravelerGeoCustomTableHeading({
 const Character = CharacterCustomTableHeading
 const TravelerGeo = TravelerGeoCustomTableHeading
 export { Character, TravelerGeo }
+
