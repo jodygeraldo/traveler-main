@@ -133,18 +133,21 @@ export default function LoginPage() {
                 type="password"
               />
             </div>
-            <div className="mt-1">
-              {actionData?.errors?.email && (
-                <div className="text-danger-11" id="email-error">
-                  {actionData.errors.email}
-                </div>
-              )}
-              {actionData?.errors?.password && (
-                <div className="text-danger-11" id="password-error">
-                  {actionData.errors.password}
-                </div>
-              )}
-            </div>
+            
+            {actionData?.errors && (
+              <div className="mt-1">
+                {actionData?.errors?.email && (
+                  <div className="text-danger-11" id="email-error">
+                    {actionData.errors.email}
+                  </div>
+                )}
+                {actionData?.errors?.password && (
+                  <div className="text-danger-11" id="password-error">
+                    {actionData.errors.password}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="flex items-center justify-between">
