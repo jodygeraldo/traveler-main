@@ -1,6 +1,8 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as React from 'react'
+import Button from '~/components/Button'
+import Logo from '~/components/Logo'
 import * as UserModel from '~/models/user.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
@@ -84,84 +86,97 @@ export default function Join() {
   }, [actionData])
 
   return (
-    <div className="flex min-h-full flex-col justify-center">
-      <div className="mx-auto w-full max-w-md px-8">
-        <RemixReact.Form method="post" className="space-y-6">
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+    <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md space-y-8">
+        <div>
+          <Logo className="mx-auto h-12 w-auto" />
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-12">
+            Sign up new account
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-11">
+            Or{' '}
+            <RemixReact.Link
+              to="/login"
+              className="font-medium text-primary-9 hover:text-primary-10"
             >
-              Email address
-            </label>
-            <div className="mt-1">
+              login with existing account
+            </RemixReact.Link>
+          </p>
+        </div>
+        <RemixReact.Form method="post" className="mt-8 space-y-6">
+          <input type="hidden" name="remember" defaultValue="true" />
+          <div className="-space-y-px rounded-md shadow-sm">
+            <div>
+              <label htmlFor="email-address" className="sr-only">
+                Email address
+              </label>
               <input
-                ref={emailRef}
-                id="email"
-                required
-                autoFocus={true}
+                id="email-address"
                 name="email"
                 type="email"
                 autoComplete="email"
+                required
+                className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-7 bg-gray-3 px-3 py-2 text-gray-12 placeholder-gray-8 focus:z-10 focus:border-primary-8 focus:outline-none focus:ring-primary-8 sm:text-sm"
+                placeholder="Email address"
+                ref={emailRef}
+                autoFocus={true}
                 aria-invalid={actionData?.errors?.email ? true : undefined}
                 aria-describedby="email-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
               />
-              {actionData?.errors?.email && (
-                <div className="pt-1 text-red-700" id="email-error">
-                  {actionData.errors.email}
-                </div>
-              )}
             </div>
-          </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Password
-            </label>
-            <div className="mt-1">
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
               <input
                 id="password"
-                ref={passwordRef}
                 name="password"
                 type="password"
                 autoComplete="new-password"
+                required
+                className="relative block w-full appearance-none rounded-none border border-gray-7 bg-gray-3 px-3 py-2 text-gray-12 placeholder-gray-8 focus:z-10 focus:border-primary-8 focus:outline-none focus:ring-primary-8 sm:text-sm"
+                placeholder="Password"
+                ref={passwordRef}
                 aria-invalid={actionData?.errors?.password ? true : undefined}
                 aria-describedby="password-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
               />
-              {actionData?.errors?.password && (
-                <div className="pt-1 text-red-700" id="password-error">
-                  {actionData.errors.password}
-                </div>
-              )}
+            </div>
+            <div>
+              <label htmlFor="confirm-password" className="sr-only">
+                Password
+              </label>
+              <input
+                id="confirm-password"
+                name="confirm-password"
+                type="password"
+                autoComplete="new-password"
+                required
+                className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-7 bg-gray-3 px-3 py-2 text-gray-12 placeholder-gray-8 focus:z-10 focus:border-primary-8 focus:outline-none focus:ring-primary-8 sm:text-sm"
+                placeholder="confirm password"
+              />
             </div>
           </div>
 
-          <input type="hidden" name="redirectTo" value={redirectTo} />
-          <button
-            type="submit"
-            className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-          >
-            Create Account
-          </button>
-          <div className="flex items-center justify-center">
-            <div className="text-center text-sm text-gray-500">
-              Already have an account?{' '}
-              <RemixReact.Link
-                className="text-blue-500 underline"
-                to={{
-                  pathname: '/login',
-                  search: searchParams.toString(),
-                }}
-              >
-                Log in
-              </RemixReact.Link>
-            </div>
+          <div className="flex items-center">
+            <input
+              id="remember"
+              name="remember"
+              type="checkbox"
+              className="h-4 w-4 rounded border-gray-7 bg-gray-3 text-primary-9 focus:outline-none focus:outline-offset-0 focus:outline-gray-1 focus:ring-primary-8"
+            />
+            <label
+              htmlFor="remember"
+              className="ml-2 block text-sm text-gray-12"
+            >
+              Remember me
+            </label>
           </div>
+
+          <input type="hidden" name="redirectTo" value={redirectTo} />
+
+          <Button type="submit" className="flex w-full justify-center">
+            Sign up
+          </Button>
         </RemixReact.Form>
       </div>
     </div>
