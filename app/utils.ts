@@ -89,7 +89,8 @@ export function useUser(): {
 
 export function useActiveNavigation(to: string): boolean {
   const { pathname } = RemixReact.useLocation()
-  return RemixReact.useResolvedPath(to).pathname === pathname
+  const resolvedPath = RemixReact.useResolvedPath(to).pathname
+  return resolvedPath === pathname || `${resolvedPath}/` === pathname
 }
 
 export function validateEmail(email: unknown): email is string {
@@ -97,7 +98,7 @@ export function validateEmail(email: unknown): email is string {
 }
 
 export function getImageSrc(str: string): string {
-  return str.toLowerCase().replace(/ /g, '_')
+  return str.toLowerCase().replace(/[-\s]/g, '_')
 }
 
 export function toSnakeCase(str: string): string {
@@ -112,20 +113,21 @@ export function toSnakeCase(str: string): string {
 export function toCapitalized(str: string): string {
   return str
     .toLowerCase()
-    .replace(/_/g, ' ')
+    .replace(/[_-]/g, ' ')
     .replace(/\b\w/g, (x) => x.toUpperCase())
 }
 
 export function toConstCase(str: string): string {
-  return str.replace(/-/g, '_').toUpperCase()
+  return str.replace(/[-\s]/g, '_').toUpperCase()
 }
 
 export function splitPerCapitalCase(str: string): string {
-  return str.split(/(?=[A-Z])/g).join(' ')
+  return str.replace(/[_-\s]/g, '').split(/(?=[A-Z])/g).join(' ')
 }
 
 if (process.env.NODE_ENV === 'test' && import.meta.vitest) {
   const { test } = import.meta.vitest
+
   test('validateEmail returns false for non-emails', () => {
     expect(validateEmail(undefined)).toBe(false)
     expect(validateEmail(null)).toBe(false)
@@ -136,5 +138,40 @@ if (process.env.NODE_ENV === 'test' && import.meta.vitest) {
 
   test('validateEmail returns true for emails', () => {
     expect(validateEmail('jody@jodygeraldo.com')).toBe(true)
+  })
+
+  test('getImageSrc returns lowercase snake case', () => {
+    expect(getImageSrc('ImaGe')).toBe('image')
+    expect(getImageSrc('Image Image')).toBe('image_image')
+    expect(getImageSrc('Image-Image')).toBe('image_image')
+    expect(getImageSrc('Image Image')).toBe('image_image')
+  })
+
+  test('toSnakeCase returns lowercase snake case', () => {
+    expect(toSnakeCase('SnakeCase')).toBe('snake_case')
+    expect(toSnakeCase('Snake Case')).toBe('snake_case')
+    expect(toSnakeCase('snake case')).toBe('snake_case')
+    expect(toSnakeCase('snake-case')).toBe('snake_case')
+  })
+
+  test('toCapitalized returns capitalize case', () => {
+    expect(toCapitalized('capitalized')).toBe('Capitalized')
+    expect(toCapitalized('tWo words')).toBe('Two Words')
+    expect(toCapitalized('tWo-words')).toBe('Two Words')
+    expect(toCapitalized('tWo_words')).toBe('Two Words')
+  })
+
+  test('toConstCase returns capitalize case', () => {
+    expect(toConstCase('constcase')).toBe('CONSTCASE')
+    expect(toConstCase('const case')).toBe('CONST_CASE')
+    expect(toConstCase('CONST-case')).toBe('CONST_CASE')
+    expect(toConstCase('const_case')).toBe('CONST_CASE')
+    expect(toConstCase('const_case')).toBe('CONST_CASE')
+  })
+
+  test('splitPerCapitalCase return splitted capital character', () => {
+    expect(splitPerCapitalCase('sPlIttEd')).toBe('s Pl Itt Ed')
+    expect(splitPerCapitalCase('s Pl IttEd')).toBe('s Pl Itt Ed')
+    expect(splitPerCapitalCase('s-Pl_IttEd')).toBe('s Pl Itt Ed')
   })
 }
