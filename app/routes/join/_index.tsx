@@ -1,14 +1,31 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as React from 'react'
+import * as RemixParamsHelper from 'remix-params-helper'
+import * as Zod from 'zod'
 import Button from '~/components/Button'
 import Logo from '~/components/Logo'
 import * as UserModel from '~/models/user.server'
 import * as Session from '~/session.server'
-import * as Utils from '~/utils'
 
 export const meta: RemixNode.MetaFunction = () => ({
   title: 'Sign up - Traveler Main',
+})
+
+const ParamsSchema = Zod.object({
+  email: Zod.string().email(),
+  password: Zod.string()
+    .min(8, { message: 'Password must be at least 8 characters' })
+    .max(16, {
+      message: 'Password must be at most 16 characters',
+    }),
+  confirmPassword: Zod.string()
+    .min(8, { message: 'Password must be at least 8 characters' })
+    .max(16, {
+      message: 'Password must be at most 16 characters',
+    }),
+  redirectTo: Zod.string(),
+  remember: Zod.string().optional(),
 })
 
 export const loader: RemixNode.LoaderFunction = async ({ request }) => {
@@ -25,28 +42,19 @@ interface ActionData {
 }
 
 export const action: RemixNode.ActionFunction = async ({ request }) => {
-  const formData = await request.formData()
-  const email = formData.get('email')
-  const password = formData.get('password')
-  const redirectTo = Utils.safeRedirect(formData.get('redirectTo'), '/')
-
-  if (!Utils.validateEmail(email)) {
+  const result = await RemixParamsHelper.getFormData(request, ParamsSchema)
+  if (!result.success) {
     return RemixNode.json<ActionData>(
-      { errors: { email: 'Email is invalid' } },
+      { errors: result.errors },
       { status: 400 }
     )
   }
 
-  if (typeof password !== 'string') {
-    return RemixNode.json<ActionData>(
-      { errors: { password: 'Password is required' } },
-      { status: 400 }
-    )
-  }
+  const { email, password, confirmPassword, redirectTo, remember } = result.data
 
-  if (password.length < 8) {
+  if (password !== confirmPassword) {
     return RemixNode.json<ActionData>(
-      { errors: { password: 'Password is too short' } },
+      { errors: { password: 'Passwords do not match' } },
       { status: 400 }
     )
   }
@@ -65,17 +73,18 @@ export const action: RemixNode.ActionFunction = async ({ request }) => {
     request,
     userId: user.id,
     accountId: user.accounts[0].id,
-    remember: false,
+    remember: remember === 'on' ? true : false,
     redirectTo,
   })
 }
 
 export default function Join() {
   const [searchParams] = RemixReact.useSearchParams()
-  const redirectTo = searchParams.get('redirectTo') ?? undefined
+  const redirectTo = searchParams.get('redirectTo') ?? '/character'
   const actionData = RemixReact.useActionData() as ActionData
   const emailRef = React.useRef<HTMLInputElement>(null)
   const passwordRef = React.useRef<HTMLInputElement>(null)
+  const inputProps = RemixParamsHelper.useFormInputProps(ParamsSchema)
 
   React.useEffect(() => {
     if (actionData?.errors?.email) {
@@ -112,16 +121,14 @@ export default function Join() {
               </label>
               <input
                 id="email-address"
-                name="email"
-                type="email"
                 autoComplete="email"
-                required
                 className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-7 bg-gray-3 px-3 py-2 text-gray-12 placeholder-gray-8 focus:z-10 focus:border-primary-8 focus:outline-none focus:ring-primary-8 sm:text-sm"
                 placeholder="Email address"
                 ref={emailRef}
                 autoFocus={true}
                 aria-invalid={actionData?.errors?.email ? true : undefined}
                 aria-describedby="email-error"
+                {...inputProps('email')}
               />
             </div>
             <div>
@@ -130,15 +137,14 @@ export default function Join() {
               </label>
               <input
                 id="password"
-                name="password"
-                type="password"
                 autoComplete="new-password"
-                required
                 className="relative block w-full appearance-none rounded-none border border-gray-7 bg-gray-3 px-3 py-2 text-gray-12 placeholder-gray-8 focus:z-10 focus:border-primary-8 focus:outline-none focus:ring-primary-8 sm:text-sm"
                 placeholder="Password"
                 ref={passwordRef}
                 aria-invalid={actionData?.errors?.password ? true : undefined}
                 aria-describedby="password-error"
+                {...inputProps('password')}
+                type="password"
               />
             </div>
             <div>
@@ -147,14 +153,28 @@ export default function Join() {
               </label>
               <input
                 id="confirm-password"
-                name="confirm-password"
-                type="password"
                 autoComplete="new-password"
-                required
                 className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-7 bg-gray-3 px-3 py-2 text-gray-12 placeholder-gray-8 focus:z-10 focus:border-primary-8 focus:outline-none focus:ring-primary-8 sm:text-sm"
                 placeholder="confirm password"
+                {...inputProps('confirmPassword')}
+                type="password"
               />
             </div>
+
+            {actionData?.errors && (
+              <div className="mt-1">
+                {actionData?.errors?.email && (
+                  <div className="text-danger-11" id="email-error">
+                    {actionData.errors.email}
+                  </div>
+                )}
+                {actionData?.errors?.password && (
+                  <div className="text-danger-11" id="password-error">
+                    {actionData.errors.password}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="flex items-center">
