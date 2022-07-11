@@ -13,7 +13,7 @@ import * as Column from './column'
 
 export const meta: RemixNode.MetaFunction = ({ params }) => ({
   title: `${params.name} - Traveler Main`,
-  description : `${params.name} progression required materials table`
+  description: `${params.name} progression required materials table`,
 })
 
 interface LoaderData {

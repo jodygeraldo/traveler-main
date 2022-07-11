@@ -12,7 +12,7 @@ import * as Session from '~/session.server'
 
 export const meta: RemixNode.MetaFunction = ({ params }) => ({
   title: `${params.name} Manual Level Up - Traveler Main`,
-  description: `Set ${params.name} progression manually`
+  description: `Set ${params.name} progression manually`,
 })
 
 const ParamsSchema = Zod.object({

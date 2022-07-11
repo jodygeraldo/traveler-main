@@ -10,7 +10,7 @@ The app currently live [here](https://traveler-main.fly.dev/).
 ### 2. Install dependencies
 
 ```sh
-npm install 
+npm install
 ```
 
 ### 3. Setup environment variables

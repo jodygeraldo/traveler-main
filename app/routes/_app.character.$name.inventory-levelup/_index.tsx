@@ -19,7 +19,7 @@ import * as Utils from '~/utils'
 
 export const meta: RemixNode.MetaFunction = ({ params }) => ({
   title: `${params.name} Inventory Level Up - Traveler Main`,
-  description: `Help you set ${params.name} progression with inventory system integration`
+  description: `Help you set ${params.name} progression with inventory system integration`,
 })
 
 const ParamsSchema = Zod.object({

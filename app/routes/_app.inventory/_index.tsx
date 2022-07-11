@@ -5,7 +5,7 @@ import * as Utils from '~/utils'
 
 export const meta: RemixNode.MetaFunction = () => ({
   title: `Inventory - Traveler Main`,
-  description : `Inventory system to help you track what you need farm to max out everything`
+  description: `Inventory system to help you track what you need farm to max out everything`,
 })
 
 export default function InventoryLayout() {
