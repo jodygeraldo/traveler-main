@@ -5,6 +5,10 @@ import * as UserModel from '~/models/user.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
 
+export const meta: RemixNode.MetaFunction = () => ({
+  title: 'Sign up - Traveler Main',
+})
+
 export const loader: RemixNode.LoaderFunction = async ({ request }) => {
   const userId = await Session.getUserId(request)
   if (userId) return RemixNode.redirect('/')
@@ -62,12 +66,6 @@ export const action: RemixNode.ActionFunction = async ({ request }) => {
     remember: false,
     redirectTo,
   })
-}
-
-export const meta: RemixNode.MetaFunction = () => {
-  return {
-    title: 'Sign Up',
-  }
 }
 
 export default function Join() {

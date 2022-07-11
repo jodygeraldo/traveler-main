@@ -17,6 +17,11 @@ import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
 
+export const meta: RemixNode.MetaFunction = ({ params }) => ({
+  title: `${params.name} Inventory Level Up - Traveler Main`,
+  description: `Help you set ${params.name} progression with inventory system integration`,
+})
+
 const ParamsSchema = Zod.object({
   intent: Zod.enum(['level', 'requiredLevel']),
   characterLevel: Zod.number().min(1).max(90).optional(),

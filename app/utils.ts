@@ -122,7 +122,10 @@ export function toConstCase(str: string): string {
 }
 
 export function splitPerCapitalCase(str: string): string {
-  return str.replace(/[_-\s]/g, '').split(/(?=[A-Z])/g).join(' ')
+  return str
+    .replace(/[_-\s]/g, '')
+    .split(/(?=[A-Z])/g)
+    .join(' ')
 }
 
 if (process.env.NODE_ENV === 'test' && import.meta.vitest) {

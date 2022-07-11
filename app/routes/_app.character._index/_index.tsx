@@ -9,6 +9,10 @@ import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
 
+export const meta: RemixNode.MetaFunction = () => ({
+  title: 'Characters - Traveler Main',
+})
+
 interface LoaderData {
   characters: CharacterData.Character[]
 }

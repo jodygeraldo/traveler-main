@@ -11,6 +11,11 @@ import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as Column from './column'
 
+export const meta: RemixNode.MetaFunction = ({ params }) => ({
+  title: `${params.name} - Traveler Main`,
+  description: `${params.name} progression required materials table`,
+})
+
 interface LoaderData {
   character: CharacterData.Character
   ascensionMaterial: CharacterData.CharacterAscension[]
