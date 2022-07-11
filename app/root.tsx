@@ -16,6 +16,9 @@ export const meta: RemixNode.MetaFunction = () => ({
   charset: 'utf-8',
   title: 'Traveler Main',
   viewport: 'width=device-width,initial-scale=1',
+  description:
+    'Traveler Main is an app for Genshin Impact nerds to use to track progression of characters to the max',
+  keywords: 'Genshin Impact,progression,items',
 })
 
 interface LoaderData {

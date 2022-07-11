@@ -10,6 +10,11 @@ import * as CharacterData from '~/data/characters'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 
+export const meta: RemixNode.MetaFunction = ({ params }) => ({
+  title: `${params.name} Manual Level Up - Traveler Main`,
+  description: `Set ${params.name} progression manually`
+})
+
 const ParamsSchema = Zod.object({
   level: Zod.number().min(1).max(90),
   ascension: Zod.number().min(0).max(6),
