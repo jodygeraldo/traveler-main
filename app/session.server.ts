@@ -116,7 +116,8 @@ export async function createUserSession({
   return RemixNode.redirect(redirectTo, {
     headers: {
       'Set-Cookie': await sessionStorage.commitSession(session, {
-        maxAge: remember ? 60 * 60 * 24 * 7 : undefined,
+        // 3 months
+        maxAge: remember ? 60 * 60 * 24 * 30 * 3 : undefined,
       }),
     },
   })

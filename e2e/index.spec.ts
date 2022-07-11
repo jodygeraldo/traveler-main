@@ -8,7 +8,7 @@ test.describe('index', () => {
 
     await page.locator("a[href='/join']").click()
 
-    await expect(page.locator('text=Create Account')).toBeVisible()
+    await expect(page.locator('text=Sign up new account')).toBeVisible()
   })
 
   test('can navigate to the log in page', async ({ page }) => {
@@ -16,6 +16,6 @@ test.describe('index', () => {
 
     await page.locator("a[href='/login']").click()
 
-    await expect(page.locator('text=Log in')).toBeVisible()
+    await expect(page.locator('text=Sign in to your account')).toBeVisible()
   })
 })
