@@ -1,10 +1,10 @@
 import * as RemixReact from '@remix-run/react'
 import * as React from 'react'
-import * as RemixImage from 'remix-image'
 import * as Badge from '~/components/Badge'
 import * as Icon from '~/components/Icon'
 import type * as ItemData from '~/data/items'
 import * as Utils from '~/utils'
+import Image from './Image'
 
 interface Props {
   items: ItemData.ItemWithQuantity[]
@@ -41,14 +41,11 @@ export default function ItemList({ items }: Props) {
       {items.map((item) => (
         <li key={item.name} className="col-span-1 flex rounded-md shadow-sm">
           <div className="flex flex-1 items-center justify-between truncate rounded-md border border-gray-6 bg-gray-2">
-            <RemixImage.Image
+            <Image
               src={`/image/item/${Utils.getImageSrc(item.name)}.png`}
               alt=""
               className="max-h-10 w-10 flex-shrink-0 pl-2"
               width={40}
-              responsive={[{ size: { width: 40 } }]}
-              loading="lazy"
-              dprVariants={[1, 2, 3]}
             />
             <div className="flex-1 space-y-1 truncate px-4 py-2 text-sm">
               <h3 className="truncate font-medium text-gray-12">{item.name}</h3>

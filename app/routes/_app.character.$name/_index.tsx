@@ -1,7 +1,7 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
-import * as RemixImage from 'remix-image'
 import invariant from 'tiny-invariant'
+import Image from '~/components/Image'
 import Tabs from '~/components/Tabs'
 import * as CharacterData from '~/data/characters'
 import * as Utils from '~/utils'
@@ -72,14 +72,12 @@ export default function CharacterLayout() {
 
 function ConstellationImage({ name }: { name: string }) {
   return (
-    <RemixImage.Image
+    <Image
       src={`/image/constellation/${Utils.getImageSrc(name)}.png`}
       alt=""
       className="h-8 w-8 flex-shrink-0"
       width={32}
       height={32}
-      responsive={[{ size: { width: 32, height: 32 } }]}
-      dprVariants={[1, 2, 3]}
     />
   )
 }

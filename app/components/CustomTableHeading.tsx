@@ -1,5 +1,5 @@
-import * as RemixImage from 'remix-image'
 import * as Utils from '~/utils'
+import Image from './Image'
 import Tooltip from './Tooltip'
 
 interface Props {
@@ -24,7 +24,7 @@ export function CharacterCustomTableHeading({
       <span className="ml-2 inline-flex flex-shrink-0 gap-1 rounded-full bg-gray-2 p-1">
         {talent.map((t, i) => (
           <Tooltip key={talentName[i]} text={talentName[i]}>
-            <RemixImage.Image
+            <Image
               src={`/image/talent/${t}_${
                 t === 'normal_attack'
                   ? weapon.toLowerCase()
@@ -34,8 +34,6 @@ export function CharacterCustomTableHeading({
               className="h-8 w-8 flex-shrink-0"
               width={32}
               height={32}
-              responsive={[{ size: { width: 32, height: 32 } }]}
-              dprVariants={[1, 2, 3]}
             />
           </Tooltip>
         ))}
@@ -67,27 +65,23 @@ export function TravelerGeoCustomTableHeading({
         {talent === 'elemental' ? (
           elemental.map((t, i) => (
             <Tooltip key={talentName[i]} text={talentName[i]}>
-              <RemixImage.Image
+              <Image
                 src={`/image/talent/${t}_${Utils.getImageSrc(name)}.png`}
                 alt=""
                 className="h-8 w-8 flex-shrink-0"
                 width={32}
                 height={32}
-                responsive={[{ size: { width: 32, height: 32 } }]}
-                dprVariants={[1, 2, 3]}
               />
             </Tooltip>
           ))
         ) : (
           <Tooltip text={talentName}>
-            <RemixImage.Image
+            <Image
               src={`/image/talent/normal_attack_sword.png`}
               alt=""
               className="h-8 w-8 flex-shrink-0"
               width={32}
               height={32}
-              responsive={[{ size: { width: 32, height: 32 } }]}
-              dprVariants={[1, 2, 3]}
             />
           </Tooltip>
         )}
@@ -99,3 +93,4 @@ export function TravelerGeoCustomTableHeading({
 const Character = CharacterCustomTableHeading
 const TravelerGeo = TravelerGeoCustomTableHeading
 export { Character, TravelerGeo }
+
