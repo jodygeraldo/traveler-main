@@ -1,21 +1,27 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as React from 'react'
+import * as RemixParamsHelper from 'remix-params-helper'
+import * as Zod from 'zod'
 import Button from '~/components/Button'
 import Logo from '~/components/Logo'
 import * as UserModel from '~/models/user.server'
 import * as Session from '~/session.server'
-import * as Utils from '~/utils'
 
 export const meta: RemixNode.MetaFunction = () => ({
   title: 'Login - Traveler Main',
 })
 
-export const loader: RemixNode.LoaderFunction = async ({ request }) => {
-  const userId = await Session.getUserId(request)
-  if (userId) return RemixNode.redirect('/')
-  return RemixNode.json({})
-}
+const ParamsSchema = Zod.object({
+  email: Zod.string().email(),
+  password: Zod.string()
+    .min(8, { message: 'Password must be at least 8 characters' })
+    .max(16, {
+      message: 'Password must be at most 16 characters',
+    }),
+  redirectTo: Zod.string(),
+  remember: Zod.string().optional(),
+})
 
 interface ActionData {
   errors?: {
@@ -25,35 +31,15 @@ interface ActionData {
 }
 
 export const action: RemixNode.ActionFunction = async ({ request }) => {
-  const formData = await request.formData()
-  const email = formData.get('email')
-  const password = formData.get('password')
-  const redirectTo = Utils.safeRedirect(
-    formData.get('redirectTo'),
-    '/inventory'
-  )
-  const remember = formData.get('remember')
-
-  if (!Utils.validateEmail(email)) {
+  const result = await RemixParamsHelper.getFormData(request, ParamsSchema)
+  if (!result.success) {
     return RemixNode.json<ActionData>(
-      { errors: { email: 'Email is invalid' } },
+      { errors: result.errors },
       { status: 400 }
     )
   }
 
-  if (typeof password !== 'string') {
-    return RemixNode.json<ActionData>(
-      { errors: { password: 'Password is required' } },
-      { status: 400 }
-    )
-  }
-
-  if (password.length < 8) {
-    return RemixNode.json<ActionData>(
-      { errors: { password: 'Password is too short' } },
-      { status: 400 }
-    )
-  }
+  const { email, password, redirectTo, remember } = result.data
 
   const user = await UserModel.verifyLogin(email, password)
 
@@ -73,12 +59,19 @@ export const action: RemixNode.ActionFunction = async ({ request }) => {
   })
 }
 
+export const loader: RemixNode.LoaderFunction = async ({ request }) => {
+  const userId = await Session.getUserId(request)
+  if (userId) return RemixNode.redirect('/')
+  return RemixNode.json({})
+}
+
 export default function LoginPage() {
   const [searchParams] = RemixReact.useSearchParams()
   const redirectTo = searchParams.get('redirectTo') || '/character'
   const actionData = RemixReact.useActionData() as ActionData
   const emailRef = React.useRef<HTMLInputElement>(null)
   const passwordRef = React.useRef<HTMLInputElement>(null)
+  const inputProps = RemixParamsHelper.useFormInputProps(ParamsSchema)
 
   React.useEffect(() => {
     if (actionData?.errors?.email) {
@@ -109,21 +102,19 @@ export default function LoginPage() {
         <RemixReact.Form method="post" className="mt-8 space-y-6">
           <div className="-space-y-px rounded-md shadow-sm">
             <div>
-              <label htmlFor="email-address" className="sr-only">
+              <label htmlFor="email" className="sr-only">
                 Email address
               </label>
               <input
-                id="email-address"
-                name="email"
-                type="email"
+                id="email"
                 autoComplete="email"
-                required
                 className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-7 bg-gray-3 px-3 py-2 text-gray-12 placeholder-gray-8 focus:z-10 focus:border-primary-8 focus:outline-none focus:ring-primary-8 sm:text-sm"
                 placeholder="Email address"
                 ref={emailRef}
                 autoFocus={true}
                 aria-invalid={actionData?.errors?.email ? true : undefined}
                 aria-describedby="email-error"
+                {...inputProps('email')}
               />
             </div>
             <div>
@@ -132,15 +123,14 @@ export default function LoginPage() {
               </label>
               <input
                 id="password"
-                name="password"
-                type="password"
                 autoComplete="current-password"
-                required
                 className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-7 bg-gray-3 px-3 py-2 text-gray-12 placeholder-gray-8 focus:z-10 focus:border-primary-8 focus:outline-none focus:ring-primary-8 sm:text-sm"
                 placeholder="Password"
                 ref={passwordRef}
                 aria-invalid={actionData?.errors?.password ? true : undefined}
                 aria-describedby="password-error"
+                {...inputProps('password')}
+                type="password"
               />
             </div>
             <div className="mt-1">
@@ -175,8 +165,9 @@ export default function LoginPage() {
 
             <div className="text-sm">
               <RemixReact.Link
-                to="/reset-password"
-                className="font-medium text-primary-9 hover:text-primary-10"
+                to="#"
+                // className="font-medium text-primary-9 hover:text-primary-10"
+                className="pointer-events-none font-medium text-gray-6/50"
               >
                 Forgot your password?
               </RemixReact.Link>
