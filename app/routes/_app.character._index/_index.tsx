@@ -3,7 +3,7 @@ import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 import * as React from 'react'
-import Image from '~/components/Image'
+import * as RemixImage from 'remix-image'
 import * as CharacterData from '~/data/characters'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
@@ -63,13 +63,15 @@ function CharacterList({
                 <div className="group relative rounded-b-md bg-gray-3 shadow-sm hover:bg-gray-4">
                   <div className="absolute top-0 left-0">
                     <span className="sr-only">{character.vision} vision</span>
-                    <Image
+                    <RemixImage.Image
                       src={`/image/element/${character.vision.toLowerCase()}.png`}
                       alt=""
                       className="h-6 w-6"
                       aria-hidden
                       width={24}
                       height={24}
+                      responsive={[{ size: { width: 24, height: 24 } }]}
+                      dprVariants={[1, 2, 3]}
                     />
                   </div>
 
@@ -81,7 +83,7 @@ function CharacterList({
                       'rounded-t-md rounded-br-3xl'
                     )}
                   >
-                    <Image
+                    <RemixImage.Image
                       src={`/image/character/${Utils.getImageSrc(
                         character.name
                       )}.png`}
@@ -89,6 +91,8 @@ function CharacterList({
                       className="h-24 w-24 rounded-br-3xl"
                       width={96}
                       height={96}
+                      responsive={[{ size: { width: 96, height: 96 } }]}
+                      dprVariants={[1, 2, 3]}
                     />
                   </div>
                   <div className="mt-1 text-center">
@@ -134,17 +138,19 @@ function HoverCard({
             <p>Ascension {character.progression?.ascension ?? 0}</p>
             <div className="flex w-full items-center gap-3">
               <span className="inline-flex items-center gap-0.5">
-                <Image
+                <RemixImage.Image
                   src={`/image/talent/normal_attack_${character.weapon.toLowerCase()}.png`}
                   alt={character.talent[0]}
                   className="h-5 w-5 flex-shrink-0"
                   width={20}
                   height={20}
+                  responsive={[{ size: { width: 20, height: 20 } }]}
+                  dprVariants={[1, 2, 3]}
                 />
                 <span>{character.progression?.normalAttack ?? 1}</span>
               </span>
               <span className="inline-flex items-center gap-0.5">
-                <Image
+                <RemixImage.Image
                   src={`/image/talent/elemental_skill_${Utils.getImageSrc(
                     character.name
                   )}.png`}
@@ -152,18 +158,22 @@ function HoverCard({
                   className="h-5 w-5 flex-shrink-0"
                   width={20}
                   height={20}
+                  responsive={[{ size: { width: 20, height: 20 } }]}
+                  dprVariants={[1, 2, 3]}
                 />
                 <span>{character.progression?.elementalSkill ?? 1}</span>
               </span>
               <span className="inline-flex items-center gap-0.5">
-                <Image
-                  src={`/image/talent/elemental_burst_${Utils.getImageSrc(
+                <RemixImage.Image
+                  src={`/image/talent/elemental_skill_${Utils.getImageSrc(
                     character.name
                   )}.png`}
                   alt={character.talent[2]}
                   className="h-5 w-5 flex-shrink-0"
                   width={20}
                   height={20}
+                  responsive={[{ size: { width: 20, height: 20 } }]}
+                  dprVariants={[1, 2, 3]}
                 />
                 <span>{character.progression?.elementalBurst ?? 1}</span>
               </span>
