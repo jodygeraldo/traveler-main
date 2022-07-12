@@ -3,6 +3,7 @@ import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 import * as React from 'react'
+import Button from '~/components/Button'
 import Image from '~/components/Image'
 import * as CharacterData from '~/data/characters'
 import * as CharacterModel from '~/models/character.server'
@@ -35,9 +36,17 @@ export default function CharactersPage() {
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
       <main>
         <div className="space-y-12">
-          <h1 className="text-2xl font-bold leading-7 text-primary-12 sm:truncate sm:text-3xl">
-            Character
-          </h1>
+          <div>
+            <h1 className="text-2xl font-bold leading-7 text-primary-12 sm:truncate sm:text-3xl">
+              Character
+            </h1>
+
+            <div className="mt-2">
+              <RemixReact.Link to="./bulk-update">
+                <Button>Bulk update</Button>
+              </RemixReact.Link>
+            </div>
+          </div>
 
           <CharacterList characters={characters} />
         </div>

@@ -612,6 +612,35 @@ export function getCharacters(
   return updatedCharacters
 }
 
+export function getCharactersProgression(
+  userCharacters: Omit<DB.UserCharacter, 'id' | 'ownerId'>[]
+) {
+  const defaultProgression: Character['progression'] = {
+    level: 1,
+    ascension: 0,
+    normalAttack: 1,
+    elementalSkill: 1,
+    elementalBurst: 1,
+  }
+  return characters.map((character) => {
+    const userCharacter = userCharacters.find(
+      (c) => c.characterName === character.name
+    )
+    return {
+      name: character.name,
+      progression: userCharacter
+        ? {
+            level: userCharacter.level,
+            ascension: userCharacter.ascension,
+            normalAttack: userCharacter.normalAttack,
+            elementalSkill: userCharacter.elementalSkill,
+            elementalBurst: userCharacter.elementalBurst,
+          }
+        : defaultProgression,
+    }
+  })
+}
+
 export function validateCharacter(name: string) {
   return characters.findIndex((c) => c.name === name) !== -1
 }
