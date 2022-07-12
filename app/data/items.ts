@@ -328,7 +328,7 @@ export function getAllItems(
       userItems: inventory,
     }),
     talentBook: getItemsByType({
-      type: DB.ItemType.LOCAL_SPECIALTY,
+      type: DB.ItemType.TALENT_BOOK,
       userItems: inventory,
     }),
     talentBoss: getItemsByType({
