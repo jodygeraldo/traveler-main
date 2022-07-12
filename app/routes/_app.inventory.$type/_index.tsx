@@ -1,8 +1,10 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
+import * as React from 'react'
 import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import ItemList from '~/components/ItemList'
+import ItemSearch from '~/components/ItemSearch'
 import * as ItemData from '~/data/items'
 import * as DB from '~/db.server'
 import * as InventoryModel from '~/models/inventory.server'
@@ -47,17 +49,53 @@ export const loader: RemixNode.LoaderFunction = async ({ params, request }) => {
 export default function InventoryCategoryPage() {
   const { items, type } = RemixReact.useLoaderData<LoaderData>()
 
+  const [searchItems, setSearchItems] = React.useState<
+    ItemData.ItemWithQuantity[]
+  >([])
+  const [showSearch, setShowSearch] = React.useState(false)
+
+  const timerRef = React.useRef<NodeJS.Timeout>()
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (timerRef.current) clearTimeout(timerRef.current)
+    if (e.target.value === '') return setShowSearch(false)
+    setShowSearch(true)
+    const timer = setTimeout(() => {
+      const newSearchItems = items.filter((item) =>
+        item.name.toLowerCase().includes(e.target.value.toLowerCase())
+      )
+      setSearchItems(newSearchItems)
+    }, 100)
+    timerRef.current = timer
+  }
+
   return (
     <div className="space-y-12">
-      <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
-        Inventory
-      </h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
+          Inventory
+        </h1>
+
+        <div>
+          <ItemSearch changeHandler={handleChange} />
+        </div>
+      </div>
 
       <div>
-        <h2 className="text-lg font-medium leading-6 text-gray-12">
-          {Utils.toCapitalized(type)}
-        </h2>
-        <ItemList items={items} />
+        {showSearch ? (
+          <>
+            <h2 className="text-lg font-medium leading-6 text-gray-12">
+              Search
+            </h2>
+            <ItemList items={searchItems} />
+          </>
+        ) : (
+          <>
+            <h2 className="text-lg font-medium leading-6 text-gray-12">
+              {Utils.toCapitalized(type)}
+            </h2>
+            <ItemList items={items} />
+          </>
+        )}
       </div>
     </div>
   )
