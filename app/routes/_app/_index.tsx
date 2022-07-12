@@ -49,7 +49,7 @@ function AppNavbar() {
                     to="/"
                     className="rounded-md focus:z-10 focus:outline-none focus:ring-2 focus:ring-primary-8 focus:ring-offset-2 focus:ring-offset-gray-2"
                   >
-                    <Logo className='block h-8 w-auto' />
+                    <Logo className="block h-8 w-auto" />
                   </RemixReact.Link>
 
                   <nav
