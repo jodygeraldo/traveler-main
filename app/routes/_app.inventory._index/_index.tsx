@@ -57,12 +57,12 @@ export default function InventoryPage() {
 
   return (
     <div className="space-y-12">
-      <div className="flex items-center justify-between">
+      <div className="sm:flex sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
           Inventory
         </h1>
 
-        <div>
+        <div className="mt-2 sm:mt-0">
           <ItemSearch changeHandler={handleChange} />
         </div>
       </div>
