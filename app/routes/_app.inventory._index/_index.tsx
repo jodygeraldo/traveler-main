@@ -1,6 +1,8 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
+import * as React from 'react'
 import ItemList from '~/components/ItemList'
+import ItemSearch from '~/components/ItemSearch'
 import * as ItemData from '~/data/items'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
@@ -21,55 +23,110 @@ export const loader: RemixNode.LoaderFunction = async ({ request }) => {
 export default function InventoryPage() {
   const { items } = RemixReact.useLoaderData<LoaderData>()
 
+  const fullItems = React.useMemo(
+    () => [
+      ...items.common,
+      ...items.ascensionGem,
+      ...items.ascensionBoss,
+      ...items.localSpecialty,
+      ...items.talentBook,
+      ...items.talentBoss,
+      ...items.special,
+    ],
+    [items]
+  )
+
+  const [searchItems, setSearchItems] = React.useState<
+    ItemData.ItemWithQuantity[]
+  >([])
+  const [showSearch, setShowSearch] = React.useState(false)
+
+  const timerRef = React.useRef<NodeJS.Timeout>()
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (timerRef.current) clearTimeout(timerRef.current)
+    if (e.target.value === '') return setShowSearch(false)
+    setShowSearch(true)
+    const timer = setTimeout(() => {
+      const newSearchItems = fullItems.filter((item) =>
+        item.name.toLowerCase().includes(e.target.value.toLowerCase())
+      )
+      setSearchItems(newSearchItems)
+    }, 100)
+    timerRef.current = timer
+  }
+
   return (
     <div className="space-y-12">
-      <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
-        Inventory
-      </h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
+          Inventory
+        </h1>
 
-      <div>
-        <h2 className="text-lg font-medium leading-6 text-gray-12">Common</h2>
-        <ItemList items={items.common} />
+        <div>
+          <ItemSearch changeHandler={handleChange} />
+        </div>
       </div>
 
-      <div>
-        <h2 className="text-lg font-medium leading-6 text-gray-12">
-          Ascension Gem
-        </h2>
-        <ItemList items={items.ascensionGem} />
-      </div>
+      <div className="space-y-12">
+        {showSearch ? (
+          <>
+            <h2 className="text-lg font-medium leading-6 text-gray-12">
+              Search
+            </h2>
+            <ItemList items={searchItems} />
+          </>
+        ) : (
+          <>
+            <div>
+              <h2 className="text-lg font-medium leading-6 text-gray-12">
+                Common
+              </h2>
+              <ItemList items={items.common} />
+            </div>
 
-      <div>
-        <h2 className="text-lg font-medium leading-6 text-gray-12">
-          Ascension Boss
-        </h2>
-        <ItemList items={items.ascensionBoss} />
-      </div>
+            <div>
+              <h2 className="text-lg font-medium leading-6 text-gray-12">
+                Ascension Gem
+              </h2>
+              <ItemList items={items.ascensionGem} />
+            </div>
 
-      <div>
-        <h2 className="text-lg font-medium leading-6 text-gray-12">
-          Local Specialty
-        </h2>
-        <ItemList items={items.localSpecialty} />
-      </div>
+            <div>
+              <h2 className="text-lg font-medium leading-6 text-gray-12">
+                Ascension Boss
+              </h2>
+              <ItemList items={items.ascensionBoss} />
+            </div>
 
-      <div>
-        <h2 className="text-lg font-medium leading-6 text-gray-12">
-          Talent Book
-        </h2>
-        <ItemList items={items.talentBook} />
-      </div>
+            <div>
+              <h2 className="text-lg font-medium leading-6 text-gray-12">
+                Local Specialty
+              </h2>
+              <ItemList items={items.localSpecialty} />
+            </div>
 
-      <div>
-        <h2 className="text-lg font-medium leading-6 text-gray-12">
-          Talent Boss
-        </h2>
-        <ItemList items={items.talentBoss} />
-      </div>
+            <div>
+              <h2 className="text-lg font-medium leading-6 text-gray-12">
+                Talent Book
+              </h2>
+              <ItemList items={items.talentBook} />
+            </div>
 
-      <div>
-        <h2 className="text-lg font-medium leading-6 text-gray-12">Special</h2>
-        <ItemList items={items.special} />
+            <div>
+              <h2 className="text-lg font-medium leading-6 text-gray-12">
+                Talent Boss
+              </h2>
+              <ItemList items={items.talentBoss} />
+            </div>
+
+            <div>
+              <h2 className="text-lg font-medium leading-6 text-gray-12">
+                Special
+              </h2>
+              <ItemList items={items.special} />
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
