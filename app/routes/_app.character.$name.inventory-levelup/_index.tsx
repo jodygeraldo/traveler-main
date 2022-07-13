@@ -280,7 +280,7 @@ function ItemWithImage({
             )}
           >
             <Image
-              src={`/image/item/${Utils.getImageSrc(item.name)}.png`}
+              src={`/item/${Utils.getImageSrc(item.name)}.png`}
               alt={item.name}
               className="h-16 w-16 rounded-br-2xl"
               width={64}

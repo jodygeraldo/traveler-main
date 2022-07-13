@@ -42,7 +42,7 @@ export default function ItemList({ items }: Props) {
         <li key={item.name} className="col-span-1 flex rounded-md shadow-sm">
           <div className="flex flex-1 items-center justify-between truncate rounded-md border border-gray-6 bg-gray-2">
             <Image
-              src={`/image/item/${Utils.getImageSrc(item.name)}.png`}
+              src={`/item/${Utils.getImageSrc(item.name)}.png`}
               alt=""
               className="max-h-10 w-10 flex-shrink-0 pl-2"
               width={40}

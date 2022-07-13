@@ -77,7 +77,7 @@ function CharacterList({
                   <div className="absolute top-0 left-0">
                     <span className="sr-only">{character.vision} vision</span>
                     <Image
-                      src={`/image/element/${character.vision.toLowerCase()}.png`}
+                      src={`/element/${character.vision.toLowerCase()}.png`}
                       alt=""
                       className="h-6 w-6"
                       aria-hidden
@@ -95,7 +95,7 @@ function CharacterList({
                     )}
                   >
                     <Image
-                      src={`/image/character/${Utils.getImageSrc(
+                      src={`/character/${Utils.getImageSrc(
                         character.name
                       )}.png`}
                       alt={character.name}
@@ -148,7 +148,7 @@ function HoverCard({
             <div className="flex w-full items-center gap-3">
               <span className="inline-flex items-center gap-0.5">
                 <Image
-                  src={`/image/talent/normal_attack_${character.weapon.toLowerCase()}.png`}
+                  src={`/talent/normal_attack_${character.weapon.toLowerCase()}.png`}
                   alt={character.talent[0]}
                   className="h-5 w-5 flex-shrink-0"
                   width={20}
@@ -158,7 +158,7 @@ function HoverCard({
               </span>
               <span className="inline-flex items-center gap-0.5">
                 <Image
-                  src={`/image/talent/elemental_skill_${Utils.getImageSrc(
+                  src={`/talent/elemental_skill_${Utils.getImageSrc(
                     character.name
                   )}.png`}
                   alt={character.talent[1]}
@@ -170,7 +170,7 @@ function HoverCard({
               </span>
               <span className="inline-flex items-center gap-0.5">
                 <Image
-                  src={`/image/talent/elemental_burst_${Utils.getImageSrc(
+                  src={`/talent/elemental_burst_${Utils.getImageSrc(
                     character.name
                   )}.png`}
                   alt={character.talent[2]}

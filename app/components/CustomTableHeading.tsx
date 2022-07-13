@@ -25,7 +25,7 @@ export function CharacterCustomTableHeading({
         {talent.map((t, i) => (
           <Tooltip key={talentName[i]} text={talentName[i]}>
             <Image
-              src={`/image/talent/${t}_${
+              src={`/talent/${t}_${
                 t === 'normal_attack'
                   ? weapon.toLowerCase()
                   : Utils.getImageSrc(name)
@@ -66,7 +66,7 @@ export function TravelerGeoCustomTableHeading({
           elemental.map((t, i) => (
             <Tooltip key={talentName[i]} text={talentName[i]}>
               <Image
-                src={`/image/talent/${t}_${Utils.getImageSrc(name)}.png`}
+                src={`/talent/${t}_${Utils.getImageSrc(name)}.png`}
                 alt=""
                 className="h-8 w-8 flex-shrink-0"
                 width={32}
@@ -77,7 +77,7 @@ export function TravelerGeoCustomTableHeading({
         ) : (
           <Tooltip text={talentName}>
             <Image
-              src={`/image/talent/normal_attack_sword.png`}
+              src={`/talent/normal_attack_sword.png`}
               alt=""
               className="h-8 w-8 flex-shrink-0"
               width={32}

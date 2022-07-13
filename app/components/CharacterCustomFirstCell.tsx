@@ -18,7 +18,7 @@ export default function CharacterCustomFirstCell({
   return talent.map((type, idx) => (
     <Tooltip key={talentName[idx]} text={talentName[idx]}>
       <Image
-        src={`/image/talent/${type}_${
+        src={`/talent/${type}_${
           type === 'normal_attack'
             ? weapon?.toLowerCase()
             : Utils.getImageSrc(name)

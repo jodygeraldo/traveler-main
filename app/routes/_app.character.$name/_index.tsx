@@ -73,9 +73,7 @@ export default function CharacterLayout() {
 function ConstellationImage({ name }: { name: string }) {
   return (
     <Image
-      src={`/image/constellation/${Utils.getImageSrc(name)}${
-        name === 'Shikanoin Heizou' ? '_v2' : ''
-      }.png`}
+      src={`/constellation/${Utils.getImageSrc(name)}.png`}
       alt=""
       className="h-8 w-8 flex-shrink-0"
       width={32}

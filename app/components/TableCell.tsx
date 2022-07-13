@@ -16,7 +16,7 @@ export default function TableCell({ quantity, text }: Props) {
     <div className="flex items-center">
       <Tooltip text={text}>
         <Image
-          src={`/image/item/${Utils.getImageSrc(text)}.png`}
+          src={`/item/${Utils.getImageSrc(text)}.png`}
           alt={text}
           className="h-8 w-8 flex-shrink-0"
           width={32}

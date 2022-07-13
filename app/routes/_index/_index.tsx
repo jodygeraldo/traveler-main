@@ -1,5 +1,4 @@
 import * as RemixReact from '@remix-run/react'
-import appCharacterImageUrl from '~/assets/app-character.png'
 import Button, * as Buttons from '~/components/Button'
 import Image from '~/components/Image'
 import Logo from '~/components/Logo'
@@ -55,7 +54,6 @@ export default function Index() {
               </div>
             </div>
           </div>
-
           <div className="sm:mx-auto sm:max-w-3xl sm:px-6">
             <div className="py-12 sm:relative sm:mt-12 sm:py-16 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
               <div className="hidden sm:block">
@@ -96,7 +94,7 @@ export default function Index() {
               <div className="relative -mr-40 pl-4 sm:mx-auto sm:max-w-3xl sm:px-0 lg:h-full lg:max-w-none lg:pl-12">
                 <Image
                   className="w-full rounded-md shadow-xl ring-1 ring-black ring-opacity-5 lg:h-full lg:w-auto lg:max-w-none"
-                  src={appCharacterImageUrl}
+                  src='/app-character.png'
                   width={1280}
                   alt=""
                 />
