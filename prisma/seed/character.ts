@@ -254,6 +254,13 @@ const characters = [
     rarity: 5,
   },
   {
+    name: 'Shikanoin Heizou',
+    region: Prisma.Region.INAZUMA,
+    vision: Prisma.Vision.ANEMO,
+    weapon: Prisma.Weapon.CATALYST,
+    rarity: 4,
+  },
+  {
     name: 'Sucrose',
     region: Prisma.Region.MONDSTADT,
     vision: Prisma.Vision.ANEMO,

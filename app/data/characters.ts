@@ -78,7 +78,7 @@ const characters: Character[] = [
     vision: DB.Vision.GEO,
     rarity: 5,
     talent: [
-      'Normal Attack: Favonius Bladework - Weiss',
+      'Favonius Bladework - Weiss',
       'Abiogenesis: Solar Isotoma',
       'Rite of Progeniture: Tectonic Tide',
     ],
@@ -88,14 +88,14 @@ const characters: Character[] = [
     weapon: DB.Weapon.BOW,
     vision: DB.Vision.CRYO,
     rarity: 5,
-    talent: ['Normal Attack: Rapid Fire', 'Frozen Wilds', 'Prophecies of Dawn'],
+    talent: ['Rapid Fire', 'Frozen Wilds', 'Prophecies of Dawn'],
   },
   {
     name: 'Amber',
     weapon: DB.Weapon.BOW,
     vision: DB.Vision.PYRO,
     rarity: 4,
-    talent: ['Normal Attack: Sharpshooter', 'Explosive Puppet', 'Fiery Rain'],
+    talent: ['Sharpshooter', 'Explosive Puppet', 'Fiery Rain'],
   },
   {
     name: 'Arataki Itto',
@@ -103,7 +103,7 @@ const characters: Character[] = [
     vision: DB.Vision.GEO,
     rarity: 5,
     talent: [
-      'Normal Attack: Fight Club Legend',
+      'Fight Club Legend',
       'Masatsu Zetsugi: Akaushi Burst!',
       'Royal Descent: Behold, Itto the Evil!',
     ],
@@ -113,29 +113,21 @@ const characters: Character[] = [
     weapon: DB.Weapon.CATALYST,
     vision: DB.Vision.HYDRO,
     rarity: 4,
-    talent: [
-      'Normal Attack: Whisper of Water',
-      'Let the Show Begin♪',
-      'Shining Miracle♪',
-    ],
+    talent: ['Whisper of Water', 'Let the Show Begin♪', 'Shining Miracle♪'],
   },
   {
     name: 'Beidou',
     weapon: DB.Weapon.CLAYMORE,
     vision: DB.Vision.ELECTRO,
     rarity: 4,
-    talent: ['Normal Attack: Oceanborne', 'Tidecaller', 'Stormbreaker'],
+    talent: ['Oceanborne', 'Tidecaller', 'Stormbreaker'],
   },
   {
     name: 'Bennett',
     weapon: DB.Weapon.SWORD,
     vision: DB.Vision.PYRO,
     rarity: 4,
-    talent: [
-      'Normal Attack: Strike of Fortune',
-      'Passion Overload',
-      'Fantastic Voyage',
-    ],
+    talent: ['Strike of Fortune', 'Passion Overload', 'Fantastic Voyage'],
   },
   {
     name: 'Chongyun',
@@ -143,7 +135,7 @@ const characters: Character[] = [
     vision: DB.Vision.CRYO,
     rarity: 4,
     talent: [
-      'Normal Attack: Demonbane',
+      'Demonbane',
       "Spirit Blade: Chonghua's Layered Frost",
       'Spirit Blade: Cloud-Parting Star',
     ],
@@ -153,14 +145,14 @@ const characters: Character[] = [
     weapon: DB.Weapon.CLAYMORE,
     vision: DB.Vision.PYRO,
     rarity: 5,
-    talent: ['Normal Attack: Tempered Sword', 'Searing Onslaught', 'Dawn'],
+    talent: ['Tempered Sword', 'Searing Onslaught', 'Dawn'],
   },
   {
     name: 'Diona',
     weapon: DB.Weapon.BOW,
     vision: DB.Vision.CRYO,
     rarity: 4,
-    talent: ['Normal Attack: Kätzlein Style', 'Icy Paws', 'Signature Mix'],
+    talent: ['Kätzlein Style', 'Icy Paws', 'Signature Mix'],
   },
   {
     name: 'Eula',
@@ -168,7 +160,7 @@ const characters: Character[] = [
     vision: DB.Vision.CRYO,
     rarity: 5,
     talent: [
-      'Normal Attack: Favonius Bladework - Edel',
+      'Favonius Bladework - Edel',
       'Icetide Vortex',
       'Glacial Illumination',
     ],
@@ -178,22 +170,14 @@ const characters: Character[] = [
     weapon: DB.Weapon.BOW,
     vision: DB.Vision.ELECTRO,
     rarity: 4,
-    talent: [
-      'Normal Attack: Bolts of Downfall',
-      'Nightrider',
-      'Midnight Phantasmagoria',
-    ],
+    talent: ['Bolts of Downfall', 'Nightrider', 'Midnight Phantasmagoria'],
   },
   {
     name: 'Ganyu',
     weapon: DB.Weapon.BOW,
     vision: DB.Vision.CRYO,
     rarity: 5,
-    talent: [
-      'Normal Attack: Liutian Archery',
-      'Trail of the Qilin',
-      'Celestial Shower',
-    ],
+    talent: ['Liutian Archery', 'Trail of the Qilin', 'Celestial Shower'],
   },
   {
     name: 'Gorou',
@@ -201,7 +185,7 @@ const characters: Character[] = [
     vision: DB.Vision.GEO,
     rarity: 4,
     talent: [
-      'Normal Attack: Ripping Fang Fletching',
+      'Ripping Fang Fletching',
       'Inuzaka All-Round Defense',
       'Juuga: Forward Unto Victory',
     ],
@@ -212,7 +196,7 @@ const characters: Character[] = [
     vision: DB.Vision.PYRO,
     rarity: 5,
     talent: [
-      'Normal Attack: Secret Spear of Wangsheng',
+      'Secret Spear of Wangsheng',
       'Guide to Afterlife',
       'Spirit Soother',
     ],
@@ -222,29 +206,21 @@ const characters: Character[] = [
     weapon: DB.Weapon.SWORD,
     vision: DB.Vision.ANEMO,
     rarity: 5,
-    talent: [
-      'Normal Attack: Favonius Bladework',
-      'Gale Blade',
-      'Dandelion Breeze',
-    ],
+    talent: ['Favonius Bladework', 'Gale Blade', 'Dandelion Breeze'],
   },
   {
     name: 'Kaedehara Kazuha',
     weapon: DB.Weapon.SWORD,
     vision: DB.Vision.ANEMO,
     rarity: 5,
-    talent: ['Normal Attack: Garyuu Bladework', 'Chihayaburu', 'Kazuha Slash'],
+    talent: ['Garyuu Bladework', 'Chihayaburu', 'Kazuha Slash'],
   },
   {
     name: 'Kaeya',
     weapon: DB.Weapon.SWORD,
     vision: DB.Vision.CRYO,
     rarity: 4,
-    talent: [
-      'Normal Attack: Ceremonial Bladework',
-      'Frostgnaw',
-      'Glacial Waltz',
-    ],
+    talent: ['Ceremonial Bladework', 'Frostgnaw', 'Glacial Waltz'],
   },
   {
     name: 'Kamisato Ayaka',
@@ -252,7 +228,7 @@ const characters: Character[] = [
     vision: DB.Vision.CRYO,
     rarity: 5,
     talent: [
-      'Normal Attack: Kamisato Art - Kabuki',
+      'Kamisato Art - Kabuki',
       'Kamisato Art: Hyouka',
       'Kamisato Art: Soumetsu',
     ],
@@ -263,7 +239,7 @@ const characters: Character[] = [
     vision: DB.Vision.HYDRO,
     rarity: 5,
     talent: [
-      'Normal Attack: Kamisato Art - Marobashi',
+      'Kamisato Art - Marobashi',
       'Kamisato Art: Kyouka',
       'Kamisato Art: Suiyuu',
     ],
@@ -273,18 +249,14 @@ const characters: Character[] = [
     weapon: DB.Weapon.SWORD,
     vision: DB.Vision.ELECTRO,
     rarity: 5,
-    talent: [
-      'Normal Attack: Yunlai Swordsmanship',
-      'Stellar Restoration',
-      'Starward Sword',
-    ],
+    talent: ['Yunlai Swordsmanship', 'Stellar Restoration', 'Starward Sword'],
   },
   {
     name: 'Klee',
     weapon: DB.Weapon.CATALYST,
     vision: DB.Vision.PYRO,
     rarity: 5,
-    talent: ['Normal Attack: Kaboom!', 'Jumpy Dumpty', "Sparks 'n' Splash"],
+    talent: ['Kaboom!', 'Jumpy Dumpty', "Sparks 'n' Splash"],
   },
   {
     name: 'Kujou Sara',
@@ -292,7 +264,7 @@ const characters: Character[] = [
     vision: DB.Vision.ELECTRO,
     rarity: 4,
     talent: [
-      'Normal Attack: Tengu Bowmanship',
+      'Tengu Bowmanship',
       'Tengu Stormcall',
       'Subjugation: Koukou Sendou',
     ],
@@ -303,7 +275,7 @@ const characters: Character[] = [
     vision: DB.Vision.ELECTRO,
     rarity: 4,
     talent: [
-      "Normal Attack: Shinobu's Shadowsword",
+      "Shinobu's Shadowsword",
       'Sanctifying Ring',
       'Gyoei Narukami Kariyama Rite',
     ],
@@ -313,7 +285,7 @@ const characters: Character[] = [
     weapon: DB.Weapon.CATALYST,
     vision: DB.Vision.ELECTRO,
     rarity: 4,
-    talent: ['Normal Attack: Lightning Touch', 'Violet Arc', 'Lightning Rose'],
+    talent: ['Lightning Touch', 'Violet Arc', 'Lightning Rose'],
   },
   {
     name: 'Mona',
@@ -321,7 +293,7 @@ const characters: Character[] = [
     vision: DB.Vision.HYDRO,
     rarity: 5,
     talent: [
-      'Normal Attack: Ripple of Fate',
+      'Ripple of Fate',
       'Mirror Reflection of Doom',
       'Stellaris Phantasm',
     ],
@@ -331,18 +303,14 @@ const characters: Character[] = [
     weapon: DB.Weapon.CATALYST,
     vision: DB.Vision.GEO,
     rarity: 4,
-    talent: ['Normal Attack: Sparkling Scatter', 'Jade Screen', 'Starshatter'],
+    talent: ['Sparkling Scatter', 'Jade Screen', 'Starshatter'],
   },
   {
     name: 'Noelle',
     weapon: DB.Weapon.CLAYMORE,
     vision: DB.Vision.GEO,
     rarity: 4,
-    talent: [
-      'Normal Attack: Favonius Bladework - Maid',
-      'Breastplate',
-      'Sweeping Time',
-    ],
+    talent: ['Favonius Bladework - Maid', 'Breastplate', 'Sweeping Time'],
   },
   {
     name: 'Qiqi',
@@ -350,7 +318,7 @@ const characters: Character[] = [
     vision: DB.Vision.CRYO,
     rarity: 5,
     talent: [
-      'Normal Attack: Ancient Sword Art',
+      'Ancient Sword Art',
       'Adeptus Art: Herald of Frost',
       'Adeptus Art: Preserver of Fortune',
     ],
@@ -361,7 +329,7 @@ const characters: Character[] = [
     vision: DB.Vision.ELECTRO,
     rarity: 5,
     talent: [
-      'Normal Attack: Origin',
+      'Origin',
       'Transcendence: Baleful Omen',
       'Secret Art: Musou Shinsetsu',
     ],
@@ -371,7 +339,7 @@ const characters: Character[] = [
     weapon: DB.Weapon.CLAYMORE,
     vision: DB.Vision.ELECTRO,
     rarity: 4,
-    talent: ['Normal Attack: Steel Fang', 'Claw and Thunder', 'Lightning Fang'],
+    talent: ['Steel Fang', 'Claw and Thunder', 'Lightning Fang'],
   },
   {
     name: 'Rosaria',
@@ -379,7 +347,7 @@ const characters: Character[] = [
     vision: DB.Vision.CRYO,
     rarity: 4,
     talent: [
-      'Normal Attack: Spear of the Church',
+      'Spear of the Church',
       'Ravaging Confession',
       'Rites of Termination',
     ],
@@ -389,11 +357,7 @@ const characters: Character[] = [
     weapon: DB.Weapon.CATALYST,
     vision: DB.Vision.HYDRO,
     rarity: 5,
-    talent: [
-      'Normal Attack: The Shape of Water',
-      "Kurage's Oath",
-      "Nereid's Ascension",
-    ],
+    talent: ['The Shape of Water', "Kurage's Oath", "Nereid's Ascension"],
   },
   {
     name: 'Sayu',
@@ -401,7 +365,7 @@ const characters: Character[] = [
     vision: DB.Vision.ANEMO,
     rarity: 4,
     talent: [
-      'Normal Attack: Shuumatsuban Ninja Blade',
+      'Shuumatsuban Ninja Blade',
       'Yoohoo Art: Fuuin Dash',
       'Yoohoo Art: Mujina Flurry',
     ],
@@ -412,9 +376,20 @@ const characters: Character[] = [
     vision: DB.Vision.CRYO,
     rarity: 5,
     talent: [
-      'Normal Attack: Dawnstar Piercer',
+      'Dawnstar Piercer',
       'Spring Spirit Summoning',
       "Divine Maiden's Deliverance",
+    ],
+  },
+  {
+    name: 'Shikanoin Heizou',
+    weapon: DB.Weapon.CATALYST,
+    vision: DB.Vision.ANEMO,
+    rarity: 4,
+    talent: [
+      'Fudou Style Martial Arts',
+      'Heartstopper Strike',
+      'Windmuster Kick',
     ],
   },
   {
@@ -423,7 +398,7 @@ const characters: Character[] = [
     vision: DB.Vision.ANEMO,
     rarity: 4,
     talent: [
-      'Normal Attack: Wind Spirit Creation',
+      'Wind Spirit Creation',
       'Astable Anemohypostasis Creation - 6308',
       'Forbidden Creation - Isomer 75 / Type II',
     ],
@@ -434,7 +409,7 @@ const characters: Character[] = [
     vision: DB.Vision.HYDRO,
     rarity: 5,
     talent: [
-      'Normal Attack: Cutting Torrent',
+      'Cutting Torrent',
       'Foul Legacy: Raging Tide',
       'Havoc: Obliteration',
     ],
@@ -444,62 +419,42 @@ const characters: Character[] = [
     weapon: DB.Weapon.POLEARM,
     vision: DB.Vision.PYRO,
     rarity: 4,
-    talent: [
-      'Normal Attack: Swiftshatter Spear',
-      'Blazing Blessing',
-      'Crimson Ooyoroi',
-    ],
+    talent: ['Swiftshatter Spear', 'Blazing Blessing', 'Crimson Ooyoroi'],
   },
   {
     name: 'Traveler Anemo',
     weapon: DB.Weapon.SWORD,
     vision: DB.Vision.ANEMO,
     rarity: 5,
-    talent: [
-      'Normal Attack: Foreign Thundershock',
-      'Palm Vortex',
-      'Gust Surge',
-    ],
+    talent: ['Foreign Thundershock', 'Palm Vortex', 'Gust Surge'],
   },
   {
     name: 'Traveler Geo',
     weapon: DB.Weapon.SWORD,
     vision: DB.Vision.GEO,
     rarity: 5,
-    talent: [
-      'Normal Attack: Foreign Thundershock',
-      'Starfell Sword',
-      'Wake of Earth',
-    ],
+    talent: ['Foreign Thundershock', 'Starfell Sword', 'Wake of Earth'],
   },
   {
     name: 'Traveler Electro',
     weapon: DB.Weapon.SWORD,
     vision: DB.Vision.ELECTRO,
     rarity: 5,
-    talent: [
-      'Normal Attack: Foreign Thundershock',
-      'Lightning Blade',
-      'Bellowing Thunder',
-    ],
+    talent: ['Foreign Thundershock', 'Lightning Blade', 'Bellowing Thunder'],
   },
   {
     name: 'Venti',
     weapon: DB.Weapon.BOW,
     vision: DB.Vision.ANEMO,
     rarity: 5,
-    talent: [
-      'Normal Attack: Divine Marksmanship',
-      'Skyward Sonnet',
-      "Wind's Grand Ode",
-    ],
+    talent: ['Divine Marksmanship', 'Skyward Sonnet', "Wind's Grand Ode"],
   },
   {
     name: 'Xiangling',
     weapon: DB.Weapon.POLEARM,
     vision: DB.Vision.PYRO,
     rarity: 4,
-    talent: ['Normal Attack: Dough-Fu', 'Guoba Attack', 'Pyronado'],
+    talent: ['Dough-Fu', 'Guoba Attack', 'Pyronado'],
   },
   {
     name: 'Xiao',
@@ -507,7 +462,7 @@ const characters: Character[] = [
     vision: DB.Vision.ANEMO,
     rarity: 5,
     talent: [
-      'Normal Attack: Whirlwind Thrust',
+      'Whirlwind Thrust',
       'Lemniscatic Wind Cycling',
       'Bane of All Evil',
     ],
@@ -518,7 +473,7 @@ const characters: Character[] = [
     vision: DB.Vision.HYDRO,
     rarity: 4,
     talent: [
-      'Normal Attack: Guhua Style',
+      'Guhua Style',
       'Guhua Sword: Fatal Rainscreen',
       'Guhua Sword: Raincutter',
     ],
@@ -528,11 +483,7 @@ const characters: Character[] = [
     weapon: DB.Weapon.CLAYMORE,
     vision: DB.Vision.PYRO,
     rarity: 4,
-    talent: [
-      'Normal Attack: Dance on Fire',
-      'Sweeping Fervor',
-      'Riff Revolution',
-    ],
+    talent: ['Dance on Fire', 'Sweeping Fervor', 'Riff Revolution'],
   },
   {
     name: 'Yae Miko',
@@ -540,7 +491,7 @@ const characters: Character[] = [
     vision: DB.Vision.ELECTRO,
     rarity: 5,
     talent: [
-      'Normal Attack: Spiritfox Sin-Eater',
+      'Spiritfox Sin-Eater',
       'Yakan Evocation: Sesshou Sakura',
       'Great Secret Art: Tenko Kenshin',
     ],
@@ -550,29 +501,21 @@ const characters: Character[] = [
     weapon: DB.Weapon.CATALYST,
     vision: DB.Vision.PYRO,
     rarity: 4,
-    talent: ['Normal Attack: Seal of Approval', 'Signed Edict', 'Done Deal'],
+    talent: ['Seal of Approval', 'Signed Edict', 'Done Deal'],
   },
   {
     name: 'Yelan',
     weapon: DB.Weapon.BOW,
     vision: DB.Vision.HYDRO,
     rarity: 5,
-    talent: [
-      'Normal Attack: Stealthy Bowshot',
-      'Lingering Lifeline',
-      'Depth-Clarion Dice',
-    ],
+    talent: ['Stealthy Bowshot', 'Lingering Lifeline', 'Depth-Clarion Dice'],
   },
   {
     name: 'Yoimiya',
     weapon: DB.Weapon.BOW,
     vision: DB.Vision.PYRO,
     rarity: 5,
-    talent: [
-      'Normal Attack: Firework Flare-Up',
-      'Niwabi Fire-Dance',
-      'Ryuukin Saxifrage',
-    ],
+    talent: ['Firework Flare-Up', 'Niwabi Fire-Dance', 'Ryuukin Saxifrage'],
   },
   {
     name: 'Yun Jin',
@@ -580,7 +523,7 @@ const characters: Character[] = [
     vision: DB.Vision.GEO,
     rarity: 4,
     talent: [
-      'Normal Attack: Cloud-Grazing Strike',
+      'Cloud-Grazing Strike',
       'Opening Flourish',
       "Cliffbreaker's Banner",
     ],
@@ -590,11 +533,7 @@ const characters: Character[] = [
     weapon: DB.Weapon.POLEARM,
     vision: DB.Vision.GEO,
     rarity: 5,
-    talent: [
-      'Normal Attack: Rain of Stone',
-      'Dominus Lapidis',
-      'Planet Befall',
-    ],
+    talent: ['Rain of Stone', 'Dominus Lapidis', 'Planet Befall'],
   },
 ]
 
@@ -1329,6 +1268,25 @@ const characterMaterial: CharacterMaterial[] = [
     },
   },
   {
+    name: 'Shikanoin Heizou',
+    ascension: {
+      gem: 'Vayuda Turquoise',
+      boss: 'Runic Fang',
+      local: 'Onikabuto',
+      common: commonMaterials['Treasure Hoarder Insignias'],
+    },
+    talent: {
+      book: [
+        'Teachings of Transience',
+        'Guide to Transience',
+        'Philosophies of Transience',
+      ],
+      boss: 'Hellfire Butterfly',
+      common: commonMaterials['Treasure Hoarder Insignias'],
+      special: 'Crown of Insight',
+    },
+  },
+  {
     name: 'Sucrose',
     ascension: {
       gem: 'Vayuda Turquoise',
@@ -1380,7 +1338,7 @@ const characterMaterial: CharacterMaterial[] = [
         'Guide to Transience',
         'Philosophies of Transience',
       ],
-      boss: 'Hellfire Butterfly',
+      boss: 'The Meaning of Aeons',
       common: commonMaterials['Treasure Hoarder Insignias'],
       special: 'Crown of Insight',
     },
