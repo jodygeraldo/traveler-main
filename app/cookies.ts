@@ -1,7 +1,9 @@
 import { createCookie } from '@remix-run/node'; // or "@remix-run/cloudflare"
-import invariant from 'tiny-invariant';
-import * as Zod from 'zod';
+import dotenv from 'dotenv'
+import invariant from 'tiny-invariant'
+import * as Zod from 'zod'
 
+dotenv.config()
 invariant(
   process.env.USER_PREF_COOKIE_SECRET,
   'USER_PREF_COOKIE_SECRET is not set'
