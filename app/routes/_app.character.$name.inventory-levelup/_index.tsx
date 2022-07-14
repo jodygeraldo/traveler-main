@@ -38,7 +38,7 @@ interface ActionData {
   success: boolean
 }
 
-export const action: RemixNode.ActionFunction = async ({ params, request }) => {
+export async function action({ params, request }: RemixNode.ActionArgs) {
   const accountId = await Session.requireAccountId(request)
   const { name } = params
   invariant(name)
@@ -84,14 +84,7 @@ export const action: RemixNode.ActionFunction = async ({ params, request }) => {
   return RemixNode.json<ActionData>({ success: true })
 }
 
-interface LoaderData {
-  progression: Awaited<ReturnType<typeof CharacterModel.getUserCharacter>>
-  unlock: ReturnType<typeof CharacterData.getUnlock>
-  data: ReturnType<typeof CharacterData.getCharacterInventoryLevelUpData>
-  ascend: ReturnType<typeof CharacterData.checkAscend>
-}
-
-export const loader: RemixNode.LoaderFunction = async ({ params, request }) => {
+export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
   const { name } = params
   invariant(name)
@@ -121,7 +114,7 @@ export const loader: RemixNode.LoaderFunction = async ({ params, request }) => {
     level: userCharacter?.level,
   })
 
-  return RemixNode.json<LoaderData>({
+  return RemixNode.json({
     progression: userCharacter,
     unlock,
     data,
@@ -131,7 +124,7 @@ export const loader: RemixNode.LoaderFunction = async ({ params, request }) => {
 
 export default function TravelerInventoryLevelupPage() {
   const { progression, unlock, data, ascend } =
-    RemixReact.useLoaderData() as LoaderData
+    RemixReact.useLoaderData<typeof loader>()
   const actionData = RemixReact.useActionData<ActionData>()
 
   const { items, material, possibleToLevel } = data

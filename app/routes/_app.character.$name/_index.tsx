@@ -6,11 +6,7 @@ import Tabs from '~/components/Tabs'
 import * as CharacterData from '~/data/characters'
 import * as Utils from '~/utils'
 
-interface LoaderData {
-  name: string
-}
-
-export const loader: RemixNode.LoaderFunction = async ({ params }) => {
+export async function loader({ params }: RemixNode.LoaderArgs) {
   const { name } = params
   invariant(name)
 
@@ -22,11 +18,11 @@ export const loader: RemixNode.LoaderFunction = async ({ params }) => {
     })
   }
 
-  return RemixNode.json<LoaderData>({ name })
+  return RemixNode.json({ name })
 }
 
 export default function CharacterLayout() {
-  const { name } = RemixReact.useLoaderData() as LoaderData
+  const { name } = RemixReact.useLoaderData<typeof loader>()
 
   const tabs = [
     { name: 'Required Items', to: '.', active: Utils.useActiveNavigation('.') },

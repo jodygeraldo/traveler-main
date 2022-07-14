@@ -23,19 +23,14 @@ const ParamsSchema = Zod.object({
   elementalBurst: Zod.number().min(1).max(10),
 })
 
-interface ActionData {
-  success: boolean
-  errors?: { [key: string]: string }
-}
-
-export const action: RemixNode.ActionFunction = async ({ request, params }) => {
+export async function action({ params, request }: RemixNode.ActionArgs) {
   const accountId = await Session.requireAccountId(request)
   const { name } = params
   invariant(name)
 
   const result = await RemixParamsHelper.getFormData(request, ParamsSchema)
   if (!result.success) {
-    return RemixNode.json<ActionData>(
+    return RemixNode.json(
       { success: result.success, errors: result.errors },
       { status: 400 }
     )
@@ -45,7 +40,7 @@ export const action: RemixNode.ActionFunction = async ({ request, params }) => {
     progression: result.data,
   })
   if (errors) {
-    return RemixNode.json<ActionData>(
+    return RemixNode.json(
       { success: false, errors },
       { status: 400 }
     )
@@ -56,14 +51,10 @@ export const action: RemixNode.ActionFunction = async ({ request, params }) => {
     progression: result.data,
     accountId,
   })
-  return RemixNode.json<ActionData>({ success: true })
+  return RemixNode.json({ success: true, errors: {} })
 }
 
-interface LoaderData {
-  character: CharacterData.Character
-}
-
-export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
+export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const accId = await Session.requireAccountId(request)
   const { name } = params
   invariant(name)
@@ -78,12 +69,12 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
     progression: userCharacter,
   })
 
-  return RemixNode.json<LoaderData>({ character })
+  return RemixNode.json({ character })
 }
 
 export default function CharacterManualLevelupPage() {
-  const { character } = RemixReact.useLoaderData() as LoaderData
-  const actionData = RemixReact.useActionData<ActionData>()
+  const { character } = RemixReact.useLoaderData<typeof loader>()
+  const actionData = RemixReact.useActionData<typeof action>()
   const inputProps = RemixParamsHelper.useFormInputProps(ParamsSchema)
   const location = RemixReact.useLocation()
   const transition = RemixReact.useTransition()

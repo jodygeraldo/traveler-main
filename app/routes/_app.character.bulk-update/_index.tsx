@@ -20,20 +20,13 @@ const ParamsSchema = Zod.object({
   elementalBurst: Zod.array(Zod.number().min(1).max(10)),
 })
 
-interface ActionData {
-  errors?: { [key: string]: string }
-}
-
-export const action: RemixNode.ActionFunction = async ({ request }) => {
+export async function action({ request }: RemixNode.ActionArgs) {
   const accountId = await Session.requireAccountId(request)
 
   const result = await RemixParamsHelper.getFormData(request, ParamsSchema)
   if (!result.success) {
     console.log(result.errors)
-    return RemixNode.json<ActionData>(
-      { errors: result.errors },
-      { status: 400 }
-    )
+    return RemixNode.json({ errors: result.errors }, { status: 400 })
   }
 
   let data: {
@@ -63,11 +56,7 @@ export const action: RemixNode.ActionFunction = async ({ request }) => {
   return RemixNode.redirect('/character')
 }
 
-interface LoaderData {
-  characters: ReturnType<typeof CharacterData.getCharactersProgression>
-}
-
-export const loader: RemixNode.LoaderFunction = async ({ request }) => {
+export async function loader({ request }: RemixNode.LoaderArgs) {
   const accId = await Session.requireAccountId(request)
 
   const userCharacters = await CharacterModel.getUserCharacters({
@@ -75,11 +64,11 @@ export const loader: RemixNode.LoaderFunction = async ({ request }) => {
   })
   const characters = CharacterData.getCharactersProgression(userCharacters)
 
-  return RemixNode.json<LoaderData>({ characters })
+  return RemixNode.json({ characters })
 }
 
 export default function CharacterBulkUpdatePage() {
-  const { characters } = RemixReact.useLoaderData() as LoaderData
+  const { characters } = RemixReact.useLoaderData<typeof loader>()
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">

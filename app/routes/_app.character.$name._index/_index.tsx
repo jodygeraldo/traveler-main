@@ -16,18 +16,7 @@ export const meta: RemixNode.MetaFunction = ({ params }) => ({
   description: `${params.name} progression required materials table`,
 })
 
-interface LoaderData {
-  character: CharacterData.Character
-  ascensionMaterial: CharacterData.CharacterAscension[]
-  talentMaterial:
-    | CharacterData.CharacterTalent[]
-    | {
-        normal: CharacterData.CharacterTalent[]
-        elemental: CharacterData.CharacterTalent[]
-      }
-}
-
-export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
+export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
   const { name } = params
   invariant(name)
@@ -46,7 +35,7 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
       name,
     })
 
-  return RemixNode.json<LoaderData>({
+  return RemixNode.json({
     character,
     ascensionMaterial,
     talentMaterial,
@@ -55,7 +44,7 @@ export const loader: RemixNode.LoaderFunction = async ({ request, params }) => {
 
 export default function CharacterPage() {
   const { character, ascensionMaterial, talentMaterial } =
-    RemixReact.useLoaderData() as LoaderData
+    RemixReact.useLoaderData<typeof loader>()
   const [hideAscension, setHideAscension] = React.useState(
     character.progression?.ascension === 6
   )

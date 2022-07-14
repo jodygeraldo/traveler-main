@@ -1,6 +1,7 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as React from 'react'
+import * as RemixParamsHelper from 'remix-params-helper'
 import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import ItemList from '~/components/ItemList'
@@ -11,13 +12,29 @@ import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
 
-export { action } from '~/actions/inventory'
+export async function action({ request }: RemixNode.ActionArgs) {
+  const accountId = await Session.requireAccountId(request)
 
-interface LoaderData {
-  items: ItemData.ItemWithQuantity[]
-  type: DB.ItemType
+  const ParamsSchema = Zod.object({
+    name: Zod.string(),
+    quantity: Zod.number().min(0).max(9999),
+  })
+
+  const { name, quantity } = await RemixParamsHelper.getFormDataOrFail(
+    request,
+    ParamsSchema
+  )
+
+  await InventoryModel.upsertInventoryItem({
+    accountId,
+    name,
+    quantity,
+  })
+
+  return null
 }
-export const loader: RemixNode.LoaderFunction = async ({ params, request }) => {
+
+export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const { type: typeParams } = params
   invariant(typeParams, 'type is required')
   const parsedType = Zod.nativeEnum(DB.ItemType).safeParse(
@@ -43,11 +60,11 @@ export const loader: RemixNode.LoaderFunction = async ({ params, request }) => {
     userItems: inventory,
   })
 
-  return RemixNode.json<LoaderData>({ items, type })
+  return RemixNode.json({ items, type })
 }
 
 export default function InventoryCategoryPage() {
-  const { items, type } = RemixReact.useLoaderData<LoaderData>()
+  const { items, type } = RemixReact.useLoaderData<typeof loader>()
 
   const [searchItems, setSearchItems] = React.useState<
     ItemData.ItemWithQuantity[]
