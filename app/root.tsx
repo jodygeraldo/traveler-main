@@ -21,12 +21,8 @@ export const meta: RemixNode.MetaFunction = () => ({
   keywords: 'Genshin Impact,progression,items',
 })
 
-interface LoaderData {
-  user: Awaited<ReturnType<typeof Session.getUser>>
-}
-
-export const loader: RemixNode.LoaderFunction = async ({ request }) => {
-  return RemixNode.json<LoaderData>({
+export async function loader({ request }: RemixNode.LoaderArgs) {
+  return RemixNode.json({
     user: await Session.getUser(request),
   })
 }
