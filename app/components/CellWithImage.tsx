@@ -1,13 +1,13 @@
-import * as Utils from '~/utils'
 import Image from './Image'
 import Tooltip from './Tooltip'
 
 interface Props {
+  src?: string
   quantity?: number
   text?: string
 }
 
-export default function TableCell({ quantity, text }: Props) {
+export default function CellWithImage({ src, quantity, text }: Props) {
   if (!(text && quantity)) {
     return null
   }
@@ -16,7 +16,7 @@ export default function TableCell({ quantity, text }: Props) {
     <div className="flex items-center">
       <Tooltip text={text}>
         <Image
-          src={`/item/${Utils.getImageSrc(text)}.png`}
+          src={src ?? ''}
           alt={text}
           className="h-8 w-8 flex-shrink-0"
           width={32}
