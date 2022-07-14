@@ -18,7 +18,7 @@ export const meta: RemixNode.MetaFunction = () => ({
   title: 'Characters - Traveler Main',
 })
 
-export const action: RemixNode.ActionFunction = async ({ request }) => {
+export async function action({ request }: RemixNode.ActionArgs) {
   const formData = await request.formData()
   const userPref = await Cookie.getUserPrefsCookie(request)
   userPref.characterView = formData.get('characterView') ?? 'grid'
@@ -30,12 +30,7 @@ export const action: RemixNode.ActionFunction = async ({ request }) => {
   })
 }
 
-interface LoaderData {
-  characters: CharacterData.Character[]
-  view: 'list' | 'grid'
-}
-
-export const loader: RemixNode.LoaderFunction = async ({ request }) => {
+export async function loader({ request }: RemixNode.LoaderArgs) {
   const accId = await Session.requireAccountId(request)
 
   const userCharacters = await CharacterModel.getUserCharacters({
@@ -45,11 +40,11 @@ export const loader: RemixNode.LoaderFunction = async ({ request }) => {
 
   const characterView = await Cookie.getCharacterViewPref(request)
 
-  return RemixNode.json<LoaderData>({ characters, view: characterView })
+  return RemixNode.json({ characters, view: characterView })
 }
 
 export default function CharactersPage() {
-  const { characters, view } = RemixReact.useLoaderData() as LoaderData
+  const { characters, view } = RemixReact.useLoaderData<typeof loader>()
   const fetcher = RemixReact.useFetcher()
 
   const optimisticView = fetcher.submission

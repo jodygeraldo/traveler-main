@@ -1,10 +1,10 @@
 import * as RemixNode from '@remix-run/node'
 import * as Session from '~/session.server'
 
-export const action: RemixNode.ActionFunction = async ({ request }) => {
+export async function action({ request }: RemixNode.ActionArgs) {
   return Session.logout(request)
 }
 
-export const loader: RemixNode.LoaderFunction = async () => {
+export function loader() {
   return RemixNode.redirect('/')
 }

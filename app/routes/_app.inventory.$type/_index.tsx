@@ -12,7 +12,7 @@ import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
 
-export async function action({ request }: RemixNode.LoaderArgs) {
+export async function action({ request }: RemixNode.ActionArgs) {
   const accountId = await Session.requireAccountId(request)
 
   const ParamsSchema = Zod.object({
@@ -34,11 +34,7 @@ export async function action({ request }: RemixNode.LoaderArgs) {
   return null
 }
 
-interface LoaderData {
-  items: ItemData.ItemWithQuantity[]
-  type: DB.ItemType
-}
-export const loader: RemixNode.LoaderFunction = async ({ params, request }) => {
+export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const { type: typeParams } = params
   invariant(typeParams, 'type is required')
   const parsedType = Zod.nativeEnum(DB.ItemType).safeParse(
@@ -64,11 +60,11 @@ export const loader: RemixNode.LoaderFunction = async ({ params, request }) => {
     userItems: inventory,
   })
 
-  return RemixNode.json<LoaderData>({ items, type })
+  return RemixNode.json({ items, type })
 }
 
 export default function InventoryCategoryPage() {
-  const { items, type } = RemixReact.useLoaderData<LoaderData>()
+  const { items, type } = RemixReact.useLoaderData<typeof loader>()
 
   const [searchItems, setSearchItems] = React.useState<
     ItemData.ItemWithQuantity[]

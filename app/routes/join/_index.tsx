@@ -28,7 +28,7 @@ const ParamsSchema = Zod.object({
   remember: Zod.string().optional(),
 })
 
-export const loader: RemixNode.LoaderFunction = async ({ request }) => {
+export async function loader({ request }: RemixNode.LoaderArgs) {
   const userId = await Session.getUserId(request)
   if (userId) return RemixNode.redirect('/')
   return RemixNode.json({})
@@ -41,7 +41,7 @@ interface ActionData {
   }
 }
 
-export const action: RemixNode.ActionFunction = async ({ request }) => {
+export async function action({ request }: RemixNode.ActionArgs) {
   const result = await RemixParamsHelper.getFormData(request, ParamsSchema)
   if (!result.success) {
     return RemixNode.json<ActionData>(
@@ -81,7 +81,7 @@ export const action: RemixNode.ActionFunction = async ({ request }) => {
 export default function Join() {
   const [searchParams] = RemixReact.useSearchParams()
   const redirectTo = searchParams.get('redirectTo') ?? '/character'
-  const actionData = RemixReact.useActionData() as ActionData
+  const actionData = RemixReact.useActionData<ActionData>()
   const emailRef = React.useRef<HTMLInputElement>(null)
   const passwordRef = React.useRef<HTMLInputElement>(null)
   const inputProps = RemixParamsHelper.useFormInputProps(ParamsSchema)

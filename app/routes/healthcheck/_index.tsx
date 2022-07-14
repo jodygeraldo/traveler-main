@@ -1,7 +1,7 @@
 import type * as RemixNode from '@remix-run/node'
 import prisma from '~/db.server'
 
-export const loader: RemixNode.LoaderFunction = async ({ request }) => {
+export async function loader({ request }: RemixNode.LoaderArgs) {
   const host =
     request.headers.get('X-Forwarded-Host') ?? request.headers.get('host')
 
