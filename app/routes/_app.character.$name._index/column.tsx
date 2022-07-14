@@ -1,6 +1,7 @@
 import type * as ReactTable from '@tanstack/react-table'
+import CellWithImage from '~/components/CellWithImage'
 import * as Icon from '~/components/Icon'
-import TableCell from '~/components/TableCell'
+import * as Utils from '~/utils'
 
 interface Ascension {
   phase: { from: number; to: number }
@@ -34,7 +35,13 @@ export const ascension: ReactTable.ColumnDef<Ascension>[] = [
   {
     header: 'Mora',
     accessorKey: 'mora',
-    cell: ({ getValue }) => <TableCell quantity={getValue()} text="Mora" />,
+    cell: ({ getValue }) => (
+      <CellWithImage
+        src={getValue() ? `/item/${Utils.getImageSrc('mora')}.png` : undefined}
+        quantity={getValue()}
+        text="Mora"
+      />
+    ),
   },
   {
     header: 'Common',
@@ -46,7 +53,17 @@ export const ascension: ReactTable.ColumnDef<Ascension>[] = [
         name: string
         quantity: number
       }
-    }) => <TableCell quantity={getValue().quantity} text={getValue().name} />,
+    }) => (
+      <CellWithImage
+        src={
+          getValue()
+            ? `/item/${Utils.getImageSrc(getValue().name)}.png`
+            : undefined
+        }
+        quantity={getValue().quantity}
+        text={getValue().name}
+      />
+    ),
   },
   {
     header: 'Gem',
@@ -58,7 +75,17 @@ export const ascension: ReactTable.ColumnDef<Ascension>[] = [
         name: string
         quantity: number
       }
-    }) => <TableCell quantity={getValue().quantity} text={getValue().name} />,
+    }) => (
+      <CellWithImage
+        src={
+          getValue()
+            ? `/item/${Utils.getImageSrc(getValue().name)}.png`
+            : undefined
+        }
+        quantity={getValue().quantity}
+        text={getValue().name}
+      />
+    ),
   },
   {
     header: 'Local Specialty',
@@ -70,7 +97,17 @@ export const ascension: ReactTable.ColumnDef<Ascension>[] = [
         name: string
         quantity: number
       }
-    }) => <TableCell quantity={getValue().quantity} text={getValue().name} />,
+    }) => (
+      <CellWithImage
+        src={
+          getValue()
+            ? `/item/${Utils.getImageSrc(getValue().name)}.png`
+            : undefined
+        }
+        quantity={getValue().quantity}
+        text={getValue().name}
+      />
+    ),
   },
   {
     header: 'Boss',
@@ -82,7 +119,17 @@ export const ascension: ReactTable.ColumnDef<Ascension>[] = [
         name?: string
         quantity?: number
       }
-    }) => <TableCell quantity={getValue()?.quantity} text={getValue()?.name} />,
+    }) => (
+      <CellWithImage
+        src={
+          getValue()
+            ? `/item/${Utils.getImageSrc(getValue()?.name ?? '')}.png`
+            : undefined
+        }
+        quantity={getValue()?.quantity}
+        text={getValue()?.name}
+      />
+    ),
   },
 ]
 
@@ -118,7 +165,13 @@ export const talent: ReactTable.ColumnDef<Talent>[] = [
   {
     header: 'Mora',
     accessorKey: 'mora',
-    cell: ({ getValue }) => <TableCell quantity={getValue()} text="Mora" />,
+    cell: ({ getValue }) => (
+      <CellWithImage
+        src={getValue() ? `/item/${Utils.getImageSrc('mora')}.png` : undefined}
+        quantity={getValue()}
+        text="Mora"
+      />
+    ),
   },
   {
     header: 'Common',
@@ -130,7 +183,17 @@ export const talent: ReactTable.ColumnDef<Talent>[] = [
         name: string
         quantity: number
       }
-    }) => <TableCell quantity={getValue().quantity} text={getValue().name} />,
+    }) => (
+      <CellWithImage
+        src={
+          getValue()
+            ? `/item/${Utils.getImageSrc(getValue().name)}.png`
+            : undefined
+        }
+        quantity={getValue().quantity}
+        text={getValue().name}
+      />
+    ),
   },
   {
     header: 'Book',
@@ -142,7 +205,17 @@ export const talent: ReactTable.ColumnDef<Talent>[] = [
         name: string
         quantity: number
       }
-    }) => <TableCell quantity={getValue().quantity} text={getValue().name} />,
+    }) => (
+      <CellWithImage
+        src={
+          getValue()
+            ? `/item/${Utils.getImageSrc(getValue().name)}.png`
+            : undefined
+        }
+        quantity={getValue().quantity}
+        text={getValue().name}
+      />
+    ),
   },
   {
     header: 'Boss',
@@ -154,7 +227,17 @@ export const talent: ReactTable.ColumnDef<Talent>[] = [
         name?: string
         quantity?: number
       }
-    }) => <TableCell quantity={getValue()?.quantity} text={getValue()?.name} />,
+    }) => (
+      <CellWithImage
+        src={
+          getValue()
+            ? `/item/${Utils.getImageSrc(getValue()?.name ?? '')}.png`
+            : undefined
+        }
+        quantity={getValue()?.quantity}
+        text={getValue()?.name}
+      />
+    ),
   },
   {
     header: 'Special',
@@ -166,6 +249,16 @@ export const talent: ReactTable.ColumnDef<Talent>[] = [
         name?: string
         quantity?: number
       }
-    }) => <TableCell quantity={getValue()?.quantity} text={getValue()?.name} />,
+    }) => (
+      <CellWithImage
+        src={
+          getValue()
+            ? `/item/${Utils.getImageSrc(getValue()?.name ?? '')}.png`
+            : undefined
+        }
+        quantity={getValue()?.quantity}
+        text={getValue()?.name}
+      />
+    ),
   },
 ]
