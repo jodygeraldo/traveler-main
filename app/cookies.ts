@@ -1,19 +1,10 @@
-import { createCookie } from '@remix-run/node'; // or "@remix-run/cloudflare"
-import dotenv from 'dotenv'
-import invariant from 'tiny-invariant'
+import { createCookie } from '@remix-run/node'
 import * as Zod from 'zod'
-
-dotenv.config()
-invariant(
-  process.env.USER_PREF_COOKIE_SECRET,
-  'USER_PREF_COOKIE_SECRET is not set'
-)
 
 export const userPrefs = createCookie('user-prefs', {
   httpOnly: true,
   path: '/',
   sameSite: 'lax',
-  secrets: [process.env.USER_PREF_COOKIE_SECRET],
   secure: process.env.NODE_ENV === 'production',
 })
 
