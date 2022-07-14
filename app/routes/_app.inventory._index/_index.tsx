@@ -1,13 +1,35 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as React from 'react'
+import * as RemixParamsHelper from 'remix-params-helper'
+import * as Zod from 'zod'
 import ItemList from '~/components/ItemList'
 import ItemSearch from '~/components/ItemSearch'
 import * as ItemData from '~/data/items'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 
-export { action } from '~/actions/inventory'
+export async function action({ request }: RemixNode.LoaderArgs) {
+  const accountId = await Session.requireAccountId(request)
+
+  const ParamsSchema = Zod.object({
+    name: Zod.string(),
+    quantity: Zod.number().min(0).max(9999),
+  })
+
+  const { name, quantity } = await RemixParamsHelper.getFormDataOrFail(
+    request,
+    ParamsSchema
+  )
+
+  await InventoryModel.upsertInventoryItem({
+    accountId,
+    name,
+    quantity,
+  })
+
+  return null
+}
 
 interface LoaderData {
   items: ReturnType<typeof ItemData.getAllItems>
