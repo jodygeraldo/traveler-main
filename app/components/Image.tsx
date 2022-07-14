@@ -12,22 +12,33 @@ interface Props
   extends BaseProps,
     Omit<React.ImgHTMLAttributes<HTMLImageElement>, keyof BaseProps> {}
 
-const PUBLIC_URL = "https://zgdynxzpcpwowgbwrwik.supabase.co/storage/v1/object/public/tm-image"
+const PUBLIC_URL =
+  'https://zgdynxzpcpwowgbwrwik.supabase.co/storage/v1/object/public/tm-image'
 
 const Image = React.forwardRef<HTMLImageElement, Props>(
   ({ src, alt, className, width, height, ...props }, ref) => {
     return (
-      <img
-        ref={ref}
-        src={`//images.weserv.nl/?url=${PUBLIC_URL}${src}&w=${width}${
-          height ? '&h=' + height : ''
-        }&output=webp`}
-        alt={alt}
-        className={className}
-        width={width}
-        height={height}
-        {...props}
-      />
+      <picture>
+        <source
+          srcSet={`//images.weserv.nl/?url=${PUBLIC_URL}${src}&w=${width}${
+            height ? '&h=' + height : ''
+          }&output=webp`}
+          type="image/webp"
+          width={width}
+          height={height}
+        />
+        <img
+          ref={ref}
+          src={`//images.weserv.nl/?url=${PUBLIC_URL}${src}&w=${width}${
+            height ? '&h=' + height : ''
+          }&output=png&af`}
+          alt={alt}
+          className={className}
+          width={width}
+          height={height}
+          {...props}
+        />
+      </picture>
     )
   }
 )
