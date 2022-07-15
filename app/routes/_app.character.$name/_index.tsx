@@ -1,10 +1,9 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import invariant from 'tiny-invariant'
-import Image from '~/components/Image'
-import Tabs from '~/components/Tabs'
 import * as CharacterData from '~/data/characters'
-import * as Utils from '~/utils'
+import CharacterTabs from './CharacterTabs'
+import ConstellationImage from './ConstellationImage'
 
 export async function loader({ params }: RemixNode.LoaderArgs) {
   const { name } = params
@@ -24,22 +23,8 @@ export async function loader({ params }: RemixNode.LoaderArgs) {
 export default function CharacterLayout() {
   const { name } = RemixReact.useLoaderData<typeof loader>()
 
-  const tabs = [
-    { name: 'Required Items', to: '.', active: Utils.useActiveNavigation('.') },
-    {
-      name: 'Inventory Level Up',
-      to: './inventory-levelup',
-      active: Utils.useActiveNavigation('./inventory-levelup'),
-    },
-    {
-      name: 'Manual Level Up',
-      to: './manual-levelup',
-      active: Utils.useActiveNavigation('./manual-levelup'),
-    },
-  ]
-
   return (
-    <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+    <>
       <div className="flex items-center gap-2">
         <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
           {name}
@@ -57,23 +42,11 @@ export default function CharacterLayout() {
       </div>
 
       <div className="mt-6 sm:mt-2 2xl:mt-5">
-        <Tabs tabs={tabs} />
+        <CharacterTabs />
         <main className="pb-16">
           <RemixReact.Outlet />
         </main>
       </div>
-    </div>
-  )
-}
-
-function ConstellationImage({ name }: { name: string }) {
-  return (
-    <Image
-      src={`/constellation/${Utils.getImageSrc(name)}.png`}
-      alt=""
-      className="h-8 w-8 flex-shrink-0"
-      width={32}
-      height={32}
-    />
+    </>
   )
 }

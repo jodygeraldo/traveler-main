@@ -1,6 +1,6 @@
 import * as ReactTable from '@tanstack/react-table'
 import clsx from 'clsx'
-import Switch from './Switch'
+import Switch from '~/components/Switch'
 
 interface BaseProps {
   heading: React.ReactNode

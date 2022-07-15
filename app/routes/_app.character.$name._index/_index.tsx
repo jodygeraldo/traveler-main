@@ -3,13 +3,13 @@ import * as RemixReact from '@remix-run/react'
 import * as ReactTable from '@tanstack/react-table'
 import * as React from 'react'
 import invariant from 'tiny-invariant'
-import CharacterCustomFirstCell from '~/components/CharacterCustomFirstCell'
-import * as CustomHeading from '~/components/CustomTableHeading'
-import * as ItemTable from '~/components/ItemTable'
 import * as CharacterData from '~/data/characters'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
+import CharacterCustomFirstCell from './CharacterCustomFirstCell'
 import * as Column from './column'
+import * as CustomHeading from './CustomTableHeading'
+import * as ItemTable from './ItemTable'
 
 export const meta: RemixNode.MetaFunction = ({ params }) => ({
   title: `${params.name} - Traveler Main`,

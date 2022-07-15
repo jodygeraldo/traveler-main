@@ -1,6 +1,6 @@
 import Image from '~/components/Image'
+import Tooltip from '~/components/Tooltip'
 import * as Utils from '~/utils'
-import Tooltip from './Tooltip'
 
 interface Props {
   talentName: string[]
