@@ -73,15 +73,13 @@ export default function InventoryPage() {
         </div>
       </div>
 
-      <div className="space-y-12">
-        {showSearch ? (
-          <>
-            <h2 className="text-lg font-medium leading-6 text-gray-12">
-              Search
-            </h2>
-            <ItemList items={searchItems} />
-          </>
-        ) : (
+      {showSearch ? (
+        <div>
+          <h2 className="text-lg font-medium leading-6 text-gray-12">Search</h2>
+          <ItemList items={searchItems} />
+        </div>
+      ) : (
+        <div className="space-y-12">
           <>
             <div>
               <h2 className="text-lg font-medium leading-6 text-gray-12">
@@ -132,8 +130,8 @@ export default function InventoryPage() {
               <ItemList items={items.special} />
             </div>
           </>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }
