@@ -8,8 +8,10 @@ import Button from '~/components/Button'
 import CellWithImage from '~/components/CellWithImage'
 import * as Icon from '~/components/Icon'
 import Image from '~/components/Image'
+import Search from '~/components/Search'
 import * as Cookie from '~/cookies'
 import * as CharacterData from '~/data/characters'
+import useSearchFilter from '~/hooks/useSearchFilter'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
@@ -50,6 +52,11 @@ export default function CharactersPage() {
   const optimisticView = fetcher.submission
     ? Zod.string().parse(fetcher.submission.formData.get('characterView'))
     : view
+
+  const { searchItems, showSearch, changeHandler } = useSearchFilter({
+    items: characters,
+    searchBy: 'name',
+  })
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -122,17 +129,22 @@ export default function CharactersPage() {
               </fetcher.Form>
             </div>
 
-            <div className="mt-2">
+            <div className="mt-2 flex items-center gap-4">
               <RemixReact.Link to="./bulk-update">
                 <Button>Bulk update</Button>
               </RemixReact.Link>
+
+              <Search
+                changeHandler={changeHandler}
+                placeholder="Search character"
+              />
             </div>
           </div>
 
           {optimisticView === 'list' ? (
-            <CharacterList characters={characters} />
+            <CharacterList characters={showSearch ? searchItems : characters} />
           ) : (
-            <CharacterGrid characters={characters} />
+            <CharacterGrid characters={showSearch ? searchItems : characters} />
           )}
         </div>
       </main>
