@@ -15,13 +15,13 @@ interface Uncontrolled {
 
 type Props = Controlled | Uncontrolled
 
-const ItemSearch = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
+const Search = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
   return (
     <>
       <label htmlFor="search" className="sr-only">
         Search
       </label>
-      <div className="relative mt-1 rounded-md shadow-sm">
+      <div className="relative rounded-md shadow-sm">
         <div
           className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
           aria-hidden="true"
@@ -58,6 +58,6 @@ const ItemSearch = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
     </>
   )
 })
-ItemSearch.displayName = 'ItemSearch'
+Search.displayName = 'Search'
 
-export default ItemSearch
+export default Search
