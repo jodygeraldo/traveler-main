@@ -1,6 +1,5 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
-import clsx from 'clsx'
 import * as RemixParamsHelper from 'remix-params-helper'
 import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
@@ -9,6 +8,7 @@ import Notification from '~/components/Notification'
 import * as CharacterData from '~/data/characters'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
+import InputField from './InputField'
 
 export const meta: RemixNode.MetaFunction = ({ params }) => ({
   title: `${params.name} Manual Level Up - Traveler Main`,
@@ -40,10 +40,7 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
     progression: result.data,
   })
   if (errors) {
-    return RemixNode.json(
-      { success: false, errors },
-      { status: 400 }
-    )
+    return RemixNode.json({ success: false, errors }, { status: 400 })
   }
 
   await CharacterModel.upsertCharacter({
@@ -143,49 +140,5 @@ export default function CharacterManualLevelupPage() {
       </RemixReact.Form>
       <Notification key={location.key} success={actionData?.success} />
     </div>
-  )
-}
-
-function InputField({
-  id,
-  label,
-  defaultValue,
-  error,
-  inputProps,
-  min,
-}: {
-  label: string
-  defaultValue?: string | number
-  error?: string
-  id: string
-  inputProps: RemixParamsHelper.InputPropType
-  min?: number
-}) {
-  return (
-    <>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-12">
-        {label}{' '}
-        <span
-          className={clsx(
-            !inputProps.required && 'hidden',
-            'text-sm text-gray-11'
-          )}
-        >
-          *
-        </span>
-      </label>
-      <input
-        id={id}
-        className="mt-1 block w-full rounded-md border-gray-7 bg-gray-3 shadow-sm focus:border-primary-8 focus:ring-primary-8 sm:text-sm"
-        defaultValue={defaultValue}
-        min={min}
-        {...inputProps}
-        aria-invalid={!!error}
-        aria-describedby={`${id}-error`}
-      />
-      <p className="mt-2 text-sm text-danger-9" id={`${id}-error`}>
-        {error}
-      </p>
-    </>
   )
 }

@@ -1,16 +1,23 @@
 import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
+import * as Utils from '~/utils'
 
-interface Props {
-  tabs: {
-    name: string
-    to: string
-    active: boolean
-  }[]
-}
-
-export default function Tabs({ tabs }: Props) {
+export default function CharacterTabs() {
   const navigate = RemixReact.useNavigate()
+
+  const tabs = [
+    { name: 'Required Items', to: '.', active: Utils.useActiveNavigation('.') },
+    {
+      name: 'Inventory Level Up',
+      to: './inventory-levelup',
+      active: Utils.useActiveNavigation('./inventory-levelup'),
+    },
+    {
+      name: 'Manual Level Up',
+      to: './manual-levelup',
+      active: Utils.useActiveNavigation('./manual-levelup'),
+    },
+  ]
 
   return (
     <div>

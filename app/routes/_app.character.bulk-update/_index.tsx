@@ -6,6 +6,7 @@ import Button from '~/components/Button'
 import * as CharacterData from '~/data/characters'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
+import InputField from './InputField'
 
 export const meta: RemixNode.MetaFunction = () => ({
   title: 'Character Bulk Update - Traveler Main',
@@ -153,45 +154,5 @@ export default function CharacterBulkUpdatePage() {
         </div>
       </main>
     </div>
-  )
-}
-
-function InputField({
-  id,
-  name,
-  label,
-  defaultValue,
-  error,
-  min,
-  max,
-}: {
-  label: string
-  name: string
-  defaultValue?: string | number
-  error?: string
-  id: string
-  min?: number
-  max?: number
-}) {
-  return (
-    <>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-12">
-        {label}
-      </label>
-      <input
-        id={id}
-        name={name}
-        type="number"
-        className="mt-1 block w-full rounded-md border-gray-7 bg-gray-3 shadow-sm focus:border-primary-8 focus:ring-primary-8 sm:text-sm"
-        defaultValue={defaultValue}
-        min={min}
-        max={max}
-        aria-invalid={!!error}
-        aria-describedby={`${id}-error`}
-      />
-      <p className="mt-2 text-sm text-danger-9" id={`${id}-error`}>
-        {error}
-      </p>
-    </>
   )
 }
