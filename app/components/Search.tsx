@@ -21,7 +21,7 @@ const Search = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
       <label htmlFor="search" className="sr-only">
         Search
       </label>
-      <div className="relative mt-1 rounded-md shadow-sm">
+      <div className="relative rounded-md shadow-sm">
         <div
           className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
           aria-hidden="true"
