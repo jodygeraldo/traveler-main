@@ -4,7 +4,7 @@ import * as React from 'react'
 import * as RemixParamsHelper from 'remix-params-helper'
 import * as Zod from 'zod'
 import ItemList from '~/components/ItemList'
-import ItemSearch from '~/components/ItemSearch'
+import Search from '~/components/Search'
 import * as ItemData from '~/data/items'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
@@ -82,7 +82,7 @@ export default function InventoryPage() {
         </h1>
 
         <div className="mt-2 sm:mt-0">
-          <ItemSearch changeHandler={handleChange} />
+          <Search changeHandler={handleChange} />
         </div>
       </div>
 

@@ -5,7 +5,7 @@ import * as RemixParamsHelper from 'remix-params-helper'
 import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import ItemList from '~/components/ItemList'
-import ItemSearch from '~/components/ItemSearch'
+import Search from '~/components/Search'
 import * as ItemData from '~/data/items'
 import * as DB from '~/db.server'
 import * as InventoryModel from '~/models/inventory.server'
@@ -93,7 +93,7 @@ export default function InventoryCategoryPage() {
         </h1>
 
         <div className="mt-2 sm:mt-0">
-          <ItemSearch changeHandler={handleChange} />
+          <Search changeHandler={handleChange} />
         </div>
       </div>
 
