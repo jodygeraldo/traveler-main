@@ -15,7 +15,7 @@ interface Uncontrolled {
 
 type Props = Controlled | Uncontrolled
 
-const ItemSearch = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
+const Search = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
   return (
     <>
       <label htmlFor="search" className="sr-only">
@@ -58,6 +58,6 @@ const ItemSearch = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
     </>
   )
 })
-ItemSearch.displayName = 'ItemSearch'
+Search.displayName = 'Search'
 
-export default ItemSearch
+export default Search
