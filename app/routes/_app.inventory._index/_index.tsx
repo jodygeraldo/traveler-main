@@ -6,6 +6,7 @@ import * as Zod from 'zod'
 import ItemList from '~/components/ItemList'
 import Search from '~/components/Search'
 import * as ItemData from '~/data/items'
+import useSearchFilter from '~/hooks/useSearchFilter'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 
@@ -55,24 +56,10 @@ export default function InventoryPage() {
     [items]
   )
 
-  const [searchItems, setSearchItems] = React.useState<
-    ItemData.ItemWithQuantity[]
-  >([])
-  const [showSearch, setShowSearch] = React.useState(false)
-
-  const timerRef = React.useRef<NodeJS.Timeout>()
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (timerRef.current) clearTimeout(timerRef.current)
-    if (e.target.value === '') return setShowSearch(false)
-    setShowSearch(true)
-    const timer = setTimeout(() => {
-      const newSearchItems = fullItems.filter((item) =>
-        item.name.toLowerCase().includes(e.target.value.toLowerCase())
-      )
-      setSearchItems(newSearchItems)
-    }, 100)
-    timerRef.current = timer
-  }
+  const { searchItems, showSearch, changeHandler } = useSearchFilter({
+    items: fullItems,
+    searchBy: 'name',
+  })
 
   return (
     <div className="space-y-12">
@@ -82,7 +69,7 @@ export default function InventoryPage() {
         </h1>
 
         <div className="mt-2 sm:mt-0">
-          <Search changeHandler={handleChange} />
+          <Search changeHandler={changeHandler} />
         </div>
       </div>
 

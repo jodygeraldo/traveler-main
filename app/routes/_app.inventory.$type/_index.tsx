@@ -1,6 +1,5 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
-import * as React from 'react'
 import * as RemixParamsHelper from 'remix-params-helper'
 import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
@@ -8,6 +7,7 @@ import ItemList from '~/components/ItemList'
 import Search from '~/components/Search'
 import * as ItemData from '~/data/items'
 import * as DB from '~/db.server'
+import useSearchFilter from '~/hooks/useSearchFilter'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
@@ -66,24 +66,10 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
 export default function InventoryCategoryPage() {
   const { items, type } = RemixReact.useLoaderData<typeof loader>()
 
-  const [searchItems, setSearchItems] = React.useState<
-    ItemData.ItemWithQuantity[]
-  >([])
-  const [showSearch, setShowSearch] = React.useState(false)
-
-  const timerRef = React.useRef<NodeJS.Timeout>()
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (timerRef.current) clearTimeout(timerRef.current)
-    if (e.target.value === '') return setShowSearch(false)
-    setShowSearch(true)
-    const timer = setTimeout(() => {
-      const newSearchItems = items.filter((item) =>
-        item.name.toLowerCase().includes(e.target.value.toLowerCase())
-      )
-      setSearchItems(newSearchItems)
-    }, 100)
-    timerRef.current = timer
-  }
+  const { searchItems, showSearch, changeHandler } = useSearchFilter({
+    items,
+    searchBy: 'name',
+  })
 
   return (
     <div className="space-y-12">
@@ -93,7 +79,7 @@ export default function InventoryCategoryPage() {
         </h1>
 
         <div className="mt-2 sm:mt-0">
-          <Search changeHandler={handleChange} />
+          <Search changeHandler={changeHandler} />
         </div>
       </div>
 
