@@ -17,13 +17,17 @@ export async function getInventoryByType({
   type,
   accountId,
 }: {
-  type: DB.ItemType
+  type: DB.ItemType | DB.ItemType[]
   accountId: string
 }) {
   return prisma.inventory.findMany({
     where: {
       ownerId: accountId,
-      item: { type },
+      item: {
+        type: {
+          in: Array.isArray(type) ? type : [type],
+        },
+      },
     },
     select: {
       itemName: true,
