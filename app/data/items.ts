@@ -375,3 +375,117 @@ export function getItemsByNames({
 
   return result
 }
+
+export function validateItem({
+  name,
+  type,
+  excludePattern,
+}: {
+  name: string
+  type: DB.ItemType | DB.ItemType[]
+  excludePattern?: string
+}) {
+  const types = Array.isArray(type) ? type : [type]
+  const typedItems = items.filter(
+    (item) =>
+      types.includes(item.type) &&
+      (excludePattern ? !item.name.includes(excludePattern) : true)
+  )
+
+  return typedItems.findIndex((item) => item.name === name) !== -1
+}
+
+export function getConverterItems({
+  name,
+  type,
+}: {
+  name: string
+  type: 'gem' | 'boss'
+}) {
+  interface Special {
+    name: string
+    rarity: 1 | 2 | 3 | 4 | 5
+    quantity: {
+      owned: number
+      required: number
+    }
+  }
+
+  if (type === 'gem') {
+    const special: Special = {
+      name: 'Dust of Azoth',
+      rarity: 2,
+      quantity: {
+        owned: 0,
+        required: name.includes('Gemstone')
+          ? 27
+          : name.includes('Chunk')
+          ? 9
+          : name.includes('Fragment')
+          ? 3
+          : 1,
+      },
+    }
+    const tmpGems = items.filter((item) => {
+      const baseFilter =
+        item.type === DB.ItemType.ASCENSION_GEM &&
+        item.name !== name &&
+        !item.name.includes('Brilliant Diamond')
+
+      if (name.includes('Gemstone'))
+        return baseFilter && item.name.includes('Gemstone')
+      if (name.includes('Chunk'))
+        return baseFilter && item.name.includes('Chunk')
+      if (name.includes('Fragment'))
+        return baseFilter && item.name.includes('Fragment')
+      return baseFilter && item.name.includes('Sliver')
+    })
+    return {
+      special,
+      items: tmpGems.map((item) => item.name),
+    }
+  }
+
+  const special: Special = {
+    name: 'Dream Solvent',
+    rarity: 4,
+    quantity: { owned: 0, required: 1 },
+  }
+  const tmpBosses = items.filter((item) => {
+    const baseFilter =
+      item.type === DB.ItemType.TALENT_BOSS && item.name !== name
+
+    if (talentBossGroup.dvalin.includes(name))
+      return baseFilter && talentBossGroup.dvalin.includes(item.name)
+    if (talentBossGroup.andrius.includes(name))
+      return baseFilter && talentBossGroup.andrius.includes(item.name)
+    if (talentBossGroup.childe.includes(name))
+      return baseFilter && talentBossGroup.childe.includes(item.name)
+    if (talentBossGroup.azhdaha.includes(name))
+      return baseFilter && talentBossGroup.azhdaha.includes(item.name)
+    if (talentBossGroup.signora.includes(name))
+      return baseFilter && talentBossGroup.signora.includes(item.name)
+    return baseFilter && talentBossGroup.raiden.includes(item.name)
+  })
+  return {
+    special,
+    items: tmpBosses.map((item) => item.name),
+  }
+}
+
+const talentBossGroup = {
+  dvalin: ["Dvalin's Plume", "Dvalin's Claw", "Dvalin's Sigh"],
+  andrius: ['Tail of Boreas', 'Ring of Boreas', 'Spirit Locket of Boreas'],
+  childe: [
+    'Tusk of Monoceros Caeli',
+    'Shard of a Foul Legacy',
+    'Shadow of the Warrior',
+  ],
+  azhdaha: ["Dragon Lord's Crown", 'Bloodjade Branch', 'Gilded Scale'],
+  signora: ['Molten Moment', 'Hellfire Butterfly', 'Ashen Heart'],
+  raiden: [
+    'Mudra of the Malefic General',
+    'Tears of the Calamitous God',
+    'The Meaning of Aeons',
+  ],
+}

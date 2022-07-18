@@ -17,13 +17,17 @@ export async function getInventoryByType({
   type,
   accountId,
 }: {
-  type: DB.ItemType
+  type: DB.ItemType | DB.ItemType[]
   accountId: string
 }) {
   return prisma.inventory.findMany({
     where: {
       ownerId: accountId,
-      item: { type },
+      item: {
+        type: {
+          in: Array.isArray(type) ? type : [type],
+        },
+      },
     },
     select: {
       itemName: true,
@@ -82,5 +86,121 @@ export async function getRequiredItems({
       itemName: true,
       quantity: true,
     },
+  })
+}
+
+export async function convertItem({
+  name,
+  converter,
+  accountId,
+}: {
+  name: string
+  converter: {
+    special: {
+      name: string
+      quantity: number
+    }
+    item: {
+      name: string
+      quantity: number
+    }
+  }
+  accountId: string
+}) {
+  return await prisma.$transaction(async (tx) => {
+    const inventory = await tx.inventory.findMany({
+      where: {
+        ownerId: accountId,
+        itemName: {
+          in: [converter.special.name, converter.item.name],
+        },
+      },
+    })
+
+    if (inventory.length !== 2) {
+      return {
+        message: 'Missing converter items',
+      }
+    }
+
+    const special = inventory.find(
+      (i) => i.itemName === converter.special.name
+    )!
+    const item = inventory.find((i) => i.itemName === converter.item.name)!
+
+    if (special.quantity < converter.special.quantity) {
+      return {
+        message: `Not enough ${converter.special.name}, required ${converter.special.quantity} but have ${special.quantity}`,
+      }
+    }
+
+    if (item.quantity < converter.item.quantity) {
+      return {
+        message: `Not enough ${converter.item.name}, required ${converter.item.quantity} but have ${item.quantity}`,
+      }
+    }
+
+    const convertedItem = await tx.inventory.findFirst({
+      where: {
+        ownerId: accountId,
+        itemName: name,
+      },
+    })
+
+    await tx.inventory.upsert({
+      where: {
+        id: convertedItem?.id ?? '',
+      },
+      create: {
+        itemName: name,
+        ownerId: accountId,
+        quantity: converter.item.quantity,
+      },
+      update: {
+        quantity: {
+          increment: converter.item.quantity,
+        },
+      },
+    })
+
+    if (converter.item.quantity === converter.special.quantity) {
+      await tx.inventory.updateMany({
+        where: {
+          ownerId: accountId,
+          itemName: {
+            in: [converter.special.name, converter.item.name],
+          },
+        },
+        data: {
+          quantity: {
+            decrement: converter.item.quantity,
+          },
+        },
+      })
+    } else {
+      await tx.inventory.updateMany({
+        where: {
+          ownerId: accountId,
+          itemName: converter.special.name,
+        },
+        data: {
+          quantity: {
+            decrement: converter.special.quantity,
+          },
+        },
+      })
+
+      await tx.inventory.updateMany({
+        where: {
+          ownerId: accountId,
+          itemName: converter.item.name,
+        },
+        data: {
+          quantity: {
+            decrement: converter.item.quantity,
+          },
+        },
+      })
+    }
   })
 }

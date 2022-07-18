@@ -11,6 +11,7 @@ import * as Utils from '~/utils'
 const navigation = [
   { name: 'Character', to: '/character' },
   { name: 'Inventory', to: '/inventory' },
+  { name: 'Alchemy', to: '/alchemy' },
 ]
 
 export default function AppNavbar() {
@@ -44,7 +45,7 @@ export default function AppNavbar() {
                   </RemixReact.Link>
 
                   <nav
-                    className="hidden lg:flex lg:space-x-8 lg:py-2"
+                    className="hidden lg:flex lg:space-x-4 lg:py-2"
                     aria-label="Global"
                   >
                     {navigation.map((item) => (
