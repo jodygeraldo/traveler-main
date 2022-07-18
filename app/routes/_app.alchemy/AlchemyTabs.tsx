@@ -1,16 +1,16 @@
 import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
-import * as Utils from '~/utils'
 
 export default function AlchemyTabs() {
   const navigate = RemixReact.useNavigate()
+  const resolvedPathname = RemixReact.useResolvedPath('./crafting').pathname
+  const { pathname } = RemixReact.useLocation()
 
   const tabs = [
-    { name: 'Crafting', to: '.', active: Utils.useActiveNavigation('.') },
+    { name: 'Crafting', to: './crafting' },
     {
       name: 'Converting',
       to: './converting',
-      active: Utils.useActiveNavigation('./converting'),
     },
   ]
 
@@ -24,7 +24,9 @@ export default function AlchemyTabs() {
           id="tabs"
           name="tabs"
           className="block w-full rounded-md border-gray-7 bg-gray-3 text-gray-11 focus:border-gray-8 focus:text-gray-12 focus:ring-gray-8"
-          defaultValue={tabs.find((tab) => tab.active)?.name}
+          defaultValue={
+            resolvedPathname === pathname ? 'Crafting' : 'Converting'
+          }
           onChange={(e) =>
             navigate(
               `./${e.target.value === tabs[0].name ? '.' : e.target.value}`
@@ -40,20 +42,21 @@ export default function AlchemyTabs() {
         <div className="border-b border-gray-6">
           <nav className="-mb-px flex" aria-label="Tabs">
             {tabs.map((tab) => (
-              <RemixReact.Link
+              <RemixReact.NavLink
                 prefetch="intent"
                 key={tab.name}
                 to={tab.to}
-                className={clsx(
-                  tab.active
-                    ? 'border-primary-8 text-primary-11'
-                    : 'border-transparent text-gray-11 hover:border-gray-7 hover:text-gray-12',
-                  'w-1/2 border-b-2 py-2 px-1 text-center text-sm font-medium'
-                )}
-                aria-current={tab.active ? 'page' : undefined}
+                className={({ isActive }) =>
+                  clsx(
+                    isActive
+                      ? 'border-primary-8 text-primary-11'
+                      : 'border-transparent text-gray-11 hover:border-gray-7 hover:text-gray-12',
+                    'w-1/2 border-b-2 py-2 px-1 text-center text-sm font-medium'
+                  )
+                }
               >
                 {tab.name}
-              </RemixReact.Link>
+              </RemixReact.NavLink>
             ))}
           </nav>
         </div>
