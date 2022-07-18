@@ -19,33 +19,39 @@ interface Props {
   type: 'gem' | 'boss'
 }
 
-export default function Item({ name, rarity, quantity, type }: Props) {
+export function ItemLink({ name, rarity, quantity, type }: Props) {
   return (
     <RemixReact.Link prefetch="intent" to={`./${name}?type=${type}`}>
-      <Tooltip text={name}>
-        <div className={clsx('rounded-b-md bg-gray-3 shadow-sm')}>
-          <div
-            className={clsx(
-              backgroundImage[rarity],
-              'rounded-t-md rounded-br-2xl bg-contain'
-            )}
-          >
-            <Image
-              src={`/item/${Utils.getImageSrc(name)}.png`}
-              alt={name}
-              className="h-16 w-16 rounded-br-2xl"
-              width={64}
-              height={64}
-            />
-          </div>
-          <div className="text-center">
-            <span className="sr-only">Quantity {quantity}</span>
-            <p className="text-sm text-gray-11" aria-hidden>
-              {quantity}
-            </p>
-          </div>
-        </div>
-      </Tooltip>
+      <Item name={name} rarity={rarity} quantity={quantity} />
     </RemixReact.Link>
+  )
+}
+
+export function Item({ name, rarity, quantity }: Omit<Props, 'type'>) {
+  return (
+    <Tooltip text={name}>
+      <div className={clsx('rounded-b-md bg-gray-3 shadow-sm')}>
+        <div
+          className={clsx(
+            backgroundImage[rarity],
+            'rounded-t-md rounded-br-2xl bg-contain'
+          )}
+        >
+          <Image
+            src={`/item/${Utils.getImageSrc(name)}.png`}
+            alt={name}
+            className="h-16 w-16 rounded-br-2xl"
+            width={64}
+            height={64}
+          />
+        </div>
+        <div className="text-center">
+          <span className="sr-only">Quantity {quantity}</span>
+          <p className="text-sm text-gray-11" aria-hidden>
+            {quantity}
+          </p>
+        </div>
+      </div>
+    </Tooltip>
   )
 }

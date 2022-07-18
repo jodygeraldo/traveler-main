@@ -19,14 +19,14 @@ interface Props {
 
 export default function Combobox({ options }: Props) {
   const [query, setQuery] = React.useState('')
-  const [selectedOption, setSelectedOption] = React.useState()
+  const [selectedOption, setSelectedOption] = React.useState(options[0])
 
   const filteredOptions =
     query === ''
       ? options
-      : options.filter((option) => {
-          return option.name.toLowerCase().includes(query.toLowerCase())
-        })
+      : options.filter((option) =>
+          option.name.toLowerCase().includes(query.toLowerCase())
+        )
 
   return (
     <HeadlessUIReact.Combobox
@@ -42,8 +42,9 @@ export default function Combobox({ options }: Props) {
           className="w-full rounded-md border border-gray-6 bg-gray-2 py-2 pl-3 pr-10 shadow-sm focus:border-primary-8 focus:outline-none focus:ring-1 focus:ring-primary-8 sm:text-sm"
           placeholder="Item to use"
           onChange={(event) => setQuery(event.target.value)}
-          //   @ts-ignore
-          displayValue={(person) => person?.name}
+          // @ts-ignore
+          displayValue={(option) => option?.name}
+          name="itemConverter"
         />
         <HeadlessUIReact.Combobox.Button className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
           <Icon.Solid
