@@ -7,8 +7,10 @@ import ItemWithImage from './ItemWithImage'
 interface Props {
   heading: string
   progressionLevel: number
-  materials: ItemData.ItemWithQuantity[] | undefined
-  inventoryItems: ItemData.ItemWithQuantity[]
+  materials:
+    | Omit<ItemData.ItemWithQuantity, 'convertable' | 'craftable'>[]
+    | undefined
+  inventoryItems: Omit<ItemData.ItemWithQuantity, 'convertable' | 'craftable'>[]
   possibleToLevel: boolean
   isAscension?: boolean
   characterLevel?: number
