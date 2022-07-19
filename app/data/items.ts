@@ -4,303 +4,1251 @@ export interface ItemWithQuantity {
   name: string
   type: DB.ItemType
   rarity: 1 | 2 | 3 | 4 | 5
+  convertable: boolean
+  craftable: boolean
   quantity?: number
 }
 
 const items: ItemWithQuantity[] = [
-  { name: 'Crown of Insight', type: DB.ItemType.SPECIAL, rarity: 5 },
-  { name: 'Dream Solvent', type: DB.ItemType.SPECIAL, rarity: 4 },
-  { name: 'Dust of Azoth', type: DB.ItemType.SPECIAL, rarity: 2 },
-  { name: 'Slime Concentrate', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Slime Secretions', type: DB.ItemType.COMMON, rarity: 2 },
-  { name: 'Slime Condensate', type: DB.ItemType.COMMON, rarity: 1 },
-  { name: 'Ominous Mask', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Stained Mask', type: DB.ItemType.COMMON, rarity: 2 },
-  { name: 'Damaged Mask', type: DB.ItemType.COMMON, rarity: 1 },
-  { name: 'Forbidden Curse Scroll', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Sealed Scroll', type: DB.ItemType.COMMON, rarity: 2 },
-  { name: 'Divining Scroll', type: DB.ItemType.COMMON, rarity: 1 },
-  { name: 'Weathered Arrowhead', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Sharp Arrowhead', type: DB.ItemType.COMMON, rarity: 2 },
-  { name: 'Firm Arrowhead', type: DB.ItemType.COMMON, rarity: 1 },
-  { name: 'Black Crystal Horn', type: DB.ItemType.COMMON, rarity: 4 },
-  { name: 'Black Bronze Horn', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Heavy Horn', type: DB.ItemType.COMMON, rarity: 2 },
-  { name: 'Ley Line Sprout', type: DB.ItemType.COMMON, rarity: 4 },
-  { name: 'Dead Ley Line Leaves', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Dead Ley Line Branch', type: DB.ItemType.COMMON, rarity: 2 },
-  { name: 'Chaos Core', type: DB.ItemType.COMMON, rarity: 4 },
-  { name: 'Chaos Circuit', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Chaos Device', type: DB.ItemType.COMMON, rarity: 2 },
-  { name: 'Mist Grass Wick', type: DB.ItemType.COMMON, rarity: 4 },
-  { name: 'Mist Grass', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Mist Grass Pollen', type: DB.ItemType.COMMON, rarity: 2 },
+  {
+    name: 'Crown of Insight',
+    type: DB.ItemType.SPECIAL,
+    rarity: 5,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Dream Solvent',
+    type: DB.ItemType.SPECIAL,
+    rarity: 4,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Dust of Azoth',
+    type: DB.ItemType.SPECIAL,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Slime Concentrate',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Slime Secretions',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Slime Condensate',
+    type: DB.ItemType.COMMON,
+    rarity: 1,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Ominous Mask',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Stained Mask',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Damaged Mask',
+    type: DB.ItemType.COMMON,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Forbidden Curse Scroll',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Sealed Scroll',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Divining Scroll',
+    type: DB.ItemType.COMMON,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Weathered Arrowhead',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Sharp Arrowhead',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Firm Arrowhead',
+    type: DB.ItemType.COMMON,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Black Crystal Horn',
+    type: DB.ItemType.COMMON,
+    rarity: 4,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Black Bronze Horn',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Heavy Horn',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Ley Line Sprout',
+    type: DB.ItemType.COMMON,
+    rarity: 4,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Dead Ley Line Leaves',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Dead Ley Line Branch',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Chaos Core',
+    type: DB.ItemType.COMMON,
+    rarity: 4,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Chaos Circuit',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Chaos Device',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Mist Grass Wick',
+    type: DB.ItemType.COMMON,
+    rarity: 4,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Mist Grass',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Mist Grass Pollen',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
   {
     name: "Inspector's Sacrificial Knife",
     type: DB.ItemType.COMMON,
     rarity: 4,
+    craftable: true,
+    convertable: false,
   },
-  { name: "Agent's Sacrificial Knife", type: DB.ItemType.COMMON, rarity: 3 },
-  { name: "Hunter's Sacrificial Knife", type: DB.ItemType.COMMON, rarity: 2 },
-  { name: "Lieutenant's Insignia", type: DB.ItemType.COMMON, rarity: 3 },
-  { name: "Sergeant's Insignia", type: DB.ItemType.COMMON, rarity: 2 },
-  { name: "Recruit's Insignia", type: DB.ItemType.COMMON, rarity: 1 },
-  { name: 'Golden Raven Insignia', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Silver Raven Insignia', type: DB.ItemType.COMMON, rarity: 2 },
-  { name: 'Treasure Hoarder Insignia', type: DB.ItemType.COMMON, rarity: 1 },
-  { name: 'Energy Nectar', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Shimmering Nectar', type: DB.ItemType.COMMON, rarity: 2 },
-  { name: 'Whopperflower Nectar', type: DB.ItemType.COMMON, rarity: 1 },
-  { name: 'Fossilized Bone Shard', type: DB.ItemType.COMMON, rarity: 4 },
-  { name: 'Sturdy Bone Shard', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Fragile Bone Shard', type: DB.ItemType.COMMON, rarity: 2 },
-  { name: 'Famed Handguard', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Kageuchi Handguard', type: DB.ItemType.COMMON, rarity: 2 },
-  { name: 'Old Handguard', type: DB.ItemType.COMMON, rarity: 1 },
-  { name: 'Chaos Oculus', type: DB.ItemType.COMMON, rarity: 4 },
-  { name: 'Chaos Axis', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Chaos Gear', type: DB.ItemType.COMMON, rarity: 2 },
-  { name: 'Polarizing Prism', type: DB.ItemType.COMMON, rarity: 4 },
-  { name: 'Crystal Prism', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Dismal Prism', type: DB.ItemType.COMMON, rarity: 2 },
-  { name: 'Spectral Nucleus', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Spectral Heart', type: DB.ItemType.COMMON, rarity: 2 },
-  { name: 'Spectral Husk', type: DB.ItemType.COMMON, rarity: 1 },
-  { name: 'Concealed Talon', type: DB.ItemType.COMMON, rarity: 4 },
-  { name: 'Concealed Unguis', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Concealed Claw', type: DB.ItemType.COMMON, rarity: 2 },
-  { name: 'Deathly Statuette', type: DB.ItemType.COMMON, rarity: 4 },
-  { name: 'Dark Statuette', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Gloomy Statuette', type: DB.ItemType.COMMON, rarity: 2 },
-  { name: 'Crystalline Cyst Dust', type: DB.ItemType.COMMON, rarity: 3 },
-  { name: 'Luminescent Pollen', type: DB.ItemType.COMMON, rarity: 2 },
-  { name: 'Fungal Spores', type: DB.ItemType.COMMON, rarity: 1 },
+  {
+    name: "Agent's Sacrificial Knife",
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: "Hunter's Sacrificial Knife",
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: "Lieutenant's Insignia",
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: "Sergeant's Insignia",
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: "Recruit's Insignia",
+    type: DB.ItemType.COMMON,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Golden Raven Insignia',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Silver Raven Insignia',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Treasure Hoarder Insignia',
+    type: DB.ItemType.COMMON,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Energy Nectar',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Shimmering Nectar',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Whopperflower Nectar',
+    type: DB.ItemType.COMMON,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Fossilized Bone Shard',
+    type: DB.ItemType.COMMON,
+    rarity: 4,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Sturdy Bone Shard',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Fragile Bone Shard',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Famed Handguard',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Kageuchi Handguard',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Old Handguard',
+    type: DB.ItemType.COMMON,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Chaos Oculus',
+    type: DB.ItemType.COMMON,
+    rarity: 4,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Chaos Axis',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Chaos Gear',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Polarizing Prism',
+    type: DB.ItemType.COMMON,
+    rarity: 4,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Crystal Prism',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Dismal Prism',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Spectral Nucleus',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Spectral Heart',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Spectral Husk',
+    type: DB.ItemType.COMMON,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Concealed Talon',
+    type: DB.ItemType.COMMON,
+    rarity: 4,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Concealed Unguis',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Concealed Claw',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Deathly Statuette',
+    type: DB.ItemType.COMMON,
+    rarity: 4,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Dark Statuette',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Gloomy Statuette',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Crystalline Cyst Dust',
+    type: DB.ItemType.COMMON,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Luminescent Pollen',
+    type: DB.ItemType.COMMON,
+    rarity: 2,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Fungal Spores',
+    type: DB.ItemType.COMMON,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
   {
     name: 'Brilliant Diamond Gemstone',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
+    craftable: false,
+    convertable: false,
   },
   {
     name: 'Brilliant Diamond Chunk',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 4,
+    craftable: false,
+    convertable: false,
   },
   {
     name: 'Brilliant Diamond Fragment',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
+    craftable: false,
+    convertable: false,
   },
   {
     name: 'Brilliant Diamond Sliver',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 2,
+    craftable: false,
+    convertable: false,
   },
   {
     name: 'Agnidus Agate Gemstone',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
+    craftable: true,
+    convertable: true,
   },
-  { name: 'Agnidus Agate Chunk', type: DB.ItemType.ASCENSION_GEM, rarity: 4 },
+  {
+    name: 'Agnidus Agate Chunk',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 4,
+    craftable: true,
+    convertable: true,
+  },
   {
     name: 'Agnidus Agate Fragment',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
+    craftable: true,
+    convertable: true,
   },
-  { name: 'Agnidus Agate Sliver', type: DB.ItemType.ASCENSION_GEM, rarity: 2 },
+  {
+    name: 'Agnidus Agate Sliver',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 2,
+    craftable: false,
+    convertable: true,
+  },
   {
     name: 'Varunada Lazurite Gemstone',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
+    craftable: true,
+    convertable: true,
   },
   {
     name: 'Varunada Lazurite Chunk',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 4,
+    craftable: true,
+    convertable: true,
   },
   {
     name: 'Varunada Lazurite Fragment',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
+    craftable: true,
+    convertable: true,
   },
   {
     name: 'Varunada Lazurite Sliver',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 2,
+    craftable: false,
+    convertable: true,
   },
   {
     name: 'Vajrada Amethyst Gemstone',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
+    craftable: true,
+    convertable: true,
   },
   {
     name: 'Vajrada Amethyst Chunk',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 4,
+    craftable: true,
+    convertable: true,
   },
   {
     name: 'Vajrada Amethyst Fragment',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
+    craftable: true,
+    convertable: true,
   },
   {
     name: 'Vajrada Amethyst Sliver',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 2,
+    craftable: false,
+    convertable: true,
   },
   {
     name: 'Vayuda Turquoise Gemstone',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
+    craftable: true,
+    convertable: true,
   },
   {
     name: 'Vayuda Turquoise Chunk',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 4,
+    craftable: true,
+    convertable: true,
   },
   {
     name: 'Vayuda Turquoise Fragment',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
+    craftable: true,
+    convertable: true,
   },
   {
     name: 'Vayuda Turquoise Sliver',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 2,
+    craftable: false,
+    convertable: true,
   },
-  { name: 'Shivada Jade Gemstone', type: DB.ItemType.ASCENSION_GEM, rarity: 5 },
-  { name: 'Shivada Jade Chunk', type: DB.ItemType.ASCENSION_GEM, rarity: 4 },
-  { name: 'Shivada Jade Fragment', type: DB.ItemType.ASCENSION_GEM, rarity: 3 },
-  { name: 'Shivada Jade Sliver', type: DB.ItemType.ASCENSION_GEM, rarity: 2 },
+  {
+    name: 'Shivada Jade Gemstone',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 5,
+    craftable: true,
+    convertable: true,
+  },
+  {
+    name: 'Shivada Jade Chunk',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 4,
+    craftable: true,
+    convertable: true,
+  },
+  {
+    name: 'Shivada Jade Fragment',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 3,
+    craftable: true,
+    convertable: true,
+  },
+  {
+    name: 'Shivada Jade Sliver',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 2,
+    craftable: false,
+    convertable: true,
+  },
   {
     name: 'Prithiva Topaz Gemstone',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
+    craftable: true,
+    convertable: true,
   },
-  { name: 'Prithiva Topaz Chunk', type: DB.ItemType.ASCENSION_GEM, rarity: 4 },
+  {
+    name: 'Prithiva Topaz Chunk',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 4,
+    craftable: true,
+    convertable: true,
+  },
   {
     name: 'Prithiva Topaz Fragment',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
+    craftable: true,
+    convertable: true,
   },
-  { name: 'Prithiva Topaz Sliver', type: DB.ItemType.ASCENSION_GEM, rarity: 2 },
-  { name: 'Hurricane Seed', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
-  { name: 'Lightning Prism', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
-  { name: 'Basalt Pillar', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
-  { name: 'Hoarfrost Core', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
-  { name: 'Everflame Seed', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
-  { name: 'Cleansing Heart', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
-  { name: 'Juvenile Jade', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
-  { name: 'Crystalline Bloom', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
-  { name: 'Marionette Core', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
-  { name: 'Perpetual Heart', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
-  { name: 'Smoldering Pearl', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
-  { name: 'Dew of Repudiation', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
-  { name: 'Storm Beads', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
-  { name: 'Riftborn Regalia', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
+  {
+    name: 'Prithiva Topaz Sliver',
+    type: DB.ItemType.ASCENSION_GEM,
+    rarity: 2,
+    craftable: false,
+    convertable: true,
+  },
+  {
+    name: 'Hurricane Seed',
+    type: DB.ItemType.ASCENSION_BOSS,
+    rarity: 4,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Lightning Prism',
+    type: DB.ItemType.ASCENSION_BOSS,
+    rarity: 4,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Basalt Pillar',
+    type: DB.ItemType.ASCENSION_BOSS,
+    rarity: 4,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Hoarfrost Core',
+    type: DB.ItemType.ASCENSION_BOSS,
+    rarity: 4,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Everflame Seed',
+    type: DB.ItemType.ASCENSION_BOSS,
+    rarity: 4,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Cleansing Heart',
+    type: DB.ItemType.ASCENSION_BOSS,
+    rarity: 4,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Juvenile Jade',
+    type: DB.ItemType.ASCENSION_BOSS,
+    rarity: 4,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Crystalline Bloom',
+    type: DB.ItemType.ASCENSION_BOSS,
+    rarity: 4,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Marionette Core',
+    type: DB.ItemType.ASCENSION_BOSS,
+    rarity: 4,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Perpetual Heart',
+    type: DB.ItemType.ASCENSION_BOSS,
+    rarity: 4,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Smoldering Pearl',
+    type: DB.ItemType.ASCENSION_BOSS,
+    rarity: 4,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Dew of Repudiation',
+    type: DB.ItemType.ASCENSION_BOSS,
+    rarity: 4,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Storm Beads',
+    type: DB.ItemType.ASCENSION_BOSS,
+    rarity: 4,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Riftborn Regalia',
+    type: DB.ItemType.ASCENSION_BOSS,
+    rarity: 4,
+    craftable: false,
+    convertable: false,
+  },
   {
     name: "Dragonheir's False Fin",
     type: DB.ItemType.ASCENSION_BOSS,
     rarity: 4,
+    craftable: false,
+    convertable: false,
   },
-  { name: 'Runic Fang', type: DB.ItemType.ASCENSION_BOSS, rarity: 4 },
-  { name: 'Wolfhook', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Valberry', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Cecilia', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Windwheel Aster', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Philanemo Mushroom', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Small Lamp Grass', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Calla Lily', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Dandelion Seed', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Cor Lapis', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Jueyun Chili', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Noctilucous Jade', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Silk Flower', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Glaze Lily', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Qingxin', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Starconch', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Violetgrass', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Onikabuto', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Sakura Bloom', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Crystal Marrow', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Dendrobium', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Naku Weed', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Sea Ganoderma', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Sango Pearl', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Amakumo Fruit', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Fluorescent Fungus', type: DB.ItemType.LOCAL_SPECIALTY, rarity: 1 },
-  { name: 'Philosophies of Freedom', type: DB.ItemType.TALENT_BOOK, rarity: 4 },
-  { name: 'Guide to Freedom', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
-  { name: 'Teachings of Freedom', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
+  {
+    name: 'Runic Fang',
+    type: DB.ItemType.ASCENSION_BOSS,
+    rarity: 4,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Wolfhook',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Valberry',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Cecilia',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Windwheel Aster',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Philanemo Mushroom',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Small Lamp Grass',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Calla Lily',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Dandelion Seed',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Cor Lapis',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Jueyun Chili',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Noctilucous Jade',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Silk Flower',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Glaze Lily',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Qingxin',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Starconch',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Violetgrass',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Onikabuto',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Sakura Bloom',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Crystal Marrow',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Dendrobium',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Naku Weed',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Sea Ganoderma',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Sango Pearl',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Amakumo Fruit',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Fluorescent Fungus',
+    type: DB.ItemType.LOCAL_SPECIALTY,
+    rarity: 1,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Philosophies of Freedom',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 4,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Guide to Freedom',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Teachings of Freedom',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
   {
     name: 'Philosophies of Resistance',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
+    craftable: true,
+    convertable: false,
   },
-  { name: 'Guide to Resistance', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
-  { name: 'Teachings of Resistance', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
-  { name: 'Philosophies of Ballad', type: DB.ItemType.TALENT_BOOK, rarity: 4 },
-  { name: 'Guide to Ballad', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
-  { name: 'Teachings of Ballad', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
+  {
+    name: 'Guide to Resistance',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Teachings of Resistance',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Philosophies of Ballad',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 4,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Guide to Ballad',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Teachings of Ballad',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
   {
     name: 'Philosophies of Prosperity',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
+    craftable: true,
+    convertable: false,
   },
-  { name: 'Guide to Prosperity', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
-  { name: 'Teachings of Prosperity', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
+  {
+    name: 'Guide to Prosperity',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Teachings of Prosperity',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
   {
     name: 'Philosophies of Diligence',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
+    craftable: true,
+    convertable: false,
   },
-  { name: 'Guide to Diligence', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
-  { name: 'Teachings of Diligence', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
-  { name: 'Philosophies of Gold', type: DB.ItemType.TALENT_BOOK, rarity: 4 },
-  { name: 'Guide to Gold', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
-  { name: 'Teachings of Gold', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
+  {
+    name: 'Guide to Diligence',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Teachings of Diligence',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Philosophies of Gold',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 4,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Guide to Gold',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Teachings of Gold',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
   {
     name: 'Philosophies of Transience',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
+    craftable: true,
+    convertable: false,
   },
-  { name: 'Guide to Transience', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
-  { name: 'Teachings of Transience', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
+  {
+    name: 'Guide to Transience',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Teachings of Transience',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
   {
     name: 'Philosophies of Elegance',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
+    craftable: true,
+    convertable: false,
   },
-  { name: 'Guide to Elegance', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
-  { name: 'Teachings of Elegance', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
-  { name: 'Philosophies of Light', type: DB.ItemType.TALENT_BOOK, rarity: 4 },
-  { name: 'Guide to Light', type: DB.ItemType.TALENT_BOOK, rarity: 3 },
-  { name: 'Teachings of Light', type: DB.ItemType.TALENT_BOOK, rarity: 2 },
-  { name: "Dvalin's Plume", type: DB.ItemType.TALENT_BOSS, rarity: 5 },
-  { name: "Dvalin's Claw", type: DB.ItemType.TALENT_BOSS, rarity: 5 },
-  { name: "Dvalin's Sigh", type: DB.ItemType.TALENT_BOSS, rarity: 5 },
-  { name: 'Tail of Boreas', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
-  { name: 'Ring of Boreas', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
-  { name: 'Spirit Locket of Boreas', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
-  { name: 'Tusk of Monoceros Caeli', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
-  { name: 'Shard of a Foul Legacy', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
-  { name: 'Shadow of the Warrior', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
-  { name: "Dragon Lord's Crown", type: DB.ItemType.TALENT_BOSS, rarity: 5 },
-  { name: 'Bloodjade Branch', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
-  { name: 'Gilded Scale', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
-  { name: 'Molten Moment', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
-  { name: 'Hellfire Butterfly', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
-  { name: 'Ashen Heart', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
+  {
+    name: 'Guide to Elegance',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Teachings of Elegance',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: 'Philosophies of Light',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 4,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Guide to Light',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 3,
+    craftable: true,
+    convertable: false,
+  },
+  {
+    name: 'Teachings of Light',
+    type: DB.ItemType.TALENT_BOOK,
+    rarity: 2,
+    craftable: false,
+    convertable: false,
+  },
+  {
+    name: "Dvalin's Plume",
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+    craftable: false,
+    convertable: true,
+  },
+  {
+    name: "Dvalin's Claw",
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+    craftable: false,
+    convertable: true,
+  },
+  {
+    name: "Dvalin's Sigh",
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+    craftable: false,
+    convertable: true,
+  },
+  {
+    name: 'Tail of Boreas',
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+    craftable: false,
+    convertable: true,
+  },
+  {
+    name: 'Ring of Boreas',
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+    craftable: false,
+    convertable: true,
+  },
+  {
+    name: 'Spirit Locket of Boreas',
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+    craftable: false,
+    convertable: true,
+  },
+  {
+    name: 'Tusk of Monoceros Caeli',
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+    craftable: false,
+    convertable: true,
+  },
+  {
+    name: 'Shard of a Foul Legacy',
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+    craftable: false,
+    convertable: true,
+  },
+  {
+    name: 'Shadow of the Warrior',
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+    craftable: false,
+    convertable: true,
+  },
+  {
+    name: "Dragon Lord's Crown",
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+    craftable: false,
+    convertable: true,
+  },
+  {
+    name: 'Bloodjade Branch',
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+    craftable: false,
+    convertable: true,
+  },
+  {
+    name: 'Gilded Scale',
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+    craftable: false,
+    convertable: true,
+  },
+  {
+    name: 'Molten Moment',
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+    craftable: false,
+    convertable: true,
+  },
+  {
+    name: 'Hellfire Butterfly',
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+    craftable: false,
+    convertable: true,
+  },
+  {
+    name: 'Ashen Heart',
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+    craftable: false,
+    convertable: true,
+  },
   {
     name: 'Mudra of the Malefic General',
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
+    craftable: false,
+    convertable: true,
   },
   {
     name: 'Tears of the Calamitous God',
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
+    craftable: false,
+    convertable: true,
   },
-  { name: 'The Meaning of Aeons', type: DB.ItemType.TALENT_BOSS, rarity: 5 },
+  {
+    name: 'The Meaning of Aeons',
+    type: DB.ItemType.TALENT_BOSS,
+    rarity: 5,
+    craftable: false,
+    convertable: true,
+  },
 ]
 
 export function getAllItems(
@@ -402,30 +1350,7 @@ export function getConverterItems({
   name: string
   type: 'gem' | 'boss'
 }) {
-  interface Special {
-    name: string
-    rarity: 1 | 2 | 3 | 4 | 5
-    quantity: {
-      owned: number
-      required: number
-    }
-  }
-
   if (type === 'gem') {
-    const special: Special = {
-      name: 'Dust of Azoth',
-      rarity: 2,
-      quantity: {
-        owned: 0,
-        required: name.includes('Gemstone')
-          ? 27
-          : name.includes('Chunk')
-          ? 9
-          : name.includes('Fragment')
-          ? 3
-          : 1,
-      },
-    }
     const tmpGems = items.filter((item) => {
       const baseFilter =
         item.type === DB.ItemType.ASCENSION_GEM &&
@@ -441,16 +1366,17 @@ export function getConverterItems({
       return baseFilter && item.name.includes('Sliver')
     })
     return {
-      special,
+      specialRequiredQuantity: name.includes('Gemstone')
+        ? 27
+        : name.includes('Chunk')
+        ? 9
+        : name.includes('Fragment')
+        ? 3
+        : 1,
       items: tmpGems.map((item) => item.name),
     }
   }
 
-  const special: Special = {
-    name: 'Dream Solvent',
-    rarity: 4,
-    quantity: { owned: 0, required: 1 },
-  }
   const tmpBosses = items.filter((item) => {
     const baseFilter =
       item.type === DB.ItemType.TALENT_BOSS && item.name !== name
@@ -468,7 +1394,7 @@ export function getConverterItems({
     return baseFilter && talentBossGroup.raiden.includes(item.name)
   })
   return {
-    special,
+    specialRequiredQuantity: 1,
     items: tmpBosses.map((item) => item.name),
   }
 }
@@ -488,4 +1414,95 @@ const talentBossGroup = {
     'Tears of the Calamitous God',
     'The Meaning of Aeons',
   ],
+}
+
+export function getConvertableItemNames() {
+  return items.filter((item) => item.convertable).map((item) => item.name)
+}
+
+export function getConvertableItemNamesByType({ type }: { type: DB.ItemType }) {
+  return items
+    .filter((item) => item.convertable && item.type === type)
+    .map((item) => item.name)
+}
+
+export function getCraftableItemNames() {
+  return items.filter((item) => item.craftable).map((item) => item.name)
+}
+
+export function getCraftableItemNamesByType({ type }: { type: DB.ItemType }) {
+  return items
+    .filter((item) => item.craftable && item.type === type)
+    .map((item) => item.name)
+}
+
+export function getConvertableItems({
+  userItems,
+  type,
+}: {
+  userItems: Pick<DB.Inventory, 'itemName' | 'quantity'>[]
+  type?: 'ascension-gem' | 'talent-boss'
+}) {
+  const ascensionGemConvertable = items
+    .filter(
+      (item) => item.convertable && item.type === DB.ItemType.ASCENSION_GEM
+    )
+    .map((item) => {
+      const userItem = userItems.find(
+        (userItem) => userItem.itemName === item.name
+      )
+
+      return {
+        name: item.name,
+        rarity: item.rarity,
+        quantity: userItem ? userItem.quantity : 0,
+      }
+    })
+
+  const userAscensionGemConverter = userItems.find(
+    (item) => item.itemName === 'Dust of Azoth'
+  )?.quantity
+  const ascensionGemConverter = {
+    name: 'Dust of Azoth',
+    rarity: 2,
+    quantity: userAscensionGemConverter ? userAscensionGemConverter : 0,
+  } as const
+
+  if (type === 'ascension-gem') {
+    return { ascensionGemConvertable, ascensionGemConverter }
+  }
+
+  const talentBossConvertable = items
+    .filter((item) => item.convertable && item.type === DB.ItemType.TALENT_BOSS)
+    .map((item) => {
+      const userItem = userItems.find(
+        (userItem) => userItem.itemName === item.name
+      )
+
+      return {
+        name: item.name,
+        rarity: item.rarity,
+        quantity: userItem ? userItem.quantity : 0,
+      }
+    })
+
+  const userTalentBossConverter = userItems.find(
+    (item) => item.itemName === 'Dream Solvent'
+  )?.quantity
+  const talentBossConverter = {
+    name: 'Dream Solvent',
+    rarity: 4,
+    quantity: userTalentBossConverter ? userTalentBossConverter : 0,
+  } as const
+
+  if (type === 'talent-boss') {
+    return { talentBossConvertable, talentBossConverter }
+  }
+
+  return {
+    ascensionGemConvertable,
+    ascensionGemConverter,
+    talentBossConvertable,
+    talentBossConverter,
+  }
 }
