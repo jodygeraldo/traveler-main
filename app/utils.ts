@@ -93,6 +93,14 @@ export function useActiveNavigation(to: string): boolean {
   return resolvedPath === pathname || `${resolvedPath}/` === pathname
 }
 
+// https://fettblog.eu/typescript-hasownproperty/
+export function hasOwnProperty<X extends {}, Y extends PropertyKey>(
+  obj: X,
+  prop: Y
+): obj is X & Record<Y, unknown> {
+  return obj.hasOwnProperty(prop)
+}
+
 export function validateEmail(email: unknown): email is string {
   return typeof email === 'string' && email.length > 3 && email.includes('@')
 }
@@ -176,5 +184,14 @@ if (process.env.NODE_ENV === 'test' && import.meta.vitest) {
     expect(splitPerCapitalCase('sPlIttEd')).toBe('s Pl Itt Ed')
     expect(splitPerCapitalCase('s Pl IttEd')).toBe('s Pl Itt Ed')
     expect(splitPerCapitalCase('s-Pl_IttEd')).toBe('s Pl Itt Ed')
+  })
+
+  test('hasOwnProperty return true if object has own property else false', () => {
+    const obj = {
+      foo: 'bar',
+    }
+
+    expect(hasOwnProperty(obj, 'foo')).toBe(true)
+    expect(hasOwnProperty(obj, 'bar')).toBe(false)
   })
 }
