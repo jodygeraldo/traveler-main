@@ -3,17 +3,14 @@ import clsx from 'clsx'
 import * as React from 'react'
 import * as Icon from '~/components/Icon'
 import Image from '~/components/Image'
-import type * as ItemData from '~/data/items'
 import * as Utils from '~/utils'
 
 interface Props {
   options: {
-    name: ItemData.ItemWithQuantity['name']
-    rarity: ItemData.ItemWithQuantity['rarity']
-    quantity: {
-      owned: number
-      required: number
-    }
+    name: string
+    rarity: number
+    quantity: number
+    requiredQuantity: number
   }[]
 }
 
@@ -91,7 +88,7 @@ export default function Combobox({ options }: Props) {
                           active ? 'text-white' : 'text-gray-11'
                         )}
                       >
-                        @{option.quantity.owned}
+                        @{option.quantity}
                       </span>
                     </div>
 

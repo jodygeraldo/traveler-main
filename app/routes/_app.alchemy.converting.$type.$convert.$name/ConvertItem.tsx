@@ -5,11 +5,10 @@ import * as React from 'react'
 import Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
 import Image from '~/components/Image'
-import type * as ItemData from '~/data/items'
 import * as Utils from '~/utils'
 import Combobox from './Combobox'
 
-const backgroundImage: Record<1 | 2 | 3 | 4 | 5, string> = {
+const backgroundImage: Record<number, string> = {
   1: 'bg-image-rarity-1',
   2: 'bg-image-rarity-2',
   3: 'bg-image-rarity-3',
@@ -18,23 +17,19 @@ const backgroundImage: Record<1 | 2 | 3 | 4 | 5, string> = {
 }
 
 interface Props {
-  name: ItemData.ItemWithQuantity['name']
-  rarity: ItemData.ItemWithQuantity['rarity']
+  name: string
+  rarity: number
   specialConverter: {
-    name: ItemData.ItemWithQuantity['name']
-    rarity: ItemData.ItemWithQuantity['rarity']
-    quantity: {
-      owned: number
-      required: number
-    }
+    name: string
+    rarity: number
+    quantity: number
+    requiredQuantity: number
   }
   itemsConverter: {
-    name: ItemData.ItemWithQuantity['name']
-    rarity: ItemData.ItemWithQuantity['rarity']
-    quantity: {
-      owned: number
-      required: number
-    }
+    name: string
+    rarity: number
+    quantity: number
+    requiredQuantity: number
   }[]
   error?: {
     message: string
@@ -48,17 +43,18 @@ export default function ConvertItem({
   itemsConverter,
   error,
 }: Props) {
-  const [searchParams] = RemixReact.useSearchParams()
+  const navigate = RemixReact.useNavigate()
+  const transition = RemixReact.useTransition()
+  const busy = transition.state === 'submitting'
 
   const cancelButtonRef = React.useRef(null)
-  const navigate = RemixReact.useNavigate()
 
   const isConvertable =
-    specialConverter.quantity.owned >= specialConverter.quantity.required &&
-    itemsConverter.some((item) => item.quantity.owned >= item.quantity.required)
+    specialConverter.quantity >= specialConverter.requiredQuantity &&
+    itemsConverter.some((item) => item.quantity >= item.requiredQuantity)
 
   const maxQuantityToConvert = Math.max(
-    ...itemsConverter.map((item) => item.quantity.owned)
+    ...itemsConverter.map((item) => item.quantity)
   )
 
   return (
@@ -72,7 +68,6 @@ export default function ConvertItem({
 
       <div className="fixed inset-0 z-10 overflow-y-auto">
         <RemixReact.Form
-          action={`/alchemy/converting/${name}?${searchParams.toString()}`}
           method="post"
           className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
         >
@@ -110,10 +105,10 @@ export default function ConvertItem({
                       </div>
                       <div className="text-center">
                         <span className="sr-only">
-                          Quantity {specialConverter.quantity.required}
+                          Quantity {specialConverter.requiredQuantity}
                         </span>
                         <p className="text-sm text-gray-11" aria-hidden>
-                          {specialConverter.quantity.required}
+                          {specialConverter.requiredQuantity}
                         </p>
                       </div>
                     </div>
@@ -151,7 +146,7 @@ export default function ConvertItem({
                     <input
                       type="hidden"
                       name="specialItemQuantity"
-                      value={specialConverter.quantity.required}
+                      value={specialConverter.requiredQuantity}
                     />
 
                     <div className="max-w-[18rem] sm:w-72">
@@ -186,8 +181,8 @@ export default function ConvertItem({
               <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                 {isConvertable ? (
                   <div className="w-full sm:col-start-2">
-                    <Button className="w-full" type="submit">
-                      Convert
+                    <Button className="w-full" type="submit" disabled={busy}>
+                      {busy ? 'Converting...' : 'Convert'}
                     </Button>
                   </div>
                 ) : null}
@@ -204,6 +199,7 @@ export default function ConvertItem({
                     type="button"
                     variant="basic"
                     className="w-full"
+                    disabled={busy}
                     onClick={() => navigate('..')}
                     ref={cancelButtonRef}
                   >

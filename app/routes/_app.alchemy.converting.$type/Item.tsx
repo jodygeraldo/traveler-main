@@ -4,7 +4,7 @@ import Image from '~/components/Image'
 import Tooltip from '~/components/Tooltip'
 import * as Utils from '~/utils'
 
-const backgroundImage: Record<1 | 2 | 3 | 4 | 5, string> = {
+const backgroundImage: Record<number, string> = {
   1: 'bg-image-rarity-1',
   2: 'bg-image-rarity-2',
   3: 'bg-image-rarity-3',
@@ -14,20 +14,20 @@ const backgroundImage: Record<1 | 2 | 3 | 4 | 5, string> = {
 
 interface Props {
   name: string
-  rarity: 1 | 2 | 3 | 4 | 5
+  rarity: number
   quantity: number
-  type: 'gem' | 'boss'
+  convert: 'convert-gem' | 'convert-boss'
 }
 
-export function ItemLink({ name, rarity, quantity, type }: Props) {
+export function ItemLink({ name, rarity, quantity, convert }: Props) {
   return (
-    <RemixReact.Link prefetch="intent" to={`./${name}?type=${type}`}>
+    <RemixReact.Link prefetch="intent" to={`./${convert}/${name}`}>
       <Item name={name} rarity={rarity} quantity={quantity} />
     </RemixReact.Link>
   )
 }
 
-export function Item({ name, rarity, quantity }: Omit<Props, 'type'>) {
+export function Item({ name, rarity, quantity }: Omit<Props, 'convert'>) {
   return (
     <Tooltip text={name}>
       <div className={clsx('rounded-b-md bg-gray-3 shadow-sm')}>
