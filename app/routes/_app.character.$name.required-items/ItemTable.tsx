@@ -29,19 +29,19 @@ export function ItemTable({
   customAddionalFirstCellElement,
 }: OtherCharacterProps) {
   return (
-    <div className="mt-8">
+    <div className="mt-12">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h2 className="inline-flex items-center text-xl font-semibold text-gray-12">
             {heading}
           </h2>
         </div>
-        <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+        <div className="mt-1 sm:mt-0 sm:ml-16 sm:flex-none">
           <Switch state={switchState} label={switchLabel} />
         </div>
       </div>
       {!switchState[0] ? (
-        <div className="mt-6 flex flex-col">
+        <div className="mt-4 flex flex-col">
           <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 px-4 align-middle sm:px-6 lg:px-8">
               <div className="overflow-hidden rounded-lg shadow ring-1 ring-black ring-opacity-5">
@@ -133,19 +133,19 @@ export function ItemTableElementalTraveler({
   customAddionalFirstCellElement,
 }: TravelerProps) {
   return (
-    <div className="mt-8">
+    <div className="mt-12">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h2 className="inline-flex items-center text-xl font-semibold text-gray-12">
             {heading}
           </h2>
         </div>
-        <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+        <div className="mt-1 sm:mt-0 sm:ml-16 sm:flex-none">
           <Switch state={switchState} label={switchLabel} />
         </div>
       </div>
       {!switchState[0] ? (
-        <div className="mt-6 flex flex-col">
+        <div className="mt-4 flex flex-col">
           <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 px-4 align-middle sm:px-6 lg:px-8">
               <div className="overflow-hidden rounded-lg shadow ring-1 ring-black ring-opacity-5">

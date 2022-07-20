@@ -37,7 +37,7 @@ export async function action({ params, request }: RemixNode.LoaderArgs) {
 
   const result = await RemixParamsHelper.getFormData(request, FormDataSchema)
   if (!result.success) {
-    console.log(result.errors);
+    console.log(result.errors)
     throw new Error('Invalid data')
   }
 

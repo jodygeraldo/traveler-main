@@ -1,19 +1,62 @@
 import * as RemixReact from '@remix-run/react'
-import AlchemyTabs from './AlchemyTabs'
+import Sidebar from '~/components/Sidebar'
+
+const navigation = [
+  {
+    name: 'Crafting',
+    to: './crafting',
+    sub: [
+      {
+        name: 'All',
+        to: './crafting/all',
+      },
+      {
+        name: 'Enhancement',
+        to: './crafting/enhancement',
+      },
+      {
+        name: 'Ascension',
+        to: './crafting/ascension',
+      },
+      {
+        name: 'Talent',
+        to: './crafting/talent',
+      },
+    ],
+  },
+  {
+    name: 'Converting',
+    to: './converting',
+    sub: [
+      {
+        name: 'All',
+        to: './converting/all',
+      },
+      {
+        name: 'Ascension Gem',
+        to: './converting/ascension-gem',
+      },
+      {
+        name: 'Talent Boss',
+        to: './converting/talent-boss',
+      },
+    ],
+  },
+]
 
 export default function AlchemyLayout() {
   return (
-    <main className="mx-auto max-w-3xl py-10 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-      <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
-        Alchemy
-      </h1>
-
-      <div className="mt-6 sm:mt-2 2xl:mt-5">
-        <AlchemyTabs />
-        <main className="pb-16">
+    <div className="py-10">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-8 lg:px-8">
+        <div className="col-span-12 lg:col-span-2">
+          <nav aria-label="Sidebar" className="sticky top-6">
+            <Sidebar navigation={navigation} />
+          </nav>
+        </div>
+        <main className="mt-8 lg:col-span-10 lg:mt-0">
           <RemixReact.Outlet />
         </main>
       </div>
-    </main>
+    </div>
   )
 }

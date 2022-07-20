@@ -56,7 +56,7 @@ export default function CharactersPage() {
   })
 
   return (
-    <>
+    <main className="mx-auto max-w-3xl py-10 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
       <div className="flex items-center">
         <h1 className="text-2xl font-bold leading-7 text-primary-12 sm:truncate sm:text-3xl">
           Characters
@@ -138,6 +138,6 @@ export default function CharactersPage() {
           <CharacterGrid characters={showSearch ? searchItems : characters} />
         )}
       </div>
-    </>
+    </main>
   )
 }

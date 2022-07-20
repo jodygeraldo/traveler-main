@@ -1,5 +1,5 @@
-import * as RemixNode from '@remix-run/node';
+import * as RemixNode from '@remix-run/node'
 
 export async function loader() {
-  return RemixNode.redirect('/inventory/all');
+  return RemixNode.redirect('/inventory/all')
 }

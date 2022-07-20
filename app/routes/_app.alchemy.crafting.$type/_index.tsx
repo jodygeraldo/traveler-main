@@ -74,11 +74,7 @@ export default function AlchemyConvertingPage() {
     return (
       <>
         <div>
-          <ItemList
-            heading={props.heading}
-            craft={props.craft}
-            items={items}
-          />
+          <ItemList heading={props.heading} craft={props.craft} items={items} />
         </div>
 
         <RemixReact.Outlet />
