@@ -63,7 +63,7 @@ interface ButtonGroupProps
 
 const baseStyles: Record<KindProps, string> = {
   button:
-    'group inline-flex items-center rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm',
+    'group inline-flex items-center justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm',
   icon: 'group text-gray-11 hover:enabled:text-gray-12 inline-flex items-center rounded-md border border-transparent p-2 text-sm font-medium shadow-sm disabled:text-gray-6',
   group:
     'group relative inline-flex items-center justify-between text-sm transition p-2 border disabled:bg-gray-6',

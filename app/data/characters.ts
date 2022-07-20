@@ -1,6 +1,7 @@
 import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import * as DB from '~/db.server'
+import * as Utils from '~/utils'
 import type * as ItemData from './items'
 
 type CommonMaterial =
@@ -2249,17 +2250,9 @@ export function getCharacterInventoryLevelUpData({
       return
     }
 
-    // https://fettblog.eu/typescript-hasownproperty/
-    function hasOwnProperty<X extends {}, Y extends PropertyKey>(
-      obj: X,
-      prop: Y
-    ): obj is X & Record<Y, unknown> {
-      return obj.hasOwnProperty(prop)
-    }
-
     let materials = [material.common]
 
-    if (hasOwnProperty(material, 'book')) {
+    if (Utils.hasOwnProperty(material, 'book')) {
       materials = [...materials, material.book]
       if (material.boss) materials = [...materials, material.boss]
       if (material.special) materials = [...materials, material.special]
