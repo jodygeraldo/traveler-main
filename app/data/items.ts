@@ -1993,7 +1993,11 @@ export function getItemsByType({
     if (itemIndex !== -1) result[itemIndex].quantity = userItem.quantity
   })
 
-  return result
+  return result.map((item) => ({
+    name: item.name,
+    rarity: item.rarity,
+    quantity: item.quantity || 0,
+  }))
 }
 
 export function getItemsByNames({
