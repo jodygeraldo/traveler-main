@@ -17,35 +17,62 @@ interface Props {
   rarity: number
   quantity: number
   craft: 'craft-enhancement' | 'craft-ascension' | 'craft-talent'
+  width?: number
+  height?: number
 }
 
-export default function Item({ name, rarity, quantity, craft }: Props) {
+export function ItemLink({
+  name,
+  rarity,
+  quantity,
+  craft,
+  width = 16,
+  height = 16,
+}: Props) {
   return (
     <RemixReact.Link prefetch="intent" to={`./${craft}/${name}`}>
-      <Tooltip text={name}>
-        <div className={clsx('rounded-b-md bg-gray-3 shadow-sm')}>
-          <div
-            className={clsx(
-              backgroundImage[rarity],
-              'rounded-t-md rounded-br-2xl bg-contain'
-            )}
-          >
-            <Image
-              src={`/item/${Utils.getImageSrc(name)}.png`}
-              alt={name}
-              className="h-16 w-16 rounded-br-2xl"
-              width={64}
-              height={64}
-            />
-          </div>
-          <div className="text-center">
-            <span className="sr-only">Quantity {quantity}</span>
-            <p className="text-sm text-gray-11" aria-hidden>
-              {quantity}
-            </p>
-          </div>
-        </div>
-      </Tooltip>
+      <Item
+        name={name}
+        rarity={rarity}
+        quantity={quantity}
+        width={width}
+        height={height}
+      />
     </RemixReact.Link>
+  )
+}
+
+export function Item({
+  name,
+  rarity,
+  quantity,
+  width = 16,
+  height = 16,
+}: Omit<Props, 'craft'>) {
+  return (
+    <Tooltip text={name}>
+      <div className={clsx('rounded-b-md bg-gray-3 shadow-sm')}>
+        <div
+          className={clsx(
+            backgroundImage[rarity],
+            'rounded-t-md rounded-br-2xl bg-contain'
+          )}
+        >
+          <Image
+            src={`/item/${Utils.getImageSrc(name)}.png`}
+            alt={name}
+            className={clsx(`w-${width} h-${height} rounded-br-2xl`)}
+            width={width * 4}
+            height={height * 4}
+          />
+        </div>
+        <div className="text-center">
+          <span className="sr-only">Quantity {quantity}</span>
+          <p className="text-sm text-gray-11" aria-hidden>
+            {quantity}
+          </p>
+        </div>
+      </div>
+    </Tooltip>
   )
 }

@@ -5,6 +5,7 @@ import * as ItemData from '~/data/items'
 import * as DB from '~/db.server'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
+import * as Utils from '~/utils'
 import ItemList from './ItemList'
 
 export async function loader({ params, request }: RemixNode.LoaderArgs) {
@@ -15,7 +16,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   let itemNames: string[] = []
 
   if (type === 'all') {
-    itemNames = ItemData.getCraftableItemNames()
+    itemNames = ItemData.getCraftItemNames()
   } else {
     const parsedType =
       type === 'enhancement'
@@ -24,7 +25,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
         ? DB.ItemType.ASCENSION_GEM
         : DB.ItemType.TALENT_BOOK
 
-    itemNames = ItemData.getCraftableItemNamesByType({
+    itemNames = ItemData.getCraftItemNamesByType({
       type: parsedType,
     })
   }
@@ -43,12 +44,15 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
 }
 
 export default function AlchemyConvertingPage() {
-  const craftable = RemixReact.useLoaderData<typeof loader>()
+  const items = RemixReact.useLoaderData<typeof loader>()
   const craft = Zod.enum(['all', 'enhancement', 'ascension', 'talent']).parse(
     RemixReact.useParams().type
   )
 
-  if (Array.isArray(craftable)) {
+  if (
+    Utils.hasOwnProperty(items, 'craftable') &&
+    Utils.hasOwnProperty(items, 'crafterNonCraftable')
+  ) {
     let props: {
       heading: string
       craft: 'craft-enhancement' | 'craft-ascension' | 'craft-talent'
@@ -73,7 +77,7 @@ export default function AlchemyConvertingPage() {
           <ItemList
             heading={props.heading}
             craft={props.craft}
-            craftable={craftable}
+            items={items}
           />
         </div>
 
@@ -88,21 +92,21 @@ export default function AlchemyConvertingPage() {
         <ItemList
           heading="Enhancement"
           craft="craft-enhancement"
-          craftable={craftable.enhancementCrafable}
+          items={items.enhancementCrafable}
         />
       </div>
       <div className="mt-12">
         <ItemList
           heading="Ascension"
           craft="craft-ascension"
-          craftable={craftable.ascensionCrafable}
+          items={items.ascensionCrafable}
         />
       </div>
       <div className="mt-12">
         <ItemList
           heading="Talent"
           craft="craft-talent"
-          craftable={craftable.talentCrafable}
+          items={items.talentCrafable}
         />
       </div>
 

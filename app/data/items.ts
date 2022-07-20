@@ -5,9 +5,10 @@ export interface ItemWithQuantity {
   type: DB.ItemType
   rarity: 1 | 2 | 3 | 4 | 5
   convertable: boolean
-  craftable:
+  craft:
     | false
     | {
+        craftable: boolean
         refundable: boolean
         doublable: boolean
       }
@@ -19,28 +20,29 @@ const items: ItemWithQuantity[] = [
     name: 'Crown of Insight',
     type: DB.ItemType.SPECIAL,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Dream Solvent',
     type: DB.ItemType.SPECIAL,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Dust of Azoth',
     type: DB.ItemType.SPECIAL,
     rarity: 2,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Slime Concentrate',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -50,7 +52,8 @@ const items: ItemWithQuantity[] = [
     name: 'Slime Secretions',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -60,14 +63,19 @@ const items: ItemWithQuantity[] = [
     name: 'Slime Condensate',
     type: DB.ItemType.COMMON,
     rarity: 1,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Ominous Mask',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -77,7 +85,8 @@ const items: ItemWithQuantity[] = [
     name: 'Stained Mask',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -87,14 +96,19 @@ const items: ItemWithQuantity[] = [
     name: 'Damaged Mask',
     type: DB.ItemType.COMMON,
     rarity: 1,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Forbidden Curse Scroll',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -104,7 +118,8 @@ const items: ItemWithQuantity[] = [
     name: 'Sealed Scroll',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -114,14 +129,19 @@ const items: ItemWithQuantity[] = [
     name: 'Divining Scroll',
     type: DB.ItemType.COMMON,
     rarity: 1,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Weathered Arrowhead',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -131,7 +151,8 @@ const items: ItemWithQuantity[] = [
     name: 'Sharp Arrowhead',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -141,14 +162,19 @@ const items: ItemWithQuantity[] = [
     name: 'Firm Arrowhead',
     type: DB.ItemType.COMMON,
     rarity: 1,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Black Crystal Horn',
     type: DB.ItemType.COMMON,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -158,7 +184,8 @@ const items: ItemWithQuantity[] = [
     name: 'Black Bronze Horn',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -168,14 +195,19 @@ const items: ItemWithQuantity[] = [
     name: 'Heavy Horn',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Ley Line Sprout',
     type: DB.ItemType.COMMON,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -185,7 +217,8 @@ const items: ItemWithQuantity[] = [
     name: 'Dead Ley Line Leaves',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -195,14 +228,19 @@ const items: ItemWithQuantity[] = [
     name: 'Dead Ley Line Branch',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Chaos Core',
     type: DB.ItemType.COMMON,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -212,7 +250,8 @@ const items: ItemWithQuantity[] = [
     name: 'Chaos Circuit',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -222,14 +261,19 @@ const items: ItemWithQuantity[] = [
     name: 'Chaos Device',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Mist Grass Wick',
     type: DB.ItemType.COMMON,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -239,7 +283,8 @@ const items: ItemWithQuantity[] = [
     name: 'Mist Grass',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -249,14 +294,19 @@ const items: ItemWithQuantity[] = [
     name: 'Mist Grass Pollen',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: "Inspector's Sacrificial Knife",
     type: DB.ItemType.COMMON,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -266,7 +316,8 @@ const items: ItemWithQuantity[] = [
     name: "Agent's Sacrificial Knife",
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -276,14 +327,19 @@ const items: ItemWithQuantity[] = [
     name: "Hunter's Sacrificial Knife",
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: "Lieutenant's Insignia",
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -293,7 +349,8 @@ const items: ItemWithQuantity[] = [
     name: "Sergeant's Insignia",
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -303,14 +360,19 @@ const items: ItemWithQuantity[] = [
     name: "Recruit's Insignia",
     type: DB.ItemType.COMMON,
     rarity: 1,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Golden Raven Insignia',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -320,7 +382,8 @@ const items: ItemWithQuantity[] = [
     name: 'Silver Raven Insignia',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -330,14 +393,19 @@ const items: ItemWithQuantity[] = [
     name: 'Treasure Hoarder Insignia',
     type: DB.ItemType.COMMON,
     rarity: 1,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Energy Nectar',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -347,7 +415,8 @@ const items: ItemWithQuantity[] = [
     name: 'Shimmering Nectar',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -357,14 +426,19 @@ const items: ItemWithQuantity[] = [
     name: 'Whopperflower Nectar',
     type: DB.ItemType.COMMON,
     rarity: 1,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Fossilized Bone Shard',
     type: DB.ItemType.COMMON,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -374,7 +448,8 @@ const items: ItemWithQuantity[] = [
     name: 'Sturdy Bone Shard',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -384,14 +459,19 @@ const items: ItemWithQuantity[] = [
     name: 'Fragile Bone Shard',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Famed Handguard',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -401,7 +481,8 @@ const items: ItemWithQuantity[] = [
     name: 'Kageuchi Handguard',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -411,14 +492,19 @@ const items: ItemWithQuantity[] = [
     name: 'Old Handguard',
     type: DB.ItemType.COMMON,
     rarity: 1,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Chaos Oculus',
     type: DB.ItemType.COMMON,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -428,7 +514,8 @@ const items: ItemWithQuantity[] = [
     name: 'Chaos Axis',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -438,14 +525,19 @@ const items: ItemWithQuantity[] = [
     name: 'Chaos Gear',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Polarizing Prism',
     type: DB.ItemType.COMMON,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -455,7 +547,8 @@ const items: ItemWithQuantity[] = [
     name: 'Crystal Prism',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -465,14 +558,19 @@ const items: ItemWithQuantity[] = [
     name: 'Dismal Prism',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Spectral Nucleus',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -482,7 +580,8 @@ const items: ItemWithQuantity[] = [
     name: 'Spectral Heart',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -492,14 +591,19 @@ const items: ItemWithQuantity[] = [
     name: 'Spectral Husk',
     type: DB.ItemType.COMMON,
     rarity: 1,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Concealed Talon',
     type: DB.ItemType.COMMON,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -509,7 +613,8 @@ const items: ItemWithQuantity[] = [
     name: 'Concealed Unguis',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -519,14 +624,19 @@ const items: ItemWithQuantity[] = [
     name: 'Concealed Claw',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Deathly Statuette',
     type: DB.ItemType.COMMON,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -536,7 +646,8 @@ const items: ItemWithQuantity[] = [
     name: 'Dark Statuette',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -546,14 +657,19 @@ const items: ItemWithQuantity[] = [
     name: 'Gloomy Statuette',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Crystalline Cyst Dust',
     type: DB.ItemType.COMMON,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -563,7 +679,8 @@ const items: ItemWithQuantity[] = [
     name: 'Luminescent Pollen',
     type: DB.ItemType.COMMON,
     rarity: 2,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: false,
     },
@@ -573,42 +690,47 @@ const items: ItemWithQuantity[] = [
     name: 'Fungal Spores',
     type: DB.ItemType.COMMON,
     rarity: 1,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Brilliant Diamond Gemstone',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Brilliant Diamond Chunk',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Brilliant Diamond Fragment',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Brilliant Diamond Sliver',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 2,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Agnidus Agate Gemstone',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -618,7 +740,8 @@ const items: ItemWithQuantity[] = [
     name: 'Agnidus Agate Chunk',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -628,7 +751,8 @@ const items: ItemWithQuantity[] = [
     name: 'Agnidus Agate Fragment',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -638,14 +762,19 @@ const items: ItemWithQuantity[] = [
     name: 'Agnidus Agate Sliver',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: true,
   },
   {
     name: 'Varunada Lazurite Gemstone',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -655,7 +784,8 @@ const items: ItemWithQuantity[] = [
     name: 'Varunada Lazurite Chunk',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -665,7 +795,8 @@ const items: ItemWithQuantity[] = [
     name: 'Varunada Lazurite Fragment',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -675,14 +806,19 @@ const items: ItemWithQuantity[] = [
     name: 'Varunada Lazurite Sliver',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: true,
   },
   {
     name: 'Vajrada Amethyst Gemstone',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -692,7 +828,8 @@ const items: ItemWithQuantity[] = [
     name: 'Vajrada Amethyst Chunk',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -702,7 +839,8 @@ const items: ItemWithQuantity[] = [
     name: 'Vajrada Amethyst Fragment',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -712,14 +850,19 @@ const items: ItemWithQuantity[] = [
     name: 'Vajrada Amethyst Sliver',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: true,
   },
   {
     name: 'Vayuda Turquoise Gemstone',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -729,7 +872,8 @@ const items: ItemWithQuantity[] = [
     name: 'Vayuda Turquoise Chunk',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -739,7 +883,8 @@ const items: ItemWithQuantity[] = [
     name: 'Vayuda Turquoise Fragment',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -749,14 +894,19 @@ const items: ItemWithQuantity[] = [
     name: 'Vayuda Turquoise Sliver',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: true,
   },
   {
     name: 'Shivada Jade Gemstone',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -766,7 +916,8 @@ const items: ItemWithQuantity[] = [
     name: 'Shivada Jade Chunk',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -776,7 +927,8 @@ const items: ItemWithQuantity[] = [
     name: 'Shivada Jade Fragment',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -786,14 +938,19 @@ const items: ItemWithQuantity[] = [
     name: 'Shivada Jade Sliver',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: true,
   },
   {
     name: 'Prithiva Topaz Gemstone',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -803,7 +960,8 @@ const items: ItemWithQuantity[] = [
     name: 'Prithiva Topaz Chunk',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -813,7 +971,8 @@ const items: ItemWithQuantity[] = [
     name: 'Prithiva Topaz Fragment',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: false,
       refundable: false,
     },
@@ -823,301 +982,306 @@ const items: ItemWithQuantity[] = [
     name: 'Prithiva Topaz Sliver',
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: true,
   },
   {
     name: 'Hurricane Seed',
     type: DB.ItemType.ASCENSION_BOSS,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Lightning Prism',
     type: DB.ItemType.ASCENSION_BOSS,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Basalt Pillar',
     type: DB.ItemType.ASCENSION_BOSS,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Hoarfrost Core',
     type: DB.ItemType.ASCENSION_BOSS,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Everflame Seed',
     type: DB.ItemType.ASCENSION_BOSS,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Cleansing Heart',
     type: DB.ItemType.ASCENSION_BOSS,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Juvenile Jade',
     type: DB.ItemType.ASCENSION_BOSS,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Crystalline Bloom',
     type: DB.ItemType.ASCENSION_BOSS,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Marionette Core',
     type: DB.ItemType.ASCENSION_BOSS,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Perpetual Heart',
     type: DB.ItemType.ASCENSION_BOSS,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Smoldering Pearl',
     type: DB.ItemType.ASCENSION_BOSS,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Dew of Repudiation',
     type: DB.ItemType.ASCENSION_BOSS,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Storm Beads',
     type: DB.ItemType.ASCENSION_BOSS,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Riftborn Regalia',
     type: DB.ItemType.ASCENSION_BOSS,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: "Dragonheir's False Fin",
     type: DB.ItemType.ASCENSION_BOSS,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Runic Fang',
     type: DB.ItemType.ASCENSION_BOSS,
     rarity: 4,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Wolfhook',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Valberry',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Cecilia',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Windwheel Aster',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Philanemo Mushroom',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Small Lamp Grass',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Calla Lily',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Dandelion Seed',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Cor Lapis',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Jueyun Chili',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Noctilucous Jade',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Silk Flower',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Glaze Lily',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Qingxin',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Starconch',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Violetgrass',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Onikabuto',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Sakura Bloom',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Crystal Marrow',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Dendrobium',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Naku Weed',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Sea Ganoderma',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Sango Pearl',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Amakumo Fruit',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Fluorescent Fungus',
     type: DB.ItemType.LOCAL_SPECIALTY,
     rarity: 1,
-    craftable: false,
+    craft: false,
     convertable: false,
   },
   {
     name: 'Philosophies of Freedom',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1127,7 +1291,8 @@ const items: ItemWithQuantity[] = [
     name: 'Guide to Freedom',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1137,14 +1302,19 @@ const items: ItemWithQuantity[] = [
     name: 'Teachings of Freedom',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Philosophies of Resistance',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1154,7 +1324,8 @@ const items: ItemWithQuantity[] = [
     name: 'Guide to Resistance',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1164,14 +1335,19 @@ const items: ItemWithQuantity[] = [
     name: 'Teachings of Resistance',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Philosophies of Ballad',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1181,7 +1357,8 @@ const items: ItemWithQuantity[] = [
     name: 'Guide to Ballad',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1191,14 +1368,19 @@ const items: ItemWithQuantity[] = [
     name: 'Teachings of Ballad',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Philosophies of Prosperity',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1208,7 +1390,8 @@ const items: ItemWithQuantity[] = [
     name: 'Guide to Prosperity',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1218,14 +1401,19 @@ const items: ItemWithQuantity[] = [
     name: 'Teachings of Prosperity',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Philosophies of Diligence',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1235,7 +1423,8 @@ const items: ItemWithQuantity[] = [
     name: 'Guide to Diligence',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1245,14 +1434,19 @@ const items: ItemWithQuantity[] = [
     name: 'Teachings of Diligence',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Philosophies of Gold',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1262,7 +1456,8 @@ const items: ItemWithQuantity[] = [
     name: 'Guide to Gold',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1272,14 +1467,19 @@ const items: ItemWithQuantity[] = [
     name: 'Teachings of Gold',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Philosophies of Transience',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1289,7 +1489,8 @@ const items: ItemWithQuantity[] = [
     name: 'Guide to Transience',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1299,14 +1500,19 @@ const items: ItemWithQuantity[] = [
     name: 'Teachings of Transience',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Philosophies of Elegance',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1316,7 +1522,8 @@ const items: ItemWithQuantity[] = [
     name: 'Guide to Elegance',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1326,14 +1533,19 @@ const items: ItemWithQuantity[] = [
     name: 'Teachings of Elegance',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: 'Philosophies of Light',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1343,7 +1555,8 @@ const items: ItemWithQuantity[] = [
     name: 'Guide to Light',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
-    craftable: {
+    craft: {
+      craftable: true,
       doublable: true,
       refundable: true,
     },
@@ -1353,133 +1566,137 @@ const items: ItemWithQuantity[] = [
     name: 'Teachings of Light',
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
-    craftable: false,
+    craft: {
+      craftable: false,
+      doublable: false,
+      refundable: false,
+    },
     convertable: false,
   },
   {
     name: "Dvalin's Plume",
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
   {
     name: "Dvalin's Claw",
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
   {
     name: "Dvalin's Sigh",
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
   {
     name: 'Tail of Boreas',
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
   {
     name: 'Ring of Boreas',
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
   {
     name: 'Spirit Locket of Boreas',
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
   {
     name: 'Tusk of Monoceros Caeli',
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
   {
     name: 'Shard of a Foul Legacy',
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
   {
     name: 'Shadow of the Warrior',
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
   {
     name: "Dragon Lord's Crown",
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
   {
     name: 'Bloodjade Branch',
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
   {
     name: 'Gilded Scale',
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
   {
     name: 'Molten Moment',
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
   {
     name: 'Hellfire Butterfly',
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
   {
     name: 'Ashen Heart',
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
   {
     name: 'Mudra of the Malefic General',
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
   {
     name: 'Tears of the Calamitous God',
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
   {
     name: 'The Meaning of Aeons',
     type: DB.ItemType.TALENT_BOSS,
     rarity: 5,
-    craftable: false,
+    craft: false,
     convertable: true,
   },
 ]
@@ -1659,13 +1876,13 @@ export function getConvertableItemNamesByType({ type }: { type: DB.ItemType }) {
     .map((item) => item.name)
 }
 
-export function getCraftableItemNames() {
-  return items.filter((item) => item.craftable).map((item) => item.name)
+export function getCraftItemNames() {
+  return items.filter((item) => item.craft).map((item) => item.name)
 }
 
-export function getCraftableItemNamesByType({ type }: { type: DB.ItemType }) {
+export function getCraftItemNamesByType({ type }: { type: DB.ItemType }) {
   return items
-    .filter((item) => item.craftable && item.type === type)
+    .filter((item) => item.craft && item.type === type)
     .map((item) => item.name)
 }
 
@@ -1676,8 +1893,8 @@ function getCraftable({
   userItems: Pick<DB.Inventory, 'itemName' | 'quantity'>[]
   type: 'COMMON' | 'ASCENSION_GEM' | 'TALENT_BOOK'
 }) {
-  return items
-    .filter((item) => item.craftable && item.type === type)
+  const craftable = items
+    .filter((item) => item.craft && item.craft.craftable && item.type === type)
     .map((item) => {
       const userItem = userItems.find(
         (userItem) => userItem.itemName === item.name
@@ -1689,6 +1906,22 @@ function getCraftable({
         quantity: userItem ? userItem.quantity : 0,
       }
     })
+
+  const crafterNonCraftable = items
+    .filter((item) => item.craft && !item.craft.craftable && item.type === type)
+    .map((item) => {
+      const userItem = userItems.find(
+        (userItem) => userItem.itemName === item.name
+      )
+
+      return {
+        name: item.name,
+        rarity: item.rarity,
+        quantity: userItem ? userItem.quantity : 0,
+      }
+    })
+
+  return { craftable, crafterNonCraftable }
 }
 
 export function getCraftableItems({
