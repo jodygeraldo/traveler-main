@@ -16,8 +16,8 @@ export default function ItemWithImage({
   item,
   items,
 }: {
-  item: Omit<ItemData.ItemWithQuantity, 'convertable' | 'craftable'>
-  items?: Omit<ItemData.ItemWithQuantity, 'convertable' | 'craftable'>[]
+  item: Pick<ItemData.ItemWithQuantity, 'name' | 'quantity' | 'type' | 'rarity'>
+  items?: Pick<ItemData.ItemWithQuantity, 'name' | 'quantity' | 'type' | 'rarity'>[]
 }) {
   const correspondingItem = items?.find((i) => i.name === item.name)
   const correspondingItemQuantity =

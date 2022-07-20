@@ -8,9 +8,9 @@ interface Props {
   heading: string
   progressionLevel: number
   materials:
-    | Omit<ItemData.ItemWithQuantity, 'convertable' | 'craftable'>[]
+    | Pick<ItemData.ItemWithQuantity, 'name' | 'quantity' | 'type' | 'rarity'>[]
     | undefined
-  inventoryItems: Omit<ItemData.ItemWithQuantity, 'convertable' | 'craftable'>[]
+  inventoryItems: Pick<ItemData.ItemWithQuantity, 'name' | 'quantity' | 'type' | 'rarity'>[]
   possibleToLevel: boolean
   isAscension?: boolean
   characterLevel?: number
