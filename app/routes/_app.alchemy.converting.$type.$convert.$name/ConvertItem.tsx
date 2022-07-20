@@ -81,7 +81,7 @@ export default function ConvertItem({
               </HeadlessUIReact.Dialog.Title>
               {!isConvertable ? (
                 <div>
-                  <p>Not enought material to convert to {name}</p>
+                  <p>Not enought material to convert {name}</p>
                 </div>
               ) : (
                 <div className="mt-4 flex flex-col items-center">
