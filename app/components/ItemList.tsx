@@ -2,12 +2,15 @@ import * as RemixReact from '@remix-run/react'
 import * as React from 'react'
 import * as Badge from '~/components/Badge'
 import * as Icon from '~/components/Icon'
-import type * as ItemData from '~/data/items'
 import * as Utils from '~/utils'
 import Image from './Image'
 
 interface Props {
-  items: ItemData.ItemWithQuantity[]
+  items: {
+    name: string
+    rarity: 1 | 2 | 3 | 4 | 5
+    quantity: number
+  }[]
 }
 
 export default function ItemList({ items }: Props) {
