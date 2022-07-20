@@ -40,7 +40,7 @@ export default function ItemList({ items }: Props) {
   }
 
   return (
-    <ul className="mt-3 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+    <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((item) => (
         <li key={item.name} className="col-span-1 flex rounded-md shadow-sm">
           <div className="flex flex-1 items-center justify-between truncate rounded-md border border-gray-6 bg-gray-2">
