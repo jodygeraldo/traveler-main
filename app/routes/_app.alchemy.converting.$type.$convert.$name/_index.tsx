@@ -32,16 +32,7 @@ interface ActionData {
 export async function action({ params, request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
 
-  const parsedParams = ParamsSchema.safeParse(params)
-
-  if (!parsedParams.success) {
-    throw RemixNode.json(
-      { message: `Params is set properly` },
-      { status: 400, statusText: 'Invalid params' }
-    )
-  }
-
-  const { name, type } = parsedParams.data
+  const { name, type } = ParamsSchema.parse(params)
 
   const result = await RemixParamsHelper.getFormData(request, FormDataSchema)
   if (!result.success) {
