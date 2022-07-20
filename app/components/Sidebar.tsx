@@ -1,13 +1,14 @@
 import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 
-export default function Sidebar() {
-  const navigation = [
-    { name: 'All', to: './all' },
-    { name: 'Ascension Gem', to: './ascension-gem' },
-    { name: 'Talent Boss', to: './talent-boss' },
-  ]
+interface Props {
+  navigation: {
+    name: string
+    to: string
+  }[]
+}
 
+export default function Sidebar({ navigation }: Props) {
   return (
     <nav className="space-y-1" aria-label="Sidebar">
       {navigation.map((item) => (

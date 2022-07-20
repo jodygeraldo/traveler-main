@@ -49,74 +49,57 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
 
 export default function AlchemyConvertingPage() {
   const items = RemixReact.useLoaderData<typeof loader>()
+  const convert = Zod.enum(['all', 'ascension-gem', 'talent-boss']).parse(
+    RemixReact.useParams().type
+  )
 
   if (
-    Utils.hasOwnProperty(items, 'ascensionGemConvertable') &&
-    Utils.hasOwnProperty(items, 'talentBossConvertable')
+    Utils.hasOwnProperty(items, 'convertable') &&
+    Utils.hasOwnProperty(items, 'converter')
   ) {
-    const {
-      ascensionGemConvertable,
-      ascensionGemConverter,
-      talentBossConvertable,
-      talentBossConverter,
-    } = items
+    let props: {
+      heading: string
+      convert: 'convert-gem' | 'convert-boss'
+    } = {
+      heading: 'Ascension Gem',
+      convert: 'convert-gem',
+    }
+
+    if (convert === 'talent-boss') {
+      props.heading = 'Talent Boss'
+      props.convert = 'convert-boss'
+    }
+
     return (
       <>
-        <div>
-          <ItemList
-            heading="Ascension Gem"
-            convert="convert-gem"
-            converter={ascensionGemConverter}
-            convertable={ascensionGemConvertable}
-          />
-        </div>
-        <div className="mt-12">
-          <ItemList
-            heading="Talent Boss"
-            convert="convert-boss"
-            converter={talentBossConverter}
-            convertable={talentBossConvertable}
-          />
-        </div>
-
+        <ItemList
+          heading={props.heading}
+          convert={props.convert}
+          items={items}
+        />
         <RemixReact.Outlet />
       </>
     )
   }
 
-  if (
-    Utils.hasOwnProperty(items, 'ascensionGemConvertable') &&
-    !Utils.hasOwnProperty(items, 'talentBossConvertable')
-  ) {
-    const { ascensionGemConvertable, ascensionGemConverter } = items
-    return (
-      <>
+  return (
+    <>
+      <div>
         <ItemList
           heading="Ascension Gem"
           convert="convert-gem"
-          converter={ascensionGemConverter}
-          convertable={ascensionGemConvertable}
+          items={items.ascensionGem}
         />
-        <RemixReact.Outlet />
-      </>
-    )
-  }
-
-  if (
-    !Utils.hasOwnProperty(items, 'ascensionGemConvertable') &&
-    Utils.hasOwnProperty(items, 'talentBossConvertable')
-  ) {
-    const { talentBossConvertable, talentBossConverter } = items
-    return (
-      <>
+      </div>
+      <div className="mt-12">
         <ItemList
           heading="Talent Boss"
           convert="convert-boss"
-          converter={talentBossConverter}
-          convertable={talentBossConvertable}
+          items={items.talentBoss}
         />
-        <RemixReact.Outlet />
-      </>
-    )
-  }
+      </div>
+
+      <RemixReact.Outlet />
+    </>
+  )
 }

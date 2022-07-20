@@ -6,7 +6,6 @@ import Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
 import Image from '~/components/Image'
 import * as Utils from '~/utils'
-import Combobox from './Combobox'
 
 const backgroundImage: Record<number, string> = {
   1: 'bg-image-rarity-1',
@@ -19,28 +18,25 @@ const backgroundImage: Record<number, string> = {
 interface Props {
   name: string
   rarity: number
-  specialConverter: {
+  crafter: {
     name: string
     rarity: number
     quantity: number
     requiredQuantity: number
   }
-  itemsConverter: {
-    name: string
-    rarity: number
-    quantity: number
-    requiredQuantity: number
-  }[]
+  refundable: boolean
+  doublable: boolean
   error?: {
     message: string
   }
 }
 
-export default function ConvertItem({
+export default function CraftItem({
   name,
   rarity,
-  specialConverter,
-  itemsConverter,
+  crafter,
+  refundable,
+  doublable,
   error,
 }: Props) {
   const navigate = RemixReact.useNavigate()
@@ -49,13 +45,7 @@ export default function ConvertItem({
 
   const cancelButtonRef = React.useRef(null)
 
-  const isConvertable =
-    specialConverter.quantity >= specialConverter.requiredQuantity &&
-    itemsConverter.some((item) => item.quantity >= item.requiredQuantity)
-
-  const maxQuantityToConvert = Math.max(
-    ...itemsConverter.map((item) => item.quantity)
-  )
+  const isCraftable = crafter.quantity >= crafter.requiredQuantity
 
   return (
     <HeadlessUIReact.Dialog
@@ -77,11 +67,15 @@ export default function ConvertItem({
                 as="h3"
                 className="text-lg font-medium leading-6 text-gray-12"
               >
-                Converting {name}
+                Crafting {name}
               </HeadlessUIReact.Dialog.Title>
-              {!isConvertable ? (
+              {!isCraftable ? (
                 <div>
-                  <p>Not enought material to convert {name}</p>
+                  <p>
+                    Not enought material to craft {name}, need{' '}
+                    {crafter.requiredQuantity} {crafter.name} but have{' '}
+                    {crafter.quantity}
+                  </p>
                 </div>
               ) : (
                 <div className="mt-4 flex flex-col items-center">
@@ -89,15 +83,13 @@ export default function ConvertItem({
                     <div className="flex-shrink-0 rounded-b-md bg-gray-3 shadow-sm">
                       <div
                         className={clsx(
-                          backgroundImage[specialConverter.rarity],
+                          backgroundImage[crafter.rarity],
                           'rounded-t-md rounded-br-2xl bg-contain'
                         )}
                       >
                         <Image
-                          src={`/item/${Utils.getImageSrc(
-                            specialConverter.name
-                          )}.png`}
-                          alt={specialConverter.name}
+                          src={`/item/${Utils.getImageSrc(crafter.name)}.png`}
+                          alt={crafter.name}
                           className="h-16 w-16 rounded-br-2xl"
                           width={64}
                           height={64}
@@ -105,16 +97,12 @@ export default function ConvertItem({
                       </div>
                       <div className="text-center">
                         <span className="sr-only">
-                          Quantity {specialConverter.requiredQuantity}
+                          Quantity {crafter.requiredQuantity}
                         </span>
                         <p className="text-sm text-gray-11" aria-hidden>
-                          {specialConverter.requiredQuantity}
+                          {crafter.requiredQuantity}
                         </p>
                       </div>
-                    </div>
-
-                    <div className="mt-2 max-w-[18rem] sm:mt-0 sm:w-72">
-                      <Combobox options={itemsConverter} />
                     </div>
                   </div>
 
@@ -140,37 +128,77 @@ export default function ConvertItem({
 
                     <input
                       type="hidden"
-                      name="specialItemName"
-                      value={specialConverter.name}
+                      name="crafterName"
+                      value={crafter.name}
                     />
                     <input
                       type="hidden"
-                      name="specialItemQuantity"
-                      value={specialConverter.requiredQuantity}
+                      name="crafterQuantity"
+                      value={crafter.requiredQuantity}
                     />
 
                     <div className="max-w-[18rem] sm:w-72">
-                      <label htmlFor="quantity" className="sr-only">
-                        Quantity to convert
-                      </label>
-                      <input
-                        type="number"
-                        name="quantity"
-                        id="quantity"
-                        className="w-full rounded-md border-gray-7 bg-gray-2 tabular-nums text-gray-11 shadow-sm focus:border-gray-8 focus:text-gray-12 focus:ring-gray-8 sm:text-sm"
-                        defaultValue={1}
-                        min={1}
-                        max={maxQuantityToConvert}
-                        aria-invalid={!!error}
-                        aria-describedby={`convert-error`}
-                      />
+                      <div className="w-full">
+                        <label
+                          htmlFor="quantity"
+                          className="block text-sm font-medium text-gray-12"
+                        >
+                          Quantity to craft
+                        </label>
+                        <input
+                          type="number"
+                          name="quantity"
+                          id="quantity"
+                          className="w-full rounded-md border-gray-7 bg-gray-2 tabular-nums text-gray-11 shadow-sm focus:border-gray-8 focus:text-gray-12 focus:ring-gray-8 sm:text-sm"
+                          defaultValue={1}
+                          min={1}
+                          max={Math.floor(crafter.quantity / 3)}
+                          aria-invalid={!!error}
+                          aria-describedby={`craft-error`}
+                        />
+                      </div>
+
+                      {refundable || doublable ? (
+                        <div className="mt-2 w-full">
+                          <label
+                            htmlFor="bonus-quantity"
+                            className="block text-sm font-medium text-gray-12"
+                          >
+                            Refund or Bonus
+                          </label>
+                          <div className="relative mt-1 rounded-md shadow-sm">
+                            <input
+                              type="number"
+                              name="bonusQuantity"
+                              id="bonus-quantity"
+                              className="block w-full rounded-md border-gray-7 bg-gray-2 pr-[5.5rem] tabular-nums text-gray-11 shadow-sm focus:border-gray-8 focus:text-gray-12 focus:ring-gray-8 sm:text-sm"
+                              defaultValue={0}
+                              min={0}
+                              max={Math.floor(crafter.quantity / 3)}
+                            />
+                            <div className="absolute inset-y-0 right-0 flex items-center">
+                              <label htmlFor="bonus-type" className="sr-only">
+                                Type
+                              </label>
+                              <select
+                                name="bonusType"
+                                id="bonus-type"
+                                className="h-full rounded-md border-transparent bg-transparent py-0 pl-2 pr-7 text-gray-11 focus:border-gray-8 focus:ring-gray-8 sm:text-sm"
+                              >
+                                {refundable && <option>Refund</option>}
+                                {doublable && <option>Bonus</option>}
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      ) : null}
                     </div>
                   </div>
 
                   {error && (
                     <p
                       className="mt-2 text-sm text-danger-9"
-                      id={`convert-error`}
+                      id={`craft-error`}
                     >
                       {error?.message}
                     </p>
@@ -179,17 +207,17 @@ export default function ConvertItem({
               )}
 
               <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                {isConvertable ? (
+                {isCraftable ? (
                   <div className="w-full sm:col-start-2">
                     <Button className="w-full" type="submit" disabled={busy}>
-                      {busy ? 'Converting...' : 'Convert'}
+                      {busy ? 'Crafting...' : 'Craft'}
                     </Button>
                   </div>
                 ) : null}
 
                 <div
                   className={clsx(
-                    isConvertable
+                    isCraftable
                       ? 'mt-3 sm:col-start-1 sm:mt-0'
                       : 'sm:col-span-2',
                     'w-full'
@@ -203,7 +231,7 @@ export default function ConvertItem({
                     onClick={() => navigate('..')}
                     ref={cancelButtonRef}
                   >
-                    {isConvertable ? 'Cancel' : 'Close'}
+                    {isCraftable ? 'Cancel' : 'Close'}
                   </Button>
                 </div>
               </div>
