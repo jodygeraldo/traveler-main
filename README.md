@@ -41,3 +41,7 @@ This starts your app in development mode on port 3000, rebuilding assets on file
 ```sh
 npm run dev
 ```
+
+## LICENSE
+
+The code is licensed under the [MIT License](https://opensource.org/licenses/MIT). All Genshin Impact related contents and materials are copyright by [HoYoverse](https://www.hoyoverse.com).
