@@ -1,5 +1,6 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
+import * as React from 'react'
 import * as RemixParamsHelper from 'remix-params-helper'
 import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
@@ -37,9 +38,10 @@ export async function action({ request }: RemixNode.ActionArgs) {
 export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const { type: typeParams } = params
   invariant(typeParams, 'type is required')
-  const parsedType = Zod.nativeEnum(DB.ItemType).safeParse(
-    Utils.toConstCase(typeParams)
-  )
+  const parsedType = Zod.nativeEnum({
+    ...DB.ItemType,
+    ALL: 'ALL' as const,
+  }).safeParse(Utils.toConstCase(typeParams))
 
   if (!parsedType.success) {
     throw RemixNode.json(
@@ -50,6 +52,14 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const type = parsedType.data
 
   const accountId = await Session.requireAccountId(request)
+
+  if (type === 'ALL') {
+    const inventory = await InventoryModel.getInventory({ accountId })
+    const items = ItemData.getAllItems(inventory)
+
+    return RemixNode.json({ items })
+  }
+
   const inventory = await InventoryModel.getInventoryByType({
     type,
     accountId,
@@ -64,10 +74,26 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
 }
 
 export default function InventoryCategoryPage() {
-  const { items, type } = RemixReact.useLoaderData<typeof loader>()
+  const data = RemixReact.useLoaderData<typeof loader>()
+
+  const combinedItems = React.useMemo(
+    () =>
+      Array.isArray(data.items)
+        ? [...data.items]
+        : [
+            ...data.items.common,
+            ...data.items.ascensionGem,
+            ...data.items.ascensionBoss,
+            ...data.items.localSpecialty,
+            ...data.items.talentBook,
+            ...data.items.talentBoss,
+            ...data.items.special,
+          ],
+    [data.items]
+  )
 
   const { searchItems, showSearch, changeHandler } = useSearchFilter({
-    items,
+    items: combinedItems,
     searchBy: 'name',
   })
 
@@ -83,23 +109,83 @@ export default function InventoryCategoryPage() {
         </div>
       </div>
 
-      <div>
-        {showSearch ? (
+      {Utils.hasOwnProperty(data, 'type') ? (
+        <div>
+          {showSearch ? (
+            <>
+              <h2 className="text-lg font-medium leading-6 text-gray-12">
+                Search
+              </h2>
+              <ItemList items={searchItems} />
+            </>
+          ) : (
+            <>
+              <h2 className="text-lg font-medium leading-6 text-gray-12">
+                {Utils.toCapitalized(data.type)}
+              </h2>
+              <ItemList items={data.items} />
+            </>
+          )}
+        </div>
+      ) : showSearch ? (
+        <div>
+          <h2 className="text-lg font-medium leading-6 text-gray-12">Search</h2>
+          <ItemList items={searchItems} />
+        </div>
+      ) : (
+        <div className="space-y-12">
           <>
-            <h2 className="text-lg font-medium leading-6 text-gray-12">
-              Search
-            </h2>
-            <ItemList items={searchItems} />
+            <div>
+              <h2 className="text-lg font-medium leading-6 text-gray-12">
+                Common
+              </h2>
+              <ItemList items={data.items.common} />
+            </div>
+
+            <div>
+              <h2 className="text-lg font-medium leading-6 text-gray-12">
+                Ascension Gem
+              </h2>
+              <ItemList items={data.items.ascensionGem} />
+            </div>
+
+            <div>
+              <h2 className="text-lg font-medium leading-6 text-gray-12">
+                Ascension Boss
+              </h2>
+              <ItemList items={data.items.ascensionBoss} />
+            </div>
+
+            <div>
+              <h2 className="text-lg font-medium leading-6 text-gray-12">
+                Local Specialty
+              </h2>
+              <ItemList items={data.items.localSpecialty} />
+            </div>
+
+            <div>
+              <h2 className="text-lg font-medium leading-6 text-gray-12">
+                Talent Book
+              </h2>
+              <ItemList items={data.items.talentBook} />
+            </div>
+
+            <div>
+              <h2 className="text-lg font-medium leading-6 text-gray-12">
+                Talent Boss
+              </h2>
+              <ItemList items={data.items.talentBoss} />
+            </div>
+
+            <div>
+              <h2 className="text-lg font-medium leading-6 text-gray-12">
+                Special
+              </h2>
+              <ItemList items={data.items.special} />
+            </div>
           </>
-        ) : (
-          <>
-            <h2 className="text-lg font-medium leading-6 text-gray-12">
-              {Utils.toCapitalized(type)}
-            </h2>
-            <ItemList items={items} />
-          </>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }
