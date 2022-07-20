@@ -1774,33 +1774,14 @@ export function getItemsByNames({
   return result
 }
 
-export function validateItem({
-  name,
-  type,
-  excludePattern,
-}: {
-  name: string
-  type: DB.ItemType | DB.ItemType[]
-  excludePattern?: string
-}) {
-  const types = Array.isArray(type) ? type : [type]
-  const typedItems = items.filter(
-    (item) =>
-      types.includes(item.type) &&
-      (excludePattern ? !item.name.includes(excludePattern) : true)
-  )
-
-  return typedItems.findIndex((item) => item.name === name) !== -1
-}
-
 export function getConverterItems({
   name,
   type,
 }: {
   name: string
-  type: 'gem' | 'boss'
+  type: 'ASCENSION_GEM' | 'TALENT_BOSS'
 }) {
-  if (type === 'gem') {
+  if (type === 'ASCENSION_GEM') {
     const tmpGems = items.filter((item) => {
       const baseFilter =
         item.type === DB.ItemType.ASCENSION_GEM &&
@@ -1876,6 +1857,16 @@ export function getConvertableItemNamesByType({ type }: { type: DB.ItemType }) {
     .map((item) => item.name)
 }
 
+export function isValidConvertable({
+  name,
+  type,
+}: {
+  type: DB.ItemType
+  name: string
+}) {
+  return getConvertableItemNamesByType({ type }).includes(name)
+}
+
 export function getCraftItemNames() {
   return items.filter((item) => item.craft).map((item) => item.name)
 }
@@ -1884,6 +1875,19 @@ export function getCraftItemNamesByType({ type }: { type: DB.ItemType }) {
   return items
     .filter((item) => item.craft && item.type === type)
     .map((item) => item.name)
+}
+
+export function isValidCraftable({
+  name,
+  type,
+}: {
+  type: DB.ItemType
+  name: string
+}) {
+  return items
+    .filter((item) => item.craft && item.craft.craftable && item.type === type)
+    .map((item) => item.name)
+    .includes(name)
 }
 
 function getCraftable({
@@ -2002,21 +2006,21 @@ export function getConvertableItems({
   type?: 'ascension-gem' | 'talent-boss'
 }) {
   if (type === 'ascension-gem') {
-    const {
-      convertable: ascensionGemConvertable,
-      converter: ascensionGemConverter,
-    } = getConvertable({ userItems, type: 'ASCENSION_GEM' })
+    const { convertable, converter } = getConvertable({
+      userItems,
+      type: 'ASCENSION_GEM',
+    })
 
-    return { ascensionGemConvertable, ascensionGemConverter }
+    return { convertable, converter }
   }
 
   if (type === 'talent-boss') {
-    const {
-      convertable: talentBossConvertable,
-      converter: talentBossConverter,
-    } = getConvertable({ userItems, type: 'TALENT_BOSS' })
+    const { convertable, converter } = getConvertable({
+      userItems,
+      type: 'TALENT_BOSS',
+    })
 
-    return { talentBossConvertable, talentBossConverter }
+    return { convertable, converter }
   }
 
   const {
@@ -2028,9 +2032,13 @@ export function getConvertableItems({
     getConvertable({ userItems, type: 'TALENT_BOSS' })
 
   return {
-    ascensionGemConvertable,
-    ascensionGemConverter,
-    talentBossConvertable,
-    talentBossConverter,
+    ascensionGem: {
+      convertable: ascensionGemConvertable,
+      converter: ascensionGemConverter,
+    },
+    talentBoss: {
+      convertable: talentBossConvertable,
+      converter: talentBossConverter,
+    },
   }
 }

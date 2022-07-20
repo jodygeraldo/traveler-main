@@ -9,25 +9,29 @@ interface Convertable {
 interface Props {
   heading: string
   convert: 'convert-gem' | 'convert-boss'
-  converter: Convertable
-  convertable: Convertable[]
+  items: {
+    converter: Convertable
+    convertable: Convertable[]
+  }
 }
 
-export default function ItemList({ heading, convert, converter, convertable }: Props) {
+export default function ItemList({ heading, convert, items }: Props) {
   return (
     <>
       <h2 className="text-lg font-medium leading-6 text-gray-12">{heading}</h2>
 
       <div className="mt-4 flex">
         <Item.Item
-          name={converter.name}
-          rarity={converter.rarity}
-          quantity={converter.quantity}
+          name={items.converter.name}
+          rarity={items.converter.rarity}
+          quantity={items.converter.quantity}
+          width={12}
+          height={12}
         />
       </div>
 
       <div className="mt-6 flex flex-wrap gap-4">
-        {convertable.map((item) => (
+        {items.convertable.map((item) => (
           <Item.ItemLink
             key={item.name}
             convert={convert}

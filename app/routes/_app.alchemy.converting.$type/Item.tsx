@@ -17,17 +17,38 @@ interface Props {
   rarity: number
   quantity: number
   convert: 'convert-gem' | 'convert-boss'
+  width?: number
+  height?: number
 }
 
-export function ItemLink({ name, rarity, quantity, convert }: Props) {
+export function ItemLink({
+  name,
+  rarity,
+  quantity,
+  convert,
+  width = 16,
+  height = 16,
+}: Props) {
   return (
     <RemixReact.Link prefetch="intent" to={`./${convert}/${name}`}>
-      <Item name={name} rarity={rarity} quantity={quantity} />
+      <Item
+        name={name}
+        rarity={rarity}
+        quantity={quantity}
+        width={width}
+        height={height}
+      />
     </RemixReact.Link>
   )
 }
 
-export function Item({ name, rarity, quantity }: Omit<Props, 'convert'>) {
+export function Item({
+  name,
+  rarity,
+  quantity,
+  width = 16,
+  height = 16,
+}: Omit<Props, 'convert'>) {
   return (
     <Tooltip text={name}>
       <div className={clsx('rounded-b-md bg-gray-3 shadow-sm')}>
@@ -40,9 +61,9 @@ export function Item({ name, rarity, quantity }: Omit<Props, 'convert'>) {
           <Image
             src={`/item/${Utils.getImageSrc(name)}.png`}
             alt={name}
-            className="h-16 w-16 rounded-br-2xl"
-            width={64}
-            height={64}
+            className={clsx(`w-${width} h-${height} rounded-br-2xl`)}
+            width={width * 4}
+            height={height * 4}
           />
         </div>
         <div className="text-center">

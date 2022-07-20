@@ -1,7 +1,6 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as RemixParamsHelper from 'remix-params-helper'
-import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import * as ItemData from '~/data/items'
 import * as DB from '~/db.server'
@@ -92,13 +91,14 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
 
   const { name, convert } = result.data
 
-  const isValidItem = ItemData.validateItem({
-    name: name,
-    type:
-      convert === 'convert-boss'
-        ? DB.ItemType.TALENT_BOSS
-        : DB.ItemType.ASCENSION_GEM,
-    excludePattern: 'Brilliant Diamond',
+  const itemType =
+    convert === 'convert-boss'
+      ? DB.ItemType.TALENT_BOSS
+      : DB.ItemType.ASCENSION_GEM
+
+  const isValidItem = ItemData.isValidConvertable({
+    name,
+    type: itemType,
   })
 
   if (!isValidItem) {
@@ -114,7 +114,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
 
   const converter = ItemData.getConverterItems({
     name,
-    type: convert === 'convert-gem' ? 'gem' : 'boss',
+    type: itemType,
   })
 
   return RemixNode.json({ converter })
@@ -129,98 +129,99 @@ const ItemParams = Zod.object({
 export default function AlchemyConvertingTabPage() {
   const actionData = RemixReact.useActionData<ActionData>()
 
-  const { name } = ParamsSchema.parse(RemixReact.useParams())
+  const { name, convert } = ParamsSchema.parse(RemixReact.useParams())
 
   const { converter } = RemixReact.useLoaderData<typeof loader>()
 
-  console.log(
-    Utils.useMatchesData('routes/_app.alchemy.converting.$type/_index')
+  const items = Zod.union([
+    Zod.object({
+      convertable: Zod.array(ItemParams),
+      converter: ItemParams,
+    }),
+    Zod.object({
+      ascensionGem: Zod.object({
+        convertable: Zod.array(ItemParams),
+        converter: ItemParams,
+      }),
+      talentBoss: Zod.object({
+        convertable: Zod.array(ItemParams),
+        converter: ItemParams,
+      }),
+    }),
+  ]).parse(Utils.useMatchesData('routes/_app.alchemy.converting.$type/_index'))
+
+  if (
+    Utils.hasOwnProperty(items, 'convertable') &&
+    Utils.hasOwnProperty(items, 'converter')
+  ) {
+    const specialConverter = {
+      ...items.converter,
+      requiredQuantity: converter.specialRequiredQuantity,
+    }
+
+    const itemsConverter = converter.items
+      .map((name) => {
+        const itemData = ItemParams.parse(
+          items.convertable.find((i) => i.name === name)
+        )
+
+        return {
+          name,
+          rarity: itemData.rarity,
+          quantity: itemData.quantity,
+          requiredQuantity: 1,
+        }
+      })
+      .filter((item) => item.quantity > 0)
+
+    const itemFind = items.convertable.find((item) => item.name === name)
+    const item = ItemParams.parse(itemFind)
+
+    return (
+      <ConvertItem
+        name={name}
+        rarity={item.rarity}
+        specialConverter={specialConverter}
+        itemsConverter={itemsConverter}
+        error={actionData?.error}
+      />
+    )
+  }
+
+  const convertItem =
+    convert === 'convert-boss' ? items.talentBoss : items.ascensionGem
+  const specialConverter = {
+    ...convertItem.converter,
+    requiredQuantity: converter.specialRequiredQuantity,
+  }
+
+  const itemsConverter = converter.items
+    .map((name) => {
+      const itemData = ItemParams.parse(
+        convertItem.convertable.find((i) => i.name === name)
+      )
+
+      return {
+        name,
+        rarity: itemData.rarity,
+        quantity: itemData.quantity,
+        requiredQuantity: 1,
+      }
+    })
+    .filter((item) => item.quantity > 0)
+
+  const itemFind = convertItem.convertable.find((item) => item.name === name)
+  const item = ItemParams.parse(itemFind)
+
+  return (
+    <ConvertItem
+      name={name}
+      rarity={item.rarity}
+      specialConverter={specialConverter}
+      itemsConverter={itemsConverter}
+      error={actionData?.error}
+    />
   )
-  const items = Zod.object({
-    ascensionGemConvertable: Zod.array(ItemParams).optional(),
-    ascensionGemConverter: ItemParams.optional(),
-    talentBossConvertable: Zod.array(ItemParams).optional(),
-    talentBossConverter: ItemParams.optional(),
-  }).parse(Utils.useMatchesData('routes/_app.alchemy.converting.$type/_index'))
-
-  if (
-    Utils.hasOwnProperty(items, 'ascensionGemConvertable') &&
-    Utils.hasOwnProperty(items, 'ascensionGemConverter')
-  ) {
-    const { ascensionGemConvertable, ascensionGemConverter } = items
-    invariant(ascensionGemConvertable)
-    invariant(ascensionGemConverter)
-
-    const itemFind = ascensionGemConvertable.find((item) => item.name === name)
-    const item = ItemParams.parse(itemFind)
-    const specialConverter = {
-      ...ascensionGemConverter,
-      requiredQuantity: converter.specialRequiredQuantity,
-    }
-
-    const itemsConverter = converter.items
-      .map((name) => {
-        const itemData = ItemParams.parse(
-          ascensionGemConvertable.find((i) => i.name === name)
-        )
-        return {
-          name,
-          rarity: itemData.rarity,
-          quantity: itemData.quantity,
-          requiredQuantity: 1,
-        }
-      })
-      .filter((item) => item.quantity > 0)
-
-    return (
-      <ConvertItem
-        name={name}
-        rarity={item.rarity}
-        specialConverter={specialConverter}
-        itemsConverter={itemsConverter}
-        error={actionData?.error}
-      />
-    )
-  }
-
-  if (
-    Utils.hasOwnProperty(items, 'talentBossConvertable') &&
-    Utils.hasOwnProperty(items, 'talentBossConverter')
-  ) {
-    const { talentBossConvertable, talentBossConverter } = items
-    invariant(talentBossConvertable)
-    invariant(talentBossConverter)
-
-    const itemFind = talentBossConvertable.find((item) => item.name === name)
-    const item = ItemParams.parse(itemFind)
-    const specialConverter = {
-      ...talentBossConverter,
-      requiredQuantity: converter.specialRequiredQuantity,
-    }
-
-    const itemsConverter = converter.items
-      .map((name) => {
-        const itemData = ItemParams.parse(
-          talentBossConvertable.find((i) => i.name === name)
-        )
-        return {
-          name,
-          rarity: itemData.rarity,
-          quantity: itemData.quantity,
-          requiredQuantity: 1,
-        }
-      })
-      .filter((item) => item.quantity > 0)
-    return (
-      <ConvertItem
-        name={name}
-        rarity={item.rarity}
-        specialConverter={specialConverter}
-        itemsConverter={itemsConverter}
-        error={actionData?.error}
-      />
-    )
-  }
 }
 
 export function CatchBoundary() {
