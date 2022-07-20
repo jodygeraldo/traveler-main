@@ -178,11 +178,8 @@ export async function convertItem({
         },
       })
     } else {
-      await tx.inventory.updateMany({
-        where: {
-          ownerId: accountId,
-          itemName: converter.special.name,
-        },
+      await tx.inventory.update({
+        where: { id: special.id },
         data: {
           quantity: {
             decrement: converter.special.quantity,
@@ -190,11 +187,8 @@ export async function convertItem({
         },
       })
 
-      await tx.inventory.updateMany({
-        where: {
-          ownerId: accountId,
-          itemName: converter.item.name,
-        },
+      await tx.inventory.update({
+        where: { id: item.id },
         data: {
           quantity: {
             decrement: converter.item.quantity,
@@ -202,5 +196,81 @@ export async function convertItem({
         },
       })
     }
+  })
+}
+export async function craftItem({
+  name,
+  quantity,
+  crafterName,
+  crafterQuantity,
+  bonusType,
+  bonusQuantity,
+  accountId,
+}: {
+  name: string
+  quantity: number
+  crafterName: string
+  crafterQuantity: number
+  bonusType?: 'Refund' | 'Bonus'
+  bonusQuantity: number
+  accountId: string
+}) {
+  return await prisma.$transaction(async (tx) => {
+    const inventory = await tx.inventory.findFirst({
+      where: {
+        ownerId: accountId,
+        itemName: crafterName,
+      },
+    })
+
+    if (!inventory) {
+      return {
+        message: 'Missing crafter',
+      }
+    }
+
+    if (inventory.quantity < crafterQuantity) {
+      return {
+        message: `Not enough ${crafterName}, required ${crafterQuantity} but have ${inventory.quantity}`,
+      }
+    }
+
+    const convertedItem = await tx.inventory.findFirst({
+      where: {
+        ownerId: accountId,
+        itemName: name,
+      },
+    })
+
+    let updatedQuantity =
+      bonusType === 'Bonus' ? quantity + bonusQuantity : quantity
+
+    await tx.inventory.upsert({
+      where: {
+        id: convertedItem?.id ?? '',
+      },
+      create: {
+        itemName: name,
+        ownerId: accountId,
+        quantity: updatedQuantity,
+      },
+      update: {
+        quantity: {
+          increment: updatedQuantity,
+        },
+      },
+    })
+
+    updatedQuantity =
+      bonusType === 'Refund' ? crafterQuantity - bonusQuantity : crafterQuantity
+
+    await tx.inventory.update({
+      where: { id: inventory.id },
+      data: {
+        quantity: {
+          decrement: updatedQuantity,
+        },
+      },
+    })
   })
 }

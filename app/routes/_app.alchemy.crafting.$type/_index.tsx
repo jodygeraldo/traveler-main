@@ -92,21 +92,21 @@ export default function AlchemyConvertingPage() {
         <ItemList
           heading="Enhancement"
           craft="craft-enhancement"
-          items={items.enhancementCrafable}
+          items={items.enhancementCraftable}
         />
       </div>
       <div className="mt-12">
         <ItemList
           heading="Ascension"
           craft="craft-ascension"
-          items={items.ascensionCrafable}
+          items={items.ascensionCraftable}
         />
       </div>
       <div className="mt-12">
         <ItemList
           heading="Talent"
           craft="craft-talent"
-          items={items.talentCrafable}
+          items={items.talentCraftable}
         />
       </div>
 

@@ -8,7 +8,14 @@ export interface ItemWithQuantity {
   craft:
     | false
     | {
-        craftable: boolean
+        craftable: false
+      }
+    | {
+        craftable: true
+        crafter: {
+          name: string
+          quantity: number
+        }
         refundable: boolean
         doublable: boolean
       }
@@ -43,6 +50,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Slime Secretions',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -54,6 +65,10 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Slime Condensate',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -65,8 +80,6 @@ const items: ItemWithQuantity[] = [
     rarity: 1,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -76,6 +89,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Stained Mask',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -87,6 +104,10 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Damaged Mask',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -98,8 +119,6 @@ const items: ItemWithQuantity[] = [
     rarity: 1,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -109,6 +128,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Sealed Scroll',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -120,6 +143,10 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Divining Scroll',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -131,8 +158,6 @@ const items: ItemWithQuantity[] = [
     rarity: 1,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -142,6 +167,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Sharp Arrowhead',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -153,6 +182,10 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Firm Arrowhead',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -164,8 +197,6 @@ const items: ItemWithQuantity[] = [
     rarity: 1,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -175,6 +206,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Black Bronze Horn',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -186,6 +221,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Heavy Horn',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -197,8 +236,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -208,6 +245,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Dead Ley Line Leaves',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -219,6 +260,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Dead Ley Line Branch',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -230,8 +275,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -241,6 +284,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Chaos Circuit',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -252,6 +299,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Chaos Device',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -263,8 +314,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -274,6 +323,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Mist Grass',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -285,6 +338,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Mist Grass Pollen',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -296,8 +353,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -307,6 +362,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: "Agent's Sacrificial Knife",
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -318,6 +377,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: "Hunter's Sacrificial Knife",
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -329,8 +392,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -340,6 +401,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: "Sergeant's Insignia",
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -351,6 +416,10 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: true,
+      crafter: {
+        name: "Recruit's Insignia",
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -362,8 +431,6 @@ const items: ItemWithQuantity[] = [
     rarity: 1,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -373,6 +440,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Silver Raven Insignia',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -384,6 +455,10 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Treasure Hoarder Insignia',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -395,8 +470,6 @@ const items: ItemWithQuantity[] = [
     rarity: 1,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -406,6 +479,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Shimmering Nectar',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -417,6 +494,10 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Whopperflower Nectar',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -428,8 +509,6 @@ const items: ItemWithQuantity[] = [
     rarity: 1,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -439,6 +518,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Sturdy Bone Shard',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -450,6 +533,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Fragile Bone Shard',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -461,8 +548,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -472,6 +557,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Kageuchi Handguard',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -483,6 +572,10 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Old Handguard',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -494,8 +587,6 @@ const items: ItemWithQuantity[] = [
     rarity: 1,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -505,6 +596,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Chaos Axis',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -516,6 +611,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Chaos Gear',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -527,8 +626,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -538,6 +635,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Crystal Prism',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -549,6 +650,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Dismal Prism',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -560,8 +665,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -571,6 +674,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Spectral Heart',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -582,6 +689,10 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Spectral Husk',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -593,8 +704,6 @@ const items: ItemWithQuantity[] = [
     rarity: 1,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -604,6 +713,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Concealed Unguis',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -615,6 +728,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Concealed Claw',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -626,8 +743,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -637,6 +752,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Dark Statuette',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -648,6 +767,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Gloomy Statuette',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -659,8 +782,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -670,6 +791,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Luminescent Pollen',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -681,6 +806,10 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Fungal Spores',
+        quantity: 3,
+      },
       doublable: true,
       refundable: false,
     },
@@ -692,8 +821,6 @@ const items: ItemWithQuantity[] = [
     rarity: 1,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -731,6 +858,10 @@ const items: ItemWithQuantity[] = [
     rarity: 5,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Agnidus Agate Chunk',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -742,6 +873,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Agnidus Agate Fragment',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -753,6 +888,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Agnidus Agate Sliver',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -764,8 +903,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: true,
   },
@@ -775,6 +912,10 @@ const items: ItemWithQuantity[] = [
     rarity: 5,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Varunada Lazurite Chunk',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -786,6 +927,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Varunada Lazurite Fragment',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -797,6 +942,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Varunada Lazurite Sliver',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -808,8 +957,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: true,
   },
@@ -819,6 +966,10 @@ const items: ItemWithQuantity[] = [
     rarity: 5,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Vajrada Amethyst Chunk',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -830,6 +981,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Vajrada Amethyst Fragment',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -841,6 +996,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Vajrada Amethyst Sliver',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -852,8 +1011,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: true,
   },
@@ -863,6 +1020,10 @@ const items: ItemWithQuantity[] = [
     rarity: 5,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Vayuda Turquoise Chunk',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -874,6 +1035,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Vayuda Turquoise Fragment',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -885,6 +1050,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Vayuda Turquoise Sliver',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -896,8 +1065,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: true,
   },
@@ -907,6 +1074,10 @@ const items: ItemWithQuantity[] = [
     rarity: 5,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Shivada Jade Chunk',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -918,6 +1089,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Shivada Jade Fragment',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -929,6 +1104,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Shivada Jade Sliver',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -940,8 +1119,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: true,
   },
@@ -951,6 +1128,10 @@ const items: ItemWithQuantity[] = [
     rarity: 5,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Prithiva Topaz Chunk',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -962,6 +1143,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Prithiva Topaz Fragment',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -973,6 +1158,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Prithiva Topaz Sliver',
+        quantity: 3,
+      },
       doublable: false,
       refundable: false,
     },
@@ -984,8 +1173,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: true,
   },
@@ -1282,6 +1469,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Guide to Freedom',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1293,6 +1484,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Teachings of Freedom',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1304,8 +1499,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -1315,6 +1508,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Guide to Resistance',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1326,6 +1523,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Teachings of Resistance',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1337,8 +1538,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -1348,6 +1547,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Guide to Ballad',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1359,6 +1562,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Teachings of Ballad',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1370,8 +1577,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -1381,6 +1586,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Guide to Prosperity',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1392,6 +1601,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Teachings of Prosperity',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1403,8 +1616,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -1414,6 +1625,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Guide to Diligence',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1425,6 +1640,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Teachings of Diligence',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1436,8 +1655,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -1447,6 +1664,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Guide to Gold',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1458,6 +1679,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Teachings of Gold',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1469,8 +1694,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -1480,6 +1703,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Guide to Transience',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1491,6 +1718,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Teachings of Transience',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1502,8 +1733,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -1513,6 +1742,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Guide to Elegance',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1524,6 +1757,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Teachings of Elegance',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1535,8 +1772,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -1546,6 +1781,10 @@ const items: ItemWithQuantity[] = [
     rarity: 4,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Guide to Light',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1557,6 +1796,10 @@ const items: ItemWithQuantity[] = [
     rarity: 3,
     craft: {
       craftable: true,
+      crafter: {
+        name: 'Teachings of Light',
+        quantity: 3,
+      },
       doublable: true,
       refundable: true,
     },
@@ -1568,8 +1811,6 @@ const items: ItemWithQuantity[] = [
     rarity: 2,
     craft: {
       craftable: false,
-      doublable: false,
-      refundable: false,
     },
     convertable: false,
   },
@@ -1847,6 +2088,26 @@ const talentBossGroup = {
   ],
 }
 
+export function getCrafterItem(name: string) {
+  return items
+    .filter((item) => item.craft && item.craft.craftable && item.name === name)
+    .map((item) => {
+      // @ts-ignore
+      const craft = item.craft as {
+        craftable: true
+        crafter: {
+          name: string
+          quantity: number
+        }
+        refundable: boolean
+        doublable: boolean
+      }
+      return {
+        ...craft,
+      }
+    })[0]
+}
+
 export function getConvertableItemNames() {
   return items.filter((item) => item.convertable).map((item) => item.name)
 }
@@ -1954,9 +2215,9 @@ export function getCraftableItems({
   }
 
   return {
-    enhancementCrafable: getCraftable({ userItems, type: 'COMMON' }),
-    ascensionCrafable: getCraftable({ userItems, type: 'ASCENSION_GEM' }),
-    talentCrafable: getCraftable({ userItems, type: 'TALENT_BOOK' }),
+    enhancementCraftable: getCraftable({ userItems, type: 'COMMON' }),
+    ascensionCraftable: getCraftable({ userItems, type: 'ASCENSION_GEM' }),
+    talentCraftable: getCraftable({ userItems, type: 'TALENT_BOOK' }),
   }
 }
 
