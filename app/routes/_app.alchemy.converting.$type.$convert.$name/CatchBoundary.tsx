@@ -38,7 +38,7 @@ export default function CatchBoundaryComponent({
                 {message}
               </HeadlessUIReact.Dialog.Description>
 
-              <div className="w-full mt-8">
+              <div className="mt-8 w-full">
                 <Button
                   type="button"
                   variant="basic"

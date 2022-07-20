@@ -39,7 +39,7 @@ export default function InventoryLayout() {
       to: './special',
     },
   ]
-  
+
   return (
     <div className="py-10">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-12 lg:gap-8 lg:px-8">

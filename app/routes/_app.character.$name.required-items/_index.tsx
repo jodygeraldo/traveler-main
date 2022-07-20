@@ -78,7 +78,7 @@ export default function CharacterPage() {
 
   if (Array.isArray(talentMaterial)) {
     return (
-      <div className='space-y-12'>
+      <div className="space-y-12">
         <ItemTable.Table
           heading="Ascension"
           switchLabel="Hide ascension table"
