@@ -143,7 +143,7 @@ export default function TravelerInventoryLevelupPage() {
   }
 
   return (
-    <div className="mt-8 space-y-8">
+    <div className="mt-12 space-y-12">
       <ul className="flex flex-wrap gap-2">
         {items.map((item) => (
           <ItemWithImage key={item.name} item={item} />

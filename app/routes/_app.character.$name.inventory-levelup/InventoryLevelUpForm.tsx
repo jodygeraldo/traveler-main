@@ -10,7 +10,10 @@ interface Props {
   materials:
     | Pick<ItemData.ItemWithQuantity, 'name' | 'quantity' | 'type' | 'rarity'>[]
     | undefined
-  inventoryItems: Pick<ItemData.ItemWithQuantity, 'name' | 'quantity' | 'type' | 'rarity'>[]
+  inventoryItems: Pick<
+    ItemData.ItemWithQuantity,
+    'name' | 'quantity' | 'type' | 'rarity'
+  >[]
   possibleToLevel: boolean
   isAscension?: boolean
   characterLevel?: number
