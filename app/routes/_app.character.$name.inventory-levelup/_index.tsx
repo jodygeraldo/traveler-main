@@ -187,6 +187,7 @@ export default function TravelerInventoryLevelupPage() {
               value={ascend.requiredLevel}
             />
             <Button
+              id="jump-level"
               name="intent"
               value="requiredLevel"
               type="submit"

@@ -30,7 +30,11 @@ export function ItemLink({
   height = 16,
 }: Props) {
   return (
-    <RemixReact.Link prefetch="intent" to={`./${craft}/${name}`}>
+    <RemixReact.Link
+      id={`${Utils.toSnakeCase(name)}-link`}
+      prefetch="intent"
+      to={`./${craft}/${name}`}
+    >
       <Item
         name={name}
         rarity={rarity}
@@ -68,7 +72,11 @@ export function Item({
         </div>
         <div className="text-center">
           <span className="sr-only">Quantity {quantity}</span>
-          <p className="text-sm text-gray-11" aria-hidden>
+          <p
+            id={`${Utils.toSnakeCase(name)}-quantity`}
+            className="text-sm text-gray-11"
+            aria-hidden
+          >
             {quantity}
           </p>
         </div>

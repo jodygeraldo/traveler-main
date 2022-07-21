@@ -102,6 +102,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   }
 
   const item = ItemData.getCrafterItem(name)
+  console.log(item);
 
   return RemixNode.json({ item })
 }
@@ -189,8 +190,8 @@ export default function AlchemyConvertingTabPage() {
         ...userCrafter,
         requiredQuantity: item.crafter.quantity,
       }}
-      refundable
-      doublable
+      refundable={item.refundable}
+      doublable={item.doublable}
       error={actionData?.error}
     />
   )

@@ -18,7 +18,7 @@ export default function Index() {
               </div>
               <div className="mt-20">
                 <div className="mt-6 sm:max-w-xl">
-                  <h1 className="text-4xl font-extrabold tracking-tight text-gray-12 sm:text-5xl">
+                  <h1 id="page-heading" className="text-4xl font-extrabold tracking-tight text-gray-12 sm:text-5xl">
                     Companion For Genshin Impact Nerds
                   </h1>
                   <p className="mt-6 text-xl text-gray-11">
@@ -38,13 +38,17 @@ export default function Index() {
                   ) : (
                     <>
                       <Buttons.Link
+                        id="signup"
                         to="/join"
                         className="flex w-full justify-center"
                       >
                         Create new account
                       </Buttons.Link>
                       <RemixReact.Link to="/login" className="block w-full">
-                        <Button className="mt-4 flex w-full justify-center sm:mt-0">
+                        <Button
+                          id="signin"
+                          className="mt-4 flex w-full justify-center sm:mt-0"
+                        >
                           Sign in
                         </Button>
                       </RemixReact.Link>

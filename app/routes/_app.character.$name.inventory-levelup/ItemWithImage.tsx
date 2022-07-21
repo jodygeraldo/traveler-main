@@ -56,7 +56,11 @@ export default function ItemWithImage({
           </div>
           <div className="text-center">
             <span className="sr-only">Quantity {item.quantity}</span>
-            <p className="text-sm text-gray-11" aria-hidden>
+            <p
+              id={`test-${Utils.toSnakeCase(item.name)}-quantity`}
+              className="text-sm text-gray-11"
+              aria-hidden
+            >
               {item.quantity ?? 0}
             </p>
           </div>
