@@ -180,14 +180,20 @@ export default function LoginPage() {
           <input type="hidden" name="redirectTo" value={redirectTo} />
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 7fe5771 (chore: format)
           <Button
             id="signin"
             type="submit"
             className="flex w-full justify-center"
           >
+<<<<<<< HEAD
 =======
           <Button id='signin' type="submit" className="flex w-full justify-center">
 >>>>>>> 61df09e (add ids for easier testing selector)
+=======
+>>>>>>> 7fe5771 (chore: format)
             Sign in
           </Button>
         </RemixReact.Form>

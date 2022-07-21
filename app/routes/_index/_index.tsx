@@ -19,13 +19,19 @@ export default function Index() {
               <div className="mt-20">
                 <div className="mt-6 sm:max-w-xl">
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 7fe5771 (chore: format)
                   <h1
                     id="page-heading"
                     className="text-4xl font-extrabold tracking-tight text-gray-12 sm:text-5xl"
                   >
+<<<<<<< HEAD
 =======
                   <h1 id="page-heading" className="text-4xl font-extrabold tracking-tight text-gray-12 sm:text-5xl">
 >>>>>>> 61df09e (add ids for easier testing selector)
+=======
+>>>>>>> 7fe5771 (chore: format)
                     Companion For Genshin Impact Nerds
                   </h1>
                   <p className="mt-6 text-xl text-gray-11">

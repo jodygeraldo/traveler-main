@@ -182,15 +182,21 @@ export default function ConvertItem({
                 {isConvertable ? (
                   <div className="w-full sm:col-start-2">
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 7fe5771 (chore: format)
                     <Button
                       id="convert"
                       className="w-full"
                       type="submit"
                       disabled={busy}
                     >
+<<<<<<< HEAD
 =======
                     <Button id='convert' className="w-full" type="submit" disabled={busy}>
 >>>>>>> 61df09e (add ids for easier testing selector)
+=======
+>>>>>>> 7fe5771 (chore: format)
                       {busy ? 'Converting...' : 'Convert'}
                     </Button>
                   </div>
