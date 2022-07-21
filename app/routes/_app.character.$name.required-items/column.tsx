@@ -16,120 +16,84 @@ export const ascension: ReactTable.ColumnDef<Ascension>[] = [
   {
     header: 'Phase',
     accessorKey: 'phase',
-    cell: ({
-      getValue,
-    }: {
-      getValue: () => {
-        from: number
-        to: number
-      }
-    }) => (
-      <div className="flex items-center gap-1">
-        <span className="tabular-nums">{getValue().from}</span>
-        <span className="sr-only">To</span>
-        <Icon.Solid name="arrowSmRight" aria-hidden className="h-4 w-4" />
-        <span className="tabular-nums">{getValue().to}</span>
-      </div>
-    ),
+    cell(props) {
+      const value = props.getValue<{ from: number; to: number }>()
+      return (
+        <div className="flex items-center gap-1">
+          <span className="tabular-nums">{value.from}</span>
+          <span className="sr-only">To</span>
+          <Icon.Solid name="arrowSmRight" aria-hidden className="h-4 w-4" />
+          <span className="tabular-nums">{value.to}</span>
+        </div>
+      )
+    },
   },
   {
     header: 'Mora',
     accessorKey: 'mora',
-    cell: ({ getValue }) => (
-      <CellWithImage
-        src={getValue() ? `/item/${Utils.getImageSrc('mora')}.png` : undefined}
-        quantity={getValue()}
-        text="Mora"
-      />
-    ),
+    cell(props) {
+      const value = props.getValue<number>()
+      return <CellWithImage src="/item/mora.png" quantity={value} text="Mora" />
+    },
   },
   {
     header: 'Common',
     accessorKey: 'common',
-    cell: ({
-      getValue,
-    }: {
-      getValue: () => {
-        name: string
-        quantity: number
-      }
-    }) => (
-      <CellWithImage
-        src={
-          getValue()
-            ? `/item/${Utils.getImageSrc(getValue().name)}.png`
-            : undefined
-        }
-        quantity={getValue().quantity}
-        text={getValue().name}
-      />
-    ),
+    cell(props) {
+      const value = props.getValue<{ name: string; quantity: number }>()
+      return (
+        <CellWithImage
+          src={`/item/${Utils.getImageSrc(value.name)}.png`}
+          quantity={value.quantity}
+          text={value.name}
+        />
+      )
+    },
   },
   {
     header: 'Gem',
     accessorKey: 'gem',
-    cell: ({
-      getValue,
-    }: {
-      getValue: () => {
-        name: string
-        quantity: number
-      }
-    }) => (
-      <CellWithImage
-        src={
-          getValue()
-            ? `/item/${Utils.getImageSrc(getValue().name)}.png`
-            : undefined
-        }
-        quantity={getValue().quantity}
-        text={getValue().name}
-      />
-    ),
+    cell(props) {
+      const value = props.getValue<{ name: string; quantity: number }>()
+      return (
+        <CellWithImage
+          src={`/item/${Utils.getImageSrc(value.name)}.png`}
+          quantity={value.quantity}
+          text={value.name}
+        />
+      )
+    },
   },
   {
     header: 'Local Specialty',
     accessorKey: 'local',
-    cell: ({
-      getValue,
-    }: {
-      getValue: () => {
-        name: string
-        quantity: number
-      }
-    }) => (
-      <CellWithImage
-        src={
-          getValue()
-            ? `/item/${Utils.getImageSrc(getValue().name)}.png`
-            : undefined
-        }
-        quantity={getValue().quantity}
-        text={getValue().name}
-      />
-    ),
+    cell(props) {
+      const value = props.getValue<{ name: string; quantity: number }>()
+      return (
+        <CellWithImage
+          src={`/item/${Utils.getImageSrc(value.name)}.png`}
+          quantity={value.quantity}
+          text={value.name}
+        />
+      )
+    },
   },
   {
     header: 'Boss',
     accessorKey: 'boss',
-    cell: ({
-      getValue,
-    }: {
-      getValue: () => {
-        name?: string
-        quantity?: number
-      }
-    }) => (
-      <CellWithImage
-        src={
-          getValue()
-            ? `/item/${Utils.getImageSrc(getValue()?.name ?? '')}.png`
-            : undefined
-        }
-        quantity={getValue()?.quantity}
-        text={getValue()?.name}
-      />
-    ),
+    cell(props) {
+      const value = props.getValue<
+        { name: string; quantity: number } | undefined
+      >()
+      if (!value) return null
+      return (
+        <CellWithImage
+          src={`/item/${Utils.getImageSrc(value.name)}.png`}
+          quantity={value.quantity}
+          text={value.name}
+        />
+      )
+    },
   },
 ]
 
@@ -146,119 +110,91 @@ export const talent: ReactTable.ColumnDef<Talent>[] = [
   {
     header: 'Level',
     accessorKey: 'level',
-    cell: ({
-      getValue,
-    }: {
-      getValue: () => {
-        from: number
-        to: number
-      }
-    }) => (
-      <div className="flex items-center gap-1">
-        <span className="tabular-nums">{getValue().from}</span>
-        <span className="sr-only">To</span>
-        <Icon.Solid name="arrowSmRight" aria-hidden className="h-4 w-4" />
-        <span className="tabular-nums">{getValue().to}</span>
-      </div>
-    ),
+    cell(props) {
+      const value = props.getValue<{ from: number; to: number }>()
+      return (
+        <div className="flex items-center gap-1">
+          <span className="tabular-nums">{value.from}</span>
+          <span className="sr-only">To</span>
+          <Icon.Solid name="arrowSmRight" aria-hidden className="h-4 w-4" />
+          <span className="tabular-nums">{value.to}</span>
+        </div>
+      )
+    },
   },
   {
     header: 'Mora',
     accessorKey: 'mora',
-    cell: ({ getValue }) => (
-      <CellWithImage
-        src={getValue() ? `/item/${Utils.getImageSrc('mora')}.png` : undefined}
-        quantity={getValue()}
-        text="Mora"
-      />
-    ),
+    cell(props) {
+      return (
+        <CellWithImage
+          src="/item/mora.png"
+          quantity={props.getValue<number>()}
+          text="Mora"
+        />
+      )
+    },
   },
   {
     header: 'Common',
     accessorKey: 'common',
-    cell: ({
-      getValue,
-    }: {
-      getValue: () => {
-        name: string
-        quantity: number
-      }
-    }) => (
-      <CellWithImage
-        src={
-          getValue()
-            ? `/item/${Utils.getImageSrc(getValue().name)}.png`
-            : undefined
-        }
-        quantity={getValue().quantity}
-        text={getValue().name}
-      />
-    ),
+    cell(props) {
+      const value = props.getValue<{ name: string; quantity: number }>()
+      return (
+        <CellWithImage
+          src={`/item/${Utils.getImageSrc(value.name)}.png`}
+          quantity={value.quantity}
+          text={value.name}
+        />
+      )
+    },
   },
   {
     header: 'Book',
     accessorKey: 'book',
-    cell: ({
-      getValue,
-    }: {
-      getValue: () => {
-        name: string
-        quantity: number
-      }
-    }) => (
-      <CellWithImage
-        src={
-          getValue()
-            ? `/item/${Utils.getImageSrc(getValue().name)}.png`
-            : undefined
-        }
-        quantity={getValue().quantity}
-        text={getValue().name}
-      />
-    ),
+    cell(props) {
+      const value = props.getValue<{ name: string; quantity: number }>()
+      return (
+        <CellWithImage
+          src={`/item/${Utils.getImageSrc(value.name)}.png`}
+          quantity={value.quantity}
+          text={value.name}
+        />
+      )
+    },
   },
   {
     header: 'Boss',
     accessorKey: 'boss',
-    cell: ({
-      getValue,
-    }: {
-      getValue: () => {
-        name?: string
-        quantity?: number
-      }
-    }) => (
-      <CellWithImage
-        src={
-          getValue()
-            ? `/item/${Utils.getImageSrc(getValue()?.name ?? '')}.png`
-            : undefined
-        }
-        quantity={getValue()?.quantity}
-        text={getValue()?.name}
-      />
-    ),
+    cell(props) {
+      const value = props.getValue<
+        { name: string; quantity: number } | undefined
+      >()
+      if (!value) return null
+      return (
+        <CellWithImage
+          src={`/item/${Utils.getImageSrc(value.name)}.png`}
+          quantity={value.quantity}
+          text={value.name}
+        />
+      )
+    },
   },
   {
     header: 'Special',
     accessorKey: 'special',
-    cell: ({
-      getValue,
-    }: {
-      getValue: () => {
-        name?: string
-        quantity?: number
-      }
-    }) => (
-      <CellWithImage
-        src={
-          getValue()
-            ? `/item/${Utils.getImageSrc(getValue()?.name ?? '')}.png`
-            : undefined
-        }
-        quantity={getValue()?.quantity}
-        text={getValue()?.name}
-      />
-    ),
+    cell(props) {
+      const value = props.getValue<
+        { name: string; quantity: number } | undefined
+      >()
+      if (!value) return null
+      return (
+        <CellWithImage
+          src={`/item/${Utils.getImageSrc(value.name)}.png`}
+          quantity={value.quantity}
+          text={value.name}
+        />
+      )
+    },
   },
 ]
