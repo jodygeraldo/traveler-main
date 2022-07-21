@@ -79,8 +79,6 @@ jobs:
   playwright:
     name: 🎭 Playwright
     runs-on: ubuntu-latest
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
@@ -99,6 +97,8 @@ jobs:
 
       - name: 🛠 Setup Database
         run: npx prisma generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Get installed Playwright version
         id: playwright-version
