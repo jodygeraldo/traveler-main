@@ -102,7 +102,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   }
 
   const item = ItemData.getCrafterItem(name)
-  console.log(item);
+  console.log(item)
 
   return RemixNode.json({ item })
 }

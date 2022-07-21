@@ -181,7 +181,12 @@ export default function ConvertItem({
               <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                 {isConvertable ? (
                   <div className="w-full sm:col-start-2">
-                    <Button id='convert' className="w-full" type="submit" disabled={busy}>
+                    <Button
+                      id="convert"
+                      className="w-full"
+                      type="submit"
+                      disabled={busy}
+                    >
                       {busy ? 'Converting...' : 'Convert'}
                     </Button>
                   </div>

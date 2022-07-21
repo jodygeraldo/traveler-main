@@ -340,8 +340,12 @@ test.describe('apps', () => {
 
       await page.waitForTimeout(1500)
       await expect(page.locator('text=Required character to 40.')).toBeVisible()
-      await expect(page.locator('#test-whopperflower_nectar-quantity')).toHaveText('1')
-      await expect(page.locator('#test-shivada_jade_sliver-quantity')).toBeHidden()
+      await expect(
+        page.locator('#test-whopperflower_nectar-quantity')
+      ).toHaveText('1')
+      await expect(
+        page.locator('#test-shivada_jade_sliver-quantity')
+      ).toBeHidden()
       await expect(page.locator('#test-qingxin-quantity')).toHaveText('2')
     })
   })
