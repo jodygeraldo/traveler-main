@@ -184,7 +184,7 @@ export default function TravelerInventoryLevelupPage() {
               aria-hidden
               className="inline h-4 w-4"
             />
-            {progression?.ascension ?? 0 + 1}
+            {progression?.ascension || 1}
           </h2>
 
           <p className="mt-1 text-gray-11">
