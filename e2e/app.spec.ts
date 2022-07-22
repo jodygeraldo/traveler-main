@@ -11,6 +11,7 @@ test.describe('apps', () => {
   const PASSWORD = 'test1234'
 
   test.beforeAll(async () => {
+    console.log(await prisma.user.count())
     // cleanup user
     await prisma.user
       .delete({
