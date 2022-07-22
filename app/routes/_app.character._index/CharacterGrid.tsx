@@ -10,7 +10,7 @@ interface Props {
 export default function CharacterGrid({ characters }: Props) {
   return (
     <div>
-      <ul className="flex flex-wrap gap-5">
+      <ul id="grid-view" className="flex flex-wrap gap-5">
         {characters.map((character) => (
           <li key={character.name}>
             <CharacterGridItem
