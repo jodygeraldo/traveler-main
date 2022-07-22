@@ -190,9 +190,11 @@ test.describe('apps', () => {
 
     test('can craft item', async ({ page }) => {
       await page.locator('#Alchemy-link-desktop').click()
+      await page.waitForTimeout(500)
       await expect(page).toHaveURL('/alchemy/crafting/all')
 
       await page.locator('#guide_to_freedom-link').click()
+      await page.waitForTimeout(500)
       await expect(page).toHaveURL(
         '/alchemy/crafting/all/craft-talent/Guide%20to%20Freedom'
       )
@@ -213,6 +215,7 @@ test.describe('apps', () => {
       )
 
       await page.locator('#guide_to_freedom-link').click()
+      await page.waitForTimeout(500)
       await expect(page).toHaveURL(
         '/alchemy/crafting/talent/craft-talent/Guide%20to%20Freedom'
       )
@@ -236,6 +239,7 @@ test.describe('apps', () => {
       await page.goto('/alchemy/converting/all')
 
       await page.locator('#ring_of_boreas-link').click()
+      await page.waitForTimeout(500)
       await expect(page).toHaveURL(
         '/alchemy/converting/all/convert-boss/Ring%20of%20Boreas'
       )
@@ -254,6 +258,7 @@ test.describe('apps', () => {
       await expect(page.locator('#tail_of_boreas-quantity')).toHaveText('8')
 
       await page.locator('#tail_of_boreas-link').click()
+      await page.waitForTimeout(500)
       await expect(page).toHaveURL(
         '/alchemy/converting/talent-boss/convert-boss/Tail%20of%20Boreas'
       )
@@ -274,6 +279,7 @@ test.describe('apps', () => {
   test.describe('character level up pages', () => {
     test('should display character required items table', async ({ page }) => {
       await page.locator('#Ganyu-character-page-link').click()
+      await page.waitForTimeout(500)
       expect(page).toHaveURL('/character/Ganyu/required-items')
       await expect(page.locator('h1:has-text("Ganyu")')).toBeVisible()
       await expect(page.locator('h2:has-text("Ascension")')).toBeVisible()
@@ -293,9 +299,10 @@ test.describe('apps', () => {
       await page.locator('#elemental-skill').fill('10')
       await page.locator('#elemental-burst').fill('10')
       await page.locator('button[type="submit"]').click()
-
       await page.waitForTimeout(500)
+
       await page.reload()
+      await page.waitForTimeout(500)
 
       await expect(page.locator('#level')).toHaveValue('90')
       await expect(page.locator('#ascension')).toHaveValue('6')
@@ -324,8 +331,8 @@ test.describe('apps', () => {
       await page.waitForTimeout(500)
       await page.locator('#character-level').fill('30')
       await page.locator('button:has-text("Ascend")').click()
-
       await page.waitForTimeout(500)
+      
       await expect(page.locator('text=Required character to 40.')).toBeVisible()
       await expect(
         page.locator('#test-whopperflower_nectar-quantity')
