@@ -2,11 +2,11 @@ import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as RemixParamsHelper from 'remix-params-helper'
 import * as Zod from 'zod'
-import * as ItemData from '~/data/items'
 import * as DB from '~/db.server'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils/index'
+import * as UtilsServer from '~/utils/index.server'
 import CatchBoundaryComponent from './CatchBoundary'
 import ConvertItem from './ConvertItem'
 
@@ -87,7 +87,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
       ? DB.ItemType.TALENT_BOSS
       : DB.ItemType.ASCENSION_GEM
 
-  const isValidItem = ItemData.isValidConvertable({
+  const isValidItem = UtilsServer.Item.isValidConvertable({
     name,
     type: itemType,
   })
@@ -103,7 +103,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     )
   }
 
-  const converter = ItemData.getConverterItems({
+  const converter = UtilsServer.Item.getConverterItems({
     name,
     type: itemType,
   })

@@ -16,9 +16,9 @@ export default function ItemWithImage({
   item,
   items,
 }: {
-  item: Pick<ItemData.ItemWithQuantity, 'name' | 'quantity' | 'type' | 'rarity'>
+  item: Pick<ItemData.Item, 'name' | 'quantity' | 'type' | 'rarity'>
   items?: Pick<
-    ItemData.ItemWithQuantity,
+    ItemData.Item,
     'name' | 'quantity' | 'type' | 'rarity'
   >[]
 }) {

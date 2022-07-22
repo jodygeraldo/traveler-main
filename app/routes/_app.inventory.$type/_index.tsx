@@ -6,12 +6,12 @@ import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import ItemList from '~/components/ItemList'
 import Search from '~/components/Search'
-import * as ItemData from '~/data/items'
 import * as DB from '~/db.server'
 import useSearchFilter from '~/hooks/useSearchFilter'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
-import * as Utils from '~/utils/index'
+import * as Utils from '~/utils'
+import * as UtilsServer from '~/utils/index.server'
 
 export async function action({ request }: RemixNode.ActionArgs) {
   const accountId = await Session.requireAccountId(request)
@@ -55,7 +55,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
 
   if (type === 'ALL') {
     const inventory = await InventoryModel.getInventory({ accountId })
-    const items = ItemData.getAllItems(inventory)
+    const items = UtilsServer.Item.getAllItems(inventory)
 
     return RemixNode.json({ items })
   }
@@ -65,7 +65,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     accountId,
   })
 
-  const items = ItemData.getItemsByType({
+  const items = UtilsServer.Item.getItemsByType({
     type,
     userItems: inventory,
   })

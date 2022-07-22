@@ -3,9 +3,9 @@ import * as RemixReact from '@remix-run/react'
 import * as ReactTable from '@tanstack/react-table'
 import * as React from 'react'
 import invariant from 'tiny-invariant'
-import * as CharacterData from '~/data/characters'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
+import * as UtilsServer from '~/utils/index.server'
 import CharacterCustomFirstCell from './CharacterCustomFirstCell'
 import * as Column from './column'
 import * as CustomHeading from './CustomTableHeading'
@@ -25,13 +25,13 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     name,
     accountId,
   })
-  const character = CharacterData.getCharacter({
+  const character = UtilsServer.Character.getCharacter({
     name,
     progression: userCharacter,
   })
 
   const { ascensionMaterial, talentMaterial } =
-    CharacterData.getRequiredMaterial({
+    UtilsServer.Character.getRequiredMaterial({
       name,
     })
 

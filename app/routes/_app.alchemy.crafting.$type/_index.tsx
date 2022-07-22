@@ -1,11 +1,11 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as Zod from 'zod'
-import * as ItemData from '~/data/items'
 import * as DB from '~/db.server'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils/index'
+import * as UtilsServer from '~/utils/index.server'
 import ItemList from './ItemList'
 
 export async function loader({ params, request }: RemixNode.LoaderArgs) {
@@ -16,7 +16,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   let itemNames: string[] = []
 
   if (type === 'all') {
-    itemNames = ItemData.getCraftItemNames()
+    itemNames = UtilsServer.Item.getCraftItemNames()
   } else {
     const parsedType =
       type === 'enhancement'
@@ -25,7 +25,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
         ? DB.ItemType.ASCENSION_GEM
         : DB.ItemType.TALENT_BOOK
 
-    itemNames = ItemData.getCraftItemNamesByType({
+    itemNames = UtilsServer.Item.getCraftItemNamesByType({
       type: parsedType,
     })
   }
@@ -35,7 +35,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     accountId,
   })
 
-  const craftable = ItemData.getCraftableItems({
+  const craftable = UtilsServer.Item.getCraftableItems({
     userItems: inventory,
     type: type === 'all' ? undefined : type,
   })

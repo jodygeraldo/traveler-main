@@ -6,12 +6,11 @@ import * as Zod from 'zod'
 import Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
 import Notification from '~/components/Notification'
-import * as CharacterData from '~/data/characters'
-import * as ItemData from '~/data/items'
 import * as DB from '~/db.server'
 import * as CharacterModel from '~/models/character.server'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
+import * as UtilsServer from '~/utils/index.server'
 import InventoryLevelUpForm from './InventoryLevelUpForm'
 import ItemWithImage from './ItemWithImage'
 
@@ -87,27 +86,27 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const { name } = params
   invariant(name)
 
-  const fullItemNames = CharacterData.getItemsToRetrieve(name)
+  const fullItemNames = UtilsServer.Character.getItemsToRetrieve(name)
 
   const [userCharacter, userItems] = await Promise.all([
     CharacterModel.getUserCharacter({ name, accountId }),
     InventoryModel.getRequiredItems({ itemNames: fullItemNames, accountId }),
   ])
 
-  const fullItems = ItemData.getItemsByNames({
+  const fullItems = UtilsServer.Item.getItemsByNames({
     names: fullItemNames,
     userItems,
   })
-  const unlock = CharacterData.getUnlock(userCharacter?.ascension ?? 0)
+  const unlock = UtilsServer.Character.getUnlock(userCharacter?.ascension ?? 0)
 
-  const data = CharacterData.getCharacterInventoryLevelUpData({
+  const data = UtilsServer.Character.getCharacterInventoryLevelUpData({
     name,
     progression: userCharacter,
     itemNames: fullItemNames,
     userItems: fullItems,
   })
 
-  const ascend = CharacterData.checkAscend({
+  const ascend = UtilsServer.Character.checkAscend({
     ascension: userCharacter?.ascension,
     level: userCharacter?.level,
   })

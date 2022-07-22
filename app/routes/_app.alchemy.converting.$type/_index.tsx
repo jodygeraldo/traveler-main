@@ -1,11 +1,11 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as Zod from 'zod'
-import * as ItemData from '~/data/items'
 import * as DB from '~/db.server'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils/index'
+import * as UtilsServer from '~/utils/index.server'
 import ItemList from './ItemList'
 
 export async function loader({ params, request }: RemixNode.LoaderArgs) {
@@ -19,7 +19,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     itemNames = [
       'Dust of Azoth',
       'Dream Solvent',
-      ...ItemData.getConvertableItemNames(),
+      ...UtilsServer.Item.getConvertableItemNames(),
     ]
   } else {
     const parsedType =
@@ -28,7 +28,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
         : DB.ItemType.TALENT_BOSS
     itemNames = [
       type === 'ascension-gem' ? 'Dust of Azoth' : 'Dream Solvent',
-      ...ItemData.getConvertableItemNamesByType({
+      ...UtilsServer.Item.getConvertableItemNamesByType({
         type: parsedType,
       }),
     ]
@@ -39,7 +39,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     accountId,
   })
 
-  const convertableItems = ItemData.getConvertableItems({
+  const convertableItems = UtilsServer.Item.getConvertableItems({
     userItems: inventory,
     type: type === 'all' ? undefined : type,
   })

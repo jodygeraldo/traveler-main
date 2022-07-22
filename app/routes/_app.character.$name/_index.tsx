@@ -2,7 +2,7 @@ import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import invariant from 'tiny-invariant'
 import SidebarSub from '~/components/Sidebar'
-import * as CharacterData from '~/data/characters'
+import * as UtilsServer from '~/utils/index.server'
 import ConstellationImage from './ConstellationImage'
 
 const navigation = [
@@ -24,7 +24,7 @@ export async function loader({ params }: RemixNode.LoaderArgs) {
   const { name } = params
   invariant(name)
 
-  const validCharacter = CharacterData.validateCharacter(name)
+  const validCharacter = UtilsServer.Character.validateCharacter(name)
   if (!validCharacter) {
     throw RemixNode.json(`Character ${name} not found`, {
       status: 404,

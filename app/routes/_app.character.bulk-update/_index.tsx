@@ -3,9 +3,9 @@ import * as RemixReact from '@remix-run/react'
 import * as RemixParamsHelper from 'remix-params-helper'
 import * as Zod from 'zod'
 import Button from '~/components/Button'
-import * as CharacterData from '~/data/characters'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
+import * as UtilsServer from '~/utils/index.server'
 import InputField from './InputField'
 
 export const meta: RemixNode.MetaFunction = () => ({
@@ -63,7 +63,7 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
   const userCharacters = await CharacterModel.getUserCharacters({
     accountId: accId,
   })
-  const characters = CharacterData.getCharactersProgression(userCharacters)
+  const characters = UtilsServer.Character.getCharactersProgression(userCharacters)
 
   return RemixNode.json({ characters })
 }

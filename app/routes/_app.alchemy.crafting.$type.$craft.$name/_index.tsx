@@ -2,11 +2,11 @@ import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as RemixParamsHelper from 'remix-params-helper'
 import * as Zod from 'zod'
-import * as ItemData from '~/data/items'
 import * as DB from '~/db.server'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils/index'
+import * as UtilsServer from '~/utils/index.server'
 import CatchBoundaryComponent from './CatchBoundary'
 import CraftItem from './CraftItem'
 
@@ -84,7 +84,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
       ? DB.ItemType.ASCENSION_GEM
       : DB.ItemType.TALENT_BOOK
 
-  const isValidItem = ItemData.isValidCraftable({ name, type: itemType })
+  const isValidItem = UtilsServer.Item.isValidCraftable({ name, type: itemType })
 
   if (!isValidItem) {
     const message = `${name} is not ${
@@ -101,7 +101,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     )
   }
 
-  const item = ItemData.getCrafterItem(name)
+  const item = UtilsServer.Item.getCrafterItem(name)
 
   return RemixNode.json({ item })
 }

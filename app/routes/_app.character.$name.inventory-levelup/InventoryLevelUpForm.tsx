@@ -8,10 +8,10 @@ interface Props {
   heading: string
   progressionLevel: number
   materials:
-    | Pick<ItemData.ItemWithQuantity, 'name' | 'quantity' | 'type' | 'rarity'>[]
+    | Pick<ItemData.Item, 'name' | 'quantity' | 'type' | 'rarity'>[]
     | undefined
   inventoryItems: Pick<
-    ItemData.ItemWithQuantity,
+    ItemData.Item,
     'name' | 'quantity' | 'type' | 'rarity'
   >[]
   possibleToLevel: boolean

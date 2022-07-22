@@ -5,9 +5,9 @@ import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import Button from '~/components/Button'
 import Notification from '~/components/Notification'
-import * as CharacterData from '~/data/characters'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
+import * as UtilsServer from '~/utils/index.server'
 import InputField from './InputField'
 
 export const meta: RemixNode.MetaFunction = ({ params }) => ({
@@ -36,7 +36,7 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
     )
   }
 
-  const errors = CharacterData.validateAscensionRequirement({
+  const errors = UtilsServer.Character.validateAscensionRequirement({
     progression: result.data,
   })
   if (errors) {
@@ -61,7 +61,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     accountId: accId,
   })
 
-  const character = CharacterData.getCharacter({
+  const character = UtilsServer.Character.getCharacter({
     name,
     progression: userCharacter,
   })
