@@ -60,7 +60,6 @@ test.describe('apps', () => {
     test('can go to bulk update page and update Albedo and Amber', async ({
       page,
     }) => {
-      test.setTimeout(10000)
       await page.locator('#bulk-update').click()
       await expect(page).toHaveURL('/character/bulk-update')
 
@@ -144,12 +143,11 @@ test.describe('apps', () => {
     ] as const
 
     test('can update quantity of items', async ({ page }) => {
-      test.setTimeout(10000)
       await page.locator('#Inventory-link-desktop').click()
       await expect(page).toHaveURL('/inventory/all')
 
       await page.locator(ITEM[0].SELECTOR).fill(ITEM[0].QUANTITY)
-      await page.waitForTimeout(1500)
+      await page.waitForTimeout(500)
       await page.locator('#talent_book-link').click()
       await expect(page).toHaveURL('/inventory/talent-book')
       await expect(page.locator(ITEM[0].SELECTOR)).toHaveValue(ITEM[0].QUANTITY)
@@ -162,19 +160,18 @@ test.describe('apps', () => {
       await page.locator(ITEM[5].SELECTOR).fill(ITEM[5].QUANTITY)
 
       await page.locator(ITEM[1].SELECTOR).fill(ITEM[1].QUANTITY)
-      await page.waitForTimeout(1500)
+      await page.waitForTimeout(500)
       await page.locator('#talent_boss-link').click()
       await expect(page).toHaveURL('/inventory/talent-boss')
       await expect(page.locator(ITEM[1].SELECTOR)).toHaveValue(ITEM[1].QUANTITY)
     })
 
     test('can search for items', async ({ page }) => {
-      test.setTimeout(10000)
       await page.locator('#Inventory-link-desktop').click()
       await expect(page).toHaveURL('/inventory/all')
 
       await page.locator(ITEM[2].SELECTOR).fill(ITEM[2].QUANTITY)
-      await page.waitForTimeout(1500)
+      await page.waitForTimeout(500)
 
       await page.locator('#search').fill('crown of')
       await expect(page.locator(ITEM[2].SELECTOR)).toHaveValue(ITEM[2].QUANTITY)
@@ -192,8 +189,6 @@ test.describe('apps', () => {
     })
 
     test('can craft item', async ({ page }) => {
-      test.setTimeout(10000)
-
       await page.locator('#Alchemy-link-desktop').click()
       await expect(page).toHaveURL('/alchemy/crafting/all')
 
@@ -206,7 +201,7 @@ test.describe('apps', () => {
       await page.locator('select[name="bonusType"]').selectOption('Bonus')
 
       await page.locator('#craft').click()
-      await page.waitForTimeout(1500)
+      await page.waitForTimeout(500)
       await expect(page).toHaveURL('/alchemy/crafting/all')
 
       await page.goto('/alchemy/crafting/talent')
@@ -226,7 +221,7 @@ test.describe('apps', () => {
       await page.locator('select[name="bonusType"]').selectOption('Refund')
 
       await page.locator('#craft').click()
-      await page.waitForTimeout(1500)
+      await page.waitForTimeout(500)
       await expect(page).toHaveURL('/alchemy/crafting/talent')
 
       // 20 + quantity
@@ -238,8 +233,6 @@ test.describe('apps', () => {
     })
 
     test('can convert item', async ({ page }) => {
-      test.setTimeout(10000)
-
       await page.goto('/alchemy/converting/all')
 
       await page.locator('#ring_of_boreas-link').click()
@@ -249,7 +242,7 @@ test.describe('apps', () => {
       await page.locator('input[name="quantity"]').fill('2')
 
       await page.locator('#convert').click()
-      await page.waitForTimeout(1500)
+      await page.waitForTimeout(500)
       await expect(page).toHaveURL('/alchemy/converting/all')
 
       await page.goto('/alchemy/converting/talent-boss')
@@ -267,7 +260,7 @@ test.describe('apps', () => {
       await page.locator('input[name="quantity"]').fill('1')
 
       await page.locator('#convert').click()
-      await page.waitForTimeout(1500)
+      await page.waitForTimeout(500)
       await page.goto('/alchemy/converting/talent-boss')
       // 2 - quantity(1)
       await expect(page.locator('#ring_of_boreas-quantity')).toHaveText('1')
@@ -288,12 +281,10 @@ test.describe('apps', () => {
     })
 
     test('should able to level up manually', async ({ page }) => {
-      test.setTimeout(10000)
-
       await page.locator('#Ganyu-character-page-link').click()
-      await page.waitForTimeout(1500)
+      await page.waitForTimeout(500)
       await page.locator('#manual_level_up-link').click()
-      await page.waitForTimeout(1500)
+      await page.waitForTimeout(500)
       expect(page).toHaveURL('/character/Ganyu/manual-levelup')
 
       await page.locator('#level').fill('90')
@@ -303,7 +294,7 @@ test.describe('apps', () => {
       await page.locator('#elemental-burst').fill('10')
       await page.locator('button[type="submit"]').click()
 
-      await page.waitForTimeout(1500)
+      await page.waitForTimeout(500)
       await page.reload()
 
       await expect(page.locator('#level')).toHaveValue('90')
@@ -322,21 +313,19 @@ test.describe('apps', () => {
     })
 
     test('should able to level up with inventory items', async ({ page }) => {
-      test.setTimeout(10000)
-
       await page.locator('#Ganyu-character-page-link').click()
-      await page.waitForTimeout(1500)
+      await page.waitForTimeout(500)
       await page.locator('#inventory_level_up-link').click()
-      await page.waitForTimeout(1500)
+      await page.waitForTimeout(500)
       expect(page).toHaveURL('/character/Ganyu/inventory-levelup')
 
       await expect(page.locator('text=Required character to 20.')).toBeVisible()
       await page.locator('#jump-level').click()
-      await page.waitForTimeout(1500)
+      await page.waitForTimeout(500)
       await page.locator('#character-level').fill('30')
       await page.locator('button:has-text("Ascend")').click()
 
-      await page.waitForTimeout(1500)
+      await page.waitForTimeout(500)
       await expect(page.locator('text=Required character to 40.')).toBeVisible()
       await expect(
         page.locator('#test-whopperflower_nectar-quantity')
