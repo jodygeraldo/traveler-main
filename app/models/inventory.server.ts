@@ -161,39 +161,23 @@ export async function convertItem({
       },
     })
 
-    if (converter.item.quantity === converter.special.quantity) {
-      await tx.inventory.updateMany({
-        where: {
-          ownerId: accountId,
-          name: {
-            in: [converter.special.name, converter.item.name],
-          },
+    await tx.inventory.update({
+      where: { id: special.id },
+      data: {
+        quantity: {
+          decrement: converter.special.quantity,
         },
-        data: {
-          quantity: {
-            decrement: converter.item.quantity,
-          },
-        },
-      })
-    } else {
-      await tx.inventory.update({
-        where: { id: special.id },
-        data: {
-          quantity: {
-            decrement: converter.special.quantity,
-          },
-        },
-      })
+      },
+    })
 
-      await tx.inventory.update({
-        where: { id: item.id },
-        data: {
-          quantity: {
-            decrement: converter.item.quantity,
-          },
+    await tx.inventory.update({
+      where: { id: item.id },
+      data: {
+        quantity: {
+          decrement: converter.item.quantity,
         },
-      })
-    }
+      },
+    })
   })
 }
 export async function craftItem({
