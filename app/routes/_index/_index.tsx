@@ -2,10 +2,10 @@ import * as RemixReact from '@remix-run/react'
 import Button, * as Buttons from '~/components/Button'
 import Image from '~/components/Image'
 import Logo from '~/components/Logo'
-import * as Utils from '~/utils'
+import useOptionalUser from '~/hooks/useOptionalUser'
 
 export default function Index() {
-  const user = Utils.useOptionalUser()
+  const user = useOptionalUser()
 
   return (
     <main className="min-h-screen">

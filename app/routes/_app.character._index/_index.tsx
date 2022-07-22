@@ -6,10 +6,10 @@ import Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
 import Search from '~/components/Search'
 import * as Cookie from '~/cookies'
-import * as CharacterData from '~/data/characters'
 import useSearchFilter from '~/hooks/useSearchFilter'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
+import * as UtilsServer from '~/utils/index.server'
 import CharacterGrid from './CharacterGrid'
 import CharacterList from './CharacterList'
 
@@ -30,12 +30,12 @@ export async function action({ request }: RemixNode.ActionArgs) {
 }
 
 export async function loader({ request }: RemixNode.LoaderArgs) {
-  const accId = await Session.requireAccountId(request)
+  const accountId = await Session.requireAccountId(request)
 
   const userCharacters = await CharacterModel.getUserCharacters({
-    accountId: accId,
+    accountId,
   })
-  const characters = CharacterData.getCharacters(userCharacters)
+  const characters = UtilsServer.Character.getCharacters(userCharacters)
 
   const characterView = await Cookie.getCharacterViewPref(request)
 

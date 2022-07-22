@@ -3,16 +3,17 @@ import * as RemixReact from '@remix-run/react'
 import * as RemixParamsHelper from 'remix-params-helper'
 import * as Zod from 'zod'
 import Button from '~/components/Button'
-import * as CharacterData from '~/data/characters'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
+import type * as CharacterType from '~/types/character'
+import * as UtilsServer from '~/utils/index.server'
 import InputField from './InputField'
 
 export const meta: RemixNode.MetaFunction = () => ({
   title: 'Character Bulk Update - Traveler Main',
 })
 
-const ParamsSchema = Zod.object({
+const FormDataSchema = Zod.object({
   name: Zod.array(Zod.string()),
   level: Zod.array(Zod.number().min(1).max(90)),
   ascension: Zod.array(Zod.number().min(0).max(6)),
@@ -24,14 +25,14 @@ const ParamsSchema = Zod.object({
 export async function action({ request }: RemixNode.ActionArgs) {
   const accountId = await Session.requireAccountId(request)
 
-  const result = await RemixParamsHelper.getFormData(request, ParamsSchema)
+  const result = await RemixParamsHelper.getFormData(request, FormDataSchema)
   if (!result.success) {
     console.log(result.errors)
     return RemixNode.json({ errors: result.errors }, { status: 400 })
   }
 
   let data: {
-    characterName: string
+    name: CharacterType.Name
     level: number
     ascension: number
     normalAttack: number
@@ -41,8 +42,16 @@ export async function action({ request }: RemixNode.ActionArgs) {
   }[] = []
 
   result.data.name.forEach((name, index) => {
+    const validCharacter = UtilsServer.Character.validateCharacter(name)
+    if (!validCharacter) {
+      throw RemixNode.json(`Character ${name} not found`, {
+        status: 404,
+        statusText: 'Character Not Found',
+      })
+    }
+
     data.push({
-      characterName: name,
+      name,
       level: result.data.level[index],
       ascension: result.data.ascension[index],
       normalAttack: result.data.normalAttack[index],
@@ -63,7 +72,8 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
   const userCharacters = await CharacterModel.getUserCharacters({
     accountId: accId,
   })
-  const characters = CharacterData.getCharactersProgression(userCharacters)
+  const characters =
+    UtilsServer.Character.getCharactersProgression(userCharacters)
 
   return RemixNode.json({ characters })
 }

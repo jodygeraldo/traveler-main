@@ -2,11 +2,12 @@ import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as RemixParamsHelper from 'remix-params-helper'
 import * as Zod from 'zod'
-import * as ItemData from '~/data/items'
 import * as DB from '~/db.server'
+import useMatchesData from '~/hooks/useMatchesData'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
+import * as UtilsServer from '~/utils/index.server'
 import CatchBoundaryComponent from './CatchBoundary'
 import CraftItem from './CraftItem'
 
@@ -34,6 +35,14 @@ export async function action({ params, request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
 
   const { name, type } = ParamsSchema.parse(params)
+
+  const validItem = UtilsServer.Item.validateItem(name)
+  if (!validItem) {
+    throw RemixNode.json(`Item ${name} not found`, {
+      status: 404,
+      statusText: 'Item Not Found',
+    })
+  }
 
   const result = await RemixParamsHelper.getFormData(request, FormDataSchema)
   if (!result.success) {
@@ -76,6 +85,13 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   }
 
   const { name, craft } = result.data
+  const validItem = UtilsServer.Item.validateItem(name)
+  if (!validItem) {
+    throw RemixNode.json(`Item ${name} not found`, {
+      status: 404,
+      statusText: 'Item Not Found',
+    })
+  }
 
   const itemType =
     craft === 'craft-enhancement'
@@ -84,7 +100,10 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
       ? DB.ItemType.ASCENSION_GEM
       : DB.ItemType.TALENT_BOOK
 
-  const isValidItem = ItemData.isValidCraftable({ name, type: itemType })
+  const isValidItem = UtilsServer.Item.isValidCraftable({
+    name,
+    type: itemType,
+  })
 
   if (!isValidItem) {
     const message = `${name} is not ${
@@ -101,7 +120,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     )
   }
 
-  const item = ItemData.getCrafterItem(name)
+  const item = UtilsServer.Item.getCrafterItem(name)
 
   return RemixNode.json({ item })
 }
@@ -119,26 +138,29 @@ export default function AlchemyConvertingTabPage() {
 
   const { item } = RemixReact.useLoaderData<typeof loader>()
 
-  const items = Zod.union([
-    Zod.object({
-      craftable: Zod.array(ItemParams),
-      crafterNonCraftable: Zod.array(ItemParams),
-    }),
-    Zod.object({
-      enhancementCraftable: Zod.object({
+  const items = useMatchesData({
+    id: 'routes/_app.alchemy.crafting.$type/_index',
+    schema: Zod.union([
+      Zod.object({
         craftable: Zod.array(ItemParams),
         crafterNonCraftable: Zod.array(ItemParams),
       }),
-      ascensionCraftable: Zod.object({
-        craftable: Zod.array(ItemParams),
-        crafterNonCraftable: Zod.array(ItemParams),
+      Zod.object({
+        enhancementCraftable: Zod.object({
+          craftable: Zod.array(ItemParams),
+          crafterNonCraftable: Zod.array(ItemParams),
+        }),
+        ascensionCraftable: Zod.object({
+          craftable: Zod.array(ItemParams),
+          crafterNonCraftable: Zod.array(ItemParams),
+        }),
+        talentCraftable: Zod.object({
+          craftable: Zod.array(ItemParams),
+          crafterNonCraftable: Zod.array(ItemParams),
+        }),
       }),
-      talentCraftable: Zod.object({
-        craftable: Zod.array(ItemParams),
-        crafterNonCraftable: Zod.array(ItemParams),
-      }),
-    }),
-  ]).parse(Utils.useMatchesData('routes/_app.alchemy.crafting.$type/_index'))
+    ]),
+  })
 
   if (
     Utils.hasOwnProperty(items, 'craftable') &&
