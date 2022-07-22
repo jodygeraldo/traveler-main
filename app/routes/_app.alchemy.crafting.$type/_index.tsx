@@ -31,7 +31,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   }
 
   const inventory = await InventoryModel.getRequiredItems({
-    itemNames,
+    names: itemNames,
     accountId,
   })
 

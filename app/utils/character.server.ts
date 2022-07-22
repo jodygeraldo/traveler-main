@@ -11,8 +11,8 @@ export function getCharacters(
   const updatedCharacters = [...CharacterData.characters]
 
   userCharacters.forEach((character) => {
-    const { characterName, ...progression } = character
-    const idx = updatedCharacters.findIndex((c) => c.name === characterName)
+    const { name, ...progression } = character
+    const idx = updatedCharacters.findIndex((c) => c.name === name)
     if (idx !== -1) updatedCharacters[idx].progression = progression
   })
 
@@ -30,9 +30,7 @@ export function getCharactersProgression(
     elementalBurst: 1,
   }
   return CharacterData.characters.map((character) => {
-    const userCharacter = userCharacters.find(
-      (c) => c.characterName === character.name
-    )
+    const userCharacter = userCharacters.find((c) => c.name === character.name)
     return {
       name: character.name,
       progression: userCharacter
@@ -57,7 +55,7 @@ export function getCharacter({
   progression,
 }: {
   name: string
-  progression: Omit<DB.UserCharacter, 'id' | 'ownerId' | 'characterName'> | null
+  progression: Omit<DB.UserCharacter, 'id' | 'ownerId' | 'name'> | null
 }) {
   const character = CharacterData.characters.find(
     (character) => character.name === name
@@ -470,7 +468,7 @@ export function getCharacterInventoryLevelUpData({
   userItems,
 }: {
   name: string
-  progression: Omit<DB.UserCharacter, 'id' | 'ownerId' | 'characterName'> | null
+  progression: Omit<DB.UserCharacter, 'id' | 'ownerId' | 'name'> | null
   itemNames: string[]
   userItems: ItemData.Item[]
 }) {

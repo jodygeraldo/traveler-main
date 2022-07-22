@@ -13,10 +13,10 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const type = Zod.enum(['all', 'ascension-gem', 'talent-boss']).parse(
     params.type
   )
-  let itemNames: string[] = []
+  let names: string[] = []
 
   if (type === 'all') {
-    itemNames = [
+    names = [
       'Dust of Azoth',
       'Dream Solvent',
       ...UtilsServer.Item.getConvertableItemNames(),
@@ -26,7 +26,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
       type === 'ascension-gem'
         ? DB.ItemType.ASCENSION_GEM
         : DB.ItemType.TALENT_BOSS
-    itemNames = [
+    names = [
       type === 'ascension-gem' ? 'Dust of Azoth' : 'Dream Solvent',
       ...UtilsServer.Item.getConvertableItemNamesByType({
         type: parsedType,
@@ -35,7 +35,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   }
 
   const inventory = await InventoryModel.getRequiredItems({
-    itemNames,
+    names: names,
     accountId,
   })
 

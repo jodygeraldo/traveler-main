@@ -31,7 +31,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
   }
 
   let data: {
-    characterName: string
+    name: string
     level: number
     ascension: number
     normalAttack: number
@@ -42,7 +42,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
 
   result.data.name.forEach((name, index) => {
     data.push({
-      characterName: name,
+      name,
       level: result.data.level[index],
       ascension: result.data.ascension[index],
       normalAttack: result.data.normalAttack[index],

@@ -90,7 +90,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
 
   const [userCharacter, userItems] = await Promise.all([
     CharacterModel.getUserCharacter({ name, accountId }),
-    InventoryModel.getRequiredItems({ itemNames: fullItemNames, accountId }),
+    InventoryModel.getRequiredItems({ names: fullItemNames, accountId }),
   ])
 
   const fullItems = UtilsServer.Item.getItemsByNames({

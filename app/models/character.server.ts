@@ -9,7 +9,7 @@ export async function getUserCharacters({ accountId }: { accountId: string }) {
       ownerId: accountId,
     },
     select: {
-      characterName: true,
+      name: true,
       level: true,
       ascension: true,
       normalAttack: true,
@@ -29,7 +29,7 @@ export async function getUserCharacter({
   return prisma.userCharacter.findFirst({
     where: {
       ownerId: accountId,
-      characterName: name,
+      name,
     },
     select: {
       level: true,
@@ -68,7 +68,7 @@ export async function upsertCharacter({
       const characters = await tx.userCharacter.findMany({
         where: {
           ownerId: accountId,
-          characterName: {
+          name: {
             contains: 'Traveler',
           },
         },
@@ -83,19 +83,19 @@ export async function upsertCharacter({
           data: [
             {
               ownerId: accountId,
-              characterName: name,
+              name,
               ...defaultProgression,
               ...progression,
             },
             {
               ownerId: accountId,
-              characterName: names[0],
+              name: names[0],
               ...progression,
               ...defaultProgression,
             },
             {
               ownerId: accountId,
-              characterName: names[1],
+              name: names[1],
               ...progression,
               ...defaultProgression,
             },
@@ -103,14 +103,14 @@ export async function upsertCharacter({
         })
       } else {
         await tx.userCharacter.update({
-          where: { id: characters.find((c) => c.characterName === name)!.id },
+          where: { id: characters.find((c) => c.name === name)!.id },
           data: { ...progression },
         })
 
         await tx.userCharacter.updateMany({
           where: {
             ownerId: accountId,
-            characterName: {
+            name: {
               contains: 'Traveler',
             },
           },
@@ -127,7 +127,7 @@ export async function upsertCharacter({
     const character = await tx.userCharacter.findFirst({
       where: {
         ownerId: accountId,
-        characterName: name,
+        name,
       },
     })
 
@@ -140,7 +140,7 @@ export async function upsertCharacter({
       await tx.userCharacter.create({
         data: {
           ownerId: accountId,
-          characterName: name,
+          name,
           ...defaultProgression,
           ...progression,
         },
@@ -151,7 +151,7 @@ export async function upsertCharacter({
 
 export async function updateUserCharacters(
   data: {
-    characterName: string
+    name: string
     level: number
     ascension: number
     normalAttack: number
@@ -205,7 +205,7 @@ export async function updateCharacterByInventory({
       await tx.userCharacter.updateMany({
         where: {
           ownerId: accountId,
-          characterName: {
+          name: {
             contains: name.includes('Traveler') ? 'Traveler' : name,
           },
         },
@@ -229,7 +229,7 @@ export async function updateCharacterByInventory({
       await tx.userCharacter.updateMany({
         where: {
           ownerId: accountId,
-          characterName: name,
+          name,
         },
         data: {
           [toUpdate[kind]]: { increment: 1 },
@@ -240,7 +240,7 @@ export async function updateCharacterByInventory({
     await tx.inventory.updateMany({
       where: {
         ownerId: accountId,
-        itemName: materials[0].name,
+        name: materials[0].name,
       },
       data: {
         quantity: {
@@ -252,7 +252,7 @@ export async function updateCharacterByInventory({
     await tx.inventory.updateMany({
       where: {
         ownerId: accountId,
-        itemName: materials[1].name,
+        name: materials[1].name,
       },
       data: {
         quantity: {
@@ -265,7 +265,7 @@ export async function updateCharacterByInventory({
       await tx.inventory.updateMany({
         where: {
           ownerId: accountId,
-          itemName: materials[2].name,
+          name: materials[2].name,
         },
         data: {
           quantity: {
@@ -279,7 +279,7 @@ export async function updateCharacterByInventory({
       await tx.inventory.updateMany({
         where: {
           ownerId: accountId,
-          itemName: materials[3].name,
+          name: materials[3].name,
         },
         data: {
           quantity: {
