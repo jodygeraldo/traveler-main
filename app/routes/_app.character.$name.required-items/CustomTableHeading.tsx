@@ -1,11 +1,12 @@
 import Image from '~/components/Image'
 import Tooltip from '~/components/Tooltip'
+import type * as CharacterType from '~/types/character'
 import * as Utils from '~/utils'
 
 interface Props {
   talentName: string[]
-  name: string
-  weapon: string
+  name: CharacterType.Name
+  weapon: CharacterType.Weapon
 }
 
 export function CharacterCustomTableHeading({

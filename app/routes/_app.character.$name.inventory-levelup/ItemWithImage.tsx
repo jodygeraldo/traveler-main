@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import Image from '~/components/Image'
 import Tooltip from '~/components/Tooltip'
-import type * as ItemData from '~/data/items'
+import type * as ItemType from '~/types/item'
 import * as Utils from '~/utils'
 
 const backgroundImage: Record<1 | 2 | 3 | 4 | 5, string> = {
@@ -16,11 +16,16 @@ export default function ItemWithImage({
   item,
   items,
 }: {
-  item: Pick<ItemData.ItemWithQuantity, 'name' | 'quantity' | 'type' | 'rarity'>
-  items?: Pick<
-    ItemData.ItemWithQuantity,
-    'name' | 'quantity' | 'type' | 'rarity'
-  >[]
+  item: {
+    name: ItemType.Name
+    rarity: ItemType.Item['rarity']
+    quantity: number
+  }
+  items?: {
+    name: ItemType.Name
+    rarity: ItemType.Item['rarity']
+    quantity: number
+  }[]
 }) {
   const correspondingItem = items?.find((i) => i.name === item.name)
   const correspondingItemQuantity =

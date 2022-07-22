@@ -1,13 +1,12 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as RemixParamsHelper from 'remix-params-helper'
-import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import Button from '~/components/Button'
 import Notification from '~/components/Notification'
-import * as CharacterData from '~/data/characters'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
+import * as UtilsServer from '~/utils/index.server'
 import InputField from './InputField'
 
 export const meta: RemixNode.MetaFunction = ({ params }) => ({
@@ -15,7 +14,7 @@ export const meta: RemixNode.MetaFunction = ({ params }) => ({
   description: `Set ${params.name} progression manually`,
 })
 
-const ParamsSchema = Zod.object({
+const FormDataSchema = Zod.object({
   level: Zod.number().min(1).max(90),
   ascension: Zod.number().min(0).max(6),
   normalAttack: Zod.number().min(1).max(10),
@@ -25,10 +24,16 @@ const ParamsSchema = Zod.object({
 
 export async function action({ params, request }: RemixNode.ActionArgs) {
   const accountId = await Session.requireAccountId(request)
-  const { name } = params
-  invariant(name)
 
-  const result = await RemixParamsHelper.getFormData(request, ParamsSchema)
+  const { name } = params
+  if (!UtilsServer.Character.validateCharacter(name)) {
+    throw RemixNode.json(
+      { message: `There is no character with name ${name}` },
+      { status: 404, statusText: 'Character not found' }
+    )
+  }
+
+  const result = await RemixParamsHelper.getFormData(request, FormDataSchema)
   if (!result.success) {
     return RemixNode.json(
       { success: result.success, errors: result.errors },
@@ -36,16 +41,15 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
     )
   }
 
-  const errors = CharacterData.validateAscensionRequirement({
-    progression: result.data,
-  })
+  const progression = { ...result.data }
+  const errors = UtilsServer.Character.validateAscensionRequirement(progression)
   if (errors) {
     return RemixNode.json({ success: false, errors }, { status: 400 })
   }
 
   await CharacterModel.upsertCharacter({
     name,
-    progression: result.data,
+    progression,
     accountId,
   })
   return RemixNode.json({ success: true, errors: {} })
@@ -53,15 +57,21 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
 
 export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const accId = await Session.requireAccountId(request)
+
   const { name } = params
-  invariant(name)
+  if (!UtilsServer.Character.validateCharacter(name)) {
+    throw RemixNode.json(
+      { message: `There is no character with name ${name}` },
+      { status: 404, statusText: 'Character not found' }
+    )
+  }
 
   const userCharacter = await CharacterModel.getUserCharacter({
     name,
     accountId: accId,
   })
 
-  const character = CharacterData.getCharacter({
+  const character = UtilsServer.Character.getCharacterProgression({
     name,
     progression: userCharacter,
   })
@@ -72,7 +82,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
 export default function CharacterManualLevelupPage() {
   const { character } = RemixReact.useLoaderData<typeof loader>()
   const actionData = RemixReact.useActionData<typeof action>()
-  const inputProps = RemixParamsHelper.useFormInputProps(ParamsSchema)
+  const inputProps = RemixParamsHelper.useFormInputProps(FormDataSchema)
   const location = RemixReact.useLocation()
   const transition = RemixReact.useTransition()
   const busy = transition.state === 'submitting'

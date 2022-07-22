@@ -1,10 +1,4 @@
-import type * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
-
-export const meta: RemixNode.MetaFunction = () => ({
-  title: `Alchemy - Traveler Main`,
-  description: `Alchemy page is to help you craft or convert items like in game`,
-})
 
 export default function ConvertingLayout() {
   return (

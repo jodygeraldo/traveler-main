@@ -1,8 +1,10 @@
-import type * as CharacterData from '~/data/characters'
+import type * as CharacterType from '~/types/character'
 import CharacterListItem from './CharacterListItem'
 
 interface Props {
-  characters: CharacterData.Character[]
+  characters: (CharacterType.Character & {
+    progression: CharacterType.Progression
+  })[]
 }
 
 export default function CharacterList({ characters }: Props) {

@@ -1,47 +1,51 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as Zod from 'zod'
-import * as ItemData from '~/data/items'
 import * as DB from '~/db.server'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
+import * as UtilsServer from '~/utils/index.server'
 import ItemList from './ItemList'
+
+export const meta: RemixNode.MetaFunction = () => ({
+  title: `Alchemy Convert - Traveler Main`,
+  description: `Convert page is to help you convert items like in game`,
+})
 
 export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
   const type = Zod.enum(['all', 'ascension-gem', 'talent-boss']).parse(
     params.type
   )
+  const parsedType =
+    type === 'ascension-gem'
+      ? DB.ItemType.ASCENSION_GEM
+      : DB.ItemType.TALENT_BOSS
+
   let itemNames: string[] = []
 
   if (type === 'all') {
     itemNames = [
       'Dust of Azoth',
       'Dream Solvent',
-      ...ItemData.getConvertableItemNames(),
+      ...UtilsServer.Item.getConvertableItemNames(),
     ]
   } else {
-    const parsedType =
-      type === 'ascension-gem'
-        ? DB.ItemType.ASCENSION_GEM
-        : DB.ItemType.TALENT_BOSS
     itemNames = [
       type === 'ascension-gem' ? 'Dust of Azoth' : 'Dream Solvent',
-      ...ItemData.getConvertableItemNamesByType({
-        type: parsedType,
-      }),
+      ...UtilsServer.Item.getConvertableItemNamesByType(parsedType),
     ]
   }
 
   const inventory = await InventoryModel.getRequiredItems({
-    itemNames,
+    names: itemNames,
     accountId,
   })
 
-  const convertableItems = ItemData.getConvertableItems({
+  const convertableItems = UtilsServer.Item.getConvertableItems({
     userItems: inventory,
-    type: type === 'all' ? undefined : type,
+    type: type === 'all' ? undefined : parsedType,
   })
 
   return RemixNode.json({ ...convertableItems })
