@@ -34,7 +34,7 @@ export default function ItemList({ items }: Props) {
           replace: true,
           action: pathname === '/inventory' ? `${pathname}?index` : undefined,
         }),
-      500
+      200
     )
     timerRef.current = timer
   }
