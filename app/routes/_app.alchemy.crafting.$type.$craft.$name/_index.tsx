@@ -211,8 +211,8 @@ export default function AlchemyConvertingTabPage() {
         ...userCrafter,
         requiredQuantity: item.crafter.quantity,
       }}
-      refundable
-      doublable
+      refundable={item.refundable}
+      doublable={item.doublable}
       error={actionData?.error}
     />
   )
