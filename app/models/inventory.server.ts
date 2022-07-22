@@ -161,41 +161,11 @@ export async function convertItem({
       },
     })
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 6c8430e (refactor: convert model)
     await tx.inventory.update({
       where: { id: special.id },
       data: {
         quantity: {
           decrement: converter.special.quantity,
-<<<<<<< HEAD
-=======
-    if (converter.item.quantity === converter.special.quantity) {
-      await tx.inventory.updateMany({
-        where: {
-          ownerId: accountId,
-          name: {
-            in: [converter.special.name, converter.item.name],
-          },
-        },
-        data: {
-          quantity: {
-            decrement: converter.item.quantity,
-          },
-        },
-      })
-    } else {
-      await tx.inventory.update({
-        where: { id: special.id },
-        data: {
-          quantity: {
-            decrement: converter.special.quantity,
-          },
->>>>>>> 0aab238 (refactor: structure and types (#59))
-=======
->>>>>>> 6c8430e (refactor: convert model)
         },
       },
     })
