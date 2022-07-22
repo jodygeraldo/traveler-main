@@ -2,8 +2,8 @@ import * as RemixReact from '@remix-run/react'
 import * as React from 'react'
 import * as Badge from '~/components/Badge'
 import * as Icon from '~/components/Icon'
-import * as Utils from '~/utils/index'
-import Image from './Image'
+import Image from '~/components/Image'
+import * as Utils from '~/utils'
 
 interface Props {
   items: {

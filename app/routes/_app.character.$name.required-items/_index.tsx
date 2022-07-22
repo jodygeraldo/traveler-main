@@ -2,7 +2,6 @@ import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as ReactTable from '@tanstack/react-table'
 import * as React from 'react'
-import invariant from 'tiny-invariant'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as UtilsServer from '~/utils/index.server'
@@ -18,8 +17,14 @@ export const meta: RemixNode.MetaFunction = ({ params }) => ({
 
 export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
+
   const { name } = params
-  invariant(name)
+  if (!UtilsServer.Character.validateCharacter(name)) {
+    throw RemixNode.json(
+      { message: `There is no character with name ${name}` },
+      { status: 404, statusText: 'Character not found' }
+    )
+  }
 
   const userCharacter = await CharacterModel.getUserCharacter({
     name,
@@ -31,9 +36,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   })
 
   const { ascensionMaterial, talentMaterial } =
-    UtilsServer.Character.getRequiredMaterial({
-      name,
-    })
+    UtilsServer.Character.getRequiredMaterial(name)
 
   return RemixNode.json({
     character,
@@ -46,7 +49,7 @@ export default function CharacterPage() {
   const { character, ascensionMaterial, talentMaterial } =
     RemixReact.useLoaderData<typeof loader>()
   const [hideAscension, setHideAscension] = React.useState(
-    character.progression?.ascension === 6
+    character.progression.ascension === 6
   )
   const [hideTalent, setHideTalent] = React.useState(false)
   const [hideElementalTalent, setHideElementalTalent] = React.useState(false)

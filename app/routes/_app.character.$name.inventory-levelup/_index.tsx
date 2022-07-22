@@ -37,8 +37,15 @@ interface ActionData {
 
 export async function action({ params, request }: RemixNode.ActionArgs) {
   const accountId = await Session.requireAccountId(request)
+
   const { name } = params
-  invariant(name)
+  const validCharacter = UtilsServer.Character.validateCharacter(name)
+  if (!validCharacter) {
+    throw RemixNode.json(`Character ${name} not found`, {
+      status: 404,
+      statusText: 'Character Not Found',
+    })
+  }
 
   const result = await RemixParamsHelper.getFormData(request, ParamsSchema)
   if (!result.success) {
@@ -83,8 +90,14 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
 
 export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
+
   const { name } = params
-  invariant(name)
+  if (!UtilsServer.Character.validateCharacter(name)) {
+    throw RemixNode.json(
+      { message: `There is no character with name ${name}` },
+      { status: 404, statusText: 'Character not found' }
+    )
+  }
 
   const fullItemNames = UtilsServer.Character.getItemsToRetrieve(name)
 
@@ -106,7 +119,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     userItems: fullItems,
   })
 
-  const ascend = UtilsServer.Character.checkAscend({
+  const ascend = UtilsServer.Character.getAscendStatus({
     ascension: userCharacter?.ascension,
     level: userCharacter?.level,
   })

@@ -1,7 +1,5 @@
-// import invariant from 'tiny-invariant'
 import prisma from '~/db.server'
-// import type * as Utils from '~/utils'
-// import * as UserModel from './user.server'
+import type * as CharacterType from '~/types/character'
 
 export async function getUserCharacters({ accountId }: { accountId: string }) {
   return prisma.userCharacter.findMany({
@@ -23,7 +21,7 @@ export async function getUserCharacter({
   name,
   accountId,
 }: {
-  name: string
+  name: CharacterType.Name
   accountId: string
 }) {
   return prisma.userCharacter.findFirst({
@@ -46,7 +44,7 @@ export async function upsertCharacter({
   progression,
   accountId,
 }: {
-  name: string
+  name: CharacterType.Name
   progression: {
     level: number
     ascension?: number
@@ -151,7 +149,7 @@ export async function upsertCharacter({
 
 export async function updateUserCharacters(
   data: {
-    name: string
+    name: CharacterType.Name
     level: number
     ascension: number
     normalAttack: number
@@ -178,7 +176,7 @@ export async function updateCharacterByInventory({
   materials,
   accountId,
 }: {
-  name: string
+  name: CharacterType.Name
   level?: number
   accountId: string
   materials: {

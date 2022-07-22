@@ -1,23 +1,15 @@
 import type * as ReactTable from '@tanstack/react-table'
 import CellWithImage from '~/components/CellWithImage'
 import * as Icon from '~/components/Icon'
-import * as Utils from '~/utils/index'
+import type * as CharacterType from '~/types/character'
+import * as Utils from '~/utils'
 
-interface Ascension {
-  phase: { from: number; to: number }
-  mora: number
-  common: { name: string; quantity: number }
-  gem: { name: string; quantity: number }
-  local: { name: string; quantity: number }
-  boss?: { name: string; quantity: number }
-}
-
-export const ascension: ReactTable.ColumnDef<Ascension>[] = [
+export const ascension: ReactTable.ColumnDef<CharacterType.AscensionPhase>[] = [
   {
     header: 'Phase',
     accessorKey: 'phase',
     cell(props) {
-      const value = props.getValue<{ from: number; to: number }>()
+      const value = props.getValue<CharacterType.AscensionPhase['phase']>()
       return (
         <div className="flex items-center gap-1">
           <span className="tabular-nums">{value.from}</span>
@@ -32,7 +24,7 @@ export const ascension: ReactTable.ColumnDef<Ascension>[] = [
     header: 'Mora',
     accessorKey: 'mora',
     cell(props) {
-      const value = props.getValue<number>()
+      const value = props.getValue<CharacterType.AscensionPhase['mora']>()
       return <CellWithImage src="/item/mora.png" quantity={value} text="Mora" />
     },
   },
@@ -40,7 +32,7 @@ export const ascension: ReactTable.ColumnDef<Ascension>[] = [
     header: 'Common',
     accessorKey: 'common',
     cell(props) {
-      const value = props.getValue<{ name: string; quantity: number }>()
+      const value = props.getValue<CharacterType.AscensionPhase['common']>()
       return (
         <CellWithImage
           src={`/item/${Utils.getImageSrc(value.name)}.png`}
@@ -54,7 +46,7 @@ export const ascension: ReactTable.ColumnDef<Ascension>[] = [
     header: 'Gem',
     accessorKey: 'gem',
     cell(props) {
-      const value = props.getValue<{ name: string; quantity: number }>()
+      const value = props.getValue<CharacterType.AscensionPhase['gem']>()
       return (
         <CellWithImage
           src={`/item/${Utils.getImageSrc(value.name)}.png`}
@@ -68,7 +60,7 @@ export const ascension: ReactTable.ColumnDef<Ascension>[] = [
     header: 'Local Specialty',
     accessorKey: 'local',
     cell(props) {
-      const value = props.getValue<{ name: string; quantity: number }>()
+      const value = props.getValue<CharacterType.AscensionPhase['local']>()
       return (
         <CellWithImage
           src={`/item/${Utils.getImageSrc(value.name)}.png`}
@@ -82,9 +74,7 @@ export const ascension: ReactTable.ColumnDef<Ascension>[] = [
     header: 'Boss',
     accessorKey: 'boss',
     cell(props) {
-      const value = props.getValue<
-        { name: string; quantity: number } | undefined
-      >()
+      const value = props.getValue<CharacterType.AscensionPhase['boss']>()
       if (!value) return null
       return (
         <CellWithImage
@@ -97,21 +87,12 @@ export const ascension: ReactTable.ColumnDef<Ascension>[] = [
   },
 ]
 
-interface Talent {
-  level: { from: number; to: number }
-  mora: number
-  common: { name: string; quantity: number }
-  book: { name: string; quantity: number }
-  boss?: { name: string; quantity: number }
-  special?: { name: string; quantity: number }
-}
-
-export const talent: ReactTable.ColumnDef<Talent>[] = [
+export const talent: ReactTable.ColumnDef<CharacterType.TalentPhase>[] = [
   {
     header: 'Level',
     accessorKey: 'level',
     cell(props) {
-      const value = props.getValue<{ from: number; to: number }>()
+      const value = props.getValue<CharacterType.TalentPhase['level']>()
       return (
         <div className="flex items-center gap-1">
           <span className="tabular-nums">{value.from}</span>
@@ -126,20 +107,15 @@ export const talent: ReactTable.ColumnDef<Talent>[] = [
     header: 'Mora',
     accessorKey: 'mora',
     cell(props) {
-      return (
-        <CellWithImage
-          src="/item/mora.png"
-          quantity={props.getValue<number>()}
-          text="Mora"
-        />
-      )
+      const value = props.getValue<CharacterType.TalentPhase['mora']>()
+      return <CellWithImage src="/item/mora.png" quantity={value} text="Mora" />
     },
   },
   {
     header: 'Common',
     accessorKey: 'common',
     cell(props) {
-      const value = props.getValue<{ name: string; quantity: number }>()
+      const value = props.getValue<CharacterType.TalentPhase['common']>()
       return (
         <CellWithImage
           src={`/item/${Utils.getImageSrc(value.name)}.png`}
@@ -153,7 +129,7 @@ export const talent: ReactTable.ColumnDef<Talent>[] = [
     header: 'Book',
     accessorKey: 'book',
     cell(props) {
-      const value = props.getValue<{ name: string; quantity: number }>()
+      const value = props.getValue<CharacterType.TalentPhase['book']>()
       return (
         <CellWithImage
           src={`/item/${Utils.getImageSrc(value.name)}.png`}
@@ -167,9 +143,7 @@ export const talent: ReactTable.ColumnDef<Talent>[] = [
     header: 'Boss',
     accessorKey: 'boss',
     cell(props) {
-      const value = props.getValue<
-        { name: string; quantity: number } | undefined
-      >()
+      const value = props.getValue<CharacterType.TalentPhase['boss']>()
       if (!value) return null
       return (
         <CellWithImage
@@ -184,9 +158,7 @@ export const talent: ReactTable.ColumnDef<Talent>[] = [
     header: 'Special',
     accessorKey: 'special',
     cell(props) {
-      const value = props.getValue<
-        { name: string; quantity: number } | undefined
-      >()
+      const value = props.getValue<CharacterType.TalentPhase['special']>()
       if (!value) return null
       return (
         <CellWithImage

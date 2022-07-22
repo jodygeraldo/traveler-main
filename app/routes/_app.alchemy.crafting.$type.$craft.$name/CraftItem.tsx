@@ -5,7 +5,7 @@ import * as React from 'react'
 import Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
 import Image from '~/components/Image'
-import * as Utils from '~/utils/index'
+import * as Utils from '~/utils'
 
 const backgroundImage: Record<number, string> = {
   1: 'bg-image-rarity-1',

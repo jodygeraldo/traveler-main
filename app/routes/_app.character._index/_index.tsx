@@ -30,10 +30,10 @@ export async function action({ request }: RemixNode.ActionArgs) {
 }
 
 export async function loader({ request }: RemixNode.LoaderArgs) {
-  const accId = await Session.requireAccountId(request)
+  const accountId = await Session.requireAccountId(request)
 
   const userCharacters = await CharacterModel.getUserCharacters({
-    accountId: accId,
+    accountId,
   })
   const characters = UtilsServer.Character.getCharacters(userCharacters)
 

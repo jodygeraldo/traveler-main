@@ -1,28 +1,7 @@
 import * as DB from '~/db.server'
+import type * as ItemType from '~/types/item'
 
-export interface Item {
-  name: string
-  type: DB.ItemType
-  rarity: 1 | 2 | 3 | 4 | 5
-  convertable: boolean
-  craft:
-    | false
-    | {
-        craftable: false
-      }
-    | {
-        craftable: true
-        crafter: {
-          name: string
-          quantity: number
-        }
-        refundable: boolean
-        doublable: boolean
-      }
-  quantity?: number
-}
-
-export const items: Item[] = [
+export const items: ItemType.Item[] = [
   {
     name: 'Crown of Insight',
     type: DB.ItemType.SPECIAL,
@@ -49,7 +28,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Slime Secretions',
         quantity: 3,
@@ -64,7 +43,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Slime Condensate',
         quantity: 3,
@@ -79,7 +58,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 1,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -88,7 +67,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Stained Mask',
         quantity: 3,
@@ -103,7 +82,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Damaged Mask',
         quantity: 3,
@@ -118,7 +97,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 1,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -127,7 +106,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Sealed Scroll',
         quantity: 3,
@@ -142,7 +121,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Divining Scroll',
         quantity: 3,
@@ -157,7 +136,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 1,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -166,7 +145,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Sharp Arrowhead',
         quantity: 3,
@@ -181,7 +160,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Firm Arrowhead',
         quantity: 3,
@@ -196,7 +175,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 1,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -205,7 +184,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Black Bronze Horn',
         quantity: 3,
@@ -220,7 +199,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Heavy Horn',
         quantity: 3,
@@ -235,7 +214,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -244,7 +223,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Dead Ley Line Leaves',
         quantity: 3,
@@ -259,7 +238,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Dead Ley Line Branch',
         quantity: 3,
@@ -274,7 +253,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -283,7 +262,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Chaos Circuit',
         quantity: 3,
@@ -298,7 +277,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Chaos Device',
         quantity: 3,
@@ -313,7 +292,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -322,7 +301,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Mist Grass',
         quantity: 3,
@@ -337,7 +316,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Mist Grass Pollen',
         quantity: 3,
@@ -352,7 +331,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -361,7 +340,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: "Agent's Sacrificial Knife",
         quantity: 3,
@@ -376,7 +355,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: "Hunter's Sacrificial Knife",
         quantity: 3,
@@ -391,7 +370,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -400,7 +379,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: "Sergeant's Insignia",
         quantity: 3,
@@ -415,7 +394,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: "Recruit's Insignia",
         quantity: 3,
@@ -430,7 +409,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 1,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -439,7 +418,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Silver Raven Insignia',
         quantity: 3,
@@ -454,7 +433,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Treasure Hoarder Insignia',
         quantity: 3,
@@ -469,7 +448,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 1,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -478,7 +457,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Shimmering Nectar',
         quantity: 3,
@@ -493,7 +472,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Whopperflower Nectar',
         quantity: 3,
@@ -508,7 +487,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 1,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -517,7 +496,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Sturdy Bone Shard',
         quantity: 3,
@@ -532,7 +511,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Fragile Bone Shard',
         quantity: 3,
@@ -547,7 +526,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -556,7 +535,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Kageuchi Handguard',
         quantity: 3,
@@ -571,7 +550,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Old Handguard',
         quantity: 3,
@@ -586,7 +565,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 1,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -595,7 +574,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Chaos Axis',
         quantity: 3,
@@ -610,7 +589,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Chaos Gear',
         quantity: 3,
@@ -625,7 +604,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -634,7 +613,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Crystal Prism',
         quantity: 3,
@@ -649,7 +628,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Dismal Prism',
         quantity: 3,
@@ -664,7 +643,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -673,7 +652,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Spectral Heart',
         quantity: 3,
@@ -688,7 +667,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Spectral Husk',
         quantity: 3,
@@ -703,7 +682,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 1,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -712,7 +691,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Concealed Unguis',
         quantity: 3,
@@ -727,7 +706,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Concealed Claw',
         quantity: 3,
@@ -742,7 +721,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -751,7 +730,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Dark Statuette',
         quantity: 3,
@@ -766,7 +745,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Gloomy Statuette',
         quantity: 3,
@@ -781,7 +760,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -790,7 +769,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Luminescent Pollen',
         quantity: 3,
@@ -805,7 +784,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 2,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Fungal Spores',
         quantity: 3,
@@ -820,7 +799,7 @@ export const items: Item[] = [
     type: DB.ItemType.COMMON,
     rarity: 1,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -857,7 +836,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Agnidus Agate Chunk',
         quantity: 3,
@@ -872,7 +851,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Agnidus Agate Fragment',
         quantity: 3,
@@ -887,7 +866,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Agnidus Agate Sliver',
         quantity: 3,
@@ -902,7 +881,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: true,
   },
@@ -911,7 +890,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Varunada Lazurite Chunk',
         quantity: 3,
@@ -926,7 +905,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Varunada Lazurite Fragment',
         quantity: 3,
@@ -941,7 +920,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Varunada Lazurite Sliver',
         quantity: 3,
@@ -956,7 +935,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: true,
   },
@@ -965,7 +944,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Vajrada Amethyst Chunk',
         quantity: 3,
@@ -980,7 +959,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Vajrada Amethyst Fragment',
         quantity: 3,
@@ -995,7 +974,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Vajrada Amethyst Sliver',
         quantity: 3,
@@ -1010,7 +989,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: true,
   },
@@ -1019,7 +998,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Vayuda Turquoise Chunk',
         quantity: 3,
@@ -1034,7 +1013,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Vayuda Turquoise Fragment',
         quantity: 3,
@@ -1049,7 +1028,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Vayuda Turquoise Sliver',
         quantity: 3,
@@ -1064,7 +1043,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: true,
   },
@@ -1073,7 +1052,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Shivada Jade Chunk',
         quantity: 3,
@@ -1088,7 +1067,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Shivada Jade Fragment',
         quantity: 3,
@@ -1103,7 +1082,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Shivada Jade Sliver',
         quantity: 3,
@@ -1118,7 +1097,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: true,
   },
@@ -1127,7 +1106,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 5,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Prithiva Topaz Chunk',
         quantity: 3,
@@ -1142,7 +1121,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Prithiva Topaz Fragment',
         quantity: 3,
@@ -1157,7 +1136,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Prithiva Topaz Sliver',
         quantity: 3,
@@ -1172,7 +1151,7 @@ export const items: Item[] = [
     type: DB.ItemType.ASCENSION_GEM,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: true,
   },
@@ -1468,7 +1447,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Guide to Freedom',
         quantity: 3,
@@ -1483,7 +1462,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Teachings of Freedom',
         quantity: 3,
@@ -1498,7 +1477,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -1507,7 +1486,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Guide to Resistance',
         quantity: 3,
@@ -1522,7 +1501,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Teachings of Resistance',
         quantity: 3,
@@ -1537,7 +1516,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -1546,7 +1525,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Guide to Ballad',
         quantity: 3,
@@ -1561,7 +1540,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Teachings of Ballad',
         quantity: 3,
@@ -1576,7 +1555,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -1585,7 +1564,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Guide to Prosperity',
         quantity: 3,
@@ -1600,7 +1579,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Teachings of Prosperity',
         quantity: 3,
@@ -1615,7 +1594,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -1624,7 +1603,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Guide to Diligence',
         quantity: 3,
@@ -1639,7 +1618,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Teachings of Diligence',
         quantity: 3,
@@ -1654,7 +1633,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -1663,7 +1642,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Guide to Gold',
         quantity: 3,
@@ -1678,7 +1657,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Teachings of Gold',
         quantity: 3,
@@ -1693,7 +1672,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -1702,7 +1681,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Guide to Transience',
         quantity: 3,
@@ -1717,7 +1696,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Teachings of Transience',
         quantity: 3,
@@ -1732,7 +1711,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -1741,7 +1720,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Guide to Elegance',
         quantity: 3,
@@ -1756,7 +1735,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Teachings of Elegance',
         quantity: 3,
@@ -1771,7 +1750,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },
@@ -1780,7 +1759,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 4,
     craft: {
-      craftable: true,
+      craftable: 'Craftable',
       crafter: {
         name: 'Guide to Light',
         quantity: 3,
@@ -1795,7 +1774,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 3,
     craft: {
-      craftable: true,
+      craftable: 'CraftableAndMaterial',
       crafter: {
         name: 'Teachings of Light',
         quantity: 3,
@@ -1810,7 +1789,7 @@ export const items: Item[] = [
     type: DB.ItemType.TALENT_BOOK,
     rarity: 2,
     craft: {
-      craftable: false,
+      craftable: 'Material',
     },
     convertable: false,
   },

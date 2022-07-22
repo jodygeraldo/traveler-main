@@ -1,94 +1,97 @@
 import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
-import * as CharacterData from '~/data/characters'
-import type * as ItemData from '~/data/items'
-import * as DB from '~/db.server'
-import * as Utils from '~/utils/index'
+import * as CharacterData from '~/data/character.server'
+import type * as DB from '~/db.server'
+import type * as CharacterType from '~/types/character'
+import type * as ItemType from '~/types/item'
+import * as Utils from '~/utils'
+
+export function validateCharacter(
+  name: string | undefined
+): name is CharacterType.Name {
+  return CharacterData.characters.findIndex((c) => c.name === name) !== -1
+}
+
+const DEFAULT_PROGRESSION: CharacterType.Progression = {
+  level: 1,
+  ascension: 0,
+  normalAttack: 1,
+  elementalSkill: 1,
+  elementalBurst: 1,
+}
 
 export function getCharacters(
   userCharacters: Omit<DB.UserCharacter, 'id' | 'ownerId'>[]
 ) {
-  const updatedCharacters = [...CharacterData.characters]
+  return CharacterData.characters.map((character) => {
+    const userCharacter = userCharacters.find(
+      (userCharacter) => userCharacter.name === character.name
+    )
+    if (!userCharacter) {
+      return {
+        ...character,
+        progression: DEFAULT_PROGRESSION,
+      }
+    }
 
-  userCharacters.forEach((character) => {
-    const { name, ...progression } = character
-    const idx = updatedCharacters.findIndex((c) => c.name === name)
-    if (idx !== -1) updatedCharacters[idx].progression = progression
+    const { name, ...progression } = userCharacter
+    return {
+      ...character,
+      progression,
+    }
   })
-
-  return updatedCharacters
 }
 
 export function getCharactersProgression(
   userCharacters: Omit<DB.UserCharacter, 'id' | 'ownerId'>[]
 ) {
-  const defaultProgression: CharacterData.Character['progression'] = {
-    level: 1,
-    ascension: 0,
-    normalAttack: 1,
-    elementalSkill: 1,
-    elementalBurst: 1,
-  }
   return CharacterData.characters.map((character) => {
     const userCharacter = userCharacters.find((c) => c.name === character.name)
+    if (!userCharacter) {
+      return {
+        name: character.name,
+        progression: DEFAULT_PROGRESSION,
+      }
+    }
+
+    const { name, ...progression } = userCharacter
     return {
       name: character.name,
-      progression: userCharacter
-        ? {
-            level: userCharacter.level,
-            ascension: userCharacter.ascension,
-            normalAttack: userCharacter.normalAttack,
-            elementalSkill: userCharacter.elementalSkill,
-            elementalBurst: userCharacter.elementalBurst,
-          }
-        : defaultProgression,
+      progression,
     }
   })
-}
-
-export function validateCharacter(name: string) {
-  return CharacterData.characters.findIndex((c) => c.name === name) !== -1
 }
 
 export function getCharacter({
   name,
   progression,
 }: {
-  name: string
-  progression: Omit<DB.UserCharacter, 'id' | 'ownerId' | 'name'> | null
+  name: CharacterType.Name
+  progression: CharacterType.Progression | null
 }) {
   const character = CharacterData.characters.find(
     (character) => character.name === name
-  )
-  invariant(character, 'Character not found')
+  )!
 
-  if (!progression) return character
+  if (!progression) return { ...character, progression: DEFAULT_PROGRESSION }
   return { ...character, progression }
 }
 
-export interface CharacterAscension {
-  phase: { from: number; to: number }
-  mora: number
-  common: { name: string; quantity: number }
-  gem: { name: string; quantity: number }
-  local: { name: string; quantity: number }
-  boss?: { name: string; quantity: number }
+export function getCharacterProgression({
+  name,
+  progression,
+}: {
+  name: CharacterType.Name
+  progression: CharacterType.Progression | null
+}) {
+  if (!progression) return { name, progression: DEFAULT_PROGRESSION }
+  return { name, progression }
 }
 
-export interface CharacterTalent {
-  level: { from: number; to: number }
-  mora: number
-  common: { name: string; quantity: number }
-  book: { name: string; quantity: number }
-  boss?: { name: string; quantity: number }
-  special?: { name: string; quantity: number }
-}
-
-export function getRequiredMaterial({ name }: { name: string }) {
+export function getRequiredMaterial(name: CharacterType.Name) {
   const character = CharacterData.characterMaterial.find(
     (character) => character.name === name
-  )
-  invariant(character)
+  )!
   const isTraveler = character.name.includes('Traveler')
 
   const ascensionMaterial = getAscensionMaterial(character.ascension)
@@ -122,7 +125,7 @@ function getAscensionMaterial({
   boss,
   local,
   common,
-}: CharacterData.CharacterMaterial['ascension']): CharacterAscension[] {
+}: CharacterType.AscensionMaterial): CharacterType.AscensionPhase[] {
   return [
     {
       phase: { from: 0, to: 1 },
@@ -175,9 +178,9 @@ function getAscensionMaterial({
 }
 
 function getTalentMaterial(
-  { book, boss, common, special }: CharacterData.TalentMaterial,
+  { book, boss, common, special }: CharacterType.TalentMaterial,
   options?: { isTraveler: boolean }
-): CharacterTalent[] {
+): CharacterType.TalentPhase[] {
   const isTraveler = options?.isTraveler ?? false
 
   return [
@@ -243,9 +246,9 @@ function getTalentMaterial(
   ]
 }
 
-export function validateAscensionRequirement({
-  progression,
-}: Pick<CharacterData.Character, 'progression'>) {
+export function validateAscensionRequirement(
+  progression: CharacterType.Progression
+) {
   function getErrorMessage(
     on: 'level' | 'normal attack' | 'elemental skill' | 'elemental burst',
     phase: number,
@@ -296,7 +299,7 @@ export function validateAscensionRequirement({
     )
   }
 
-  switch (progression?.ascension ?? 0) {
+  switch (progression.ascension) {
     case 0: {
       const parsedData = parseData({
         phase: 0,
@@ -367,15 +370,17 @@ export function validateAscensionRequirement({
       if (!parsedData.success) return narrowErrors(parsedData.error.issues)
       return
     default:
-      invariant(false, 'IMPOSSIBLE')
+      invariant(
+        false,
+        `validateAscensionRequirement called with ascension: ${progression.ascension}, expected 0-6`
+      )
   }
 }
 
-export function getItemsToRetrieve(name: string) {
+export function getItemsToRetrieve(name: CharacterType.Name) {
   const characterData = CharacterData.characterMaterial.find(
     (c) => c.name === name
-  )
-  invariant(characterData)
+  )!
 
   const { ascension, talent } = characterData
 
@@ -438,27 +443,34 @@ export function getUnlock(ascension: number) {
       }
 }
 
-export function checkAscend({
+export function getAscendStatus({
   ascension = 0,
   level = 1,
 }: {
   ascension?: number
   level?: number
 }) {
-  if (ascension === 0)
-    return { isAbleToAscend: level === 20, requiredLevel: 20 }
-  if (ascension === 1)
-    return { isAbleToAscend: level === 40, requiredLevel: 40 }
-  if (ascension === 2)
-    return { isAbleToAscend: level === 50, requiredLevel: 50 }
-  if (ascension === 3)
-    return { isAbleToAscend: level === 60, requiredLevel: 60 }
-  if (ascension === 4)
-    return { isAbleToAscend: level === 70, requiredLevel: 70 }
-  if (ascension === 5)
-    return { isAbleToAscend: level === 80, requiredLevel: 80 }
-  // just a placeholder
-  return { isAbleToAscend: true, requiredLevel: 90 }
+  switch (ascension) {
+    case 0:
+      return { isAbleToAscend: level === 20, requiredLevel: 20 }
+    case 1:
+      return { isAbleToAscend: level === 40, requiredLevel: 40 }
+    case 2:
+      return { isAbleToAscend: level === 50, requiredLevel: 50 }
+    case 3:
+      return { isAbleToAscend: level === 60, requiredLevel: 60 }
+    case 4:
+      return { isAbleToAscend: level === 70, requiredLevel: 70 }
+    case 5:
+      return { isAbleToAscend: level === 80, requiredLevel: 80 }
+    case 6:
+      return { isAbleToAscend: true, requiredLevel: 90 }
+    default:
+      invariant(
+        false,
+        `validateAscensionRequirement called with ascension: ${ascension}, expected 0-6`
+      )
+  }
 }
 
 export function getCharacterInventoryLevelUpData({
@@ -467,21 +479,17 @@ export function getCharacterInventoryLevelUpData({
   itemNames,
   userItems,
 }: {
-  name: string
-  progression: Omit<DB.UserCharacter, 'id' | 'ownerId' | 'name'> | null
+  name: CharacterType.Name
+  progression: CharacterType.Progression | null
   itemNames: string[]
-  userItems: ItemData.Item[]
+  userItems: {
+    name: ItemType.Name
+    rarity: 1 | 2 | 3 | 4 | 5
+    quantity: number
+  }[]
 }) {
-  const defaultProgression = {
-    level: 1,
-    ascension: 0,
-    normalAttack: 1,
-    elementalSkill: 1,
-    elementalBurst: 1,
-  }
-
   const { ascension, normalAttack, elementalSkill, elementalBurst } =
-    progression ? progression : defaultProgression
+    progression ? progression : DEFAULT_PROGRESSION
 
   function isTalentGreaterThan(
     talent: 'all' | 'normal' | 'elemental',
@@ -586,7 +594,13 @@ export function getCharacterInventoryLevelUpData({
   const excludedTalentItems = getExcludedTalentItems()
 
   const excludedItems = [...excludedAscensionItems, ...excludedTalentItems]
-  const items = userItems.filter((item) => !excludedItems.includes(item.name))
+  const items = userItems
+    .filter((item) => !excludedItems.includes(item.name))
+    .map((item) => ({
+      name: item.name,
+      rarity: item.rarity,
+      quantity: item.quantity,
+    }))
 
   const materials = getCurrentMaterial()
   const possibleToLevel = {
@@ -600,7 +614,7 @@ export function getCharacterInventoryLevelUpData({
   return { items, material, possibleToLevel }
 
   function getCurrentMaterial() {
-    const { ascensionMaterial, talentMaterial } = getRequiredMaterial({ name })
+    const { ascensionMaterial, talentMaterial } = getRequiredMaterial(name)
     const curAscensionMaterial = ascensionMaterial.at(ascension)
 
     const skipTalent = [0, 0, 2, 4, 6, 8, 10]
@@ -634,7 +648,9 @@ export function getCharacterInventoryLevelUpData({
     }
   }
 
-  function isPossibleToLevel(material?: CharacterTalent | CharacterAscension) {
+  function isPossibleToLevel(
+    material?: CharacterType.TalentPhase | CharacterType.AscensionPhase
+  ) {
     if (!material) {
       return
     }
@@ -659,119 +675,108 @@ export function getCharacterInventoryLevelUpData({
     })
   }
 
-  function getCurrentItems(items: ItemData.Item[]) {
-    const itemSchema = Zod.array(
-      Zod.object({
-        name: Zod.string(),
-        type: Zod.nativeEnum(DB.ItemType),
-        quantity: Zod.number(),
-        rarity: Zod.nativeEnum({
-          a: 1,
-          b: 2,
-          c: 3,
-          d: 4,
-          e: 5,
-        } as const),
-      })
-    ).optional()
-    type ItemSchema = Zod.infer<typeof itemSchema>
+  function getCurrentItems(items: typeof userItems) {
+    type ItemType = {
+      name: ItemType.Name
+      rarity: 1 | 2 | 3 | 4 | 5
+      quantity: number
+    }
 
     const material = getCurrentMaterial()
-    let parsedAscensionMaterial: ItemSchema
-    let parsedTalentNormalMaterial: ItemSchema
-    let parsedTalentElSkillMaterial: ItemSchema
-    let parsedTalentElBurstMaterial: ItemSchema
+    let parsedAscensionMaterial: ItemType[] | undefined
+    let parsedTalentNormalMaterial: ItemType[] | undefined
+    let parsedTalentElSkillMaterial: ItemType[] | undefined
+    let parsedTalentElBurstMaterial: ItemType[] | undefined
 
     if (material.ascension) {
       const ascMat = material.ascension
 
       let ascensionMaterial:
-        | { name: string; quantity: number; rarity?: 1 | 2 | 3 | 4 | 5 }[]
-        | undefined
-      ascensionMaterial = [ascMat.common, ascMat.gem, ascMat.local]
+        | { name: string; quantity: number; rarity?: 1 | 2 | 3 | 4 | 5 }[] = [
+        ascMat.common,
+        ascMat.gem,
+        ascMat.local,
+      ]
       if (ascMat.boss) {
         ascensionMaterial = [...ascensionMaterial, ascMat.boss]
       }
 
-      const tmpAscMat = ascensionMaterial?.map((item) => {
+      parsedAscensionMaterial = ascensionMaterial.map((item) => {
         const correspondingItem = items.find((i) => i.name === item.name)
         invariant(correspondingItem)
         return {
           ...item,
-          type: correspondingItem.type,
+          name: correspondingItem.name,
           rarity: correspondingItem.rarity,
         }
       })
-
-      parsedAscensionMaterial = itemSchema.parse(tmpAscMat)
     }
 
     if (material.talent.normal) {
       const talNormMat = material.talent.normal
 
       let talentMaterial:
-        | { name: string; quantity: number; rarity?: 1 | 2 | 3 | 4 | 5 }[]
-        | undefined
-      talentMaterial = [talNormMat.common, talNormMat.book]
+        | { name: string; quantity: number; rarity?: 1 | 2 | 3 | 4 | 5 }[] = [
+        talNormMat.common,
+        talNormMat.book,
+      ]
       if (talNormMat.boss) talentMaterial = [...talentMaterial, talNormMat.boss]
       if (talNormMat.special)
         talentMaterial = [...talentMaterial, talNormMat.special]
 
-      const tmpTalentMat = talentMaterial?.map((item) => {
+      parsedTalentNormalMaterial = talentMaterial?.map((item) => {
         const correspondingItem = items.find((i) => i.name === item.name)
         invariant(correspondingItem)
         return {
           ...item,
-          type: correspondingItem.type,
+          name: correspondingItem.name,
           rarity: correspondingItem.rarity,
         }
       })
-      parsedTalentNormalMaterial = itemSchema.parse(tmpTalentMat)
     }
 
     if (material.talent.elementalSkill) {
       const talNormMat = material.talent.elementalSkill
 
       let talentMaterial:
-        | { name: string; quantity: number; rarity?: 1 | 2 | 3 | 4 | 5 }[]
-        | undefined
-      talentMaterial = [talNormMat.common, talNormMat.book]
+        | { name: string; quantity: number; rarity?: 1 | 2 | 3 | 4 | 5 }[] = [
+        talNormMat.common,
+        talNormMat.book,
+      ]
       if (talNormMat.boss) talentMaterial = [...talentMaterial, talNormMat.boss]
       if (talNormMat.special)
         talentMaterial = [...talentMaterial, talNormMat.special]
 
-      const tmpTalentMat = talentMaterial?.map((item) => {
+      parsedTalentElSkillMaterial = talentMaterial?.map((item) => {
         const correspondingItem = items.find((i) => i.name === item.name)
         invariant(correspondingItem)
         return {
           ...item,
-          type: correspondingItem.type,
+          name: correspondingItem.name,
           rarity: correspondingItem.rarity,
         }
       })
-      parsedTalentElSkillMaterial = itemSchema.parse(tmpTalentMat)
     }
 
     if (material.talent.elementalBurst) {
       const talMat = material.talent.elementalBurst
 
       let talentMaterial:
-        | { name: string; quantity: number; rarity?: 1 | 2 | 3 | 4 | 5 }[]
-        | undefined
-      talentMaterial = [talMat.common, talMat.book]
+        | { name: string; quantity: number; rarity?: 1 | 2 | 3 | 4 | 5 }[] = [
+        talMat.common,
+        talMat.book,
+      ]
       if (talMat.boss) talentMaterial = [...talentMaterial, talMat.boss]
       if (talMat.special) talentMaterial = [...talentMaterial, talMat.special]
 
-      const tmpTalentMat = talentMaterial?.map((item) => {
-        const correspondingItem = items.find((i) => i.name === item.name)
-        invariant(correspondingItem)
+      parsedTalentElBurstMaterial = talentMaterial.map((item) => {
+        const correspondingItem = items.find((i) => i.name === item.name)!
         return {
           ...item,
-          type: correspondingItem.type,
+          name: correspondingItem.name,
           rarity: correspondingItem.rarity,
         }
       })
-      parsedTalentElBurstMaterial = itemSchema.parse(tmpTalentMat)
     }
 
     return {

@@ -1,18 +1,8 @@
 import * as DB from '~/db.server'
+import type * as CharacterType from '~/types/character'
+import type * as ItemType from '~/types/item'
 
-type CommonMaterial =
-  | 'Slime'
-  | 'Hilichurl Masks'
-  | 'Samachurl Scrolls'
-  | 'Hilichurl Arrowheads'
-  | 'Fatui Insignia'
-  | 'Treasure Hoarder Insignias'
-  | 'Whopperflower Nectar'
-  | 'Nobushi Handguards'
-  | 'Spectral Cores'
-  | 'Fungal Spore Powder'
-
-const commonMaterials: Record<CommonMaterial, string[]> = {
+const commonMaterial: Record<ItemType.CommonGroupName, ItemType.CommonGroup> = {
   Slime: ['Slime Condensate', 'Slime Secretions', 'Slime Concentrate'],
   'Hilichurl Masks': ['Damaged Mask', 'Stained Mask', 'Ominous Mask'],
   'Samachurl Scrolls': [
@@ -53,23 +43,46 @@ const commonMaterials: Record<CommonMaterial, string[]> = {
   ],
 }
 
-export interface Character {
-  name: string
-  weapon: DB.Weapon
-  vision: DB.Vision
-  region: DB.Region
-  rarity: 4 | 5
-  talent: [string, string, string]
-  progression?: {
-    level: number
-    ascension: number
-    normalAttack: number
-    elementalSkill: number
-    elementalBurst: number
-  }
+const talentBook: Record<
+  ItemType.TalentBookGroupName,
+  ItemType.TalentBookGroup
+> = {
+  Freedom: [
+    'Teachings of Freedom',
+    'Guide to Freedom',
+    'Philosophies of Freedom',
+  ],
+  Ballad: ['Teachings of Ballad', 'Guide to Ballad', 'Philosophies of Ballad'],
+  Resistance: [
+    'Teachings of Resistance',
+    'Guide to Resistance',
+    'Philosophies of Resistance',
+  ],
+  Gold: ['Teachings of Gold', 'Guide to Gold', 'Philosophies of Gold'],
+  Diligence: [
+    'Teachings of Diligence',
+    'Guide to Diligence',
+    'Philosophies of Diligence',
+  ],
+  Prosperity: [
+    'Teachings of Prosperity',
+    'Guide to Prosperity',
+    'Philosophies of Prosperity',
+  ],
+  Light: ['Teachings of Light', 'Guide to Light', 'Philosophies of Light'],
+  Elegance: [
+    'Teachings of Elegance',
+    'Guide to Elegance',
+    'Philosophies of Elegance',
+  ],
+  Transience: [
+    'Teachings of Transience',
+    'Guide to Transience',
+    'Philosophies of Transience',
+  ],
 }
 
-export const characters: Character[] = [
+export const characters: CharacterType.Character[] = [
   {
     name: 'Albedo',
     weapon: DB.Weapon.SWORD,
@@ -588,42 +601,19 @@ export const characters: Character[] = [
   },
 ]
 
-export interface AscensionMaterial {
-  gem: string
-  boss?: string
-  local: string
-  common: string[]
-}
-export interface TalentMaterial {
-  book: string[]
-  boss: string
-  common: string[]
-  special: string
-}
-
-export interface CharacterMaterial {
-  name: string
-  ascension: AscensionMaterial
-  talent: TalentMaterial | TalentMaterial[]
-}
-
-export const characterMaterial: CharacterMaterial[] = [
+export const characterMaterial: CharacterType.ProgressionMaterial[] = [
   {
     name: 'Albedo',
     ascension: {
       gem: 'Prithiva Topaz',
       boss: 'Basalt Pillar',
       local: 'Cecilia',
-      common: commonMaterials['Samachurl Scrolls'],
+      common: commonMaterial['Samachurl Scrolls'],
     },
     talent: {
-      book: [
-        'Teachings of Freedom',
-        'Guide to Freedom',
-        'Philosophies of Freedom',
-      ],
+      book: talentBook['Freedom'],
       boss: 'Tusk of Monoceros Caeli',
-      common: commonMaterials['Samachurl Scrolls'],
+      common: commonMaterial['Samachurl Scrolls'],
       special: 'Crown of Insight',
     },
   },
@@ -633,16 +623,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Shivada Jade',
       boss: 'Crystalline Bloom',
       local: 'Crystal Marrow',
-      common: commonMaterials['Spectral Cores'],
+      common: commonMaterial['Spectral Cores'],
     },
     talent: {
-      book: [
-        'Teachings of Freedom',
-        'Guide to Freedom',
-        'Philosophies of Freedom',
-      ],
+      book: talentBook['Freedom'],
       boss: 'Molten Moment',
-      common: commonMaterials['Spectral Cores'],
+      common: commonMaterial['Spectral Cores'],
       special: 'Crown of Insight',
     },
   },
@@ -652,16 +638,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Agnidus Agate',
       boss: 'Everflame Seed',
       local: 'Small Lamp Grass',
-      common: commonMaterials['Hilichurl Arrowheads'],
+      common: commonMaterial['Hilichurl Arrowheads'],
     },
     talent: {
-      book: [
-        'Teachings of Freedom',
-        'Guide to Freedom',
-        'Philosophies of Freedom',
-      ],
+      book: talentBook['Freedom'],
       boss: "Dvalin's Sigh",
-      common: commonMaterials['Hilichurl Arrowheads'],
+      common: commonMaterial['Hilichurl Arrowheads'],
       special: 'Crown of Insight',
     },
   },
@@ -671,16 +653,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Prithiva Topaz',
       boss: 'Riftborn Regalia',
       local: 'Onikabuto',
-      common: commonMaterials['Slime'],
+      common: commonMaterial['Slime'],
     },
     talent: {
-      book: [
-        'Teachings of Elegance',
-        'Guide to Elegance',
-        'Philosophies of Elegance',
-      ],
+      book: talentBook['Elegance'],
       boss: 'Ashen Heart',
-      common: commonMaterials['Slime'],
+      common: commonMaterial['Slime'],
       special: 'Crown of Insight',
     },
   },
@@ -690,16 +668,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Varunada Lazurite',
       boss: 'Cleansing Heart',
       local: 'Philanemo Mushroom',
-      common: commonMaterials['Samachurl Scrolls'],
+      common: commonMaterial['Samachurl Scrolls'],
     },
     talent: {
-      book: [
-        'Teachings of Freedom',
-        'Guide to Freedom',
-        'Philosophies of Freedom',
-      ],
+      book: talentBook['Freedom'],
       boss: 'Ring of Boreas',
-      common: commonMaterials['Samachurl Scrolls'],
+      common: commonMaterial['Samachurl Scrolls'],
       special: 'Crown of Insight',
     },
   },
@@ -709,12 +683,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Vajrada Amethyst',
       boss: 'Lightning Prism',
       local: 'Noctilucous Jade',
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
     },
     talent: {
-      book: ['Teachings of Gold', 'Guide to Gold', 'Philosophies of Gold'],
+      book: talentBook['Gold'],
       boss: "Dvalin's Sigh",
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
       special: 'Crown of Insight',
     },
   },
@@ -724,16 +698,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Agnidus Agate',
       boss: 'Everflame Seed',
       local: 'Windwheel Aster',
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
     },
     talent: {
-      book: [
-        'Teachings of Resistance',
-        'Guide to Resistance',
-        'Philosophies of Resistance',
-      ],
+      book: talentBook['Resistance'],
       boss: "Dvalin's Plume",
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
       special: 'Crown of Insight',
     },
   },
@@ -743,16 +713,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Shivada Jade',
       boss: 'Hoarfrost Core',
       local: 'Cor Lapis',
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
     },
     talent: {
-      book: [
-        'Teachings of Diligence',
-        'Guide to Diligence',
-        'Philosophies of Diligence',
-      ],
+      book: talentBook['Diligence'],
       boss: "Dvalin's Sigh",
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
       special: 'Crown of Insight',
     },
   },
@@ -762,16 +728,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Agnidus Agate',
       boss: 'Everflame Seed',
       local: 'Small Lamp Grass',
-      common: commonMaterials['Fatui Insignia'],
+      common: commonMaterial['Fatui Insignia'],
     },
     talent: {
-      book: [
-        'Teachings of Resistance',
-        'Guide to Resistance',
-        'Philosophies of Resistance',
-      ],
+      book: talentBook['Resistance'],
       boss: "Dvalin's Plume",
-      common: commonMaterials['Fatui Insignia'],
+      common: commonMaterial['Fatui Insignia'],
       special: 'Crown of Insight',
     },
   },
@@ -781,16 +743,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Shivada Jade',
       boss: 'Hoarfrost Core',
       local: 'Calla Lily',
-      common: commonMaterials['Hilichurl Arrowheads'],
+      common: commonMaterial['Hilichurl Arrowheads'],
     },
     talent: {
-      book: [
-        'Teachings of Freedom',
-        'Guide to Freedom',
-        'Philosophies of Freedom',
-      ],
+      book: talentBook['Freedom'],
       boss: 'Shard of a Foul Legacy',
-      common: commonMaterials['Hilichurl Arrowheads'],
+      common: commonMaterial['Hilichurl Arrowheads'],
       special: 'Crown of Insight',
     },
   },
@@ -800,16 +758,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Shivada Jade',
       boss: 'Crystalline Bloom',
       local: 'Dandelion Seed',
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
     },
     talent: {
-      book: [
-        'Teachings of Resistance',
-        'Guide to Resistance',
-        'Philosophies of Resistance',
-      ],
+      book: talentBook['Resistance'],
       boss: "Dragon Lord's Crown",
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
       special: 'Crown of Insight',
     },
   },
@@ -819,16 +773,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Vajrada Amethyst',
       boss: 'Lightning Prism',
       local: 'Small Lamp Grass',
-      common: commonMaterials['Hilichurl Arrowheads'],
+      common: commonMaterial['Hilichurl Arrowheads'],
     },
     talent: {
-      book: [
-        'Teachings of Ballad',
-        'Guide to Ballad',
-        'Philosophies of Ballad',
-      ],
+      book: talentBook['Ballad'],
       boss: 'Spirit Locket of Boreas',
-      common: commonMaterials['Hilichurl Arrowheads'],
+      common: commonMaterial['Hilichurl Arrowheads'],
       special: 'Crown of Insight',
     },
   },
@@ -838,16 +788,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Shivada Jade',
       boss: 'Hoarfrost Core',
       local: 'Qingxin',
-      common: commonMaterials['Whopperflower Nectar'],
+      common: commonMaterial['Whopperflower Nectar'],
     },
     talent: {
-      book: [
-        'Teachings of Diligence',
-        'Guide to Diligence',
-        'Philosophies of Diligence',
-      ],
+      book: talentBook['Diligence'],
       boss: 'Shadow of the Warrior',
-      common: commonMaterials['Whopperflower Nectar'],
+      common: commonMaterial['Whopperflower Nectar'],
       special: 'Crown of Insight',
     },
   },
@@ -857,12 +803,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Prithiva Topaz',
       boss: 'Perpetual Heart',
       local: 'Sango Pearl',
-      common: commonMaterials['Spectral Cores'],
+      common: commonMaterial['Spectral Cores'],
     },
     talent: {
-      book: ['Teachings of Light', 'Guide to Light', 'Philosophies of Light'],
+      book: talentBook['Light'],
       boss: 'Molten Moment',
-      common: commonMaterials['Spectral Cores'],
+      common: commonMaterial['Spectral Cores'],
       special: 'Crown of Insight',
     },
   },
@@ -872,16 +818,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Agnidus Agate',
       boss: 'Juvenile Jade',
       local: 'Silk Flower',
-      common: commonMaterials['Whopperflower Nectar'],
+      common: commonMaterial['Whopperflower Nectar'],
     },
     talent: {
-      book: [
-        'Teachings of Diligence',
-        'Guide to Diligence',
-        'Philosophies of Diligence',
-      ],
+      book: talentBook['Diligence'],
       boss: 'Shard of a Foul Legacy',
-      common: commonMaterials['Whopperflower Nectar'],
+      common: commonMaterial['Whopperflower Nectar'],
       special: 'Crown of Insight',
     },
   },
@@ -891,16 +833,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Vayuda Turquoise',
       boss: 'Hurricane Seed',
       local: 'Dandelion Seed',
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
     },
     talent: {
-      book: [
-        'Teachings of Resistance',
-        'Guide to Resistance',
-        'Philosophies of Resistance',
-      ],
+      book: talentBook['Resistance'],
       boss: "Dvalin's Plume",
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
       special: 'Crown of Insight',
     },
   },
@@ -910,16 +848,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Vayuda Turquoise',
       boss: 'Marionette Core',
       local: 'Sea Ganoderma',
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
     },
     talent: {
-      book: [
-        'Teachings of Diligence',
-        'Guide to Diligence',
-        'Philosophies of Diligence',
-      ],
+      book: talentBook['Diligence'],
       boss: 'Gilded Scale',
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
       special: 'Crown of Insight',
     },
   },
@@ -929,16 +863,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Shivada Jade',
       boss: 'Hoarfrost Core',
       local: 'Calla Lily',
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
     },
     talent: {
-      book: [
-        'Teachings of Ballad',
-        'Guide to Ballad',
-        'Philosophies of Ballad',
-      ],
+      book: talentBook['Ballad'],
       boss: 'Spirit Locket of Boreas',
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
       special: 'Crown of Insight',
     },
   },
@@ -948,16 +878,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Shivada Jade',
       boss: 'Perpetual Heart',
       local: 'Sakura Bloom',
-      common: commonMaterials['Nobushi Handguards'],
+      common: commonMaterial['Nobushi Handguards'],
     },
     talent: {
-      book: [
-        'Teachings of Elegance',
-        'Guide to Elegance',
-        'Philosophies of Elegance',
-      ],
+      book: talentBook['Elegance'],
       boss: 'Bloodjade Branch',
-      common: commonMaterials['Nobushi Handguards'],
+      common: commonMaterial['Nobushi Handguards'],
       special: 'Crown of Insight',
     },
   },
@@ -967,16 +893,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Varunada Lazurite',
       boss: 'Dew of Repudiation',
       local: 'Sakura Bloom',
-      common: commonMaterials['Nobushi Handguards'],
+      common: commonMaterial['Nobushi Handguards'],
     },
     talent: {
-      book: [
-        'Teachings of Elegance',
-        'Guide to Elegance',
-        'Philosophies of Elegance',
-      ],
+      book: talentBook['Elegance'],
       boss: 'Mudra of the Malefic General',
-      common: commonMaterials['Nobushi Handguards'],
+      common: commonMaterial['Nobushi Handguards'],
       special: 'Crown of Insight',
     },
   },
@@ -986,16 +908,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Vajrada Amethyst',
       boss: 'Lightning Prism',
       local: 'Cor Lapis',
-      common: commonMaterials['Whopperflower Nectar'],
+      common: commonMaterial['Whopperflower Nectar'],
     },
     talent: {
-      book: [
-        'Teachings of Prosperity',
-        'Guide to Prosperity',
-        'Philosophies of Prosperity',
-      ],
+      book: talentBook['Prosperity'],
       boss: 'Ring of Boreas',
-      common: commonMaterials['Whopperflower Nectar'],
+      common: commonMaterial['Whopperflower Nectar'],
       special: 'Crown of Insight',
     },
   },
@@ -1005,16 +923,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Agnidus Agate',
       boss: 'Everflame Seed',
       local: 'Philanemo Mushroom',
-      common: commonMaterials['Samachurl Scrolls'],
+      common: commonMaterial['Samachurl Scrolls'],
     },
     talent: {
-      book: [
-        'Teachings of Freedom',
-        'Guide to Freedom',
-        'Philosophies of Freedom',
-      ],
+      book: talentBook['Freedom'],
       boss: 'Ring of Boreas',
-      common: commonMaterials['Samachurl Scrolls'],
+      common: commonMaterial['Samachurl Scrolls'],
       special: 'Crown of Insight',
     },
   },
@@ -1024,16 +938,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Vajrada Amethyst',
       boss: 'Storm Beads',
       local: 'Dendrobium',
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
     },
     talent: {
-      book: [
-        'Teachings of Elegance',
-        'Guide to Elegance',
-        'Philosophies of Elegance',
-      ],
+      book: talentBook['Elegance'],
       boss: 'Ashen Heart',
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
       special: 'Crown of Insight',
     },
   },
@@ -1043,16 +953,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Vajrada Amethyst',
       boss: 'Runic Fang',
       local: 'Naku Weed',
-      common: commonMaterials['Spectral Cores'],
+      common: commonMaterial['Spectral Cores'],
     },
     talent: {
-      book: [
-        'Teachings of Elegance',
-        'Guide to Elegance',
-        'Philosophies of Elegance',
-      ],
+      book: talentBook['Elegance'],
       boss: 'Tears of the Calamitous God',
-      common: commonMaterials['Spectral Cores'],
+      common: commonMaterial['Spectral Cores'],
       special: 'Crown of Insight',
     },
   },
@@ -1062,16 +968,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Vajrada Amethyst',
       boss: 'Lightning Prism',
       local: 'Valberry',
-      common: commonMaterials['Slime'],
+      common: commonMaterial['Slime'],
     },
     talent: {
-      book: [
-        'Teachings of Ballad',
-        'Guide to Ballad',
-        'Philosophies of Ballad',
-      ],
+      book: talentBook['Ballad'],
       boss: "Dvalin's Claw",
-      common: commonMaterials['Slime'],
+      common: commonMaterial['Slime'],
       special: 'Crown of Insight',
     },
   },
@@ -1081,16 +983,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Varunada Lazurite',
       boss: 'Cleansing Heart',
       local: 'Philanemo Mushroom',
-      common: commonMaterials['Whopperflower Nectar'],
+      common: commonMaterial['Whopperflower Nectar'],
     },
     talent: {
-      book: [
-        'Teachings of Resistance',
-        'Guide to Resistance',
-        'Philosophies of Resistance',
-      ],
+      book: talentBook['Resistance'],
       boss: 'Ring of Boreas',
-      common: commonMaterials['Whopperflower Nectar'],
+      common: commonMaterial['Whopperflower Nectar'],
       special: 'Crown of Insight',
     },
   },
@@ -1100,16 +998,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Prithiva Topaz',
       boss: 'Basalt Pillar',
       local: 'Glaze Lily',
-      common: commonMaterials['Fatui Insignia'],
+      common: commonMaterial['Fatui Insignia'],
     },
     talent: {
-      book: [
-        'Teachings of Prosperity',
-        'Guide to Prosperity',
-        'Philosophies of Prosperity',
-      ],
+      book: talentBook['Prosperity'],
       boss: 'Spirit Locket of Boreas',
-      common: commonMaterials['Fatui Insignia'],
+      common: commonMaterial['Fatui Insignia'],
       special: 'Crown of Insight',
     },
   },
@@ -1119,16 +1013,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Prithiva Topaz',
       boss: 'Basalt Pillar',
       local: 'Valberry',
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
     },
     talent: {
-      book: [
-        'Teachings of Resistance',
-        'Guide to Resistance',
-        'Philosophies of Resistance',
-      ],
+      book: talentBook['Resistance'],
       boss: "Dvalin's Claw",
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
       special: 'Crown of Insight',
     },
   },
@@ -1138,16 +1028,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Shivada Jade',
       boss: 'Hoarfrost Core',
       local: 'Violetgrass',
-      common: commonMaterials['Samachurl Scrolls'],
+      common: commonMaterial['Samachurl Scrolls'],
     },
     talent: {
-      book: [
-        'Teachings of Prosperity',
-        'Guide to Prosperity',
-        'Philosophies of Prosperity',
-      ],
+      book: talentBook['Prosperity'],
       boss: 'Tail of Boreas',
-      common: commonMaterials['Samachurl Scrolls'],
+      common: commonMaterial['Samachurl Scrolls'],
       special: 'Crown of Insight',
     },
   },
@@ -1157,12 +1043,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Vajrada Amethyst',
       boss: 'Storm Beads',
       local: 'Amakumo Fruit',
-      common: commonMaterials['Nobushi Handguards'],
+      common: commonMaterial['Nobushi Handguards'],
     },
     talent: {
-      book: ['Teachings of Light', 'Guide to Light', 'Philosophies of Light'],
+      book: talentBook['Light'],
       boss: 'Molten Moment',
-      common: commonMaterials['Nobushi Handguards'],
+      common: commonMaterial['Nobushi Handguards'],
       special: 'Crown of Insight',
     },
   },
@@ -1172,16 +1058,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Vajrada Amethyst',
       boss: 'Lightning Prism',
       local: 'Wolfhook',
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
     },
     talent: {
-      book: [
-        'Teachings of Resistance',
-        'Guide to Resistance',
-        'Philosophies of Resistance',
-      ],
+      book: talentBook['Resistance'],
       boss: "Dvalin's Claw",
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
       special: 'Crown of Insight',
     },
   },
@@ -1191,16 +1073,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Shivada Jade',
       boss: 'Hoarfrost Core',
       local: 'Valberry',
-      common: commonMaterials['Fatui Insignia'],
+      common: commonMaterial['Fatui Insignia'],
     },
     talent: {
-      book: [
-        'Teachings of Ballad',
-        'Guide to Ballad',
-        'Philosophies of Ballad',
-      ],
+      book: talentBook['Ballad'],
       boss: 'Shadow of the Warrior',
-      common: commonMaterials['Fatui Insignia'],
+      common: commonMaterial['Fatui Insignia'],
       special: 'Crown of Insight',
     },
   },
@@ -1210,16 +1088,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Varunada Lazurite',
       boss: 'Dew of Repudiation',
       local: 'Sango Pearl',
-      common: commonMaterials['Spectral Cores'],
+      common: commonMaterial['Spectral Cores'],
     },
     talent: {
-      book: [
-        'Teachings of Transience',
-        'Guide to Transience',
-        'Philosophies of Transience',
-      ],
+      book: talentBook['Transience'],
       boss: 'Hellfire Butterfly',
-      common: commonMaterials['Spectral Cores'],
+      common: commonMaterial['Spectral Cores'],
       special: 'Crown of Insight',
     },
   },
@@ -1229,12 +1103,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Vayuda Turquoise',
       boss: 'Marionette Core',
       local: 'Crystal Marrow',
-      common: commonMaterials['Whopperflower Nectar'],
+      common: commonMaterial['Whopperflower Nectar'],
     },
     talent: {
-      book: ['Teachings of Light', 'Guide to Light', 'Philosophies of Light'],
+      book: talentBook['Light'],
       boss: 'Gilded Scale',
-      common: commonMaterials['Whopperflower Nectar'],
+      common: commonMaterial['Whopperflower Nectar'],
       special: 'Crown of Insight',
     },
   },
@@ -1244,16 +1118,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Shivada Jade',
       boss: "Dragonheir's False Fin",
       local: 'Qingxin',
-      common: commonMaterials['Whopperflower Nectar'],
+      common: commonMaterial['Whopperflower Nectar'],
     },
     talent: {
-      book: [
-        'Teachings of Prosperity',
-        'Guide to Prosperity',
-        'Philosophies of Prosperity',
-      ],
+      book: talentBook['Prosperity'],
       boss: 'Hellfire Butterfly',
-      common: commonMaterials['Whopperflower Nectar'],
+      common: commonMaterial['Whopperflower Nectar'],
       special: 'Crown of Insight',
     },
   },
@@ -1263,16 +1133,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Vayuda Turquoise',
       boss: 'Runic Fang',
       local: 'Onikabuto',
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
     },
     talent: {
-      book: [
-        'Teachings of Transience',
-        'Guide to Transience',
-        'Philosophies of Transience',
-      ],
+      book: talentBook['Transience'],
       boss: 'Hellfire Butterfly',
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
       special: 'Crown of Insight',
     },
   },
@@ -1282,16 +1148,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Vayuda Turquoise',
       boss: 'Hurricane Seed',
       local: 'Windwheel Aster',
-      common: commonMaterials['Whopperflower Nectar'],
+      common: commonMaterial['Whopperflower Nectar'],
     },
     talent: {
-      book: [
-        'Teachings of Freedom',
-        'Guide to Freedom',
-        'Philosophies of Freedom',
-      ],
+      book: talentBook['Freedom'],
       boss: 'Spirit Locket of Boreas',
-      common: commonMaterials['Whopperflower Nectar'],
+      common: commonMaterial['Whopperflower Nectar'],
       special: 'Crown of Insight',
     },
   },
@@ -1301,16 +1163,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Varunada Lazurite',
       boss: 'Cleansing Heart',
       local: 'Starconch',
-      common: commonMaterials['Fatui Insignia'],
+      common: commonMaterial['Fatui Insignia'],
     },
     talent: {
-      book: [
-        'Teachings of Freedom',
-        'Guide to Freedom',
-        'Philosophies of Freedom',
-      ],
+      book: talentBook['Freedom'],
       boss: 'Shard of a Foul Legacy',
-      common: commonMaterials['Fatui Insignia'],
+      common: commonMaterial['Fatui Insignia'],
       special: 'Crown of Insight',
     },
   },
@@ -1320,16 +1178,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Agnidus Agate',
       boss: 'Smoldering Pearl',
       local: 'Fluorescent Fungus',
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
     },
     talent: {
-      book: [
-        'Teachings of Transience',
-        'Guide to Transience',
-        'Philosophies of Transience',
-      ],
+      book: talentBook['Transience'],
       boss: 'The Meaning of Aeons',
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
       special: 'Crown of Insight',
     },
   },
@@ -1338,7 +1192,7 @@ export const characterMaterial: CharacterMaterial[] = [
     ascension: {
       gem: 'Brilliant Diamond',
       local: 'Windwheel Aster',
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
     },
     talent: {
       book: [
@@ -1353,7 +1207,7 @@ export const characterMaterial: CharacterMaterial[] = [
         'Philosophies of Ballad',
       ],
       boss: "Dvalin's Sigh",
-      common: commonMaterials['Samachurl Scrolls'],
+      common: commonMaterial['Samachurl Scrolls'],
       special: 'Crown of Insight',
     },
   },
@@ -1362,7 +1216,7 @@ export const characterMaterial: CharacterMaterial[] = [
     ascension: {
       gem: 'Brilliant Diamond',
       local: 'Windwheel Aster',
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
     },
     talent: [
       {
@@ -1378,7 +1232,7 @@ export const characterMaterial: CharacterMaterial[] = [
           'Philosophies of Ballad',
         ],
         boss: "Dvalin's Sigh",
-        common: commonMaterials['Samachurl Scrolls'],
+        common: commonMaterial['Samachurl Scrolls'],
         special: 'Crown of Insight',
       },
       {
@@ -1394,7 +1248,7 @@ export const characterMaterial: CharacterMaterial[] = [
           'Philosophies of Gold',
         ],
         boss: 'Tail of Boreas',
-        common: commonMaterials['Hilichurl Arrowheads'],
+        common: commonMaterial['Hilichurl Arrowheads'],
         special: 'Crown of Insight',
       },
     ],
@@ -1404,7 +1258,7 @@ export const characterMaterial: CharacterMaterial[] = [
     ascension: {
       gem: 'Brilliant Diamond',
       local: 'Windwheel Aster',
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
     },
     talent: {
       book: [
@@ -1419,7 +1273,7 @@ export const characterMaterial: CharacterMaterial[] = [
         'Philosophies of Light',
       ],
       boss: "Dragon Lord's Crown",
-      common: commonMaterials['Nobushi Handguards'],
+      common: commonMaterial['Nobushi Handguards'],
       special: 'Crown of Insight',
     },
   },
@@ -1429,16 +1283,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Vayuda Turquoise',
       boss: 'Hurricane Seed',
       local: 'Qingxin',
-      common: commonMaterials['Slime'],
+      common: commonMaterial['Slime'],
     },
     talent: {
-      book: [
-        'Teachings of Ballad',
-        'Guide to Ballad',
-        'Philosophies of Ballad',
-      ],
+      book: talentBook['Ballad'],
       boss: 'Tail of Boreas',
-      common: commonMaterials['Slime'],
+      common: commonMaterial['Slime'],
       special: 'Crown of Insight',
     },
   },
@@ -1448,16 +1298,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Agnidus Agate',
       boss: 'Everflame Seed',
       local: 'Jueyun Chili',
-      common: commonMaterials['Slime'],
+      common: commonMaterial['Slime'],
     },
     talent: {
-      book: [
-        'Teachings of Diligence',
-        'Guide to Diligence',
-        'Philosophies of Diligence',
-      ],
+      book: talentBook['Diligence'],
       boss: "Dvalin's Claw",
-      common: commonMaterials['Slime'],
+      common: commonMaterial['Slime'],
       special: 'Crown of Insight',
     },
   },
@@ -1467,16 +1313,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Vayuda Turquoise',
       boss: 'Juvenile Jade',
       local: 'Qingxin',
-      common: commonMaterials['Slime'],
+      common: commonMaterial['Slime'],
     },
     talent: {
-      book: [
-        'Teachings of Prosperity',
-        'Guide to Prosperity',
-        'Philosophies of Prosperity',
-      ],
+      book: talentBook['Prosperity'],
       boss: 'Shadow of the Warrior',
-      common: commonMaterials['Slime'],
+      common: commonMaterial['Slime'],
       special: 'Crown of Insight',
     },
   },
@@ -1486,12 +1328,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Varunada Lazurite',
       boss: 'Cleansing Heart',
       local: 'Silk Flower',
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
     },
     talent: {
-      book: ['Teachings of Gold', 'Guide to Gold', 'Philosophies of Gold'],
+      book: talentBook['Gold'],
       boss: 'Tail of Boreas',
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
       special: 'Crown of Insight',
     },
   },
@@ -1501,12 +1343,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Agnidus Agate',
       boss: 'Everflame Seed',
       local: 'Violetgrass',
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
     },
     talent: {
-      book: ['Teachings of Gold', 'Guide to Gold', 'Philosophies of Gold'],
+      book: talentBook['Gold'],
       boss: 'Tusk of Monoceros Caeli',
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
       special: 'Crown of Insight',
     },
   },
@@ -1516,12 +1358,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Vajrada Amethyst',
       boss: "Dragonheir's False Fin",
       local: 'Sea Ganoderma',
-      common: commonMaterials['Nobushi Handguards'],
+      common: commonMaterial['Nobushi Handguards'],
     },
     talent: {
-      book: ['Teachings of Light', 'Guide to Light', 'Philosophies of Light'],
+      book: talentBook['Light'],
       boss: 'The Meaning of Aeons',
-      common: commonMaterials['Nobushi Handguards'],
+      common: commonMaterial['Nobushi Handguards'],
       special: 'Crown of Insight',
     },
   },
@@ -1531,12 +1373,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Agnidus Agate',
       boss: 'Juvenile Jade',
       local: 'Noctilucous Jade',
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
     },
     talent: {
-      book: ['Teachings of Gold', 'Guide to Gold', 'Philosophies of Gold'],
+      book: talentBook['Gold'],
       boss: 'Bloodjade Branch',
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
       special: 'Crown of Insight',
     },
   },
@@ -1546,16 +1388,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Varunada Lazurite',
       boss: 'Runic Fang',
       local: 'Starconch',
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
     },
     talent: {
-      book: [
-        'Teachings of Prosperity',
-        'Guide to Prosperity',
-        'Philosophies of Prosperity',
-      ],
+      book: talentBook['Prosperity'],
       boss: 'Gilded Scale',
-      common: commonMaterials['Treasure Hoarder Insignias'],
+      common: commonMaterial['Treasure Hoarder Insignias'],
       special: 'Crown of Insight',
     },
   },
@@ -1565,16 +1403,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Agnidus Agate',
       boss: 'Smoldering Pearl',
       local: 'Naku Weed',
-      common: commonMaterials['Samachurl Scrolls'],
+      common: commonMaterial['Samachurl Scrolls'],
     },
     talent: {
-      book: [
-        'Teachings of Transience',
-        'Guide to Transience',
-        'Philosophies of Transience',
-      ],
+      book: talentBook['Transience'],
       boss: "Dragon Lord's Crown",
-      common: commonMaterials['Samachurl Scrolls'],
+      common: commonMaterial['Samachurl Scrolls'],
       special: 'Crown of Insight',
     },
   },
@@ -1584,16 +1418,12 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Prithiva Topaz',
       boss: 'Riftborn Regalia',
       local: 'Glaze Lily',
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
     },
     talent: {
-      book: [
-        'Teachings of Diligence',
-        'Guide to Diligence',
-        'Philosophies of Diligence',
-      ],
+      book: talentBook['Diligence'],
       boss: 'Ashen Heart',
-      common: commonMaterials['Hilichurl Masks'],
+      common: commonMaterial['Hilichurl Masks'],
       special: 'Crown of Insight',
     },
   },
@@ -1603,15 +1433,13 @@ export const characterMaterial: CharacterMaterial[] = [
       gem: 'Prithiva Topaz',
       boss: 'Basalt Pillar',
       local: 'Cor Lapis',
-      common: commonMaterials['Slime'],
+      common: commonMaterial['Slime'],
     },
     talent: {
-      book: ['Teachings of Gold', 'Guide to Gold', 'Philosophies of Gold'],
+      book: talentBook['Gold'],
       boss: 'Tusk of Monoceros Caeli',
-      common: commonMaterials['Slime'],
+      common: commonMaterial['Slime'],
       special: 'Crown of Insight',
     },
   },
 ]
-
-

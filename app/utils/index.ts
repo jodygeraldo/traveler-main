@@ -1,7 +1,3 @@
-import * as RemixReact from '@remix-run/react'
-import * as React from 'react'
-import * as Zod from 'zod'
-
 const DEFAULT_REDIRECT = '/'
 
 /**
@@ -24,66 +20,6 @@ export function safeRedirect(
   }
 
   return to
-}
-
-export function useMatchesData<T extends Zod.ZodType<any, any, any>>({
-  id,
-  schema,
-}: {
-  id: string
-  schema: T
-}) {
-  type SchemaType = Zod.infer<T>
-  const matchingRoutes = RemixReact.useMatches()
-  const route = React.useMemo(
-    () => matchingRoutes.find((route) => route.id === id),
-    [matchingRoutes, id]
-  )
-
-  return schema.parse(route?.data) as SchemaType
-}
-
-export function useMatchesDataSafe<T extends Zod.ZodType<any, any, any>>({
-  id,
-  schema,
-}: {
-  id: string
-  schema: T
-}) {
-  type SchemaType = Zod.infer<T>
-  const matchingRoutes = RemixReact.useMatches()
-  const route = React.useMemo(
-    () => matchingRoutes.find((route) => route.id === id),
-    [matchingRoutes, id]
-  )
-
-  const result = schema.safeParse(route?.data)
-  if (!result.success) return undefined
-
-  return result?.data as SchemaType
-}
-
-export function useOptionalUser() {
-  const UserSchema = Zod.object({
-    user: Zod.object({
-      id: Zod.string(),
-      email: Zod.string(),
-      accounts: Zod.array(Zod.object({ id: Zod.string(), name: Zod.string() })),
-    }),
-  })
-
-  const data = useMatchesDataSafe({ id: 'root', schema: UserSchema })
-  return data?.user
-}
-
-export function useUser() {
-  const maybeUser = useOptionalUser()
-  if (!maybeUser) {
-    throw new Error(
-      'No user found in root loader, but user is required by useUser. If user is optional, try useOptionalUser instead.'
-    )
-  }
-  return maybeUser
 }
 
 // https://fettblog.eu/typescript-hasownproperty/

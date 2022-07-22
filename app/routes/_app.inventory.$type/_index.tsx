@@ -1,10 +1,7 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
-import * as React from 'react'
 import * as RemixParamsHelper from 'remix-params-helper'
-import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
-import ItemList from '~/components/ItemList'
 import Search from '~/components/Search'
 import * as DB from '~/db.server'
 import useSearchFilter from '~/hooks/useSearchFilter'
@@ -12,6 +9,7 @@ import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
 import * as UtilsServer from '~/utils/index.server'
+import ItemList from './ItemList'
 
 export async function action({ request }: RemixNode.ActionArgs) {
   const accountId = await Session.requireAccountId(request)
@@ -36,16 +34,14 @@ export async function action({ request }: RemixNode.ActionArgs) {
 }
 
 export async function loader({ params, request }: RemixNode.LoaderArgs) {
-  const { type: typeParams } = params
-  invariant(typeParams, 'type is required')
   const parsedType = Zod.nativeEnum({
     ...DB.ItemType,
     ALL: 'ALL' as const,
-  }).safeParse(Utils.toConstCase(typeParams))
+  }).safeParse(Utils.toConstCase(params.type ?? ''))
 
   if (!parsedType.success) {
     throw RemixNode.json(
-      { category: typeParams },
+      { message: `Type ${params.type} is not valid` },
       { status: 404, statusText: 'Page Not Found' }
     )
   }
@@ -76,21 +72,17 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
 export default function InventoryCategoryPage() {
   const data = RemixReact.useLoaderData<typeof loader>()
 
-  const combinedItems = React.useMemo(
-    () =>
-      Array.isArray(data.items)
-        ? [...data.items]
-        : [
-            ...data.items.common,
-            ...data.items.ascensionGem,
-            ...data.items.ascensionBoss,
-            ...data.items.localSpecialty,
-            ...data.items.talentBook,
-            ...data.items.talentBoss,
-            ...data.items.special,
-          ],
-    [data.items]
-  )
+  const combinedItems = Array.isArray(data.items)
+    ? [...data.items]
+    : [
+        ...data.items.common,
+        ...data.items.ascensionGem,
+        ...data.items.ascensionBoss,
+        ...data.items.localSpecialty,
+        ...data.items.talentBook,
+        ...data.items.talentBoss,
+        ...data.items.special,
+      ]
 
   const { searchItems, showSearch, changeHandler } = useSearchFilter({
     items: combinedItems,

@@ -6,7 +6,7 @@ import * as Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
 import Image from '~/components/Image'
 import Logo from '~/components/Logo'
-import * as Utils from '~/utils/index'
+import useUser from '~/hooks/useUser'
 
 const navigation = [
   { name: 'Character', to: '/character' },
@@ -19,7 +19,7 @@ export default function AppNavbar() {
     document.body.classList.toggle('overflow-hidden')
   }
 
-  const user = Utils.useUser()
+  const user = useUser()
 
   return (
     <HeadlessUIReact.Popover

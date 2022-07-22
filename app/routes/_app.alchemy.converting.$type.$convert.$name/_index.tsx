@@ -3,9 +3,10 @@ import * as RemixReact from '@remix-run/react'
 import * as RemixParamsHelper from 'remix-params-helper'
 import * as Zod from 'zod'
 import * as DB from '~/db.server'
+import useMatchesData from '~/hooks/useMatchesData'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
-import * as Utils from '~/utils/index'
+import * as Utils from '~/utils'
 import * as UtilsServer from '~/utils/index.server'
 import CatchBoundaryComponent from './CatchBoundary'
 import ConvertItem from './ConvertItem'
@@ -33,6 +34,14 @@ export async function action({ params, request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
 
   const { name, type } = ParamsSchema.parse(params)
+
+  const validItem = UtilsServer.Item.validateItem(name)
+  if (!validItem) {
+    throw RemixNode.json(`Item ${name} not found`, {
+      status: 404,
+      statusText: 'Item Not Found',
+    })
+  }
 
   const result = await RemixParamsHelper.getFormData(request, FormDataSchema)
   if (!result.success) {
@@ -82,24 +91,32 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
 
   const { name, convert } = result.data
 
+  const validItem = UtilsServer.Item.validateItem(name)
+  if (!validItem) {
+    throw RemixNode.json(`Item ${name} not found`, {
+      status: 404,
+      statusText: 'Item Not Found',
+    })
+  }
+
   const itemType =
     convert === 'convert-boss'
       ? DB.ItemType.TALENT_BOSS
       : DB.ItemType.ASCENSION_GEM
 
-  const isValidItem = UtilsServer.Item.isValidConvertable({
+  const isValidConvertable = UtilsServer.Item.isValidConvertable({
     name,
     type: itemType,
   })
 
-  if (!isValidItem) {
+  if (!isValidConvertable) {
     throw RemixNode.json(
       {
         message: `${name} is not ${
           convert === 'convert-boss' ? 'talent boss material' : 'ascension gem'
         }`,
       },
-      { status: 404, statusText: 'Invalid Item' }
+      { status: 404, statusText: 'Invalid Convertable' }
     )
   }
 
@@ -124,7 +141,7 @@ export default function AlchemyConvertingTabPage() {
 
   const { converter } = RemixReact.useLoaderData<typeof loader>()
 
-  const items = Utils.useMatchesData({
+  const items = useMatchesData({
     id: 'routes/_app.alchemy.converting.$type/_index',
     schema: Zod.union([
       Zod.object({

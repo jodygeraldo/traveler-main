@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import * as React from 'react'
 import * as Icon from '~/components/Icon'
 import Image from '~/components/Image'
-import * as Utils from '~/utils/index'
+import * as Utils from '~/utils'
 
 interface Props {
   options: {

@@ -1,5 +1,10 @@
-import * as ItemData from '~/data/items'
+import * as ItemData from '~/data/item.server'
 import * as DB from '~/db.server'
+import type * as ItemType from '~/types/item'
+
+export function validateItem(name: string | undefined): name is ItemType.Name {
+  return ItemData.items.findIndex((i) => i.name === name) !== -1
+}
 
 export function getAllItems(
   inventory: Pick<DB.Inventory, 'name' | 'quantity'>[]
@@ -43,18 +48,16 @@ export function getItemsByType({
   type: DB.ItemType
   userItems: Pick<DB.Inventory, 'name' | 'quantity'>[]
 }) {
-  const result = ItemData.items.filter((item) => item.type === type)
-
-  userItems.forEach((userItem) => {
-    const itemIndex = result.findIndex((item) => item.name === userItem.name)
-    if (itemIndex !== -1) result[itemIndex].quantity = userItem.quantity
-  })
-
-  return result.map((item) => ({
-    name: item.name,
-    rarity: item.rarity,
-    quantity: item.quantity || 0,
-  }))
+  return ItemData.items
+    .filter((item) => item.type === type)
+    .map((item) => {
+      const userItem = userItems.find((userItem) => userItem.name === item.name)
+      return {
+        name: item.name,
+        rarity: item.rarity,
+        quantity: userItem?.quantity ? userItem.quantity : 0,
+      }
+    })
 }
 
 export function getItemsByNames({
@@ -64,16 +67,16 @@ export function getItemsByNames({
   names: string[]
   userItems: Pick<DB.Inventory, 'name' | 'quantity'>[]
 }) {
-  const result = ItemData.items.filter((item) => names.includes(item.name))
-
-  result.forEach((item, index) => {
-    const itemIndex = userItems.findIndex(
-      (userItem) => item.name === userItem.name
-    )
-    if (itemIndex !== -1) result[index].quantity = userItems[itemIndex].quantity
-  })
-
-  return result
+  return ItemData.items
+    .filter((item) => names.includes(item.name))
+    .map((item) => {
+      const userItem = userItems.find((userItem) => userItem.name === item.name)
+      return {
+        name: item.name,
+        rarity: item.rarity,
+        quantity: userItem?.quantity ? userItem.quantity : 0,
+      }
+    })
 }
 
 export function getConverterItems({
@@ -84,7 +87,7 @@ export function getConverterItems({
   type: 'ASCENSION_GEM' | 'TALENT_BOSS'
 }) {
   if (type === 'ASCENSION_GEM') {
-    const tmpGems = ItemData.items.filter((item) => {
+    const gems = ItemData.items.filter((item) => {
       const baseFilter =
         item.type === DB.ItemType.ASCENSION_GEM &&
         item.name !== name &&
@@ -106,11 +109,11 @@ export function getConverterItems({
         : name.includes('Fragment')
         ? 3
         : 1,
-      items: tmpGems.map((item) => item.name),
+      items: gems.map((item) => item.name),
     }
   }
 
-  const tmpBosses = ItemData.items.filter((item) => {
+  const bosses = ItemData.items.filter((item) => {
     const baseFilter =
       item.type === DB.ItemType.TALENT_BOSS && item.name !== name
 
@@ -128,7 +131,7 @@ export function getConverterItems({
   })
   return {
     specialRequiredQuantity: 1,
-    items: tmpBosses.map((item) => item.name),
+    items: bosses.map((item) => item.name),
   }
 }
 
@@ -149,24 +152,9 @@ const talentBossGroup = {
   ],
 }
 
-export function getCrafterItem(name: string) {
-  return ItemData.items
-    .filter((item) => item.craft && item.craft.craftable && item.name === name)
-    .map((item) => {
-      // @ts-ignore
-      const craft = item.craft as {
-        craftable: true
-        crafter: {
-          name: string
-          quantity: number
-        }
-        refundable: boolean
-        doublable: boolean
-      }
-      return {
-        ...craft,
-      }
-    })[0]
+export function getCrafterItem(name: ItemType.Name) {
+  return ItemData.items.find((item) => item.name === name)!
+    .craft as ItemType.CraftableItem
 }
 
 export function getConvertableItemNames() {
@@ -175,7 +163,9 @@ export function getConvertableItemNames() {
     .map((item) => item.name)
 }
 
-export function getConvertableItemNamesByType({ type }: { type: DB.ItemType }) {
+export function getConvertableItemNamesByType(
+  type: 'ASCENSION_GEM' | 'TALENT_BOSS'
+) {
   return ItemData.items
     .filter((item) => item.convertable && item.type === type)
     .map((item) => item.name)
@@ -185,10 +175,10 @@ export function isValidConvertable({
   name,
   type,
 }: {
-  type: DB.ItemType
-  name: string
+  type: 'ASCENSION_GEM' | 'TALENT_BOSS'
+  name: ItemType.Name
 }) {
-  return getConvertableItemNamesByType({ type }).includes(name)
+  return getConvertableItemNamesByType(type).includes(name)
 }
 
 export function getCraftItemNames() {
@@ -206,7 +196,7 @@ export function isValidCraftable({
   type,
 }: {
   type: DB.ItemType
-  name: string
+  name: ItemType.Name
 }) {
   return ItemData.items
     .filter((item) => item.craft && item.craft.craftable && item.type === type)
@@ -222,7 +212,10 @@ function getCraftable({
   type: 'COMMON' | 'ASCENSION_GEM' | 'TALENT_BOOK'
 }) {
   const craftable = ItemData.items
-    .filter((item) => item.craft && item.craft.craftable && item.type === type)
+    .filter(
+      (item) =>
+        item.craft && item.craft.craftable !== 'Material' && item.type === type
+    )
     .map((item) => {
       const userItem = userItems.find((userItem) => userItem.name === item.name)
 
@@ -234,7 +227,10 @@ function getCraftable({
     })
 
   const crafterNonCraftable = ItemData.items
-    .filter((item) => item.craft && !item.craft.craftable && item.type === type)
+    .filter(
+      (item) =>
+        item.craft && item.craft.craftable === 'Material' && item.type === type
+    )
     .map((item) => {
       const userItem = userItems.find((userItem) => userItem.name === item.name)
 
@@ -253,22 +249,22 @@ export function getCraftableItems({
   type,
 }: {
   userItems: Pick<DB.Inventory, 'name' | 'quantity'>[]
-  type?: 'enhancement' | 'ascension' | 'talent'
+  type?: 'COMMON' | 'ASCENSION_GEM' | 'TALENT_BOOK'
 }) {
-  if (type === 'enhancement') {
-    const craftable = getCraftable({ userItems, type: 'COMMON' })
+  if (type === 'COMMON') {
+    const craftable = getCraftable({ userItems, type })
 
     return craftable
   }
 
-  if (type === 'ascension') {
-    const craftable = getCraftable({ userItems, type: 'ASCENSION_GEM' })
+  if (type === 'ASCENSION_GEM') {
+    const craftable = getCraftable({ userItems, type })
 
     return craftable
   }
 
-  if (type === 'talent') {
-    const craftable = getCraftable({ userItems, type: 'TALENT_BOOK' })
+  if (type === 'TALENT_BOOK') {
+    const craftable = getCraftable({ userItems, type })
 
     return craftable
   }
@@ -321,21 +317,21 @@ export function getConvertableItems({
   type,
 }: {
   userItems: Pick<DB.Inventory, 'name' | 'quantity'>[]
-  type?: 'ascension-gem' | 'talent-boss'
+  type?: 'ASCENSION_GEM' | 'TALENT_BOSS'
 }) {
-  if (type === 'ascension-gem') {
+  if (type === 'ASCENSION_GEM') {
     const { convertable, converter } = getConvertable({
       userItems,
-      type: 'ASCENSION_GEM',
+      type,
     })
 
     return { convertable, converter }
   }
 
-  if (type === 'talent-boss') {
+  if (type === 'TALENT_BOSS') {
     const { convertable, converter } = getConvertable({
       userItems,
-      type: 'TALENT_BOSS',
+      type,
     })
 
     return { convertable, converter }

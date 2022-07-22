@@ -1,19 +1,26 @@
 import * as RemixReact from '@remix-run/react'
 import Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
-import type * as ItemData from '~/data/items'
+import type * as ItemType from '~/types/item'
 import ItemWithImage from './ItemWithImage'
 
 interface Props {
   heading: string
   progressionLevel: number
   materials:
-    | Pick<ItemData.Item, 'name' | 'quantity' | 'type' | 'rarity'>[]
+    | {
+        name: ItemType.Name
+        rarity: ItemType.Item['rarity']
+        quantity: number
+      }[]
     | undefined
-  inventoryItems: Pick<
-    ItemData.Item,
-    'name' | 'quantity' | 'type' | 'rarity'
-  >[]
+  inventoryItems:
+    | {
+        name: ItemType.Name
+        rarity: ItemType.Item['rarity']
+        quantity: number
+      }[]
+    | undefined
   possibleToLevel: boolean
   isAscension?: boolean
   characterLevel?: number

@@ -1,7 +1,12 @@
 import Image from '~/components/Image'
-import * as Utils from '~/utils/index'
+import type * as CharacterType from '~/types/character'
+import * as Utils from '~/utils'
 
-export default function ConstellationImage({ name }: { name: string }) {
+interface Props {
+  name: CharacterType.Name | 'Aether' | 'Lumine'
+}
+
+export default function ConstellationImage({ name }: Props) {
   return (
     <Image
       src={`/constellation/${Utils.getImageSrc(name)}.png`}

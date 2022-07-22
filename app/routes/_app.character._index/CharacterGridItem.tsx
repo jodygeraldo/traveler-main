@@ -1,8 +1,8 @@
 import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 import Image from '~/components/Image'
-import type * as CharacterData from '~/data/characters'
-import * as Utils from '~/utils/index'
+import type * as CharacterType from '~/types/character'
+import * as Utils from '~/utils'
 
 const backgroundImage: Record<4 | 5 | '5s', string> = {
   4: 'bg-image-rarity-4',
@@ -11,10 +11,10 @@ const backgroundImage: Record<4 | 5 | '5s', string> = {
 }
 
 interface Props {
-  name: CharacterData.Character['name']
-  vision: CharacterData.Character['vision']
-  rarity: CharacterData.Character['rarity']
-  level?: number
+  name: CharacterType.Name
+  vision: CharacterType.Vision
+  rarity: CharacterType.Character['rarity']
+  level: number
 }
 
 export default function CharacterGridItem({

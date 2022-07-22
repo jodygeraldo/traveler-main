@@ -5,7 +5,7 @@ import * as React from 'react'
 import Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
 import Image from '~/components/Image'
-import * as Utils from '~/utils/index'
+import * as Utils from '~/utils'
 import Combobox from './Combobox'
 
 const backgroundImage: Record<number, string> = {
