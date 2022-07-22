@@ -124,22 +124,25 @@ export default function AlchemyConvertingTabPage() {
 
   const { converter } = RemixReact.useLoaderData<typeof loader>()
 
-  const items = Zod.union([
-    Zod.object({
-      convertable: Zod.array(ItemParams),
-      converter: ItemParams,
-    }),
-    Zod.object({
-      ascensionGem: Zod.object({
+  const items = Utils.useMatchesData({
+    id: 'routes/_app.alchemy.converting.$type/_index',
+    schema: Zod.union([
+      Zod.object({
         convertable: Zod.array(ItemParams),
         converter: ItemParams,
       }),
-      talentBoss: Zod.object({
-        convertable: Zod.array(ItemParams),
-        converter: ItemParams,
+      Zod.object({
+        ascensionGem: Zod.object({
+          convertable: Zod.array(ItemParams),
+          converter: ItemParams,
+        }),
+        talentBoss: Zod.object({
+          convertable: Zod.array(ItemParams),
+          converter: ItemParams,
+        }),
       }),
-    }),
-  ]).parse(Utils.useMatchesData({ id: 'routes/_app.alchemy.converting.$type/_index' }))
+    ]),
+  })
 
   if (
     Utils.hasOwnProperty(items, 'convertable') &&

@@ -119,26 +119,29 @@ export default function AlchemyConvertingTabPage() {
 
   const { item } = RemixReact.useLoaderData<typeof loader>()
 
-  const items = Zod.union([
-    Zod.object({
-      craftable: Zod.array(ItemParams),
-      crafterNonCraftable: Zod.array(ItemParams),
-    }),
-    Zod.object({
-      enhancementCraftable: Zod.object({
+  const items = Utils.useMatchesData({
+    id: 'routes/_app.alchemy.crafting.$type/_index',
+    schema: Zod.union([
+      Zod.object({
         craftable: Zod.array(ItemParams),
         crafterNonCraftable: Zod.array(ItemParams),
       }),
-      ascensionCraftable: Zod.object({
-        craftable: Zod.array(ItemParams),
-        crafterNonCraftable: Zod.array(ItemParams),
+      Zod.object({
+        enhancementCraftable: Zod.object({
+          craftable: Zod.array(ItemParams),
+          crafterNonCraftable: Zod.array(ItemParams),
+        }),
+        ascensionCraftable: Zod.object({
+          craftable: Zod.array(ItemParams),
+          crafterNonCraftable: Zod.array(ItemParams),
+        }),
+        talentCraftable: Zod.object({
+          craftable: Zod.array(ItemParams),
+          crafterNonCraftable: Zod.array(ItemParams),
+        }),
       }),
-      talentCraftable: Zod.object({
-        craftable: Zod.array(ItemParams),
-        crafterNonCraftable: Zod.array(ItemParams),
-      }),
-    }),
-  ]).parse(Utils.useMatchesData({ id: 'routes/_app.alchemy.crafting.$type/_index' }))
+    ]),
+  })
 
   if (
     Utils.hasOwnProperty(items, 'craftable') &&
