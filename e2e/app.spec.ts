@@ -299,9 +299,9 @@ test.describe('apps', () => {
       await page.locator('#elemental-skill').fill('10')
       await page.locator('#elemental-burst').fill('10')
       await page.locator('button[type="submit"]').click()
-      await page.waitForTimeout(1500)
+      await page.waitForTimeout(500)
 
-      await page.reload()
+      await page.goto('/character/Ganyu/manual-levelup')
       await page.waitForTimeout(500)
 
       await expect(page.locator('#level')).toHaveValue('90')
