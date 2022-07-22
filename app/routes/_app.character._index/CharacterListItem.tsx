@@ -2,28 +2,22 @@ import * as RemixReact from '@remix-run/react'
 import CellWithImage from '~/components/CellWithImage'
 import * as Icon from '~/components/Icon'
 import Image from '~/components/Image'
-import type * as CharacterData from '~/data/characters'
+import type * as CharacterType from '~/types/character'
 import * as Utils from '~/utils'
 
 interface Props {
-  name: CharacterData.Character['name']
-  vision: CharacterData.Character['vision']
-  weapon: CharacterData.Character['weapon']
-  progression: CharacterData.Character['progression']
-  talent: CharacterData.Character['talent']
+  name: CharacterType.Name
+  vision: CharacterType.Vision
+  weapon: CharacterType.Weapon
+  progression: CharacterType.Progression
+  talent: CharacterType.Character['talent']
 }
 
 export default function CharacterListItem({
   name,
   vision,
   weapon,
-  progression = {
-    level: 1,
-    ascension: 0,
-    normalAttack: 1,
-    elementalSkill: 1,
-    elementalBurst: 1,
-  },
+  progression,
   talent,
 }: Props) {
   return (

@@ -7,7 +7,7 @@ export async function getInventory({ accountId }: { accountId: string }) {
       ownerId: accountId,
     },
     select: {
-      itemName: true,
+      name: true,
       quantity: true,
     },
   })
@@ -30,7 +30,7 @@ export async function getInventoryByType({
       },
     },
     select: {
-      itemName: true,
+      name: true,
       quantity: true,
     },
   })
@@ -63,7 +63,7 @@ export async function upsertInventoryItem({
         data: {
           ownerId: accountId,
           quantity,
-          itemName: name,
+          name,
         },
       })
     }
@@ -71,19 +71,19 @@ export async function upsertInventoryItem({
 }
 
 export async function getRequiredItems({
-  itemNames,
+  names,
   accountId,
 }: {
-  itemNames: string[]
+  names: string[]
   accountId: string
 }) {
   return prisma.inventory.findMany({
     where: {
       ownerId: accountId,
-      itemName: { in: itemNames },
+      name: { in: names },
     },
     select: {
-      itemName: true,
+      name: true,
       quantity: true,
     },
   })
@@ -111,7 +111,7 @@ export async function convertItem({
     const inventory = await tx.inventory.findMany({
       where: {
         ownerId: accountId,
-        itemName: {
+        name: {
           in: [converter.special.name, converter.item.name],
         },
       },
@@ -123,10 +123,8 @@ export async function convertItem({
       }
     }
 
-    const special = inventory.find(
-      (i) => i.itemName === converter.special.name
-    )!
-    const item = inventory.find((i) => i.itemName === converter.item.name)!
+    const special = inventory.find((i) => i.name === converter.special.name)!
+    const item = inventory.find((i) => i.name === converter.item.name)!
 
     if (special.quantity < converter.special.quantity) {
       return {
@@ -143,7 +141,7 @@ export async function convertItem({
     const convertedItem = await tx.inventory.findFirst({
       where: {
         ownerId: accountId,
-        itemName: name,
+        name,
       },
     })
 
@@ -152,7 +150,7 @@ export async function convertItem({
         id: convertedItem?.id ?? '',
       },
       create: {
-        itemName: name,
+        name,
         ownerId: accountId,
         quantity: converter.item.quantity,
       },
@@ -167,7 +165,7 @@ export async function convertItem({
       await tx.inventory.updateMany({
         where: {
           ownerId: accountId,
-          itemName: {
+          name: {
             in: [converter.special.name, converter.item.name],
           },
         },
@@ -219,7 +217,7 @@ export async function craftItem({
     const inventory = await tx.inventory.findFirst({
       where: {
         ownerId: accountId,
-        itemName: crafterName,
+        name: crafterName,
       },
     })
 
@@ -238,7 +236,7 @@ export async function craftItem({
     const convertedItem = await tx.inventory.findFirst({
       where: {
         ownerId: accountId,
-        itemName: name,
+        name,
       },
     })
 
@@ -250,7 +248,7 @@ export async function craftItem({
         id: convertedItem?.id ?? '',
       },
       create: {
-        itemName: name,
+        name: name,
         ownerId: accountId,
         quantity: updatedQuantity,
       },

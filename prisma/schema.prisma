@@ -98,8 +98,8 @@ model Inventory {
   id       String @id @default(cuid())
   quantity Int    @db.UnsignedSmallInt
 
-  item     Item   @relation(fields: [itemName], references: [name])
-  itemName String @map("item_name")
+  item     Item   @relation(fields: [name], references: [name])
+  name String @map("item_name")
 
   account Account @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId String  @map("owner_id")
@@ -113,8 +113,8 @@ model UserCharacter {
   elementalSkill Int    @map("elemental_skill") @db.UnsignedSmallInt
   elementalBurst Int    @map("elemental_burst") @db.UnsignedSmallInt
 
-  character     Character @relation(fields: [characterName], references: [name])
-  characterName String    @map("character_name")
+  character     Character @relation(fields: [name], references: [name])
+  name String    @map("character_name")
 
   account Account @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId String  @map("owner_id")
