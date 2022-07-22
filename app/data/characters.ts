@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import * as DB from '~/db.server'
-import * as Utils from '~/utils'
+import * as Utils from '~/utils/index'
 import type * as ItemData from './items'
 
 type CommonMaterial =

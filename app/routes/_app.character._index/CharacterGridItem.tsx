@@ -2,7 +2,7 @@ import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 import Image from '~/components/Image'
 import type * as CharacterData from '~/data/characters'
-import * as Utils from '~/utils'
+import * as Utils from '~/utils/index'
 
 const backgroundImage: Record<4 | 5 | '5s', string> = {
   4: 'bg-image-rarity-4',

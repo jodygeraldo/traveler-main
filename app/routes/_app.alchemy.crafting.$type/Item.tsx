@@ -2,7 +2,7 @@ import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 import Image from '~/components/Image'
 import Tooltip from '~/components/Tooltip'
-import * as Utils from '~/utils'
+import * as Utils from '~/utils/index'
 
 const backgroundImage: Record<number, string> = {
   1: 'bg-image-rarity-1',

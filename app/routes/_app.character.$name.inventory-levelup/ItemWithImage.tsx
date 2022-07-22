@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import Image from '~/components/Image'
 import Tooltip from '~/components/Tooltip'
 import type * as ItemData from '~/data/items'
-import * as Utils from '~/utils'
+import * as Utils from '~/utils/index'
 
 const backgroundImage: Record<1 | 2 | 3 | 4 | 5, string> = {
   1: 'bg-image-rarity-1',

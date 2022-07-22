@@ -3,7 +3,7 @@ import CellWithImage from '~/components/CellWithImage'
 import * as Icon from '~/components/Icon'
 import Image from '~/components/Image'
 import type * as CharacterData from '~/data/characters'
-import * as Utils from '~/utils'
+import * as Utils from '~/utils/index'
 
 interface Props {
   name: CharacterData.Character['name']

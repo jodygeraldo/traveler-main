@@ -1,5 +1,5 @@
 import Image from '~/components/Image'
-import * as Utils from '~/utils'
+import * as Utils from '~/utils/index'
 
 export default function ConstellationImage({ name }: { name: string }) {
   return (

@@ -5,7 +5,7 @@ import * as ItemData from '~/data/items'
 import * as DB from '~/db.server'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
-import * as Utils from '~/utils'
+import * as Utils from '~/utils/index'
 import ItemList from './ItemList'
 
 export async function loader({ params, request }: RemixNode.LoaderArgs) {

@@ -2,7 +2,7 @@ import * as RemixReact from '@remix-run/react'
 import Button, * as Buttons from '~/components/Button'
 import Image from '~/components/Image'
 import Logo from '~/components/Logo'
-import * as Utils from '~/utils'
+import * as Utils from '~/utils/index'
 
 export default function Index() {
   const user = Utils.useOptionalUser()

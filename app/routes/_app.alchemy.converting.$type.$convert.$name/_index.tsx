@@ -6,7 +6,7 @@ import * as ItemData from '~/data/items'
 import * as DB from '~/db.server'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
-import * as Utils from '~/utils'
+import * as Utils from '~/utils/index'
 import CatchBoundaryComponent from './CatchBoundary'
 import ConvertItem from './ConvertItem'
 
@@ -139,7 +139,7 @@ export default function AlchemyConvertingTabPage() {
         converter: ItemParams,
       }),
     }),
-  ]).parse(Utils.useMatchesData('routes/_app.alchemy.converting.$type/_index'))
+  ]).parse(Utils.useMatchesData({ id: 'routes/_app.alchemy.converting.$type/_index' }))
 
   if (
     Utils.hasOwnProperty(items, 'convertable') &&

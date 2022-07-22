@@ -1,7 +1,7 @@
 import type * as ReactTable from '@tanstack/react-table'
 import CellWithImage from '~/components/CellWithImage'
 import * as Icon from '~/components/Icon'
-import * as Utils from '~/utils'
+import * as Utils from '~/utils/index'
 
 interface Ascension {
   phase: { from: number; to: number }

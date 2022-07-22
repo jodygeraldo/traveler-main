@@ -6,7 +6,7 @@ import * as Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
 import Image from '~/components/Image'
 import Logo from '~/components/Logo'
-import * as Utils from '~/utils'
+import * as Utils from '~/utils/index'
 
 const navigation = [
   { name: 'Character', to: '/character' },

@@ -11,7 +11,7 @@ import * as DB from '~/db.server'
 import useSearchFilter from '~/hooks/useSearchFilter'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
-import * as Utils from '~/utils'
+import * as Utils from '~/utils/index'
 
 export async function action({ request }: RemixNode.ActionArgs) {
   const accountId = await Session.requireAccountId(request)
