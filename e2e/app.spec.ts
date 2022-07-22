@@ -179,7 +179,7 @@ test.describe('apps', () => {
     })
   })
 
-  test.describe('alchemy page', () => {
+  test.describe.skip('alchemy page', () => {
     test('can go to alchemy crafting page', async ({ page }) => {
       await page.locator('#Alchemy-link-desktop').click()
       await expect(page).toHaveURL('/alchemy/crafting/all')
