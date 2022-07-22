@@ -120,12 +120,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     )
   }
 
-<<<<<<< HEAD
-  const item = ItemData.getCrafterItem(name)
-  console.log(item)
-=======
   const item = UtilsServer.Item.getCrafterItem(name)
->>>>>>> 0aab238 (refactor: structure and types (#59))
 
   return RemixNode.json({ item })
 }
