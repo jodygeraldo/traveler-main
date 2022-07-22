@@ -2,8 +2,6 @@ import { expect, test } from '@playwright/test'
 import prisma from '~/db.server'
 import { createUser } from '~/models/user.server'
 
-let baseURL = process.env.URL || 'http://localhost:3000'
-
 test.describe('apps', () => {
   test.describe.configure({ mode: 'serial' })
 
@@ -11,7 +9,6 @@ test.describe('apps', () => {
   const PASSWORD = 'test1234'
 
   test.beforeAll(async () => {
-    console.log(await prisma.user.count())
     // cleanup user
     await prisma.user
       .delete({
@@ -25,15 +22,15 @@ test.describe('apps', () => {
 
   // login
   test.beforeEach(async ({ page }) => {
-    await page.goto(baseURL)
+    await page.goto('.')
     await page.locator('#signin').click()
-    await expect(page).toHaveURL(`${baseURL}/login`)
+    await expect(page).toHaveURL('/login')
     await expect(page.locator('text=Sign in to your account')).toBeVisible()
 
     await page.locator('#email').fill(EMAIL)
     await page.locator('#password').fill(PASSWORD)
     await page.locator('#signin').click()
-    await expect(page).toHaveURL(`${baseURL}/character`)
+    await expect(page).toHaveURL('/character')
   })
 
   test.describe('character page', () => {
@@ -65,7 +62,7 @@ test.describe('apps', () => {
     }) => {
       test.setTimeout(10000)
       await page.locator('#bulk-update').click()
-      await expect(page).toHaveURL(`${baseURL}/character/bulk-update`)
+      await expect(page).toHaveURL('/character/bulk-update')
 
       const ALBEDO = {
         LEVEL: '90',
@@ -90,10 +87,10 @@ test.describe('apps', () => {
       await page.locator('#Amber-elemental-burst').fill(AMBER.ELEMENTAL_BUSRT)
 
       await page.locator('button[type="submit"]').first().click()
-      await expect(page).toHaveURL(`${baseURL}/character`)
+      await expect(page).toHaveURL('/character')
 
       await page.locator('#bulk-update').click()
-      await expect(page).toHaveURL(`${baseURL}/character/bulk-update`)
+      await expect(page).toHaveURL('/character/bulk-update')
 
       await expect(page.locator('#Albedo-level')).toHaveValue(ALBEDO.LEVEL)
       await expect(page.locator('#Albedo-ascension')).toHaveValue(
@@ -115,7 +112,7 @@ test.describe('apps', () => {
   test.describe('inventory page', () => {
     test('can go to inventory page', async ({ page }) => {
       await page.locator('#Inventory-link-desktop').click()
-      await expect(page).toHaveURL(`${baseURL}/inventory/all`)
+      await expect(page).toHaveURL('/inventory/all')
       await expect(page.locator('h1:has-text("Inventory")')).toBeVisible()
     })
 
@@ -149,16 +146,16 @@ test.describe('apps', () => {
     test('can update quantity of items', async ({ page }) => {
       test.setTimeout(10000)
       await page.locator('#Inventory-link-desktop').click()
-      await expect(page).toHaveURL(`${baseURL}/inventory/all`)
+      await expect(page).toHaveURL('/inventory/all')
 
       await page.locator(ITEM[0].SELECTOR).fill(ITEM[0].QUANTITY)
       await page.waitForTimeout(1500)
       await page.locator('#talent_book-link').click()
-      await expect(page).toHaveURL(`${baseURL}/inventory/talent-book`)
+      await expect(page).toHaveURL('/inventory/talent-book')
       await expect(page.locator(ITEM[0].SELECTOR)).toHaveValue(ITEM[0].QUANTITY)
 
       await page.locator('#all-link').click()
-      await expect(page).toHaveURL(`${baseURL}/inventory/all`)
+      await expect(page).toHaveURL('/inventory/all')
 
       await page.locator(ITEM[3].SELECTOR).fill(ITEM[3].QUANTITY)
       await page.locator(ITEM[4].SELECTOR).fill(ITEM[4].QUANTITY)
@@ -167,14 +164,14 @@ test.describe('apps', () => {
       await page.locator(ITEM[1].SELECTOR).fill(ITEM[1].QUANTITY)
       await page.waitForTimeout(1500)
       await page.locator('#talent_boss-link').click()
-      await expect(page).toHaveURL(`${baseURL}/inventory/talent-boss`)
+      await expect(page).toHaveURL('/inventory/talent-boss')
       await expect(page.locator(ITEM[1].SELECTOR)).toHaveValue(ITEM[1].QUANTITY)
     })
 
     test('can search for items', async ({ page }) => {
       test.setTimeout(10000)
       await page.locator('#Inventory-link-desktop').click()
-      await expect(page).toHaveURL(`${baseURL}/inventory/all`)
+      await expect(page).toHaveURL('/inventory/all')
 
       await page.locator(ITEM[2].SELECTOR).fill(ITEM[2].QUANTITY)
       await page.waitForTimeout(1500)
@@ -188,7 +185,7 @@ test.describe('apps', () => {
   test.describe('alchemy page', () => {
     test('can go to alchemy crafting page', async ({ page }) => {
       await page.locator('#Alchemy-link-desktop').click()
-      await expect(page).toHaveURL(`${baseURL}/alchemy/crafting/all`)
+      await expect(page).toHaveURL('/alchemy/crafting/all')
       await expect(
         page.locator('h1:has-text("Alchemy Crafting")')
       ).toBeVisible()
@@ -198,11 +195,11 @@ test.describe('apps', () => {
       test.setTimeout(10000)
 
       await page.locator('#Alchemy-link-desktop').click()
-      await expect(page).toHaveURL(`${baseURL}/alchemy/crafting/all`)
+      await expect(page).toHaveURL('/alchemy/crafting/all')
 
       await page.locator('#guide_to_freedom-link').click()
       await expect(page).toHaveURL(
-        `${baseURL}/alchemy/crafting/all/craft-talent/Guide%20to%20Freedom`
+        '/alchemy/crafting/all/craft-talent/Guide%20to%20Freedom'
       )
       await page.locator('input[name="quantity"]').fill('18')
       await page.locator('input[name="bonusQuantity"]').fill('2')
@@ -210,9 +207,9 @@ test.describe('apps', () => {
 
       await page.locator('#craft').click()
       await page.waitForTimeout(1500)
-      await expect(page).toHaveURL(`${baseURL}/alchemy/crafting/all`)
+      await expect(page).toHaveURL('/alchemy/crafting/all')
 
-      await page.goto(`${baseURL}/alchemy/crafting/talent`)
+      await page.goto('/alchemy/crafting/talent')
       // quantity + bonusQuantity(2)
       await expect(page.locator('#guide_to_freedom-quantity')).toHaveText('20')
       // (ITEM[0]) -> 100 - quantity * 3
@@ -222,7 +219,7 @@ test.describe('apps', () => {
 
       await page.locator('#guide_to_freedom-link').click()
       await expect(page).toHaveURL(
-        `${baseURL}/alchemy/crafting/talent/craft-talent/Guide%20to%20Freedom`
+        '/alchemy/crafting/talent/craft-talent/Guide%20to%20Freedom'
       )
       await page.locator('input[name="quantity"]').fill('1')
       await page.locator('input[name="bonusQuantity"]').fill('1')
@@ -230,7 +227,7 @@ test.describe('apps', () => {
 
       await page.locator('#craft').click()
       await page.waitForTimeout(1500)
-      await expect(page).toHaveURL(`${baseURL}/alchemy/crafting/talent`)
+      await expect(page).toHaveURL('/alchemy/crafting/talent')
 
       // 20 + quantity
       await expect(page.locator('#guide_to_freedom-quantity')).toHaveText('21')
@@ -243,19 +240,19 @@ test.describe('apps', () => {
     test('can convert item', async ({ page }) => {
       test.setTimeout(10000)
 
-      await page.goto(`${baseURL}/alchemy/converting/all`)
+      await page.goto('/alchemy/converting/all')
 
       await page.locator('#ring_of_boreas-link').click()
       await expect(page).toHaveURL(
-        `${baseURL}/alchemy/converting/all/convert-boss/Ring%20of%20Boreas`
+        '/alchemy/converting/all/convert-boss/Ring%20of%20Boreas'
       )
       await page.locator('input[name="quantity"]').fill('2')
 
       await page.locator('#convert').click()
       await page.waitForTimeout(1500)
-      await expect(page).toHaveURL(`${baseURL}/alchemy/converting/all`)
+      await expect(page).toHaveURL('/alchemy/converting/all')
 
-      await page.goto(`${baseURL}/alchemy/converting/talent-boss`)
+      await page.goto('/alchemy/converting/talent-boss')
       // quantity(2)
       await expect(page.locator('#ring_of_boreas-quantity')).toHaveText('2')
       // ITEM[3] -> 17 - quantity(2)
@@ -265,13 +262,13 @@ test.describe('apps', () => {
 
       await page.locator('#tail_of_boreas-link').click()
       await expect(page).toHaveURL(
-        `${baseURL}/alchemy/converting/talent-boss/convert-boss/Tail%20of%20Boreas`
+        '/alchemy/converting/talent-boss/convert-boss/Tail%20of%20Boreas'
       )
       await page.locator('input[name="quantity"]').fill('1')
 
       await page.locator('#convert').click()
       await page.waitForTimeout(1500)
-      await page.goto(`${baseURL}/alchemy/converting/talent-boss`)
+      await page.goto('/alchemy/converting/talent-boss')
       // 2 - quantity(1)
       await expect(page.locator('#ring_of_boreas-quantity')).toHaveText('1')
       // ITEM[3] -> 15 - quantity(1)
@@ -284,7 +281,7 @@ test.describe('apps', () => {
   test.describe('character level up pages', () => {
     test('should display character required items table', async ({ page }) => {
       await page.locator('#Ganyu-character-page-link').click()
-      expect(page).toHaveURL(`${baseURL}/character/Ganyu/required-items`)
+      expect(page).toHaveURL('/character/Ganyu/required-items')
       await expect(page.locator('h1:has-text("Ganyu")')).toBeVisible()
       await expect(page.locator('h2:has-text("Ascension")')).toBeVisible()
       await expect(page.locator('h2:has-text("Talent")')).toBeVisible()
@@ -297,7 +294,7 @@ test.describe('apps', () => {
       await page.waitForTimeout(1500)
       await page.locator('#manual_level_up-link').click()
       await page.waitForTimeout(1500)
-      expect(page).toHaveURL(`${baseURL}/character/Ganyu/manual-levelup`)
+      expect(page).toHaveURL('/character/Ganyu/manual-levelup')
 
       await page.locator('#level').fill('90')
       await page.locator('#ascension').fill('6')
@@ -331,7 +328,7 @@ test.describe('apps', () => {
       await page.waitForTimeout(1500)
       await page.locator('#inventory_level_up-link').click()
       await page.waitForTimeout(1500)
-      expect(page).toHaveURL(`${baseURL}/character/Ganyu/inventory-levelup`)
+      expect(page).toHaveURL('/character/Ganyu/inventory-levelup')
 
       await expect(page.locator('text=Required character to 20.')).toBeVisible()
       await page.locator('#jump-level').click()

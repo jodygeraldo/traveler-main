@@ -1,8 +1,6 @@
 import { expect, test } from '@playwright/test'
 import prisma from '~/db.server'
 
-let baseURL = process.env.URL || 'http://localhost:3000'
-
 test.describe('auth flow', () => {
   test.describe.configure({ mode: 'serial' })
 
@@ -10,7 +8,7 @@ test.describe('auth flow', () => {
   const PASSWORD = 'test1234'
 
   test.beforeEach(async ({ page }) => {
-    await page.goto(baseURL)
+    await page.goto('.')
   })
 
   // cleanup user
@@ -39,10 +37,12 @@ test.describe('auth flow', () => {
     ).toBeVisible()
   })
 
-  test('can go to sign up page and create an account', async ({ page }) => {
+  test('can go to sign up page and create an account', async ({
+    page,
+  }, testInfo) => {
     // click sign up button to go to /join
     await page.locator('#signup').click()
-    await expect(page).toHaveURL(`${baseURL}/join`)
+    await expect(page).toHaveURL('/join')
     await expect(page.locator('text=Sign up new account')).toBeVisible()
 
     // filling input
@@ -50,29 +50,29 @@ test.describe('auth flow', () => {
     await page.locator('#password').fill(PASSWORD)
     await page.locator('#confirm-password').fill(PASSWORD)
     await page.locator('#signup').click()
-    await expect(page).toHaveURL(`${baseURL}/character`)
+    await expect(page).toHaveURL('/character')
 
     // logout
     await page.locator('#avatar-dropdown').click()
     await page.locator('#signout').click()
-    await expect(page).toHaveURL(baseURL)
+    await expect(page).toHaveURL('.')
   })
 
   test('can go to login page and sign in', async ({ page }) => {
     // click sign in button to go to /login
     await page.locator('#signin').click()
-    await expect(page).toHaveURL(`${baseURL}/login`)
+    await expect(page).toHaveURL('/login')
     await expect(page.locator('text=Sign in to your account')).toBeVisible()
 
     // filling input
     await page.locator('#email').fill(EMAIL)
     await page.locator('#password').fill(PASSWORD)
     await page.locator('#signin').click()
-    await expect(page).toHaveURL(`${baseURL}/character`)
+    await expect(page).toHaveURL('/character')
 
     // logout
     await page.locator('#avatar-dropdown').click()
     await page.locator('#signout').click()
-    await expect(page).toHaveURL(baseURL)
+    await expect(page).toHaveURL('.')
   })
 })
