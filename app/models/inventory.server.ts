@@ -217,33 +217,29 @@ export async function craftItem({
     },
   })
 
-  await Promise.all([
-    prisma.inventory.upsert({
-      where: {
-        id: convertedItem?.id ?? '',
+  await prisma.inventory.upsert({
+    where: { id: convertedItem?.id ?? '' },
+    create: {
+      name,
+      ownerId: accountId,
+      quantity: bonusType === 'Bonus' ? quantity + bonusQuantity : quantity,
+    },
+    update: {
+      quantity: {
+        increment: bonusType === 'Bonus' ? quantity + bonusQuantity : quantity,
       },
-      create: {
-        name,
-        ownerId: accountId,
-        quantity: bonusType === 'Bonus' ? quantity + bonusQuantity : quantity,
+    },
+  })
+
+  await prisma.inventory.update({
+    where: { id: inventory.id },
+    data: {
+      quantity: {
+        decrement:
+          bonusType === 'Refund'
+            ? crafterQuantity - bonusQuantity
+            : crafterQuantity,
       },
-      update: {
-        quantity: {
-          increment:
-            bonusType === 'Bonus' ? quantity + bonusQuantity : quantity,
-        },
-      },
-    }),
-    prisma.inventory.update({
-      where: { id: inventory.id },
-      data: {
-        quantity: {
-          decrement:
-            bonusType === 'Refund'
-              ? crafterQuantity - bonusQuantity
-              : crafterQuantity,
-        },
-      },
-    }),
-  ])
+    },
+  })
 }
