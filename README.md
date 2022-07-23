@@ -1,7 +1,7 @@
 # Traveler Main App
 
 This is basically an app for `Genshin Impact` nerds to use to max out EVERYTHING.
-The app currently live [here](https://traveler-main.fly.dev/).
+The app currently live [here](https://traveler-main-staging.fly.dev/).
 
 ## Development
 
