@@ -162,7 +162,7 @@ test.describe('apps', () => {
     })
   })
 
-  test.describe('alchemy page', () => {
+  test.describe.only('alchemy page', () => {
     test('can go to alchemy crafting page', async ({ page }) => {
       await page.click('#Alchemy-link-desktop')
       await expect(page).toHaveURL('/alchemy/crafting/all')
