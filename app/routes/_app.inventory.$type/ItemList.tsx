@@ -23,7 +23,7 @@ export default function ItemList({ items }: Props) {
     let $form = e.currentTarget
     const quantity = (
       $form.querySelector(
-        `#quantity-${Utils.toSnakeCase(itemName)}`
+        `#${Utils.toSnakeCase(itemName)}-quantity`
       ) as HTMLInputElement
     ).value
     if (quantity === '') return
@@ -70,7 +70,7 @@ export default function ItemList({ items }: Props) {
               <input type="hidden" name="name" value={item.name} />
               <div>
                 <label
-                  htmlFor={`quantity-${Utils.toSnakeCase(item.name)}`}
+                  htmlFor={`${Utils.toSnakeCase(item.name)}-quantity`}
                   className="sr-only"
                 >
                   {item.name} Quantity
@@ -78,7 +78,7 @@ export default function ItemList({ items }: Props) {
                 <input
                   type="number"
                   name="quantity"
-                  id={`quantity-${Utils.toSnakeCase(item.name)}`}
+                  id={`${Utils.toSnakeCase(item.name)}-quantity`}
                   className="w-full rounded-md border-gray-7 bg-gray-2 tabular-nums text-gray-11 shadow-sm focus:border-gray-8 focus:text-gray-12 focus:ring-gray-8 sm:text-sm"
                   defaultValue={item.quantity ?? 0}
                   required

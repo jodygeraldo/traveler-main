@@ -116,11 +116,11 @@ export default function Join() {
           <input type="hidden" name="remember" defaultValue="true" />
           <div className="-space-y-px rounded-md shadow-sm">
             <div>
-              <label htmlFor="email-address" className="sr-only">
+              <label htmlFor="email" className="sr-only">
                 Email address
               </label>
               <input
-                id="email-address"
+                id="email"
                 autoComplete="email"
                 className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-7 bg-gray-3 px-3 py-2 text-gray-12 placeholder-gray-8 focus:z-10 focus:border-primary-8 focus:outline-none focus:ring-primary-8 sm:text-sm"
                 placeholder="Email address"
@@ -194,7 +194,11 @@ export default function Join() {
 
           <input type="hidden" name="redirectTo" value={redirectTo} />
 
-          <Button type="submit" className="flex w-full justify-center">
+          <Button
+            id="signup"
+            type="submit"
+            className="flex w-full justify-center"
+          >
             Sign up
           </Button>
         </RemixReact.Form>

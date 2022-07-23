@@ -25,7 +25,11 @@ export default function CharacterGridItem({
 }: Props) {
   return (
     <div>
-      <RemixReact.Link to={`./${name}`} prefetch="intent">
+      <RemixReact.Link
+        id={`${name}-character-page-link`}
+        to={`./${name}`}
+        prefetch="intent"
+      >
         <div className="group relative rounded-b-md bg-gray-3 shadow-sm hover:bg-gray-4">
           <div className="absolute top-0 left-0">
             <span className="sr-only">{vision} vision</span>

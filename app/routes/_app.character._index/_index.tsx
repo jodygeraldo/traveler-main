@@ -69,6 +69,7 @@ export default function CharactersPage() {
           className="ml-6 flex items-center rounded-lg bg-gray-3 p-0.5"
         >
           <button
+            id="switch-list-view"
             type="submit"
             name="characterView"
             value="list"
@@ -95,6 +96,7 @@ export default function CharactersPage() {
             <span className="sr-only">Use list view</span>
           </button>
           <button
+            id="switch-grid-view"
             type="submit"
             name="characterView"
             value="grid"
@@ -125,7 +127,7 @@ export default function CharactersPage() {
 
       <div className="mt-4 flex items-center gap-4">
         <RemixReact.Link to="./bulk-update">
-          <Button>Bulk update</Button>
+          <Button id="bulk-update">Bulk update</Button>
         </RemixReact.Link>
 
         <Search changeHandler={changeHandler} placeholder="Search character" />
