@@ -54,6 +54,8 @@ export default function AlchemyConvertingPage() {
     RemixReact.useParams().type
   )
 
+  console.log(items)
+
   if (
     Utils.hasOwnProperty(items, 'craftable') &&
     Utils.hasOwnProperty(items, 'crafterNonCraftable')
