@@ -183,14 +183,6 @@ export async function updateCharacterByInventory({
     name: string
     quantity: number
     rarity: number
-    type:
-      | 'COMMON'
-      | 'ASCENSION_GEM'
-      | 'ASCENSION_BOSS'
-      | 'LOCAL_SPECIALTY'
-      | 'TALENT_BOOK'
-      | 'TALENT_BOSS'
-      | 'SPECIAL'
   }[]
   kind:
     | 'Ascension'

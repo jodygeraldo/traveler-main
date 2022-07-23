@@ -6,7 +6,6 @@ import * as Zod from 'zod'
 import Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
 import Notification from '~/components/Notification'
-import * as DB from '~/db.server'
 import * as CharacterModel from '~/models/character.server'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
@@ -69,7 +68,6 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
         name: Zod.string(),
         quantity: Zod.number(),
         rarity: Zod.number(),
-        type: Zod.nativeEnum(DB.ItemType),
       })
     )
 
