@@ -47,7 +47,7 @@ test.describe('auth flow', () => {
     await page.fill('#email', EMAIL)
     await page.fill('#password', PASSWORD)
     await page.fill('#confirm-password', PASSWORD)
-    await page.click('#signup')
+    await Promise.all([page.waitForNavigation(), page.click('#signup')])
     await expect(page).toHaveURL('/character')
 
     // logout
@@ -65,7 +65,7 @@ test.describe('auth flow', () => {
     // filling input
     await page.fill('#email', EMAIL)
     await page.fill('#password', PASSWORD)
-    await page.click('#signin')
+    await Promise.all([page.waitForNavigation(), page.click('#signin')])
     await expect(page).toHaveURL('/character')
 
     // logout

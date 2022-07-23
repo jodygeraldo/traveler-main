@@ -19,7 +19,7 @@ test.describe('apps', () => {
     await page.fill('#email', EMAIL)
     await page.fill('#password', PASSWORD)
     await page.fill('#confirm-password', PASSWORD)
-    await page.click('#signup')
+    await Promise.all([page.waitForNavigation(), page.click('#signup')])
     await expect(page).toHaveURL('/character')
   })
 
@@ -162,7 +162,7 @@ test.describe('apps', () => {
     })
   })
 
-  test.describe.only('alchemy page', () => {
+  test.describe('alchemy page', () => {
     test('can go to alchemy crafting page', async ({ page }) => {
       await page.click('#Alchemy-link-desktop')
       await expect(page).toHaveURL('/alchemy/crafting/all')
