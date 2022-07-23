@@ -217,13 +217,13 @@ export async function craftItem({
     },
   })
 
-  await prisma.$transaction([
+  await Promise.all([
     prisma.inventory.upsert({
       where: {
         id: convertedItem?.id ?? '',
       },
       create: {
-        name: name,
+        name,
         ownerId: accountId,
         quantity: bonusType === 'Bonus' ? quantity + bonusQuantity : quantity,
       },
