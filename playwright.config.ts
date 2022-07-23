@@ -5,6 +5,7 @@ dotenv.config()
 
 const config: PlaywrightTestConfig = {
   testDir: './e2e',
+  fullyParallel: true,
   timeout: 15 * 1000,
   globalTimeout: process.env.CI ? 60 * 60 * 1000 : undefined,
   forbidOnly: !!process.env.CI,
