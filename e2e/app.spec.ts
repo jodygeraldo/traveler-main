@@ -255,7 +255,7 @@ test.describe('apps', () => {
       )
     })
 
-    test.only('can convert item', async ({ page }) => {
+    test('can convert item', async ({ page }) => {
       await page.goto('/inventory/all')
 
       await Promise.all([
