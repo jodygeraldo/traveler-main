@@ -37,42 +37,40 @@ test.describe('auth flow', () => {
     ).toBeVisible()
   })
 
-  test('can go to sign up page and create an account', async ({
-    page,
-  }, testInfo) => {
+  test('can go to sign up page and create an account', async ({ page }) => {
     // click sign up button to go to /join
-    await page.locator('#signup').click()
+    await page.click('#signup')
     await expect(page).toHaveURL('/join')
     await expect(page.locator('text=Sign up new account')).toBeVisible()
 
     // filling input
-    await page.locator('#email').fill(EMAIL)
-    await page.locator('#password').fill(PASSWORD)
-    await page.locator('#confirm-password').fill(PASSWORD)
-    await page.locator('#signup').click()
+    await page.fill('#email', EMAIL)
+    await page.fill('#password', PASSWORD)
+    await page.fill('#confirm-password', PASSWORD)
+    await page.click('#signup')
     await expect(page).toHaveURL('/character')
 
     // logout
-    await page.locator('#avatar-dropdown').click()
-    await page.locator('#signout').click()
+    await page.click('#avatar-dropdown')
+    await page.click('#signout')
     await expect(page).toHaveURL('.')
   })
 
   test('can go to login page and sign in', async ({ page }) => {
     // click sign in button to go to /login
-    await page.locator('#signin').click()
+    await page.click('#signin')
     await expect(page).toHaveURL('/login')
     await expect(page.locator('text=Sign in to your account')).toBeVisible()
 
     // filling input
-    await page.locator('#email').fill(EMAIL)
-    await page.locator('#password').fill(PASSWORD)
-    await page.locator('#signin').click()
+    await page.fill('#email', EMAIL)
+    await page.fill('#password', PASSWORD)
+    await page.click('#signin')
     await expect(page).toHaveURL('/character')
 
     // logout
-    await page.locator('#avatar-dropdown').click()
-    await page.locator('#signout').click()
+    await page.click('#avatar-dropdown')
+    await page.click('#signout')
     await expect(page).toHaveURL('.')
   })
 })
