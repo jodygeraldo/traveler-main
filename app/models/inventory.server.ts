@@ -139,39 +139,37 @@ export async function convertItem({
     },
   })
 
-  await prisma.$transaction([
-    prisma.inventory.upsert({
-      where: {
-        id: convertedItem?.id ?? '',
+  await prisma.inventory.upsert({
+    where: {
+      id: convertedItem?.id ?? '',
+    },
+    create: {
+      name,
+      ownerId: accountId,
+      quantity: converter.item.quantity,
+    },
+    update: {
+      quantity: {
+        increment: converter.item.quantity,
       },
-      create: {
-        name,
-        ownerId: accountId,
-        quantity: converter.item.quantity,
+    },
+  })
+  await prisma.inventory.update({
+    where: { id: special.id },
+    data: {
+      quantity: {
+        decrement: converter.special.quantity,
       },
-      update: {
-        quantity: {
-          increment: converter.item.quantity,
-        },
+    },
+  })
+  await prisma.inventory.update({
+    where: { id: item.id },
+    data: {
+      quantity: {
+        decrement: converter.item.quantity,
       },
-    }),
-    prisma.inventory.update({
-      where: { id: special.id },
-      data: {
-        quantity: {
-          decrement: converter.special.quantity,
-        },
-      },
-    }),
-    prisma.inventory.update({
-      where: { id: item.id },
-      data: {
-        quantity: {
-          decrement: converter.item.quantity,
-        },
-      },
-    }),
-  ])
+    },
+  })
 }
 
 export async function craftItem({
@@ -230,7 +228,6 @@ export async function craftItem({
       },
     },
   })
-
   await prisma.inventory.update({
     where: { id: inventory.id },
     data: {
