@@ -109,6 +109,11 @@ export async function convertItem({
         in: [converter.special.name, converter.item.name],
       },
     },
+    select: {
+      id: true,
+      name: true,
+      quantity: true,
+    },
   })
 
   if (inventory.length !== 2) {
@@ -139,37 +144,37 @@ export async function convertItem({
     },
   })
 
-  await prisma.inventory.upsert({
-    where: {
-      id: convertedItem?.id ?? '',
-    },
-    create: {
-      name,
-      ownerId: accountId,
-      quantity: converter.item.quantity,
-    },
-    update: {
-      quantity: {
-        increment: converter.item.quantity,
+  await prisma.$transaction([
+    prisma.inventory.upsert({
+      where: { id: convertedItem?.id ?? '' },
+      create: {
+        name,
+        ownerId: accountId,
+        quantity: converter.item.quantity,
       },
-    },
-  })
-  await prisma.inventory.update({
-    where: { id: special.id },
-    data: {
-      quantity: {
-        decrement: converter.special.quantity,
+      update: {
+        quantity: {
+          increment: converter.item.quantity,
+        },
       },
-    },
-  })
-  await prisma.inventory.update({
-    where: { id: item.id },
-    data: {
-      quantity: {
-        decrement: converter.item.quantity,
+    }),
+    prisma.inventory.update({
+      where: { id: special.id },
+      data: {
+        quantity: {
+          decrement: converter.special.quantity,
+        },
       },
-    },
-  })
+    }),
+    prisma.inventory.update({
+      where: { id: item.id },
+      data: {
+        quantity: {
+          decrement: converter.item.quantity,
+        },
+      },
+    }),
+  ])
 }
 
 export async function craftItem({
@@ -194,6 +199,11 @@ export async function craftItem({
       ownerId: accountId,
       name: crafterName,
     },
+    select: {
+      id: true,
+      name: true,
+      quantity: true,
+    },
   })
 
   if (!inventory) {
@@ -213,30 +223,38 @@ export async function craftItem({
       ownerId: accountId,
       name,
     },
+    select: {
+      id: true,
+      name: true,
+      quantity: true,
+    },
   })
 
-  await prisma.inventory.upsert({
-    where: { id: convertedItem?.id ?? '' },
-    create: {
-      name,
-      ownerId: accountId,
-      quantity: bonusType === 'Bonus' ? quantity + bonusQuantity : quantity,
-    },
-    update: {
-      quantity: {
-        increment: bonusType === 'Bonus' ? quantity + bonusQuantity : quantity,
+  await prisma.$transaction([
+    prisma.inventory.upsert({
+      where: { id: convertedItem?.id ?? '' },
+      create: {
+        name,
+        ownerId: accountId,
+        quantity: bonusType === 'Bonus' ? quantity + bonusQuantity : quantity,
       },
-    },
-  })
-  await prisma.inventory.update({
-    where: { id: inventory.id },
-    data: {
-      quantity: {
-        decrement:
-          bonusType === 'Refund'
-            ? crafterQuantity - bonusQuantity
-            : crafterQuantity,
+      update: {
+        quantity: {
+          increment:
+            bonusType === 'Bonus' ? quantity + bonusQuantity : quantity,
+        },
       },
-    },
-  })
+    }),
+    prisma.inventory.update({
+      where: { id: inventory.id },
+      data: {
+        quantity: {
+          decrement:
+            bonusType === 'Refund'
+              ? crafterQuantity - bonusQuantity
+              : crafterQuantity,
+        },
+      },
+    }),
+  ])
 }
