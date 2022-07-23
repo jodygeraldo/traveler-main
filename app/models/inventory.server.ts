@@ -45,28 +45,23 @@ export async function upsertInventoryItem({
   quantity: number
   accountId: string
 }) {
-  await prisma.$transaction(async (tx) => {
-    const inventory = await tx.inventory.findFirst({
-      where: {
-        ownerId: accountId,
-        item: { name },
-      },
-    })
+  const inventory = await prisma.inventory.findFirst({
+    where: {
+      ownerId: accountId,
+      name,
+    },
+  })
 
-    if (inventory) {
-      await tx.inventory.update({
-        where: { id: inventory.id },
-        data: { quantity },
-      })
-    } else {
-      await tx.inventory.create({
-        data: {
-          ownerId: accountId,
-          quantity,
-          name,
-        },
-      })
-    }
+  await prisma.inventory.upsert({
+    where: { id: inventory?.id ?? '' },
+    create: {
+      ownerId: accountId,
+      quantity,
+      name,
+    },
+    update: {
+      quantity,
+    },
   })
 }
 
@@ -107,48 +102,51 @@ export async function convertItem({
   }
   accountId: string
 }) {
-  return await prisma.$transaction(async (tx) => {
-    const inventory = await tx.inventory.findMany({
-      where: {
-        ownerId: accountId,
-        name: {
-          in: [converter.special.name, converter.item.name],
-        },
+  const inventory = await prisma.inventory.findMany({
+    where: {
+      ownerId: accountId,
+      name: {
+        in: [converter.special.name, converter.item.name],
       },
-    })
+    },
+    select: {
+      id: true,
+      name: true,
+      quantity: true,
+    },
+  })
 
-    if (inventory.length !== 2) {
-      return {
-        message: 'Missing converter items',
-      }
+  if (inventory.length !== 2) {
+    return {
+      message: 'Missing converter items',
     }
+  }
 
-    const special = inventory.find((i) => i.name === converter.special.name)!
-    const item = inventory.find((i) => i.name === converter.item.name)!
+  const special = inventory.find((i) => i.name === converter.special.name)!
+  const item = inventory.find((i) => i.name === converter.item.name)!
 
-    if (special.quantity < converter.special.quantity) {
-      return {
-        message: `Not enough ${converter.special.name}, required ${converter.special.quantity} but have ${special.quantity}`,
-      }
+  if (special.quantity < converter.special.quantity) {
+    return {
+      message: `Not enough ${converter.special.name}, required ${converter.special.quantity} but have ${special.quantity}`,
     }
+  }
 
-    if (item.quantity < converter.item.quantity) {
-      return {
-        message: `Not enough ${converter.item.name}, required ${converter.item.quantity} but have ${item.quantity}`,
-      }
+  if (item.quantity < converter.item.quantity) {
+    return {
+      message: `Not enough ${converter.item.name}, required ${converter.item.quantity} but have ${item.quantity}`,
     }
+  }
 
-    const convertedItem = await tx.inventory.findFirst({
-      where: {
-        ownerId: accountId,
-        name,
-      },
-    })
+  const convertedItem = await prisma.inventory.findFirst({
+    where: {
+      ownerId: accountId,
+      name,
+    },
+  })
 
-    await tx.inventory.upsert({
-      where: {
-        id: convertedItem?.id ?? '',
-      },
+  await prisma.$transaction([
+    prisma.inventory.upsert({
+      where: { id: convertedItem?.id ?? '' },
       create: {
         name,
         ownerId: accountId,
@@ -159,27 +157,26 @@ export async function convertItem({
           increment: converter.item.quantity,
         },
       },
-    })
-
-    await tx.inventory.update({
+    }),
+    prisma.inventory.update({
       where: { id: special.id },
       data: {
         quantity: {
           decrement: converter.special.quantity,
         },
       },
-    })
-
-    await tx.inventory.update({
+    }),
+    prisma.inventory.update({
       where: { id: item.id },
       data: {
         quantity: {
           decrement: converter.item.quantity,
         },
       },
-    })
-  })
+    }),
+  ])
 }
+
 export async function craftItem({
   name,
   quantity,
@@ -197,62 +194,67 @@ export async function craftItem({
   bonusQuantity: number
   accountId: string
 }) {
-  return await prisma.$transaction(async (tx) => {
-    const inventory = await tx.inventory.findFirst({
-      where: {
-        ownerId: accountId,
-        name: crafterName,
-      },
-    })
+  const inventory = await prisma.inventory.findFirst({
+    where: {
+      ownerId: accountId,
+      name: crafterName,
+    },
+    select: {
+      id: true,
+      name: true,
+      quantity: true,
+    },
+  })
 
-    if (!inventory) {
-      return {
-        message: 'Missing crafter',
-      }
+  if (!inventory) {
+    return {
+      message: 'Missing crafter',
     }
+  }
 
-    if (inventory.quantity < crafterQuantity) {
-      return {
-        message: `Not enough ${crafterName}, required ${crafterQuantity} but have ${inventory.quantity}`,
-      }
+  if (inventory.quantity < crafterQuantity) {
+    return {
+      message: `Not enough ${crafterName}, required ${crafterQuantity} but have ${inventory.quantity}`,
     }
+  }
 
-    const convertedItem = await tx.inventory.findFirst({
-      where: {
-        ownerId: accountId,
-        name,
-      },
-    })
+  const convertedItem = await prisma.inventory.findFirst({
+    where: {
+      ownerId: accountId,
+      name,
+    },
+    select: {
+      id: true,
+      name: true,
+      quantity: true,
+    },
+  })
 
-    let updatedQuantity =
-      bonusType === 'Bonus' ? quantity + bonusQuantity : quantity
-
-    await tx.inventory.upsert({
-      where: {
-        id: convertedItem?.id ?? '',
-      },
+  await prisma.$transaction([
+    prisma.inventory.upsert({
+      where: { id: convertedItem?.id ?? '' },
       create: {
-        name: name,
+        name,
         ownerId: accountId,
-        quantity: updatedQuantity,
+        quantity: bonusType === 'Bonus' ? quantity + bonusQuantity : quantity,
       },
       update: {
         quantity: {
-          increment: updatedQuantity,
+          increment:
+            bonusType === 'Bonus' ? quantity + bonusQuantity : quantity,
         },
       },
-    })
-
-    updatedQuantity =
-      bonusType === 'Refund' ? crafterQuantity - bonusQuantity : crafterQuantity
-
-    await tx.inventory.update({
+    }),
+    prisma.inventory.update({
       where: { id: inventory.id },
       data: {
         quantity: {
-          decrement: updatedQuantity,
+          decrement:
+            bonusType === 'Refund'
+              ? crafterQuantity - bonusQuantity
+              : crafterQuantity,
         },
       },
-    })
-  })
+    }),
+  ])
 }

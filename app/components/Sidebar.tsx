@@ -1,6 +1,7 @@
 import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 import * as React from 'react'
+import * as Utils from '~/utils'
 
 interface Props {
   navigation: {
@@ -20,6 +21,7 @@ export default function Sidebar({ navigation }: Props) {
         <React.Fragment key={nav.name}>
           {!nav.sub ? (
             <RemixReact.NavLink
+              id={`${Utils.toSnakeCase(nav.name)}-link`}
               prefetch="intent"
               to={nav.to}
               className={({ isActive }) =>
@@ -51,6 +53,9 @@ export default function Sidebar({ navigation }: Props) {
           {nav.sub &&
             nav.sub.map((subNav) => (
               <RemixReact.NavLink
+                id={`${Utils.toSnakeCase(nav.name)}-${Utils.toSnakeCase(
+                  subNav.name
+                )}-link`}
                 prefetch="intent"
                 key={`${nav.name}-${subNav.name}`}
                 to={subNav.to}

@@ -23,6 +23,7 @@ export default function CharacterListItem({
   return (
     <li>
       <RemixReact.Link
+        id={`${name}-character-page-link`}
         to={`/character/${name}`}
         prefetch="intent"
         className="block hover:bg-gray-3"

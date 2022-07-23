@@ -50,6 +50,7 @@ export default function AppNavbar() {
                   >
                     {navigation.map((item) => (
                       <RemixReact.NavLink
+                        id={`${item.name}-link-desktop`}
                         prefetch="intent"
                         key={item.name}
                         to={item.to}
@@ -100,6 +101,7 @@ export default function AppNavbar() {
                   <div>
                     <HeadlessUIReact.Menu.Button className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-9 shadow-sm focus:z-10 focus:outline-none focus:ring-2 focus:ring-gray-7 focus:ring-offset-2 focus:ring-offset-gray-1">
                       <Image
+                        id="avatar-dropdown"
                         src="/character/traveler.png"
                         alt={`Account ${user.accounts[0].name}`}
                         className="h-8 w-8 rounded-full"
@@ -128,7 +130,7 @@ export default function AppNavbar() {
                                 'block w-full rounded-md py-2 px-4 text-left text-sm text-gray-11 disabled:text-gray-8'
                               )}
                             >
-                              Sign out
+                              <span id="signout">Sign out</span>
                             </button>
                           )}
                         </HeadlessUIReact.Menu.Item>
@@ -148,6 +150,7 @@ export default function AppNavbar() {
             <div className="mx-auto max-w-3xl space-y-1 px-2 pt-2 pb-3 sm:px-4">
               {navigation.map((item) => (
                 <RemixReact.NavLink
+                  id={`${item.name}-link-mobile`}
                   key={item.name}
                   to={item.to}
                   className={({ isActive }) =>
