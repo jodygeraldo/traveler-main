@@ -143,27 +143,6 @@ export async function upsertCharacter({
   })
 }
 
-export async function updateUserCharacters(
-  data: {
-    name: CharacterType.Name
-    level: number
-    ascension: number
-    normalAttack: number
-    elementalSkill: number
-    elementalBurst: number
-    ownerId: string
-  }[]
-) {
-  await prisma.$transaction([
-    prisma.userCharacter.deleteMany({
-      where: { ownerId: data[0].ownerId },
-    }),
-    prisma.userCharacter.createMany({
-      data,
-    }),
-  ])
-}
-
 export async function updateCharacterByInventory({
   name,
   kind,
