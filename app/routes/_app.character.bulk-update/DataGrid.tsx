@@ -1,4 +1,4 @@
-import * as RemixReact from '@remix-run/react'
+import type * as RemixReact from '@remix-run/react'
 import * as ReactTable from '@tanstack/react-table'
 import clsx from 'clsx'
 import * as React from 'react'
@@ -17,39 +17,49 @@ interface Props {
       elementalBurst: number
     }
   }[]
+  submit: RemixReact.SubmitFunction
 }
 
-export default function DataGrid({ characters }: Props) {
-  const { submit } = RemixReact.useFetcher()
-
-  const timerRef = React.useRef<NodeJS.Timeout>()
-  const handleChange = React.useCallback(
+export default function DataGrid({ characters, submit }: Props) {
+  const handleSubmit = React.useCallback(
     (
-      e: React.ChangeEvent<HTMLInputElement>,
-      name: string,
-      progression: string
+      e:
+        | React.MouseEvent<HTMLButtonElement>
+        | React.KeyboardEvent<HTMLButtonElement>
     ) => {
-      if (timerRef.current) clearTimeout(timerRef.current)
+      e.preventDefault()
+      const name = e.currentTarget.value
+      const $form = e.currentTarget.form
+      if (!$form) return
 
-      const value = e.currentTarget.value
-
-      if (value === '') return
+      const level = ($form.querySelector(`#${name}-level`) as HTMLInputElement)
+        .value
+      const ascension = (
+        $form.querySelector(`#${name}-ascension`) as HTMLInputElement
+      ).value
+      const normalAttack = (
+        $form.querySelector(`#${name}-normal-attack`) as HTMLInputElement
+      ).value
+      const elementalSkill = (
+        $form.querySelector(`#${name}-elemental-skill`) as HTMLInputElement
+      ).value
+      const elementalBurst = (
+        $form.querySelector(`#${name}-elemental-burst`) as HTMLInputElement
+      ).value
 
       const formData = new FormData()
-      formData.append('kind', progression)
-      formData.append('value', value)
       formData.append('name', name)
+      formData.append('level', level)
+      formData.append('ascension', ascension)
+      formData.append('normalAttack', normalAttack)
+      formData.append('elementalSkill', elementalSkill)
+      formData.append('elementalBurst', elementalBurst)
 
-      const timer = setTimeout(
-        () =>
-          submit(formData, {
-            method: 'post',
-            replace: true,
-            action: '/character/bulk-update',
-          }),
-        500
-      )
-      timerRef.current = timer
+      submit(formData, {
+        method: 'post',
+        action: '/character/bulk-update',
+        replace: true,
+      })
     },
     [submit]
   )
@@ -79,13 +89,14 @@ export default function DataGrid({ characters }: Props) {
         cell: (info) => {
           return (
             <input
+              form="character-update"
               title={`${info.row.original.name} level`}
+              id={`${info.row.original.name}-level`}
               name={`${info.row.original.name}-level`}
               type="number"
               min={1}
               max={90}
               defaultValue={info.getValue()}
-              onChange={(e) => handleChange(e, info.row.original.name, 'level')}
               className="rounded-md border-none bg-transparent text-gray-11 focus:border-primary-8 focus:text-gray-12 focus:ring-primary-8"
             />
           )
@@ -96,34 +107,35 @@ export default function DataGrid({ characters }: Props) {
         cell: (info) => {
           return (
             <input
+              form="character-update"
               title={`${info.row.original.name} Ascension`}
+              id={`${info.row.original.name}-ascension`}
               name={`${info.row.original.name}-ascension`}
               type="number"
               min={0}
               max={6}
               defaultValue={info.getValue()}
-              onChange={(e) =>
-                handleChange(e, info.row.original.name, 'ascension')
-              }
               className="rounded-md border-none bg-transparent text-gray-11 focus:border-primary-8 focus:text-gray-12 focus:ring-primary-8"
             />
           )
         },
+        size: 20,
+        minSize: 20,
+        maxSize: 20,
       }),
       columnHelper.accessor('progression.normalAttack', {
         header: 'Normal Attack',
         cell: (info) => {
           return (
             <input
+              form="character-update"
               title={`${info.row.original.name} normal attack`}
+              id={`${info.row.original.name}-normal-attack`}
               name={`${info.row.original.name}-normal-attack`}
               type="number"
-              defaultValue={info.getValue()}
               min={1}
               max={10}
-              onChange={(e) =>
-                handleChange(e, info.row.original.name, 'normalAttack')
-              }
+              defaultValue={info.getValue()}
               className="rounded-md border-none bg-transparent text-gray-11 focus:border-primary-8 focus:text-gray-12 focus:ring-primary-8"
             />
           )
@@ -134,15 +146,14 @@ export default function DataGrid({ characters }: Props) {
         cell: (info) => {
           return (
             <input
+              form="character-update"
               title={`${info.row.original.name} elemental skill`}
+              id={`${info.row.original.name}-elemental-skill`}
               name={`${info.row.original.name}-elemental-skill`}
               type="number"
               min={1}
               max={10}
               defaultValue={info.getValue()}
-              onChange={(e) =>
-                handleChange(e, info.row.original.name, 'elementalSkill')
-              }
               className="rounded-md border-none bg-transparent text-gray-11 focus:border-primary-8 focus:text-gray-12 focus:ring-primary-8"
             />
           )
@@ -153,15 +164,14 @@ export default function DataGrid({ characters }: Props) {
         cell: (info) => {
           return (
             <input
+              form="character-update"
               title={`${info.row.original.name} elemental burst`}
+              id={`${info.row.original.name}-elemental-burst`}
               name={`${info.row.original.name}-elemental-burst`}
               type="number"
               min={1}
               max={10}
               defaultValue={info.getValue()}
-              onChange={(e) =>
-                handleChange(e, info.row.original.name, 'elementalBurst')
-              }
               className="rounded-md border-none bg-transparent text-gray-11 focus:border-primary-8 focus:text-gray-12 focus:ring-primary-8"
             />
           )
@@ -172,8 +182,9 @@ export default function DataGrid({ characters }: Props) {
         header: () => <span className="sr-only">Save</span>,
         cell: (info) => (
           <button
-            form="character-update"
             type="submit"
+            onClick={handleSubmit}
+            onKeyDown={handleSubmit}
             name="name"
             value={info.getValue()}
             className="rounded-md border border-transparent bg-primary-9 py-1 px-4 text-sm font-medium text-white shadow-sm hover:bg-primary-10 focus:z-10 focus:outline-none focus:ring-2 focus:ring-primary-8 focus:ring-offset-2 focus:ring-offset-gray-3"
@@ -183,7 +194,7 @@ export default function DataGrid({ characters }: Props) {
         ),
       }),
     ],
-    [columnHelper, handleChange]
+    [columnHelper, handleSubmit]
   )
 
   const table = ReactTable.useReactTable({
@@ -207,7 +218,7 @@ export default function DataGrid({ characters }: Props) {
                         scope="col"
                         className={clsx(
                           idx === 0 ? 'pl-4 pr-3 sm:pl-6' : 'px-2',
-                          'min-w-[6rem] whitespace-nowrap py-3.5 text-left text-sm font-semibold text-gray-12'
+                          'whitespace-nowrap py-3.5 text-left text-sm font-semibold text-gray-12'
                         )}
                       >
                         {header.isPlaceholder
