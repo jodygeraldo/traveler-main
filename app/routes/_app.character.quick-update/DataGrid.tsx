@@ -57,7 +57,7 @@ export default function DataGrid({ characters, submit }: Props) {
 
       submit(formData, {
         method: 'post',
-        action: '/character/bulk-update',
+        action: '/character/quick-update',
         replace: true,
       })
     },
@@ -182,6 +182,7 @@ export default function DataGrid({ characters, submit }: Props) {
         header: () => <span className="sr-only">Save</span>,
         cell: (info) => (
           <button
+            id={`${info.getValue()}-save`}
             type="submit"
             onClick={handleSubmit}
             onKeyDown={handleSubmit}

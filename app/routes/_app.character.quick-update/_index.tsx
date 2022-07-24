@@ -57,7 +57,7 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
   return RemixNode.json({ characters })
 }
 
-export default function CharacterBulkUpdatePage() {
+export default function CharacterQuickUpdatePage() {
   const { characters } = RemixReact.useLoaderData<typeof loader>()
   const fetcher = RemixReact.useFetcher()
 
@@ -68,7 +68,7 @@ export default function CharacterBulkUpdatePage() {
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <main>
           <h1 className="text-2xl font-bold leading-7 text-primary-12 sm:truncate sm:text-3xl">
-            Characters Bulk Update
+            Characters Quick Update
           </h1>
 
           {/* <div className="mt-8 rounded-md bg-info-6 p-2 text-gray-12">
