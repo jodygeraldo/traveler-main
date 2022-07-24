@@ -1,12 +1,21 @@
+import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import Button, * as Buttons from '~/components/Button'
 import Image from '~/components/Image'
 import Logo from '~/components/Logo'
-import useOptionalUser from '~/hooks/useOptionalUser'
+import * as Session from '~/session.server'
+
+export async function loader({ request }: RemixNode.LoaderArgs) {
+  const userId = await Session.getUserId(request)
+
+  if (userId) {
+    return RemixNode.redirect('/character')
+  }
+
+  return null
+}
 
 export default function Index() {
-  const user = useOptionalUser()
-
   return (
     <main className="min-h-screen">
       <div className="pb-8 sm:pb-12 lg:pb-12">
@@ -30,34 +39,22 @@ export default function Index() {
                 </div>
 
                 <div className="mt-6 sm:flex sm:items-center sm:gap-4">
-                  {user ? (
-                    <div>
-                      <RemixReact.Link to="/character" className="block w-full">
-                        <Button className="mt-4 flex w-full justify-center sm:mt-0">
-                          Go to app
-                        </Button>
-                      </RemixReact.Link>
-                    </div>
-                  ) : (
-                    <>
-                      <Buttons.Link
-                        id="signup"
-                        to="/join"
-                        className="flex w-full justify-center"
-                      >
-                        Create new account
-                      </Buttons.Link>
-                      <RemixReact.Link
-                        id="signin"
-                        to="/login"
-                        className="block w-full"
-                      >
-                        <Button className="mt-4 flex w-full justify-center sm:mt-0">
-                          Sign in
-                        </Button>
-                      </RemixReact.Link>
-                    </>
-                  )}
+                  <Buttons.Link
+                    id="signup"
+                    to="/join"
+                    className="flex w-full justify-center"
+                  >
+                    Create new account
+                  </Buttons.Link>
+                  <RemixReact.Link
+                    id="signin"
+                    to="/login"
+                    className="block w-full"
+                  >
+                    <Button className="mt-4 flex w-full justify-center sm:mt-0">
+                      Sign in
+                    </Button>
+                  </RemixReact.Link>
                 </div>
               </div>
             </div>
