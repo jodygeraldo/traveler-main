@@ -126,8 +126,8 @@ export default function CharactersPage() {
       </div>
 
       <div className="mt-4 flex items-center gap-4">
-        <RemixReact.Link to="./bulk-update">
-          <Button id="bulk-update">Bulk update</Button>
+        <RemixReact.Link to="./quick-update">
+          <Button id="quick-update">Quick update</Button>
         </RemixReact.Link>
 
         <Search changeHandler={changeHandler} placeholder="Search character" />
