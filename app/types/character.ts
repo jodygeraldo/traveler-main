@@ -133,3 +133,8 @@ export type Progression = {
   elementalSkill: number
   elementalBurst: number
 }
+
+export type CharacterProgression = {
+  name: Name
+  progression: Progression
+}
