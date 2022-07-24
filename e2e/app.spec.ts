@@ -54,16 +54,29 @@ test.describe('apps', () => {
       await expect(page.locator('#Albedo-character-page-link')).toBeHidden()
     })
 
-    test('can go to bulk update page and update Albedo and Amber', async ({
+    test('can go to quick update page and update Albedo and Amber', async ({
       page,
     }) => {
-      await page.click('#bulk-update')
-      await expect(page).toHaveURL('/character/bulk-update')
+      await page.click('#quick-update')
+      await expect(page).toHaveURL('/character/quick-update')
 
       const ALBEDO = {
         LEVEL: '90',
         ASCENSION: '6',
       }
+
+      await page.fill('#Albedo-level', ALBEDO.LEVEL)
+      await page.fill('#Albedo-ascension', ALBEDO.ASCENSION)
+
+      await Promise.all([
+        page.waitForResponse((response) => response.ok()),
+        page.click(`#Albedo-save`),
+      ])
+
+      await expect(page.locator('#Albedo-level')).toHaveValue(ALBEDO.LEVEL)
+      await expect(page.locator('#Albedo-ascension')).toHaveValue(
+        ALBEDO.ASCENSION
+      )
 
       const AMBER = {
         LEVEL: '60',
@@ -73,24 +86,16 @@ test.describe('apps', () => {
         ELEMENTAL_BUSRT: '2',
       }
 
-      await page.fill('#Albedo-level', ALBEDO.LEVEL)
-      await page.fill('#Albedo-ascension', ALBEDO.ASCENSION)
-
       await page.fill('#Amber-level', AMBER.LEVEL)
       await page.fill('#Amber-ascension', AMBER.ASCENSION)
       await page.fill('#Amber-normal-attack', AMBER.NORMAL_ATTACK)
       await page.fill('#Amber-elemental-skill', AMBER.ELEMENTAL_SKILL)
       await page.fill('#Amber-elemental-burst', AMBER.ELEMENTAL_BUSRT)
 
-      await page.locator('button[type="submit"]').first().click()
-      await expect(page).toHaveURL('/character')
-
-      await page.click('#bulk-update')
-
-      await expect(page.locator('#Albedo-level')).toHaveValue(ALBEDO.LEVEL)
-      await expect(page.locator('#Albedo-ascension')).toHaveValue(
-        ALBEDO.ASCENSION
-      )
+      await Promise.all([
+        page.waitForResponse((response) => response.ok()),
+        page.click(`#Amber-save`),
+      ])
 
       await expect(page.locator('#Amber-normal-attack')).toHaveValue(
         AMBER.NORMAL_ATTACK
