@@ -2,13 +2,13 @@ import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as RemixParamsHelper from 'remix-params-helper'
 import * as Zod from 'zod'
-import Search from '~/components/Search'
 import * as DB from '~/db.server'
 import useSearchFilter from '~/hooks/useSearchFilter'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
 import * as UtilsServer from '~/utils/index.server'
+import Container from './Container'
 import ItemList from './ItemList'
 
 export async function action({ request }: RemixNode.ActionArgs) {
@@ -89,96 +89,81 @@ export default function InventoryCategoryPage() {
     searchBy: 'name',
   })
 
-  return (
-    <div className="space-y-12">
-      <div className="sm:flex sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
-          Inventory
-        </h1>
-
-        <div className="mt-2 sm:mt-0">
-          <Search changeHandler={changeHandler} />
-        </div>
-      </div>
-
-      {Utils.hasOwnProperty(data, 'type') ? (
-        <div>
-          {showSearch ? (
-            <>
-              <h2 className="text-lg font-medium leading-6 text-gray-12">
-                Search
-              </h2>
-              <ItemList items={searchItems} />
-            </>
-          ) : (
-            <>
-              <h2 className="text-lg font-medium leading-6 text-gray-12">
-                {Utils.toCapitalized(data.type)}
-              </h2>
-              <ItemList items={data.items} />
-            </>
-          )}
-        </div>
-      ) : showSearch ? (
+  if (showSearch) {
+    return (
+      <Container changeHandler={changeHandler}>
         <div>
           <h2 className="text-lg font-medium leading-6 text-gray-12">Search</h2>
           <ItemList items={searchItems} />
         </div>
-      ) : (
-        <div className="space-y-12">
-          <>
-            <div>
-              <h2 className="text-lg font-medium leading-6 text-gray-12">
-                Common
-              </h2>
-              <ItemList items={data.items.common} />
-            </div>
+      </Container>
+    )
+  }
 
-            <div>
-              <h2 className="text-lg font-medium leading-6 text-gray-12">
-                Ascension Gem
-              </h2>
-              <ItemList items={data.items.ascensionGem} />
-            </div>
-
-            <div>
-              <h2 className="text-lg font-medium leading-6 text-gray-12">
-                Ascension Boss
-              </h2>
-              <ItemList items={data.items.ascensionBoss} />
-            </div>
-
-            <div>
-              <h2 className="text-lg font-medium leading-6 text-gray-12">
-                Local Specialty
-              </h2>
-              <ItemList items={data.items.localSpecialty} />
-            </div>
-
-            <div>
-              <h2 className="text-lg font-medium leading-6 text-gray-12">
-                Talent Book
-              </h2>
-              <ItemList items={data.items.talentBook} />
-            </div>
-
-            <div>
-              <h2 className="text-lg font-medium leading-6 text-gray-12">
-                Talent Boss
-              </h2>
-              <ItemList items={data.items.talentBoss} />
-            </div>
-
-            <div>
-              <h2 className="text-lg font-medium leading-6 text-gray-12">
-                Special
-              </h2>
-              <ItemList items={data.items.special} />
-            </div>
-          </>
+  if (Utils.hasOwnProperty(data, 'type')) {
+    return (
+      <Container changeHandler={changeHandler}>
+        <div>
+          <h2 className="text-lg font-medium leading-6 text-gray-12">
+            {Utils.toCapitalized(data.type)}
+          </h2>
+          <ItemList items={data.items} />
         </div>
-      )}
-    </div>
+      </Container>
+    )
+  }
+
+  return (
+    <Container changeHandler={changeHandler}>
+      <div className="space-y-12">
+        <div>
+          <h2 className="text-lg font-medium leading-6 text-gray-12">Common</h2>
+          <ItemList items={data.items.common} />
+        </div>
+
+        <div>
+          <h2 className="text-lg font-medium leading-6 text-gray-12">
+            Ascension Gem
+          </h2>
+          <ItemList items={data.items.ascensionGem} />
+        </div>
+
+        <div>
+          <h2 className="text-lg font-medium leading-6 text-gray-12">
+            Ascension Boss
+          </h2>
+          <ItemList items={data.items.ascensionBoss} />
+        </div>
+
+        <div>
+          <h2 className="text-lg font-medium leading-6 text-gray-12">
+            Local Specialty
+          </h2>
+          <ItemList items={data.items.localSpecialty} />
+        </div>
+
+        <div>
+          <h2 className="text-lg font-medium leading-6 text-gray-12">
+            Talent Book
+          </h2>
+          <ItemList items={data.items.talentBook} />
+        </div>
+
+        <div>
+          <h2 className="text-lg font-medium leading-6 text-gray-12">
+            Talent Boss
+          </h2>
+          <ItemList items={data.items.talentBoss} />
+        </div>
+
+        <div>
+          <h2 className="text-lg font-medium leading-6 text-gray-12">
+            Special
+          </h2>
+          <ItemList items={data.items.special} />
+        </div>
+      </div>
+    </Container>
   )
 }
 

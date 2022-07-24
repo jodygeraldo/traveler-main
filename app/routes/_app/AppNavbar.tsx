@@ -38,7 +38,7 @@ export default function AppNavbar() {
               <div className="relative z-10 flex px-2 lg:px-0">
                 <div className="flex flex-shrink-0 items-center space-x-8">
                   <RemixReact.Link
-                    to="/"
+                    to="/character"
                     className="rounded-md focus:z-10 focus:outline-none focus:ring-2 focus:ring-primary-8 focus:ring-offset-2 focus:ring-offset-gray-2"
                   >
                     <Logo className="block h-8 w-auto" />
