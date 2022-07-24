@@ -9,7 +9,10 @@ import tailwindStylesheetUrl from './tailwind.css'
 NProgress.configure({ showSpinner: false })
 
 export const links: RemixNode.LinksFunction = () => {
-  return [{ rel: 'stylesheet', href: tailwindStylesheetUrl }]
+  return [
+    { rel: 'stylesheet', href: '/font/inter-3.19/inter.css' },
+    { rel: 'stylesheet', href: tailwindStylesheetUrl },
+  ]
 }
 
 export const meta: RemixNode.MetaFunction = () => ({
