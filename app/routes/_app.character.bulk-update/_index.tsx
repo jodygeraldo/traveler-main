@@ -27,7 +27,6 @@ export async function action({ request }: RemixNode.ActionArgs) {
 
   const result = await RemixParamsHelper.getFormData(request, FormDataSchema)
   if (!result.success) {
-    console.log(result.errors)
     return RemixNode.json({ errors: result.errors }, { status: 400 })
   }
 
