@@ -1,6 +1,8 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
+import * as Zod from 'zod'
 import SidebarSub from '~/components/Sidebar'
+import * as Utils from '~/utils'
 import * as UtilsServer from '~/utils/index.server'
 import ConstellationImage from './ConstellationImage'
 
@@ -20,7 +22,9 @@ const navigation = [
 ]
 
 export async function loader({ params }: RemixNode.LoaderArgs) {
-  const { name } = params
+  const name = Zod.string()
+    .transform((str) => Utils.deslugify(str))
+    .parse(params.name)
   const validCharacter = UtilsServer.Character.validateCharacter(name)
   if (!validCharacter) {
     throw RemixNode.json(`Character ${name} not found`, {

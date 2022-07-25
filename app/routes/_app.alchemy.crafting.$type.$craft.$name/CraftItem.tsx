@@ -70,13 +70,11 @@ export default function CraftItem({
                 Crafting {name}
               </HeadlessUIReact.Dialog.Title>
               {!isCraftable ? (
-                <div>
-                  <p>
-                    Not enought material to craft {name}, need{' '}
-                    {crafter.requiredQuantity} {crafter.name} but have{' '}
-                    {crafter.quantity}
-                  </p>
-                </div>
+                <p className="mt-1 text-sm text-gray-11">
+                  Not enought material to craft {name}, need{' '}
+                  {crafter.requiredQuantity} {crafter.name} but have{' '}
+                  {crafter.quantity}
+                </p>
               ) : (
                 <div className="mt-4 flex flex-col items-center">
                   <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">

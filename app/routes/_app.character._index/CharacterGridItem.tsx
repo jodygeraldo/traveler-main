@@ -27,7 +27,7 @@ export default function CharacterGridItem({
     <div>
       <RemixReact.Link
         id={`${name}-character-page-link`}
-        to={`./${name}`}
+        to={`./${Utils.slugify(name)}/required-items`}
         prefetch="intent"
       >
         <div className="group relative rounded-b-md bg-gray-3 shadow-sm hover:bg-gray-4">

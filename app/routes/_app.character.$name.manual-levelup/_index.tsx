@@ -6,12 +6,15 @@ import Button from '~/components/Button'
 import Notification from '~/components/Notification'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
+import * as Utils from '~/utils'
 import * as UtilsServer from '~/utils/index.server'
 import InputField from './InputField'
 
 export const meta: RemixNode.MetaFunction = ({ params }) => ({
-  title: `${params.name} Manual Level Up - Traveler Main`,
-  description: `Set ${params.name} progression manually`,
+  title: `${Utils.deslugify(
+    params.name ?? ''
+  )} Manual Level Up - Traveler Main`,
+  description: `Set ${Utils.deslugify(params.name ?? '')} progression manually`,
 })
 
 const FormDataSchema = Zod.object({
@@ -25,7 +28,9 @@ const FormDataSchema = Zod.object({
 export async function action({ params, request }: RemixNode.ActionArgs) {
   const accountId = await Session.requireAccountId(request)
 
-  const { name } = params
+  const name = Zod.string()
+    .transform((str) => Utils.deslugify(str))
+    .parse(params.name)
   if (!UtilsServer.Character.validateCharacter(name)) {
     throw RemixNode.json(
       { message: `There is no character with name ${name}` },
@@ -58,7 +63,9 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
 export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const accId = await Session.requireAccountId(request)
 
-  const { name } = params
+  const name = Zod.string()
+    .transform((str) => Utils.deslugify(str))
+    .parse(params.name)
   if (!UtilsServer.Character.validateCharacter(name)) {
     throw RemixNode.json(
       { message: `There is no character with name ${name}` },

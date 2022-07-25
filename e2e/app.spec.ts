@@ -196,7 +196,7 @@ test.describe('apps', () => {
 
       await page.click(ITEM_TO_CRAFT.LINK_SELECTOR)
       await page.waitForURL(
-        '/alchemy/crafting/all/craft-talent/Guide%20to%20Freedom'
+        '/alchemy/crafting/all/craft-talent/Guide-to-Freedom'
       )
       await page.fill('input[name="quantity"]', ITEM_TO_CRAFT.TO_CRAFT[0])
       await page.fill('input[name="bonusQuantity"]', ITEM_TO_CRAFT.BONUS[0])
@@ -228,7 +228,7 @@ test.describe('apps', () => {
 
       await page.click(ITEM_TO_CRAFT.LINK_SELECTOR)
       await page.waitForURL(
-        '/alchemy/crafting/talent/craft-talent/Guide%20to%20Freedom'
+        '/alchemy/crafting/talent/craft-talent/Guide-to-Freedom'
       )
       await page.fill('input[name="quantity"]', ITEM_TO_CRAFT.TO_CRAFT[1])
       await page.fill('input[name="bonusQuantity"]', ITEM_TO_CRAFT.BONUS[1])
@@ -290,7 +290,7 @@ test.describe('apps', () => {
 
       await page.click(ITEM_TO_CRAFT.LINK_SELECTOR)
       await page.waitForURL(
-        '/alchemy/converting/all/convert-boss/Ring%20of%20Boreas'
+        '/alchemy/converting/all/convert-boss/Ring-of-Boreas'
       )
       await page.fill('input[name="quantity"]', ITEM_TO_CRAFT.TO_CRAFT)
 
@@ -321,7 +321,7 @@ test.describe('apps', () => {
 
       await page.click(ITEM[1].SELECTOR)
       await page.waitForURL(
-        '/alchemy/converting/talent-boss/convert-boss/Tail%20of%20Boreas'
+        '/alchemy/converting/talent-boss/convert-boss/Tail-of-Boreas'
       )
       await page.fill('input[name="quantity"]', ITEM_TO_CRAFT.TO_USE)
 

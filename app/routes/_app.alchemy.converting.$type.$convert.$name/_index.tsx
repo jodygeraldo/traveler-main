@@ -11,6 +11,10 @@ import * as UtilsServer from '~/utils/index.server'
 import CatchBoundaryComponent from './CatchBoundary'
 import ConvertItem from './ConvertItem'
 
+export const meta: RemixNode.MetaFunction = ({ params }) => ({
+  title: `Convert ${Utils.deslugify(params.name ?? '')} - Traveler Main`,
+})
+
 const FormDataSchema = Zod.object({
   itemConverter: Zod.string(),
   quantity: Zod.number().positive(),
@@ -21,7 +25,7 @@ const FormDataSchema = Zod.object({
 const ParamsSchema = Zod.object({
   type: Zod.enum(['all', 'ascension-gem', 'talent-boss']),
   convert: Zod.enum(['convert-gem', 'convert-boss']),
-  name: Zod.string(),
+  name: Zod.string().transform((string) => Utils.deslugify(string)),
 })
 
 interface ActionData {
@@ -90,6 +94,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   }
 
   const { name, convert } = result.data
+  console.log(name)
 
   const validItem = UtilsServer.Item.validateItem(name)
   if (!validItem) {
