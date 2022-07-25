@@ -65,6 +65,14 @@ export function splitPerCapitalCase(str: string): string {
     .join(' ')
 }
 
+export function slugify(str: string): string {
+  return str.replace(/\s/g, '-')
+}
+
+export function deslugify(str: string): string {
+  return str.replace(/-+/g, ' ')
+}
+
 if (process.env.NODE_ENV === 'test' && import.meta.vitest) {
   const { test } = import.meta.vitest
 
@@ -122,5 +130,19 @@ if (process.env.NODE_ENV === 'test' && import.meta.vitest) {
 
     expect(hasOwnProperty(obj, 'foo')).toBe(true)
     expect(hasOwnProperty(obj, 'bar')).toBe(false)
+  })
+
+  test('slugify should return slugified string', () => {
+    expect(slugify('This')).toBe('This')
+    expect(slugify('This is a test with spaces')).toBe(
+      'This-is-a-test-with-spaces'
+    )
+  })
+
+  test('deslugify should return deslugified string', () => {
+    expect(deslugify('this')).toBe('this')
+    expect(deslugify('this-is-a-test-with-dashes')).toBe(
+      'this is a test with dashes'
+    )
   })
 }
