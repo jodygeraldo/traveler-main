@@ -9,6 +9,7 @@ import Logo from '~/components/Logo'
 import useUser from '~/hooks/useUser'
 
 const navigation = [
+  { name: 'Priority', to: '/priority' },
   { name: 'Character', to: '/character' },
   { name: 'Inventory', to: '/inventory' },
   { name: 'Alchemy', to: '/alchemy' },
