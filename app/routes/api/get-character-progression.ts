@@ -2,6 +2,7 @@ import * as RemixNode from '@remix-run/node'
 import * as Zod from 'zod'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
+import type * as CharacterTypes from '~/types/character'
 import * as Utils from '~/utils'
 import * as UtilsServer from '~/utils/index.server'
 
@@ -41,7 +42,8 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
     accountId,
   })
 
-  return RemixNode.json({
-    characterProgression: characterProgression || DEFAULT_PROGRESSION,
+  return RemixNode.json<CharacterTypes.CharacterProgression>({
+    name,
+    progression: characterProgression || DEFAULT_PROGRESSION,
   })
 }
