@@ -64,6 +64,23 @@ export async function getUserCharacter({
   })
 }
 
+export async function getUserTrackCharacters(accountId: string) {
+  return prisma.characterTrack.findMany({
+    where: { ownerId: accountId },
+    select: {
+      id: true,
+      name: true,
+      priority: true,
+      targetLevel: true,
+      targetAscension: true,
+      targetNormalAttack: true,
+      targetElementalSkill: true,
+      targetElementalBurst: true,
+    },
+    orderBy: [{ priority: { sort: 'asc', nulls: 'last' } }, { name: 'asc' }],
+  })
+}
+
 export async function upsertCharacter({
   name,
   progression,
