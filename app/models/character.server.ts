@@ -268,3 +268,33 @@ export async function updateCharacterByInventory({
 
   await prisma.$transaction(ItemsToUpdate)
 }
+
+export function addCharacterToTrack({
+  name,
+  level,
+  ascension,
+  normalAttack,
+  elementalSkill,
+  elementalBurst,
+  accountId,
+}: {
+  name: CharacterType.Name
+  level: number
+  ascension: number
+  normalAttack: number
+  elementalSkill: number
+  elementalBurst: number
+  accountId: string
+}) {
+  return prisma.characterTrack.create({
+    data: {
+      ownerId: accountId,
+      name,
+      targetLevel: level,
+      targetAscension: ascension,
+      targetNormalAttack: normalAttack,
+      targetElementalSkill: elementalSkill,
+      targetElementalBurst: elementalBurst,
+    },
+  })
+}
