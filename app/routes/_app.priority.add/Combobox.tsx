@@ -13,7 +13,7 @@ interface Props {
 
 export default function Combobox({ options, fetchProgressionHandler }: Props) {
   const [query, setQuery] = React.useState('')
-  const [selectedOption, setSelectedOption] = React.useState(options[0])
+  const [selectedOption, setSelectedOption] = React.useState('')
 
   const filteredOptions =
     query === ''
@@ -38,9 +38,10 @@ export default function Combobox({ options, fetchProgressionHandler }: Props) {
       </div>
       <div className="relative mt-1 sm:col-span-2 sm:mt-0">
         <HeadlessUIReact.Combobox.Input
-          className="w-full rounded-md border border-gray-6 bg-gray-2 py-2 pl-3 pr-10 shadow-sm focus:border-primary-8 focus:outline-none focus:ring-1 focus:ring-primary-8 sm:text-sm"
-          placeholder="Item to use"
+          className="w-full rounded-md border border-gray-7 bg-gray-2 py-2 pl-3 pr-10 shadow-sm focus:border-primary-8 focus:ring-primary-8 sm:text-sm"
+          placeholder="Choose a character to track"
           required
+          autoComplete="off"
           onChange={(e) => setQuery(e.target.value)}
           // @ts-ignore
           displayValue={(option) => option}
