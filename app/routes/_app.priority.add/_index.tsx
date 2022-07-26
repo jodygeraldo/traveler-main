@@ -50,7 +50,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
     accountId,
   })
 
-  return RemixNode.json({ errors: {} })
+  return RemixNode.redirect('/priority')
 }
 
 export async function loader({ request }: RemixNode.LoaderArgs) {
