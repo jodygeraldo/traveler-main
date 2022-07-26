@@ -56,11 +56,11 @@ export async function action({ request }: RemixNode.ActionArgs) {
 export async function loader({ request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
 
-  const userCharactersName = await CharacterModel.getUserTrackCharactersName(
-    accountId
+  const userTrackableCharactersName =
+    await CharacterModel.getUserTrackableCharactersName(accountId)
+  const nonTrackCharacterNames = UtilsServer.Character.getMissingCharacters(
+    userTrackableCharactersName
   )
-  const nonTrackCharacterNames =
-    UtilsServer.Character.getMissingCharacters(userCharactersName)
 
   return RemixNode.json({ nonTrackCharacterNames })
 }

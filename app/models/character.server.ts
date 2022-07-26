@@ -17,13 +17,29 @@ export async function getUserCharacters({ accountId }: { accountId: string }) {
   })
 }
 
-export async function getUserTrackCharactersName(accountId: string) {
-  const charactersName = await prisma.characterTrack.findMany({
-    where: { ownerId: accountId },
-    select: { name: true },
-  })
+export async function getUserTrackableCharactersName(accountId: string) {
+  const maxCharactersName = (
+    await prisma.userCharacter.findMany({
+      where: {
+        ownerId: accountId,
+        level: { equals: 90 },
+        ascension: { equals: 6 },
+        normalAttack: { equals: 10 },
+        elementalSkill: { equals: 10 },
+        elementalBurst: { equals: 10 },
+      },
+      select: { name: true },
+    })
+  ).map((character) => character.name)
 
-  return charactersName.map(({ name }) => name)
+  const charactersName = (
+    await prisma.characterTrack.findMany({
+      where: { ownerId: accountId },
+      select: { name: true },
+    })
+  ).map((character) => character.name)
+
+  return Array.from(new Set([...maxCharactersName, ...charactersName]))
 }
 
 export async function getUserCharacter({
