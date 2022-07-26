@@ -1,3 +1,4 @@
+import * as RemixReact from '@remix-run/react'
 import EmptyState from './EmptyState'
 
 export default function PriorityPage() {
@@ -10,6 +11,7 @@ export default function PriorityPage() {
       <div className="mt-12">
         <EmptyState />
       </div>
+      <RemixReact.Outlet />
     </main>
   )
 }
