@@ -239,6 +239,7 @@ ButtonGroup.displayName = 'ButtonGroup'
 
 export default Button
 export { ButtonIcon, ButtonLink, ButtonLinkExternal, ButtonGroup }
+export const Base = Button
 export const Icon = ButtonIcon
 export const Link = ButtonLink
 export const LinkExternal = ButtonLinkExternal
