@@ -2,14 +2,56 @@ import * as HeadlessUI from '@headlessui/react'
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as React from 'react'
+import * as RemixParamsHelper from 'remix-params-helper'
+import * as Zod from 'zod'
 import * as Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import type * as CharacterTypes from '~/types/character'
-import { getMissingCharacters } from '~/utils/character.server'
+import * as UtilsServer from '~/utils/index.server'
 import Combobox from './Combobox'
 import ProgressionField from './ProgressionField'
+
+const FormDataSchema = Zod.object({
+  name: Zod.string(),
+  level: Zod.number().min(1).max(90),
+  ascension: Zod.number().min(0).max(6),
+  normalAttack: Zod.number().min(1).max(10),
+  elementalSkill: Zod.number().min(1).max(10),
+  elementalBurst: Zod.number().min(1).max(10),
+})
+
+export async function action({ request }: RemixNode.ActionArgs) {
+  const accountId = await Session.requireAccountId(request)
+
+  const result = await RemixParamsHelper.getFormData(request, FormDataSchema)
+  if (!result.success) {
+    return RemixNode.json({ errors: result.errors }, { status: 400 })
+  }
+
+  const { name, ...progression } = result.data
+
+  if (!UtilsServer.Character.validateCharacter(name)) {
+    throw RemixNode.json(
+      { message: `There is no character with name ${name}` },
+      { status: 404, statusText: 'Character not found' }
+    )
+  }
+
+  const errors = UtilsServer.Character.validateAscensionRequirement(progression)
+  if (errors) {
+    return RemixNode.json({ errors }, { status: 400 })
+  }
+
+  await CharacterModel.addCharacterToTrack({
+    name,
+    ...progression,
+    accountId,
+  })
+
+  return RemixNode.json({ errors: {} })
+}
 
 export async function loader({ request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
@@ -17,13 +59,15 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
   const userCharactersName = await CharacterModel.getUserTrackCharactersName(
     accountId
   )
-  const nonTrackCharacterNames = getMissingCharacters(userCharactersName)
+  const nonTrackCharacterNames =
+    UtilsServer.Character.getMissingCharacters(userCharactersName)
 
   return RemixNode.json({ nonTrackCharacterNames })
 }
 
 export default function AddPriorityPage() {
   const { nonTrackCharacterNames } = RemixReact.useLoaderData<typeof loader>()
+  const actionData = RemixReact.useActionData<typeof action>()
 
   const navigate = RemixReact.useNavigate()
   const transition = RemixReact.useTransition()
@@ -86,7 +130,10 @@ export default function AddPriorityPage() {
                 leaveTo="translate-x-full"
               >
                 <HeadlessUI.Dialog.Panel className="pointer-events-auto w-screen max-w-2xl">
-                  <form className="flex h-full flex-col overflow-y-scroll bg-gray-2 shadow-xl">
+                  <RemixReact.Form
+                    method="post"
+                    className="flex h-full flex-col overflow-y-scroll bg-gray-2 shadow-xl"
+                  >
                     <div className="flex-1">
                       <div className="bg-gray-3 px-4 py-6 sm:px-6">
                         <div className="flex items-start justify-between space-x-3">
@@ -124,59 +171,57 @@ export default function AddPriorityPage() {
                               </p>
                             </div>
 
-                            {character.progression.level < 90 && (
-                              <ProgressionField
-                                label="Level"
-                                name="level"
-                                currentValue={character.progression.level}
-                                min={1 + character.progression.level}
-                                max={90}
-                              />
-                            )}
+                            <ProgressionField
+                              label="Level"
+                              name="level"
+                              currentValue={character.progression.level}
+                              min={character.progression.level}
+                              max={90}
+                              error={actionData?.errors?.level}
+                            />
 
-                            {character.progression.ascension < 6 && (
-                              <ProgressionField
-                                label="Ascension"
-                                name="ascension"
-                                currentValue={character.progression.ascension}
-                                min={0 + character.progression.ascension}
-                                max={6}
-                              />
-                            )}
+                            <ProgressionField
+                              label="Ascension"
+                              name="ascension"
+                              currentValue={character.progression.ascension}
+                              min={character.progression.ascension}
+                              max={6}
+                              error={actionData?.errors?.ascension}
+                            />
 
-                            {character.progression.normalAttack < 10 && (
-                              <ProgressionField
-                                label="Normal Attack"
-                                name="normal-attack"
-                                currentValue={
-                                  character.progression.normalAttack
-                                }
-                                min={1 + character.progression.normalAttack}
-                                max={10}
-                              />
-                            )}
-                            {character.progression.elementalSkill < 10 && (
-                              <ProgressionField
-                                label="Elemental Skill"
-                                name="elemental-skill"
-                                currentValue={
-                                  character.progression.elementalSkill
-                                }
-                                min={1 + character.progression.elementalSkill}
-                                max={10}
-                              />
-                            )}
-                            {character.progression.elementalBurst < 10 && (
-                              <ProgressionField
-                                label="Elemental Burst"
-                                name="elemental-burst"
-                                currentValue={
-                                  character.progression.elementalBurst
-                                }
-                                min={1 + character.progression.elementalBurst}
-                                max={10}
-                              />
-                            )}
+                            <ProgressionField
+                              id="normal-attack"
+                              label="Normal Attack"
+                              name="normalAttack"
+                              currentValue={character.progression.normalAttack}
+                              min={character.progression.normalAttack}
+                              max={10}
+                              error={actionData?.errors?.normalAttack}
+                            />
+
+                            <ProgressionField
+                              id="elemental-skill"
+                              label="Elemental Skill"
+                              name="elementalSkill"
+                              currentValue={
+                                character.progression.elementalSkill
+                              }
+                              min={character.progression.elementalSkill}
+                              max={10}
+                              error={actionData?.errors?.elementalSkill}
+                            />
+
+                            <ProgressionField
+                              id="elemental-burst"
+                              label="Elemental Burst"
+                              name="elementalBurst"
+                              currentValue={
+                                character.progression.elementalBurst
+                              }
+                              min={character.progression.elementalBurst}
+                              max={10}
+                              error={actionData?.errors?.elementalBurst}
+                            />
                           </>
                         )}
                       </div>
@@ -197,7 +242,7 @@ export default function AddPriorityPage() {
                         </Button.Base>
                       </div>
                     </div>
-                  </form>
+                  </RemixReact.Form>
                 </HeadlessUI.Dialog.Panel>
               </HeadlessUI.Transition.Child>
             </div>
