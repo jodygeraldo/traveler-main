@@ -114,18 +114,16 @@ export default function AddPriorityPage() {
                         />
 
                         {character && (
-                          <div className="px-4 sm:px-6 sm:py-5">
-                            <p className="text-gray-11">
-                              Last updated progression for{' '}
-                              <span className="text-gray-12">
-                                {character.name}
-                              </span>
-                            </p>
-                          </div>
-                        )}
-
-                        {character && (
                           <>
+                            <div className="px-4 sm:px-6 sm:py-5">
+                              <p className="text-gray-11">
+                                Last updated progression for{' '}
+                                <span className="text-gray-12">
+                                  {character.name}
+                                </span>
+                              </p>
+                            </div>
+
                             {character.progression.level < 90 && (
                               <ProgressionField
                                 label="Level"
