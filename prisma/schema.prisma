@@ -31,8 +31,9 @@ model Account {
   name    String
   default Boolean @default(false)
 
-  inventory  Inventory[]
-  characters UserCharacter[]
+  inventory       Inventory[]
+  characters      UserCharacter[]
+  charactersTrack CharacterTrack[]
 
   user    User   @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId String @unique @map("owner_id")
@@ -85,13 +86,14 @@ enum Weapon {
 }
 
 model Character {
-  id            String          @id @default(cuid())
-  name          String          @unique
-  region        Region
-  vision        Vision
-  weapon        Weapon
-  rarity        Int             @db.TinyInt
-  UserCharacter UserCharacter[]
+  id             String           @id @default(cuid())
+  name           String           @unique
+  region         Region
+  vision         Vision
+  weapon         Weapon
+  rarity         Int              @db.TinyInt
+  UserCharacter  UserCharacter[]
+  CharacterTrack CharacterTrack[]
 }
 
 model Inventory {
@@ -118,4 +120,23 @@ model UserCharacter {
 
   account Account @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId String  @map("owner_id")
+}
+
+model CharacterTrack {
+  id                   String @id @default(cuid())
+  priority             Int?   @db.UnsignedSmallInt
+  targetLevel          Int    @map("target_level") @db.UnsignedSmallInt
+  targetAscension      Int    @map("target_ascension") @db.UnsignedSmallInt
+  targetNormalAttack   Int    @map("target_normal_attack") @db.UnsignedSmallInt
+  targetElementalSkill Int    @map("target_elemental_skill") @db.UnsignedSmallInt
+  targetElementalBurst Int    @map("target_elemental_burst") @db.UnsignedSmallInt
+
+  character Character @relation(fields: [name], references: [name])
+  name      String    @map("character_name")
+
+  account Account @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ownerId String  @map("owner_id")
+
+  @@unique([name, ownerId])
+  @@index([name, ownerId])
 }
