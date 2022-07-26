@@ -6,6 +6,12 @@ import type * as CharacterType from '~/types/character'
 import type * as ItemType from '~/types/item'
 import * as Utils from '~/utils'
 
+export function getMissingCharacters(names: string[]) {
+  return CharacterData.characters
+    .filter((character) => !names.includes(character.name))
+    .map((character) => character.name)
+}
+
 export function validateCharacter(
   name: string | undefined
 ): name is CharacterType.Name {
