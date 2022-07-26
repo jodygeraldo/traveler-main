@@ -59,7 +59,17 @@ export default function AddPriorityPage() {
         className="relative z-10"
         onClose={handleClose}
       >
-        <div className="fixed inset-0" />
+        <HeadlessUI.Transition.Child
+          as={React.Fragment}
+          enter="ease-in-out duration-500"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in-out duration-500"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-overlay-black-12 transition-opacity" />
+        </HeadlessUI.Transition.Child>
 
         <div className="fixed inset-0 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
