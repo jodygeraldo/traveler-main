@@ -17,6 +17,15 @@ export async function getUserCharacters({ accountId }: { accountId: string }) {
   })
 }
 
+export async function getUserTrackCharactersName(accountId: string) {
+  const charactersName = await prisma.characterTrack.findMany({
+    where: { ownerId: accountId },
+    select: { name: true },
+  })
+
+  return charactersName.map(({ name }) => name)
+}
+
 export async function getUserCharacter({
   name,
   accountId,
