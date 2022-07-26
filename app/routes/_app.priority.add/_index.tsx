@@ -9,6 +9,7 @@ import * as Session from '~/session.server'
 import type * as CharacterTypes from '~/types/character'
 import { getMissingCharacters } from '~/utils/character.server'
 import Combobox from './Combobox'
+import ProgressionField from './ProgressionField'
 
 export async function loader({ request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
@@ -44,13 +45,14 @@ export default function AddPriorityPage() {
     timerRef.current = timer
   }
 
-  const fetcher = RemixReact.useFetcher<CharacterTypes.Progression>()
+  const fetcher = RemixReact.useFetcher<CharacterTypes.CharacterProgression>()
 
   function handleFetchProgression(name: string) {
+    if (name === '') return
     fetcher.load('/api/get-character-progression?name=' + name)
   }
 
-  console.log(fetcher.data)
+  const character = fetcher.data
 
   return (
     <HeadlessUI.Transition.Root show={open} as={React.Fragment}>
@@ -110,6 +112,75 @@ export default function AddPriorityPage() {
                           options={nonTrackCharacterNames}
                           fetchProgressionHandler={handleFetchProgression}
                         />
+
+                        {character && (
+                          <div className="px-4 sm:px-6 sm:py-5">
+                            <p className="text-gray-11">
+                              Last updated progression for{' '}
+                              <span className="text-gray-12">
+                                {character.name}
+                              </span>
+                            </p>
+                          </div>
+                        )}
+
+                        {character && (
+                          <>
+                            {character.progression.level < 90 && (
+                              <ProgressionField
+                                label="Level"
+                                name="level"
+                                currentValue={character.progression.level}
+                                min={1 + character.progression.level}
+                                max={90}
+                              />
+                            )}
+
+                            {character.progression.ascension < 6 && (
+                              <ProgressionField
+                                label="Ascension"
+                                name="ascension"
+                                currentValue={character.progression.ascension}
+                                min={0 + character.progression.ascension}
+                                max={6}
+                              />
+                            )}
+
+                            {character.progression.normalAttack < 10 && (
+                              <ProgressionField
+                                label="Normal Attack"
+                                name="normal-attack"
+                                currentValue={
+                                  character.progression.normalAttack
+                                }
+                                min={1 + character.progression.normalAttack}
+                                max={10}
+                              />
+                            )}
+                            {character.progression.elementalSkill < 10 && (
+                              <ProgressionField
+                                label="Elemental Skill"
+                                name="elemental-skill"
+                                currentValue={
+                                  character.progression.elementalSkill
+                                }
+                                min={1 + character.progression.elementalSkill}
+                                max={10}
+                              />
+                            )}
+                            {character.progression.elementalBurst < 10 && (
+                              <ProgressionField
+                                label="Elemental Burst"
+                                name="elemental-burst"
+                                currentValue={
+                                  character.progression.elementalBurst
+                                }
+                                min={1 + character.progression.elementalBurst}
+                                max={10}
+                              />
+                            )}
+                          </>
+                        )}
                       </div>
                     </div>
 
