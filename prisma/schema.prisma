@@ -31,9 +31,8 @@ model Account {
   name    String
   default Boolean @default(false)
 
-  inventory       Inventory[]
-  characters      UserCharacter[]
-  charactersTrack CharacterTrack[]
+  inventory  Inventory[]
+  characters UserCharacter[]
 
   user    User   @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId String @unique @map("owner_id")
@@ -86,14 +85,13 @@ enum Weapon {
 }
 
 model Character {
-  id             String           @id @default(cuid())
-  name           String           @unique
-  region         Region
-  vision         Vision
-  weapon         Weapon
-  rarity         Int              @db.TinyInt
-  UserCharacter  UserCharacter[]
-  CharacterTrack CharacterTrack[]
+  id            String          @id @default(cuid())
+  name          String          @unique
+  region        Region
+  vision        Vision
+  weapon        Weapon
+  rarity        Int             @db.TinyInt
+  UserCharacter UserCharacter[]
 }
 
 model Inventory {
@@ -105,6 +103,8 @@ model Inventory {
 
   account Account @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId String  @map("owner_id")
+
+  @@unique([name, ownerId])
 }
 
 model UserCharacter {
@@ -120,6 +120,10 @@ model UserCharacter {
 
   account Account @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId String  @map("owner_id")
+
+  track CharacterTrack?
+
+  @@unique([name, ownerId])
 }
 
 model CharacterTrack {
@@ -131,12 +135,9 @@ model CharacterTrack {
   targetElementalSkill Int    @map("target_elemental_skill") @db.UnsignedSmallInt
   targetElementalBurst Int    @map("target_elemental_burst") @db.UnsignedSmallInt
 
-  character Character @relation(fields: [name], references: [name])
-  name      String    @map("character_name")
-
-  account Account @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  ownerId String  @map("owner_id")
+  userCharacter UserCharacter @relation(fields: [name, ownerId], references: [name, ownerId])
+  name          String        @map("character_name")
+  ownerId       String        @map("owner_id")
 
   @@unique([name, ownerId])
-  @@index([name, ownerId])
 }
