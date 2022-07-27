@@ -382,12 +382,21 @@ export function upsertCharacterTrack({
     },
     update: {
       track: {
-        update: {
-          targetLevel: level,
-          targetAscension: ascension,
-          targetNormalAttack: normalAttack,
-          targetElementalSkill: elementalSkill,
-          targetElementalBurst: elementalBurst,
+        upsert: {
+          create: {
+            targetLevel: level,
+            targetAscension: ascension,
+            targetNormalAttack: normalAttack,
+            targetElementalSkill: elementalSkill,
+            targetElementalBurst: elementalBurst,
+          },
+          update: {
+            targetLevel: level,
+            targetAscension: ascension,
+            targetNormalAttack: normalAttack,
+            targetElementalSkill: elementalSkill,
+            targetElementalBurst: elementalBurst,
+          },
         },
       },
     },
