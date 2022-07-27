@@ -45,10 +45,7 @@ export default function TrackPage() {
 
       <div className="mt-12">
         {charactersTrack.length > 0 ? (
-          <div>
-            <TrackList tracks={charactersTrack} />
-            <pre>{JSON.stringify(charactersTrack, null, 2)}</pre>
-          </div>
+          <TrackList tracks={charactersTrack} />
         ) : (
           <EmptyState />
         )}
