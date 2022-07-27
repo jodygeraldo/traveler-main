@@ -24,14 +24,14 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
   return RemixNode.json({ charactersTrack })
 }
 
-export default function PriorityPage() {
+export default function TrackPage() {
   const { charactersTrack } = RemixReact.useLoaderData<typeof loader>()
 
   return (
     <main className="mx-auto max-w-3xl py-10 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
       <div className="sm:flex sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold leading-7 text-primary-12 sm:truncate sm:text-3xl">
-          Priority
+          Tracks
         </h1>
 
         <Button.Link

@@ -8,7 +8,9 @@ import * as Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
+import type * as CharacterTypes from '~/types/character'
 import * as UtilsServer from '~/utils/index.server'
+import Combobox from './Combobox'
 import ProgressionField from './ProgressionField'
 
 const FormDataSchema = Zod.object({
@@ -48,35 +50,23 @@ export async function action({ request }: RemixNode.ActionArgs) {
     accountId,
   })
 
-  return RemixNode.redirect('/priority')
+  return RemixNode.redirect('/track')
 }
 
 export async function loader({ request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
 
-  const name = new URL(request.url).searchParams.get('name')
-  if (!name) {
-    throw RemixNode.json({ message: 'Missing name parameter' }, { status: 400 })
-  }
+  const userTrackableCharactersName =
+    await CharacterModel.getUserTrackableCharactersName(accountId)
+  const nonTrackCharacterNames = UtilsServer.Character.getMissingCharacters(
+    userTrackableCharactersName
+  )
 
-  const trackCharacter = await CharacterModel.getUserTrackCharacter({
-    name,
-    accountId,
-  })
-  if (!trackCharacter) {
-    throw RemixNode.json(
-      { message: `You don't have track character with name ${name}` },
-      { status: 404 }
-    )
-  }
-
-  return RemixNode.json({ trackCharacter })
+  return RemixNode.json({ nonTrackCharacterNames })
 }
 
-export default function TrackUpdatePage() {
-  const [searchParams] = RemixReact.useSearchParams()
-  const name = searchParams.get('name')
-  const { trackCharacter } = RemixReact.useLoaderData<typeof loader>()
+export default function AddTrackPage() {
+  const { nonTrackCharacterNames } = RemixReact.useLoaderData<typeof loader>()
   const actionData = RemixReact.useActionData<typeof action>()
 
   const navigate = RemixReact.useNavigate()
@@ -98,6 +88,15 @@ export default function TrackUpdatePage() {
     }, 500)
     timerRef.current = timer
   }
+
+  const fetcher = RemixReact.useFetcher<CharacterTypes.CharacterProgression>()
+
+  function handleFetchProgression(name: string) {
+    if (name === '') return
+    fetcher.load('/api/get-character-progression?name=' + name)
+  }
+
+  const character = fetcher.data
 
   return (
     <HeadlessUI.Transition.Root show={open} as={React.Fragment}>
@@ -139,7 +138,7 @@ export default function TrackUpdatePage() {
                       <div className="bg-gray-3 px-4 py-6 sm:px-6">
                         <div className="flex items-start justify-between space-x-3">
                           <HeadlessUI.Dialog.Title className="text-lg font-medium text-gray-12">
-                            Update {name} Track
+                            Track a character
                           </HeadlessUI.Dialog.Title>
 
                           <div className="flex h-7 items-center">
@@ -156,61 +155,88 @@ export default function TrackUpdatePage() {
                       </div>
 
                       <div className="space-y-6 py-6 sm:space-y-0 sm:divide-y sm:divide-gray-6 sm:py-0">
-                        <input type="hidden" name="name" value={name ?? ''} />
+                        {nonTrackCharacterNames.length > 0 ? (
+                          <Combobox
+                            options={nonTrackCharacterNames}
+                            fetchProgressionHandler={handleFetchProgression}
+                          />
+                        ) : (
+                          <div className="mt-12 px-4 text-center sm:px-6">
+                            <h3 className="text-lg font-medium leading-6 text-gray-12">
+                              No trackable character
+                            </h3>
+                            <p className="text-gray-11">
+                              You don't have any characters that can be tracked.
+                              This means that you already have all characters
+                              maxed out and/or tracked.
+                            </p>
+                          </div>
+                        )}
 
-                        <ProgressionField
-                          label="Level"
-                          name="level"
-                          currentTarget={trackCharacter.targetLevel}
-                          currentValue={trackCharacter.userCharacter.level}
-                          max={90}
-                          error={actionData?.errors?.level}
-                        />
+                        {character && (
+                          <>
+                            <div className="px-4 sm:px-6 sm:py-5">
+                              <p className="text-gray-11">
+                                Last updated progression for{' '}
+                                <span className="text-gray-12">
+                                  {character.name}
+                                </span>
+                              </p>
+                            </div>
 
-                        <ProgressionField
-                          label="Ascension"
-                          name="ascension"
-                          currentTarget={trackCharacter.targetAscension}
-                          currentValue={trackCharacter.userCharacter.ascension}
-                          max={6}
-                          error={actionData?.errors?.ascension}
-                        />
+                            <ProgressionField
+                              label="Level"
+                              name="level"
+                              currentValue={character.progression.level}
+                              min={character.progression.level}
+                              max={90}
+                              error={actionData?.errors?.level}
+                            />
 
-                        <ProgressionField
-                          id="normal-attack"
-                          label="Normal Attack"
-                          name="normalAttack"
-                          currentTarget={trackCharacter.targetNormalAttack}
-                          currentValue={
-                            trackCharacter.userCharacter.normalAttack
-                          }
-                          max={10}
-                          error={actionData?.errors?.normalAttack}
-                        />
+                            <ProgressionField
+                              label="Ascension"
+                              name="ascension"
+                              currentValue={character.progression.ascension}
+                              min={character.progression.ascension}
+                              max={6}
+                              error={actionData?.errors?.ascension}
+                            />
 
-                        <ProgressionField
-                          id="elemental-skill"
-                          label="Elemental Skill"
-                          name="elementalSkill"
-                          currentTarget={trackCharacter.targetElementalSkill}
-                          currentValue={
-                            trackCharacter.userCharacter.elementalSkill
-                          }
-                          max={10}
-                          error={actionData?.errors?.elementalSkill}
-                        />
+                            <ProgressionField
+                              id="normal-attack"
+                              label="Normal Attack"
+                              name="normalAttack"
+                              currentValue={character.progression.normalAttack}
+                              min={character.progression.normalAttack}
+                              max={10}
+                              error={actionData?.errors?.normalAttack}
+                            />
 
-                        <ProgressionField
-                          id="elemental-burst"
-                          label="Elemental Burst"
-                          name="elementalBurst"
-                          currentTarget={trackCharacter.targetElementalBurst}
-                          currentValue={
-                            trackCharacter.userCharacter.elementalBurst
-                          }
-                          max={10}
-                          error={actionData?.errors?.elementalBurst}
-                        />
+                            <ProgressionField
+                              id="elemental-skill"
+                              label="Elemental Skill"
+                              name="elementalSkill"
+                              currentValue={
+                                character.progression.elementalSkill
+                              }
+                              min={character.progression.elementalSkill}
+                              max={10}
+                              error={actionData?.errors?.elementalSkill}
+                            />
+
+                            <ProgressionField
+                              id="elemental-burst"
+                              label="Elemental Burst"
+                              name="elementalBurst"
+                              currentValue={
+                                character.progression.elementalBurst
+                              }
+                              min={character.progression.elementalBurst}
+                              max={10}
+                              error={actionData?.errors?.elementalBurst}
+                            />
+                          </>
+                        )}
                       </div>
                     </div>
 
@@ -222,16 +248,15 @@ export default function TrackUpdatePage() {
                           disabled={busy}
                           onClick={handleClose}
                         >
-                          Cancel
+                          {nonTrackCharacterNames.length > 0
+                            ? 'Cancel'
+                            : 'Close'}
                         </Button.Base>
-
-                        <Button.Base
-                          id="update-track"
-                          type="submit"
-                          disabled={busy}
-                        >
-                          {busy ? 'Updating...' : 'Update'}
-                        </Button.Base>
+                        {nonTrackCharacterNames.length > 0 && (
+                          <Button.Base id="track" type="submit" disabled={busy}>
+                            {busy ? 'Tracking...' : 'Track'}
+                          </Button.Base>
+                        )}
                       </div>
                     </div>
                   </RemixReact.Form>
