@@ -431,3 +431,15 @@ export function updateTrackCharacter({
     },
   })
 }
+
+export function deleteTrackCharacter({
+  name,
+  accountId,
+}: {
+  name: string
+  accountId: string
+}) {
+  return prisma.characterTrack.delete({
+    where: { name_ownerId: { name, ownerId: accountId } },
+  })
+}
