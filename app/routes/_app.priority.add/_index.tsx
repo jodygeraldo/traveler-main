@@ -155,10 +155,23 @@ export default function AddPriorityPage() {
                       </div>
 
                       <div className="space-y-6 py-6 sm:space-y-0 sm:divide-y sm:divide-gray-6 sm:py-0">
-                        <Combobox
-                          options={nonTrackCharacterNames}
-                          fetchProgressionHandler={handleFetchProgression}
-                        />
+                        {nonTrackCharacterNames.length > 0 ? (
+                          <Combobox
+                            options={nonTrackCharacterNames}
+                            fetchProgressionHandler={handleFetchProgression}
+                          />
+                        ) : (
+                          <div className="mt-12 px-4 text-center sm:px-6">
+                            <h3 className="text-lg font-medium leading-6 text-gray-12">
+                              No trackable character
+                            </h3>
+                            <p className="text-gray-11">
+                              You don't have any characters that can be tracked.
+                              This means that you already have all characters
+                              maxed out and/or tracked.
+                            </p>
+                          </div>
+                        )}
 
                         {character && (
                           <>
@@ -235,11 +248,15 @@ export default function AddPriorityPage() {
                           disabled={busy}
                           onClick={handleClose}
                         >
-                          Cancel
+                          {nonTrackCharacterNames.length > 0
+                            ? 'Cancel'
+                            : 'Close'}
                         </Button.Base>
-                        <Button.Base id="track" type="submit" disabled={busy}>
-                          {busy ? 'Tracking...' : 'Track'}
-                        </Button.Base>
+                        {nonTrackCharacterNames.length > 0 && (
+                          <Button.Base id="track" type="submit" disabled={busy}>
+                            {busy ? 'Tracking...' : 'Track'}
+                          </Button.Base>
+                        )}
                       </div>
                     </div>
                   </RemixReact.Form>
