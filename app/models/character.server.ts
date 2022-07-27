@@ -402,3 +402,32 @@ export function upsertCharacterTrack({
     },
   })
 }
+
+export function updateTrackCharacter({
+  name,
+  level,
+  ascension,
+  normalAttack,
+  elementalSkill,
+  elementalBurst,
+  accountId,
+}: {
+  name: CharacterType.Name
+  level: number
+  ascension: number
+  normalAttack: number
+  elementalSkill: number
+  elementalBurst: number
+  accountId: string
+}) {
+  return prisma.characterTrack.update({
+    where: { name_ownerId: { name, ownerId: accountId } },
+    data: {
+      targetLevel: level,
+      targetAscension: ascension,
+      targetNormalAttack: normalAttack,
+      targetElementalSkill: elementalSkill,
+      targetElementalBurst: elementalBurst,
+    },
+  })
+}
