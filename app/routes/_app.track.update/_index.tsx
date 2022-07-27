@@ -8,6 +8,7 @@ import * as Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
+import * as Utils from '~/utils'
 import * as UtilsServer from '~/utils/index.server'
 import ProgressionField from './ProgressionField'
 
@@ -54,10 +55,12 @@ export async function action({ request }: RemixNode.ActionArgs) {
 export async function loader({ request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
 
-  const name = new URL(request.url).searchParams.get('name')
-  if (!name) {
+  const slugName = new URL(request.url).searchParams.get('name')
+  if (!slugName) {
     throw RemixNode.json({ message: 'Missing name parameter' }, { status: 400 })
   }
+
+  const name = Utils.deslugify(slugName)
 
   const trackCharacter = await CharacterModel.getUserTrackCharacter({
     name,
@@ -75,7 +78,7 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
 
 export default function TrackUpdatePage() {
   const [searchParams] = RemixReact.useSearchParams()
-  const name = searchParams.get('name')
+  const name = Utils.deslugify(searchParams.get('name') || '')
   const { trackCharacter } = RemixReact.useLoaderData<typeof loader>()
   const actionData = RemixReact.useActionData<typeof action>()
 
@@ -156,7 +159,7 @@ export default function TrackUpdatePage() {
                       </div>
 
                       <div className="space-y-6 py-6 sm:space-y-0 sm:divide-y sm:divide-gray-6 sm:py-0">
-                        <input type="hidden" name="name" value={name ?? ''} />
+                        <input type="hidden" name="name" value={name} />
 
                         <ProgressionField
                           label="Level"
