@@ -13,7 +13,7 @@ interface Props {
 
 export default function Combobox({ options, fetchProgressionHandler }: Props) {
   const [query, setQuery] = React.useState('')
-  const [selectedOption, setSelectedOption] = React.useState('')
+  const [selectedOption, setSelectedOption] = React.useState(options[0])
 
   const filteredOptions =
     query === ''
@@ -38,7 +38,7 @@ export default function Combobox({ options, fetchProgressionHandler }: Props) {
       </div>
       <div className="relative mt-1 sm:col-span-2 sm:mt-0">
         <HeadlessUIReact.Combobox.Input
-          className="w-full rounded-md border border-gray-7 bg-gray-2 py-2 pl-3 pr-10 shadow-sm focus:border-primary-8 focus:ring-primary-8 sm:text-sm"
+          className="w-full rounded-md border border-gray-7 bg-gray-2 py-2 pl-11 pr-10 shadow-sm focus:border-primary-8 focus:ring-primary-8 sm:text-sm"
           placeholder="Choose a character to track"
           required
           autoComplete="off"
@@ -47,6 +47,17 @@ export default function Combobox({ options, fetchProgressionHandler }: Props) {
           displayValue={(option) => option}
           name="name"
         />
+
+        {selectedOption && (
+          <Image
+            src={`/character/${Utils.getImageSrc(selectedOption)}.png`}
+            alt=""
+            width={24}
+            height={24}
+            className="absolute top-1/2 left-3 h-6 w-6 flex-shrink-0 -translate-y-1/2 rounded-full"
+          />
+        )}
+
         <HeadlessUIReact.Combobox.Button className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
           <Icon.Solid
             name="selector"
