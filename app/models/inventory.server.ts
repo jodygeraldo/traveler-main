@@ -45,15 +45,8 @@ export async function upsertInventoryItem({
   quantity: number
   accountId: string
 }) {
-  const inventory = await prisma.inventory.findFirst({
-    where: {
-      ownerId: accountId,
-      name,
-    },
-  })
-
   await prisma.inventory.upsert({
-    where: { id: inventory?.id ?? '' },
+    where: { name_ownerId: { name, ownerId: accountId } },
     create: {
       ownerId: accountId,
       quantity,
@@ -137,16 +130,14 @@ export async function convertItem({
     }
   }
 
-  const convertedItem = await prisma.inventory.findFirst({
-    where: {
-      ownerId: accountId,
-      name,
-    },
-  })
-
   await prisma.$transaction([
     prisma.inventory.upsert({
-      where: { id: convertedItem?.id ?? '' },
+      where: {
+        name_ownerId: {
+          name,
+          ownerId: accountId,
+        },
+      },
       create: {
         name,
         ownerId: accountId,
@@ -194,10 +185,12 @@ export async function craftItem({
   bonusQuantity: number
   accountId: string
 }) {
-  const inventory = await prisma.inventory.findFirst({
+  const inventory = await prisma.inventory.findUnique({
     where: {
-      ownerId: accountId,
-      name: crafterName,
+      name_ownerId: {
+        ownerId: accountId,
+        name: crafterName,
+      },
     },
     select: {
       id: true,
@@ -218,21 +211,9 @@ export async function craftItem({
     }
   }
 
-  const convertedItem = await prisma.inventory.findFirst({
-    where: {
-      ownerId: accountId,
-      name,
-    },
-    select: {
-      id: true,
-      name: true,
-      quantity: true,
-    },
-  })
-
   await prisma.$transaction([
     prisma.inventory.upsert({
-      where: { id: convertedItem?.id ?? '' },
+      where: { name_ownerId: { name, ownerId: accountId } },
       create: {
         name,
         ownerId: accountId,
