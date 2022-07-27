@@ -1,9 +1,22 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
-import Button from '~/components/Button'
+import * as Zod from 'zod'
+import * as Button from '~/components/Button'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import EmptyState from './EmptyState'
+import TrackList from './TrackList'
+
+export async function action({ request }: RemixNode.ActionArgs) {
+  const accountId = await Session.requireAccountId(request)
+
+  const formData = await request.formData()
+  const name = Zod.string().parse(formData.get('delete'))
+
+  await CharacterModel.deleteTrackCharacter({ name, accountId })
+
+  return null
+}
 
 export async function loader({ request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
@@ -21,14 +34,19 @@ export default function PriorityPage() {
           Priority
         </h1>
 
-        <Button className="mt-4 w-full sm:mt-0 sm:w-auto">
+        <Button.Link
+          styles="button"
+          to="./add"
+          className="mt-4 w-full sm:mt-0 sm:w-auto"
+        >
           Track new character
-        </Button>
+        </Button.Link>
       </div>
 
       <div className="mt-12">
         {charactersTrack.length > 0 ? (
           <div>
+            <TrackList tracks={charactersTrack} />
             <pre>{JSON.stringify(charactersTrack, null, 2)}</pre>
           </div>
         ) : (
