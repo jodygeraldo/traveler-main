@@ -1,6 +1,14 @@
 import prisma from '~/db.server'
 import type * as CharacterType from '~/types/character'
 
+const DEFAULT_PROGRESSION = {
+  level: 1,
+  ascension: 0,
+  normalAttack: 1,
+  elementalSkill: 1,
+  elementalBurst: 1,
+}
+
 export async function getUserCharacters({ accountId }: { accountId: string }) {
   return prisma.userCharacter.findMany({
     where: {
@@ -49,10 +57,12 @@ export async function getUserCharacter({
   name: CharacterType.Name
   accountId: string
 }) {
-  return prisma.userCharacter.findFirst({
+  return prisma.userCharacter.findUnique({
     where: {
-      ownerId: accountId,
-      name,
+      name_ownerId: {
+        name,
+        ownerId: accountId,
+      },
     },
     select: {
       level: true,
@@ -76,6 +86,15 @@ export async function getUserTrackCharacters(accountId: string) {
       targetNormalAttack: true,
       targetElementalSkill: true,
       targetElementalBurst: true,
+      userCharacter: {
+        select: {
+          level: true,
+          ascension: true,
+          normalAttack: true,
+          elementalSkill: true,
+          elementalBurst: true,
+        },
+      },
     },
     orderBy: [{ priority: { sort: 'asc', nulls: 'last' } }, { name: 'asc' }],
   })
@@ -96,13 +115,6 @@ export async function upsertCharacter({
   }
   accountId: string
 }) {
-  const defaultProgression = {
-    ascension: 0,
-    normalAttack: 1,
-    elementalSkill: 1,
-    elementalBurst: 1,
-  }
-
   if (name.includes('Traveler')) {
     const characters = await prisma.userCharacter.findMany({
       where: {
@@ -123,20 +135,20 @@ export async function upsertCharacter({
           {
             ownerId: accountId,
             name,
-            ...defaultProgression,
+            ...DEFAULT_PROGRESSION,
             ...progression,
           },
           {
             ownerId: accountId,
             name: names[0],
             ...progression,
-            ...defaultProgression,
+            ...DEFAULT_PROGRESSION,
           },
           {
             ownerId: accountId,
             name: names[1],
             ...progression,
-            ...defaultProgression,
+            ...DEFAULT_PROGRESSION,
           },
         ],
       })
@@ -176,7 +188,7 @@ export async function upsertCharacter({
     create: {
       ownerId: accountId,
       name,
-      ...defaultProgression,
+      ...DEFAULT_PROGRESSION,
       ...progression,
     },
     update: {
@@ -302,7 +314,7 @@ export async function updateCharacterByInventory({
   await prisma.$transaction(ItemsToUpdate)
 }
 
-export function addCharacterToTrack({
+export function upsertCharacterTrack({
   name,
   level,
   ascension,
@@ -319,15 +331,37 @@ export function addCharacterToTrack({
   elementalBurst: number
   accountId: string
 }) {
-  return prisma.characterTrack.create({
-    data: {
-      ownerId: accountId,
+  return prisma.userCharacter.upsert({
+    where: {
+      name_ownerId: {
+        name,
+        ownerId: accountId,
+      },
+    },
+    create: {
       name,
-      targetLevel: level,
-      targetAscension: ascension,
-      targetNormalAttack: normalAttack,
-      targetElementalSkill: elementalSkill,
-      targetElementalBurst: elementalBurst,
+      ownerId: accountId,
+      ...DEFAULT_PROGRESSION,
+      track: {
+        create: {
+          targetLevel: level,
+          targetAscension: ascension,
+          targetNormalAttack: normalAttack,
+          targetElementalSkill: elementalSkill,
+          targetElementalBurst: elementalBurst,
+        },
+      },
+    },
+    update: {
+      track: {
+        update: {
+          targetLevel: level,
+          targetAscension: ascension,
+          targetNormalAttack: normalAttack,
+          targetElementalSkill: elementalSkill,
+          targetElementalBurst: elementalBurst,
+        },
+      },
     },
   })
 }

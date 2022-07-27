@@ -44,7 +44,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
     return RemixNode.json({ errors }, { status: 400 })
   }
 
-  await CharacterModel.addCharacterToTrack({
+  await CharacterModel.upsertCharacterTrack({
     name,
     ...progression,
     accountId,
