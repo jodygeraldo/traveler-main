@@ -100,6 +100,34 @@ export async function getUserTrackCharacters(accountId: string) {
   })
 }
 
+export async function getUserTrackCharacter({
+  name,
+  accountId,
+}: {
+  name: string
+  accountId: string
+}) {
+  return prisma.characterTrack.findUnique({
+    where: { name_ownerId: { name, ownerId: accountId } },
+    select: {
+      targetLevel: true,
+      targetAscension: true,
+      targetNormalAttack: true,
+      targetElementalSkill: true,
+      targetElementalBurst: true,
+      userCharacter: {
+        select: {
+          level: true,
+          ascension: true,
+          normalAttack: true,
+          elementalSkill: true,
+          elementalBurst: true,
+        },
+      },
+    },
+  })
+}
+
 export async function upsertCharacter({
   name,
   progression,
