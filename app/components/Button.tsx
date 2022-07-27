@@ -43,6 +43,15 @@ interface ButtonIconProps
 interface ButtonLinkProps
   extends BaseProps,
     Omit<RemixReact.LinkProps, keyof BaseProps> {
+  styles?: 'button' | 'buttonLink'
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'basic'
+    | 'success'
+    | 'warning'
+    | 'info'
+    | 'danger'
   focusRing?: 1 | 2 | 3
 }
 
@@ -160,12 +169,23 @@ const ButtonIcon = React.forwardRef<HTMLButtonElement, ButtonIconProps>(
 ButtonIcon.displayName = 'ButtonIcon'
 
 const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
-  ({ focusRing = 2, className, children, ...props }, ref) => {
+  (
+    {
+      styles: as = 'buttonLink',
+      variant = 'primary',
+      focusRing = 2,
+      className,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     return (
       <RemixReact.Link
         ref={ref}
         className={clsx(
-          baseStyles['buttonLink'],
+          baseStyles[as],
+          as === 'button' && variantStyles[variant],
           focusRingStyles[focusRing],
           className
         )}
