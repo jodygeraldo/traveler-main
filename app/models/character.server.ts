@@ -254,10 +254,7 @@ export async function updateCharacterByInventory({
           contains: name.includes('Traveler') ? 'Traveler' : name,
         },
       },
-      data: {
-        level,
-        ascension: { increment: 1 },
-      },
+      data: { level, ascension: { increment: 1 } },
     })
   }
 
@@ -270,79 +267,24 @@ export async function updateCharacterByInventory({
       'Talent Elemental Skill': 'elementalSkill',
       'Talent Elemental Burst': 'elementalBurst',
     }
-    // by design this should only find one character
-    await prisma.userCharacter.updateMany({
-      where: {
-        ownerId: accountId,
-        name,
-      },
-      data: {
-        [toUpdate[kind]]: { increment: 1 },
-      },
+
+    await prisma.userCharacter.update({
+      where: { name_ownerId: { name, ownerId: accountId } },
+      data: { [toUpdate[kind]]: { increment: 1 } },
     })
   }
 
-  const ItemsToUpdate = [
-    prisma.inventory.updateMany({
-      where: {
-        ownerId: accountId,
-        name: materials[0].name,
-      },
-      data: {
-        quantity: {
-          decrement: materials[0].quantity,
-        },
-      },
-    }),
-    prisma.inventory.updateMany({
-      where: {
-        ownerId: accountId,
-        name: materials[1].name,
-      },
-      data: {
-        quantity: {
-          decrement: materials[1].quantity,
-        },
-      },
-    }),
-  ]
-
-  if (materials.length > 2) {
-    ItemsToUpdate.push(
-      prisma.inventory.updateMany({
-        where: {
-          ownerId: accountId,
-          name: materials[2].name,
-        },
-        data: {
-          quantity: {
-            decrement: materials[2].quantity,
-          },
-        },
-      })
-    )
-  }
-
-  if (materials.length > 3) {
-    ItemsToUpdate.push(
-      prisma.inventory.updateMany({
-        where: {
-          ownerId: accountId,
-          name: materials[3].name,
-        },
-        data: {
-          quantity: {
-            decrement: materials[3].quantity,
-          },
-        },
-      })
-    )
-  }
+  const ItemsToUpdate = materials.map((material) =>
+    prisma.inventory.update({
+      where: { name_ownerId: { name: material.name, ownerId: accountId } },
+      data: { quantity: { decrement: material.quantity } },
+    })
+  )
 
   await prisma.$transaction(ItemsToUpdate)
 }
 
-export function upsertCharacterTrack({
+export async function upsertCharacterTrack({
   name,
   level,
   ascension,
@@ -403,7 +345,7 @@ export function upsertCharacterTrack({
   })
 }
 
-export function updateTrackCharacter({
+export async function updateTrackCharacter({
   name,
   level,
   ascension,
@@ -432,7 +374,7 @@ export function updateTrackCharacter({
   })
 }
 
-export function deleteTrackCharacter({
+export async function deleteTrackCharacter({
   name,
   accountId,
 }: {
@@ -444,7 +386,7 @@ export function deleteTrackCharacter({
   })
 }
 
-export function updateCharacterTrackOrder(
+export async function updateCharacterTrackOrder(
   orders: {
     id: string
     priority: number
