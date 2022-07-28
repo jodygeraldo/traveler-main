@@ -443,3 +443,19 @@ export function deleteTrackCharacter({
     where: { name_ownerId: { name, ownerId: accountId } },
   })
 }
+
+export function updateCharacterTrackOrder(
+  orders: {
+    id: string
+    priority: number
+  }[]
+) {
+  const queries = orders.map((order) =>
+    prisma.characterTrack.update({
+      where: { id: order.id },
+      data: { priority: order.priority },
+    })
+  )
+
+  return prisma.$transaction(queries)
+}
