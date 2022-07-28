@@ -1,5 +1,6 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
+import * as RemixParamsHelper from 'remix-params-helper'
 import * as Zod from 'zod'
 import * as Button from '~/components/Button'
 import * as CharacterModel from '~/models/character.server'
@@ -8,13 +9,39 @@ import * as UtilsServer from '~/utils/index.server'
 import EmptyState from './EmptyState'
 import TrackList from './TrackList'
 
+const FormDataSchema = Zod.object({
+  intent: Zod.enum(['delete', 'reorder']),
+  name: Zod.string().optional(),
+  orders: Zod.string().optional(),
+})
+
 export async function action({ request }: RemixNode.ActionArgs) {
   const accountId = await Session.requireAccountId(request)
 
-  const formData = await request.formData()
-  const name = Zod.string().parse(formData.get('delete'))
+  const result = await RemixParamsHelper.getFormData(request, FormDataSchema)
+  if (!result.success) {
+    throw new Error('Invalid data')
+  }
 
-  await CharacterModel.deleteTrackCharacter({ name, accountId })
+  const { intent, name, orders } = result.data
+
+  if (intent === 'delete') {
+    await CharacterModel.deleteTrackCharacter({
+      name: Zod.string().parse(name),
+      accountId,
+    })
+  }
+
+  if (intent === 'reorder') {
+    await CharacterModel.updateCharacterTrackOrder(
+      Zod.object({
+        id: Zod.string(),
+        priority: Zod.number().nonnegative(),
+      })
+        .array()
+        .parse(JSON.parse(Zod.string().parse(orders)))
+    )
+  }
 
   return null
 }
@@ -50,7 +77,7 @@ export default function TrackPage() {
 
       <div className="mt-12">
         {charactersTrackWithItems.length > 0 ? (
-          <TrackList tracks={charactersTrackWithItems} />
+          <TrackList userTracks={charactersTrackWithItems} />
         ) : (
           <EmptyState />
         )}
