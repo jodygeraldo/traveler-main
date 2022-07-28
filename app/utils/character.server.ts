@@ -795,3 +795,154 @@ export function getCharacterInventoryLevelUpData({
     }
   }
 }
+
+export function getCharactersTrackItems(
+  tracks: {
+    id: string
+    name: string
+    priority: number | null
+    targetLevel: number
+    targetAscension: number
+    targetNormalAttack: number
+    targetElementalSkill: number
+    targetElementalBurst: number
+    userCharacter: CharacterType.Progression
+  }[]
+) {
+  function getExcludedTalentItems({
+    itemNames,
+    normalAttack,
+    elementalSkill,
+    elementalBurst,
+  }: {
+    itemNames: string[]
+    normalAttack: number
+    elementalSkill: number
+    elementalBurst: number
+  }) {
+    function isTalentGreaterThan(
+      talent: 'all' | 'normal' | 'elemental',
+      level: number
+    ) {
+      if (talent === 'all')
+        return (
+          normalAttack > level &&
+          elementalSkill > level &&
+          elementalBurst > level
+        )
+      if (talent === 'normal') return normalAttack > level
+      if (talent === 'elemental')
+        return elementalSkill > level && elementalBurst > level
+    }
+
+    const excludedTalentItems: string[] = []
+
+    // Characters (-Traveler)
+    if (itemNames.length === 17) {
+      if (isTalentGreaterThan('all', 1))
+        excludedTalentItems.push(itemNames[9], itemNames[12])
+      if (isTalentGreaterThan('all', 5))
+        excludedTalentItems.push(itemNames[10], itemNames[13])
+      if (isTalentGreaterThan('all', 9))
+        excludedTalentItems.push(
+          itemNames[11],
+          itemNames[14],
+          itemNames[15],
+          itemNames[16]
+        )
+    }
+
+    // Travelers (-Geo vision)
+    if (itemNames.length === 22) {
+      if (isTalentGreaterThan('all', 1))
+        excludedTalentItems.push(itemNames[8], itemNames[11])
+      if (isTalentGreaterThan('all', 3)) excludedTalentItems.push(itemNames[13])
+      if (isTalentGreaterThan('all', 4)) excludedTalentItems.push(itemNames[14])
+      if (isTalentGreaterThan('all', 5))
+        excludedTalentItems.push(itemNames[9], itemNames[15])
+      if (isTalentGreaterThan('all', 7)) excludedTalentItems.push(itemNames[17])
+      if (isTalentGreaterThan('all', 8)) excludedTalentItems.push(itemNames[18])
+      if (isTalentGreaterThan('all', 9))
+        excludedTalentItems.push(
+          itemNames[10],
+          itemNames[19],
+          itemNames[20],
+          itemNames[21]
+        )
+    }
+
+    // Traveler Geo
+    if (itemNames.length === 35) {
+      if (isTalentGreaterThan('normal', 1))
+        excludedTalentItems.push(itemNames[8], itemNames[14])
+      if (isTalentGreaterThan('normal', 3))
+        excludedTalentItems.push(itemNames[16])
+      if (isTalentGreaterThan('normal', 4))
+        excludedTalentItems.push(itemNames[17])
+      if (isTalentGreaterThan('normal', 5))
+        excludedTalentItems.push(itemNames[9], itemNames[18])
+      if (isTalentGreaterThan('normal', 7))
+        excludedTalentItems.push(itemNames[20])
+      if (isTalentGreaterThan('normal', 8))
+        excludedTalentItems.push(itemNames[21])
+      if (isTalentGreaterThan('normal', 9))
+        excludedTalentItems.push(itemNames[10], itemNames[22], itemNames[32])
+      if (isTalentGreaterThan('elemental', 1))
+        excludedTalentItems.push(itemNames[11], itemNames[23])
+      if (isTalentGreaterThan('elemental', 3))
+        excludedTalentItems.push(itemNames[25])
+      if (isTalentGreaterThan('elemental', 4))
+        excludedTalentItems.push(itemNames[26])
+      if (isTalentGreaterThan('elemental', 5))
+        excludedTalentItems.push(itemNames[12], itemNames[27])
+      if (isTalentGreaterThan('elemental', 7))
+        excludedTalentItems.push(itemNames[29])
+      if (isTalentGreaterThan('elemental', 8))
+        excludedTalentItems.push(itemNames[30])
+      if (isTalentGreaterThan('elemental', 9))
+        excludedTalentItems.push(itemNames[13], itemNames[31], itemNames[33])
+      if (isTalentGreaterThan('all', 9)) excludedTalentItems.push(itemNames[34])
+    }
+
+    return excludedTalentItems
+  }
+
+  return tracks.map((track) => {
+    if (!validateCharacter(track.name)) {
+      throw new Error('Invalid character name')
+    }
+    const itemNames = getItemsToRetrieve(track.name)
+
+    const { ascension, normalAttack, elementalSkill, elementalBurst } =
+      track.userCharacter
+
+    const excludedAscensionItems: string[] = []
+    if (ascension > 0) excludedAscensionItems.push(itemNames[3])
+    if (ascension > 1 && track.name.includes('Traveler'))
+      excludedAscensionItems.push(itemNames[0])
+    if (ascension > 2) excludedAscensionItems.push(itemNames[4])
+    if (ascension > 3 && track.name.includes('Traveler'))
+      excludedAscensionItems.push(itemNames[1])
+    if (ascension > 4) excludedAscensionItems.push(itemNames[5])
+    if (ascension > 5) excludedAscensionItems.push(itemNames[6], itemNames[7])
+    if (ascension > 5 && track.name.includes('Traveler'))
+      excludedAscensionItems.push(itemNames[2])
+    if (ascension > 5 && !track.name.includes('Traveler'))
+      excludedAscensionItems.push(itemNames[8])
+
+    const excludedTalentItems = getExcludedTalentItems({
+      itemNames,
+      normalAttack,
+      elementalSkill,
+      elementalBurst,
+    })
+
+    const excludedItems = [...excludedAscensionItems, ...excludedTalentItems]
+    const items = itemNames.filter((name) => !excludedItems.includes(name))
+
+    return {
+      ...track,
+      itemNames: Array.from(new Set(items)),
+    }
+  })
+}
