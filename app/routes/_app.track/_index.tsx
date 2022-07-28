@@ -4,6 +4,7 @@ import * as Zod from 'zod'
 import * as Button from '~/components/Button'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
+import * as UtilsServer from '~/utils/index.server'
 import EmptyState from './EmptyState'
 import TrackList from './TrackList'
 
@@ -21,11 +22,15 @@ export async function action({ request }: RemixNode.ActionArgs) {
 export async function loader({ request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
   const charactersTrack = await CharacterModel.getUserTrackCharacters(accountId)
-  return RemixNode.json({ charactersTrack })
+
+  const charactersTrackWithItems =
+    UtilsServer.Character.getCharactersTrackItems(charactersTrack)
+
+  return RemixNode.json({ charactersTrackWithItems })
 }
 
 export default function TrackPage() {
-  const { charactersTrack } = RemixReact.useLoaderData<typeof loader>()
+  const { charactersTrackWithItems } = RemixReact.useLoaderData<typeof loader>()
 
   return (
     <main className="mx-auto max-w-3xl py-10 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -44,8 +49,8 @@ export default function TrackPage() {
       </div>
 
       <div className="mt-12">
-        {charactersTrack.length > 0 ? (
-          <TrackList tracks={charactersTrack} />
+        {charactersTrackWithItems.length > 0 ? (
+          <TrackList tracks={charactersTrackWithItems} />
         ) : (
           <EmptyState />
         )}
