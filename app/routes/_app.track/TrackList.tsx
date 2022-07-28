@@ -22,6 +22,7 @@ interface Props {
     targetNormalAttack: number
     targetElementalSkill: number
     targetElementalBurst: number
+    itemNames: string[]
   }[]
 }
 
@@ -30,94 +31,97 @@ export default function TrackList({ tracks }: Props) {
     <div className="overflow-hidden rounded-md bg-gray-2 shadow">
       <ul id="list-view" className="divide-y divide-gray-6">
         {tracks.map((track) => (
-          <li key={track.id} className="sm:flex sm:justify-between">
-            {/* <div className="relative flex flex-col items-center justify-between border-r border-gray-4 py-4 px-2 sm:px-3">
-              <div aria-hidden />
-              <Icon.Solid
-                name="viewList"
-                className="h-6 w-6 cursor-move text-gray-11 hover:text-gray-12"
-              />
-              <div className="">
-                <label htmlFor="priority" className="sr-only">
-                  Order priority
-                </label>
-                <input
-                  type="text"
-                  name="priority"
-                  id="priority"
-                  className="h-4 w-8 border-gray-7 bg-gray-2 p-1 text-center text-xs focus:border-primary-8 focus:ring-primary-8"
-                  defaultValue={track.priority || 0}
-                />
-              </div>
-            </div> */}
-            <RemixReact.Link
-              to={`./${Utils.slugify(track.name)}`}
-              className="flex items-center py-4 px-4 sm:flex-1 sm:px-6"
-            >
-              <div className="flex min-w-0 flex-1 items-center">
-                <div className="flex-shrink-0">
-                  <Image
-                    src={`/character/${Utils.getImageSrc(track.name)}.png`}
-                    alt=""
-                    width={48}
-                    height={48}
-                    className="h-12 w-12 rounded-full"
+          <li
+            key={track.id}
+            className="divide-y divide-gray-4 sm:flex sm:justify-between sm:divide-x sm:divide-y-0"
+          >
+            <div className="flex items-center divide-x divide-gray-4 sm:flex-1">
+              <div className="relative flex items-center justify-center py-4 px-2 sm:flex-col sm:px-3">
+                <div aria-hidden />
+                <div>
+                  <span className="sr-only">Drag handle</span>
+                  <Icon.Base
+                    name="dragDotsHandle2"
+                    width={15}
+                    height={15}
+                    viewBox="0 0 15 15"
+                    fill="none"
+                    className="h-6 w-6 cursor-move text-gray-11 hover:text-gray-12"
+                    aria-hidden
                   />
                 </div>
-                <div className="min-w-0 flex-1 px-4 lg:grid lg:grid-cols-2 lg:gap-4">
-                  <div className="flex items-center">
-                    <p className="truncate text-sm font-medium text-primary-12">
-                      {track.name}
-                    </p>
+              </div>
+              <RemixReact.Link
+                to={`./${Utils.slugify(track.name)}`}
+                className="py-4 px-4 hover:bg-gray-3 sm:flex sm:flex-1 sm:items-center sm:px-6"
+              >
+                <div className="sm:flex sm:min-w-0 sm:flex-1 sm:items-center">
+                  <div className="flex-shrink-0">
+                    <Image
+                      src={`/character/${Utils.getImageSrc(track.name)}.png`}
+                      alt=""
+                      width={48}
+                      height={48}
+                      className="h-12 w-12 rounded-full"
+                    />
                   </div>
-                  <div>
-                    <ul>
-                      <LevelTrack
-                        name="Level"
-                        level={{
-                          current: track.userCharacter.level,
-                          target: track.targetLevel,
-                        }}
-                      />
-                      <LevelTrack
-                        name="Ascension"
-                        level={{
-                          current: track.userCharacter.ascension,
-                          target: track.targetAscension,
-                        }}
-                      />
-                      <LevelTrack
-                        name="Normal Attack"
-                        level={{
-                          current: track.userCharacter.normalAttack,
-                          target: track.targetNormalAttack,
-                        }}
-                      />
-                      <LevelTrack
-                        name="Elemental Skill"
-                        level={{
-                          current: track.userCharacter.elementalSkill,
-                          target: track.targetElementalSkill,
-                        }}
-                      />
-                      <LevelTrack
-                        name="Elemental Burst"
-                        level={{
-                          current: track.userCharacter.elementalBurst,
-                          target: track.targetElementalBurst,
-                        }}
-                      />
-                    </ul>
+                  <div className="mt-2 min-w-0 flex-1 sm:mt-0 sm:px-4 xl:grid xl:grid-cols-2 xl:gap-4">
+                    <div className="flex items-center">
+                      <p className="truncate text-sm font-medium text-primary-12">
+                        {track.name}
+                      </p>
+                    </div>
+                    <div>
+                      <ul>
+                        <LevelTrack
+                          name="Level"
+                          level={{
+                            current: track.userCharacter.level,
+                            target: track.targetLevel,
+                          }}
+                        />
+                        <LevelTrack
+                          name="Ascension"
+                          level={{
+                            current: track.userCharacter.ascension,
+                            target: track.targetAscension,
+                          }}
+                        />
+                        <LevelTrack
+                          name="Normal Attack"
+                          level={{
+                            current: track.userCharacter.normalAttack,
+                            target: track.targetNormalAttack,
+                          }}
+                        />
+                        <LevelTrack
+                          name="Elemental Skill"
+                          level={{
+                            current: track.userCharacter.elementalSkill,
+                            target: track.targetElementalSkill,
+                          }}
+                        />
+                        <LevelTrack
+                          name="Elemental Burst"
+                          level={{
+                            current: track.userCharacter.elementalBurst,
+                            target: track.targetElementalBurst,
+                          }}
+                        />
+                      </ul>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="hidden md:grid md:grid-cols-6 md:gap-2">
-                <ItemImage name="Slime Concentrate" />
-              </div>
-            </RemixReact.Link>
+                <div className="hidden md:grid md:grid-cols-4 md:gap-1 lg:grid-cols-6">
+                  {track.itemNames.map((name) => (
+                    <ItemImage key={name} name={name} />
+                  ))}
+                </div>
+              </RemixReact.Link>
+            </div>
 
-            <div className="flex items-center gap-4 border-t border-gray-4 py-4 px-4 sm:justify-start sm:border-t-0 sm:border-l sm:px-6">
+            <div className="flex items-center gap-4 py-4 px-4 sm:justify-start sm:px-6">
               <RemixReact.Form
                 method="post"
                 replace
@@ -139,7 +143,7 @@ export default function TrackList({ tracks }: Props) {
                 variant="info"
                 className="w-full sm:order-1"
               >
-                Update
+                Edit
               </Button.Link>
             </div>
           </li>
@@ -171,7 +175,7 @@ function LevelTrack({
       <Icon.Solid
         name="arrowSmRight"
         aria-hidden
-        className="h-4 w-4 text-gray-11"
+        className="h-4 w-4 flex-shrink-0 text-gray-11"
       />
       <span className="text-gray-12">{level.target}</span>
     </li>
