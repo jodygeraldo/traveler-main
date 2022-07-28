@@ -44,7 +44,7 @@ export default function TrackList({ userTracks }: Props) {
 
     submit(
       { intent: 'reorder', orders: JSON.stringify(orders) },
-      { method: 'post', action: '/track', replace: true }
+      { method: 'post', action: '/track?index', replace: true }
     )
   }
 

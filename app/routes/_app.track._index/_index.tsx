@@ -82,7 +82,6 @@ export default function TrackPage() {
           <EmptyState />
         )}
       </div>
-      <RemixReact.Outlet />
     </main>
   )
 }
