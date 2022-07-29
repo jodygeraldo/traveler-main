@@ -43,6 +43,7 @@ interface ButtonIconProps
 interface ButtonLinkProps
   extends BaseProps,
     Omit<RemixReact.LinkProps, keyof BaseProps> {
+  prefetch?: 'intent' | 'render' | 'none'
   styles?: 'button' | 'buttonLink'
   variant?:
     | 'primary'
@@ -171,6 +172,7 @@ ButtonIcon.displayName = 'ButtonIcon'
 const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
   (
     {
+      prefetch,
       styles: as = 'buttonLink',
       variant = 'primary',
       focusRing = 2,
@@ -182,6 +184,7 @@ const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
   ) => {
     return (
       <RemixReact.Link
+        prefetch={prefetch}
         ref={ref}
         className={clsx(
           baseStyles[as],
