@@ -357,7 +357,7 @@ test.describe('apps', () => {
     })
   })
 
-  test.describe('character level up pages', () => {
+  test.describe('character level up page', () => {
     test('should display character required items table', async ({ page }) => {
       await page.click('#Ganyu-character-page-link')
       await page.waitForURL('/character/Ganyu/required-items')
@@ -459,6 +459,27 @@ test.describe('apps', () => {
         page.locator('#test-shivada_jade_sliver-quantity')
       ).toBeHidden()
       await expect(page.locator('#test-qingxin-quantity')).toHaveText('2')
+    })
+  })
+
+  test.describe('track page', () => {
+    test('Should display empty state when no track', async ({ page }) => {
+      await page.locator('#Track-link-desktop').click()
+      await page.waitForURL('/track')
+      await expect(page.locator('h1:has-text("Tracks")')).toBeVisible()
+      await expect(
+        page.locator('a:has-text("Track a character")')
+      ).toBeVisible()
+    })
+
+    test('Should able to add track', async ({ page }) => {
+      await page.goto('/track')
+      await Promise.all([
+        page.waitForNavigation(),
+        page.click('a:has-text("Track a character")'),
+      ])
+
+      expect(page.url()).toMatch('/track/add')
     })
   })
 })
