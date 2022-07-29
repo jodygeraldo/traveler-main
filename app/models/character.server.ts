@@ -135,7 +135,7 @@ export async function upsertCharacter({
 }: {
   name: CharacterType.Name
   progression: {
-    level: number
+    level?: number
     ascension?: number
     normalAttack?: number
     elementalSkill?: number
