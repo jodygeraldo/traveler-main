@@ -97,7 +97,7 @@ export default function TrackUpdatePage() {
     setOpen(false)
 
     const timer = setTimeout(() => {
-      navigate('..')
+      navigate('/track')
     }, 500)
     timerRef.current = timer
   }
