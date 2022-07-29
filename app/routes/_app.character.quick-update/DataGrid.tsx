@@ -32,19 +32,19 @@ export default function DataGrid({ characters, submit }: Props) {
       const $form = e.currentTarget.form
       if (!$form) return
 
-      const level = ($form.querySelector(`#${name}-level`) as HTMLInputElement)
+      const level = ($form.querySelector(`#${Utils.slugify(name)}-level`) as HTMLInputElement)
         .value
       const ascension = (
-        $form.querySelector(`#${name}-ascension`) as HTMLInputElement
+        $form.querySelector(`#${Utils.slugify(name)}-ascension`) as HTMLInputElement
       ).value
       const normalAttack = (
-        $form.querySelector(`#${name}-normal-attack`) as HTMLInputElement
+        $form.querySelector(`#${Utils.slugify(name)}-normal-attack`) as HTMLInputElement
       ).value
       const elementalSkill = (
-        $form.querySelector(`#${name}-elemental-skill`) as HTMLInputElement
+        $form.querySelector(`#${Utils.slugify(name)}-elemental-skill`) as HTMLInputElement
       ).value
       const elementalBurst = (
-        $form.querySelector(`#${name}-elemental-burst`) as HTMLInputElement
+        $form.querySelector(`#${Utils.slugify(name)}-elemental-burst`) as HTMLInputElement
       ).value
 
       const formData = new FormData()
@@ -91,7 +91,7 @@ export default function DataGrid({ characters, submit }: Props) {
             <input
               form="character-update"
               title={`${info.row.original.name} level`}
-              id={`${info.row.original.name}-level`}
+              id={`${Utils.slugify(info.row.original.name)}-level`}
               name={`${info.row.original.name}-level`}
               type="number"
               min={1}
@@ -109,7 +109,7 @@ export default function DataGrid({ characters, submit }: Props) {
             <input
               form="character-update"
               title={`${info.row.original.name} Ascension`}
-              id={`${info.row.original.name}-ascension`}
+              id={`${Utils.slugify(info.row.original.name)}-ascension`}
               name={`${info.row.original.name}-ascension`}
               type="number"
               min={0}
@@ -130,7 +130,7 @@ export default function DataGrid({ characters, submit }: Props) {
             <input
               form="character-update"
               title={`${info.row.original.name} normal attack`}
-              id={`${info.row.original.name}-normal-attack`}
+              id={`${Utils.slugify(info.row.original.name)}-normal-attack`}
               name={`${info.row.original.name}-normal-attack`}
               type="number"
               min={1}
@@ -148,7 +148,7 @@ export default function DataGrid({ characters, submit }: Props) {
             <input
               form="character-update"
               title={`${info.row.original.name} elemental skill`}
-              id={`${info.row.original.name}-elemental-skill`}
+              id={`${Utils.slugify(info.row.original.name)}-elemental-skill`}
               name={`${info.row.original.name}-elemental-skill`}
               type="number"
               min={1}
@@ -166,7 +166,7 @@ export default function DataGrid({ characters, submit }: Props) {
             <input
               form="character-update"
               title={`${info.row.original.name} elemental burst`}
-              id={`${info.row.original.name}-elemental-burst`}
+              id={`${Utils.slugify(info.row.original.name)}-elemental-burst`}
               name={`${info.row.original.name}-elemental-burst`}
               type="number"
               min={1}
