@@ -32,19 +32,28 @@ export default function DataGrid({ characters, submit }: Props) {
       const $form = e.currentTarget.form
       if (!$form) return
 
-      const level = ($form.querySelector(`#${Utils.slugify(name)}-level`) as HTMLInputElement)
-        .value
+      const level = (
+        $form.querySelector(`#${Utils.slugify(name)}-level`) as HTMLInputElement
+      ).value
       const ascension = (
-        $form.querySelector(`#${Utils.slugify(name)}-ascension`) as HTMLInputElement
+        $form.querySelector(
+          `#${Utils.slugify(name)}-ascension`
+        ) as HTMLInputElement
       ).value
       const normalAttack = (
-        $form.querySelector(`#${Utils.slugify(name)}-normal-attack`) as HTMLInputElement
+        $form.querySelector(
+          `#${Utils.slugify(name)}-normal-attack`
+        ) as HTMLInputElement
       ).value
       const elementalSkill = (
-        $form.querySelector(`#${Utils.slugify(name)}-elemental-skill`) as HTMLInputElement
+        $form.querySelector(
+          `#${Utils.slugify(name)}-elemental-skill`
+        ) as HTMLInputElement
       ).value
       const elementalBurst = (
-        $form.querySelector(`#${Utils.slugify(name)}-elemental-burst`) as HTMLInputElement
+        $form.querySelector(
+          `#${Utils.slugify(name)}-elemental-burst`
+        ) as HTMLInputElement
       ).value
 
       const formData = new FormData()

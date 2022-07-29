@@ -406,9 +406,7 @@ test.describe('apps', () => {
       await expect(page.locator('h2:has-text("Talent")')).toBeVisible()
     })
 
-    test('should able to level up manually', async ({
-      page,
-    }, testInfo) => {
+    test('should able to level up manually', async ({ page }, testInfo) => {
       await page.click('#Albedo-character-page-link')
       await page.waitForURL('/character/Albedo/required-items')
       await page.click('#manual_level_up-link')
