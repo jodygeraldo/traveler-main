@@ -946,3 +946,233 @@ export function getCharactersTrackItems(
     }
   })
 }
+
+type KV = { key: string; value: number }
+
+export function getItemsQuantity({
+  name,
+  progression,
+  targetProgression,
+}: {
+  name: CharacterType.Name
+  progression: CharacterType.Progression
+  targetProgression: CharacterType.Progression
+}) {
+  const { ascensionMaterial, talentMaterial } = getRequiredMaterial(name)
+
+  const materialWithValue = {
+    ascension: [] as KV[],
+    normalAttack: [] as KV[],
+    elementalSkill: [] as KV[],
+    elementalBurst: [] as KV[],
+  }
+
+  if (progression.ascension < targetProgression.ascension) {
+    materialWithValue.ascension = getUpdatedMaterial(
+      ascensionMaterial,
+      progression.ascension,
+      targetProgression.ascension
+    )
+  }
+
+  if (Array.isArray(talentMaterial)) {
+    if (progression.normalAttack < targetProgression.normalAttack) {
+      materialWithValue.normalAttack = getUpdatedMaterial(
+        talentMaterial,
+        progression.normalAttack - 1,
+        targetProgression.normalAttack - 1
+      )
+    }
+
+    if (progression.elementalSkill < targetProgression.elementalSkill) {
+      materialWithValue.elementalSkill = getUpdatedMaterial(
+        talentMaterial,
+        progression.elementalSkill - 1,
+        targetProgression.elementalSkill - 1
+      )
+    }
+
+    if (progression.elementalBurst < targetProgression.elementalBurst) {
+      materialWithValue.elementalBurst = getUpdatedMaterial(
+        talentMaterial,
+        progression.elementalBurst - 1,
+        targetProgression.elementalBurst - 1
+      )
+    }
+  } else {
+    if (progression.normalAttack < targetProgression.normalAttack) {
+      materialWithValue.normalAttack = getUpdatedMaterial(
+        talentMaterial.normal,
+        progression.normalAttack - 1,
+        targetProgression.normalAttack - 1
+      )
+    }
+
+    if (progression.elementalSkill < targetProgression.elementalSkill) {
+      materialWithValue.elementalSkill = getUpdatedMaterial(
+        talentMaterial.elemental,
+        progression.elementalSkill - 1,
+        targetProgression.elementalSkill - 1
+      )
+    }
+
+    if (progression.elementalBurst < targetProgression.elementalBurst) {
+      materialWithValue.elementalBurst = getUpdatedMaterial(
+        talentMaterial.elemental,
+        progression.elementalBurst - 1,
+        targetProgression.elementalBurst - 1
+      )
+    }
+  }
+
+  return combineDuplicateKey({
+    skipPreprocess: true,
+    arr: [
+      ...materialWithValue.ascension,
+      ...materialWithValue.normalAttack,
+      ...materialWithValue.elementalSkill,
+      ...materialWithValue.elementalBurst,
+    ],
+  })
+}
+
+function getUpdatedMaterial(
+  material: CharacterType.AscensionPhase[] | CharacterType.TalentPhase[],
+  from: number,
+  to: number
+) {
+  return combineDuplicateKey({
+    skipPreprocess: false,
+    arr: material.slice(from, to).map((m) => {
+      if (Utils.hasOwnProperty(m, 'local')) {
+        return {
+          mora: m.mora,
+          [m.common.name]: m.common.quantity,
+          [m.local.name]: m.local.quantity,
+          [m.gem.name]: m.gem.quantity,
+          [m.boss?.name ?? 'delete_this']: m.boss?.quantity ?? 0,
+        }
+      }
+
+      return {
+        mora: m.mora,
+        [m.common.name]: m.common.quantity,
+        [m.book.name]: m.book.quantity,
+        [m.special?.name ?? 'delete_this']: m.special?.quantity ?? 0,
+        [m.boss?.name ?? 'delete_this']: m.boss?.quantity ?? 0,
+      }
+    }),
+  })
+}
+
+function combineDuplicateKey(
+  obj:
+    | { skipPreprocess: false; arr: { [k: string]: number }[] }
+    | { skipPreprocess: true; arr: KV[] }
+) {
+  let tmpArr: KV[] = []
+
+  if (!obj.skipPreprocess) {
+    obj.arr.forEach((m) => {
+      Object.keys(m).forEach((k) => {
+        tmpArr.push({
+          key: k,
+          value: m[k],
+        })
+      })
+    })
+  } else {
+    tmpArr = obj.arr
+  }
+
+  // combine value of array with same value of object key
+  return tmpArr.reduce((acc, cur) => {
+    if (cur.key === 'delete_this') return acc
+    const idx = acc.findIndex((a) => a.key === cur.key)
+    if (idx === -1) {
+      acc.push(cur)
+    } else {
+      acc[idx].value += cur.value
+    }
+    return acc
+  }, [] as typeof tmpArr)
+}
+
+export function getCurrentItemsQuantity({
+  name,
+  progression,
+  targetProgression,
+}: {
+  name: CharacterType.Name
+  progression: CharacterType.Progression
+  targetProgression: CharacterType.Progression
+}) {
+  const { ascensionMaterial, talentMaterial } = getRequiredMaterial(name)
+
+  const materialWithValue = {
+    ascension: [] as KV[],
+    normalAttack: [] as KV[],
+    elementalSkill: [] as KV[],
+    elementalBurst: [] as KV[],
+  }
+
+  if (progression.ascension < targetProgression.ascension) {
+    materialWithValue.ascension = getUpdatedMaterial(
+      ascensionMaterial,
+      progression.ascension,
+      progression.ascension + 1
+    )
+  }
+
+  if (Array.isArray(talentMaterial)) {
+    if (progression.normalAttack < targetProgression.normalAttack) {
+      materialWithValue.normalAttack = getUpdatedMaterial(
+        talentMaterial,
+        progression.normalAttack - 1,
+        progression.normalAttack
+      )
+    }
+
+    if (progression.elementalSkill < targetProgression.elementalSkill) {
+      materialWithValue.elementalSkill = getUpdatedMaterial(
+        talentMaterial,
+        progression.elementalSkill - 1,
+        progression.elementalSkill
+      )
+    }
+
+    if (progression.elementalBurst < targetProgression.elementalBurst) {
+      materialWithValue.elementalBurst = getUpdatedMaterial(
+        talentMaterial,
+        progression.elementalBurst - 1,
+        progression.elementalBurst
+      )
+    }
+  } else {
+    if (progression.normalAttack < targetProgression.normalAttack) {
+      materialWithValue.normalAttack = getUpdatedMaterial(
+        talentMaterial.normal,
+        progression.normalAttack - 1,
+        progression.normalAttack
+      )
+    }
+
+    if (progression.elementalSkill < targetProgression.elementalSkill) {
+      materialWithValue.elementalSkill = getUpdatedMaterial(
+        talentMaterial.elemental,
+        progression.elementalSkill - 1,
+        progression.elementalSkill
+      )
+    }
+
+    if (progression.elementalBurst < targetProgression.elementalBurst) {
+      materialWithValue.elementalBurst = getUpdatedMaterial(
+        talentMaterial.elemental,
+        progression.elementalBurst - 1,
+        progression.elementalBurst
+      )
+    }
+  }
+
+  return materialWithValue
+}
