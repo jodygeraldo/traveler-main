@@ -6,6 +6,12 @@ import type * as CharacterType from '~/types/character'
 import type * as ItemType from '~/types/item'
 import * as Utils from '~/utils'
 
+export function getMissingCharacters(names: string[]) {
+  return CharacterData.characters
+    .filter((character) => !names.includes(character.name))
+    .map((character) => character.name)
+}
+
 export function validateCharacter(
   name: string | undefined
 ): name is CharacterType.Name {
@@ -788,4 +794,385 @@ export function getCharacterInventoryLevelUpData({
       },
     }
   }
+}
+
+export function getCharactersTrackItems(
+  tracks: {
+    id: string
+    name: string
+    priority: number | null
+    targetLevel: number
+    targetAscension: number
+    targetNormalAttack: number
+    targetElementalSkill: number
+    targetElementalBurst: number
+    userCharacter: CharacterType.Progression
+  }[]
+) {
+  function getExcludedTalentItems({
+    itemNames,
+    normalAttack,
+    elementalSkill,
+    elementalBurst,
+  }: {
+    itemNames: string[]
+    normalAttack: number
+    elementalSkill: number
+    elementalBurst: number
+  }) {
+    function isTalentGreaterThan(
+      talent: 'all' | 'normal' | 'elemental',
+      level: number
+    ) {
+      if (talent === 'all')
+        return (
+          normalAttack > level &&
+          elementalSkill > level &&
+          elementalBurst > level
+        )
+      if (talent === 'normal') return normalAttack > level
+      if (talent === 'elemental')
+        return elementalSkill > level && elementalBurst > level
+    }
+
+    const excludedTalentItems: string[] = []
+
+    // Characters (-Traveler)
+    if (itemNames.length === 17) {
+      if (isTalentGreaterThan('all', 1))
+        excludedTalentItems.push(itemNames[9], itemNames[12])
+      if (isTalentGreaterThan('all', 5))
+        excludedTalentItems.push(itemNames[10], itemNames[13])
+      if (isTalentGreaterThan('all', 9))
+        excludedTalentItems.push(
+          itemNames[11],
+          itemNames[14],
+          itemNames[15],
+          itemNames[16]
+        )
+    }
+
+    // Travelers (-Geo vision)
+    if (itemNames.length === 22) {
+      if (isTalentGreaterThan('all', 1))
+        excludedTalentItems.push(itemNames[8], itemNames[11])
+      if (isTalentGreaterThan('all', 3)) excludedTalentItems.push(itemNames[13])
+      if (isTalentGreaterThan('all', 4)) excludedTalentItems.push(itemNames[14])
+      if (isTalentGreaterThan('all', 5))
+        excludedTalentItems.push(itemNames[9], itemNames[15])
+      if (isTalentGreaterThan('all', 7)) excludedTalentItems.push(itemNames[17])
+      if (isTalentGreaterThan('all', 8)) excludedTalentItems.push(itemNames[18])
+      if (isTalentGreaterThan('all', 9))
+        excludedTalentItems.push(
+          itemNames[10],
+          itemNames[19],
+          itemNames[20],
+          itemNames[21]
+        )
+    }
+
+    // Traveler Geo
+    if (itemNames.length === 35) {
+      if (isTalentGreaterThan('normal', 1))
+        excludedTalentItems.push(itemNames[8], itemNames[14])
+      if (isTalentGreaterThan('normal', 3))
+        excludedTalentItems.push(itemNames[16])
+      if (isTalentGreaterThan('normal', 4))
+        excludedTalentItems.push(itemNames[17])
+      if (isTalentGreaterThan('normal', 5))
+        excludedTalentItems.push(itemNames[9], itemNames[18])
+      if (isTalentGreaterThan('normal', 7))
+        excludedTalentItems.push(itemNames[20])
+      if (isTalentGreaterThan('normal', 8))
+        excludedTalentItems.push(itemNames[21])
+      if (isTalentGreaterThan('normal', 9))
+        excludedTalentItems.push(itemNames[10], itemNames[22], itemNames[32])
+      if (isTalentGreaterThan('elemental', 1))
+        excludedTalentItems.push(itemNames[11], itemNames[23])
+      if (isTalentGreaterThan('elemental', 3))
+        excludedTalentItems.push(itemNames[25])
+      if (isTalentGreaterThan('elemental', 4))
+        excludedTalentItems.push(itemNames[26])
+      if (isTalentGreaterThan('elemental', 5))
+        excludedTalentItems.push(itemNames[12], itemNames[27])
+      if (isTalentGreaterThan('elemental', 7))
+        excludedTalentItems.push(itemNames[29])
+      if (isTalentGreaterThan('elemental', 8))
+        excludedTalentItems.push(itemNames[30])
+      if (isTalentGreaterThan('elemental', 9))
+        excludedTalentItems.push(itemNames[13], itemNames[31], itemNames[33])
+      if (isTalentGreaterThan('all', 9)) excludedTalentItems.push(itemNames[34])
+    }
+
+    return excludedTalentItems
+  }
+
+  return tracks.map((track) => {
+    if (!validateCharacter(track.name)) {
+      throw new Error('Invalid character name')
+    }
+    const itemNames = getItemsToRetrieve(track.name)
+
+    const { ascension, normalAttack, elementalSkill, elementalBurst } =
+      track.userCharacter
+
+    const excludedAscensionItems: string[] = []
+    if (ascension > 0) excludedAscensionItems.push(itemNames[3])
+    if (ascension > 1 && track.name.includes('Traveler'))
+      excludedAscensionItems.push(itemNames[0])
+    if (ascension > 2) excludedAscensionItems.push(itemNames[4])
+    if (ascension > 3 && track.name.includes('Traveler'))
+      excludedAscensionItems.push(itemNames[1])
+    if (ascension > 4) excludedAscensionItems.push(itemNames[5])
+    if (ascension > 5) excludedAscensionItems.push(itemNames[6], itemNames[7])
+    if (ascension > 5 && track.name.includes('Traveler'))
+      excludedAscensionItems.push(itemNames[2])
+    if (ascension > 5 && !track.name.includes('Traveler'))
+      excludedAscensionItems.push(itemNames[8])
+
+    const excludedTalentItems = getExcludedTalentItems({
+      itemNames,
+      normalAttack,
+      elementalSkill,
+      elementalBurst,
+    })
+
+    const excludedItems = [...excludedAscensionItems, ...excludedTalentItems]
+    const items = itemNames.filter((name) => !excludedItems.includes(name))
+
+    return {
+      ...track,
+      itemNames: Array.from(new Set(items)),
+    }
+  })
+}
+
+type KV = { key: string; value: number }
+
+export function getItemsQuantity({
+  name,
+  progression,
+  targetProgression,
+}: {
+  name: CharacterType.Name
+  progression: CharacterType.Progression
+  targetProgression: CharacterType.Progression
+}) {
+  const { ascensionMaterial, talentMaterial } = getRequiredMaterial(name)
+
+  const materialWithValue = {
+    ascension: [] as KV[],
+    normalAttack: [] as KV[],
+    elementalSkill: [] as KV[],
+    elementalBurst: [] as KV[],
+  }
+
+  if (progression.ascension < targetProgression.ascension) {
+    materialWithValue.ascension = getUpdatedMaterial(
+      ascensionMaterial,
+      progression.ascension,
+      targetProgression.ascension
+    )
+  }
+
+  if (Array.isArray(talentMaterial)) {
+    if (progression.normalAttack < targetProgression.normalAttack) {
+      materialWithValue.normalAttack = getUpdatedMaterial(
+        talentMaterial,
+        progression.normalAttack - 1,
+        targetProgression.normalAttack - 1
+      )
+    }
+
+    if (progression.elementalSkill < targetProgression.elementalSkill) {
+      materialWithValue.elementalSkill = getUpdatedMaterial(
+        talentMaterial,
+        progression.elementalSkill - 1,
+        targetProgression.elementalSkill - 1
+      )
+    }
+
+    if (progression.elementalBurst < targetProgression.elementalBurst) {
+      materialWithValue.elementalBurst = getUpdatedMaterial(
+        talentMaterial,
+        progression.elementalBurst - 1,
+        targetProgression.elementalBurst - 1
+      )
+    }
+  } else {
+    if (progression.normalAttack < targetProgression.normalAttack) {
+      materialWithValue.normalAttack = getUpdatedMaterial(
+        talentMaterial.normal,
+        progression.normalAttack - 1,
+        targetProgression.normalAttack - 1
+      )
+    }
+
+    if (progression.elementalSkill < targetProgression.elementalSkill) {
+      materialWithValue.elementalSkill = getUpdatedMaterial(
+        talentMaterial.elemental,
+        progression.elementalSkill - 1,
+        targetProgression.elementalSkill - 1
+      )
+    }
+
+    if (progression.elementalBurst < targetProgression.elementalBurst) {
+      materialWithValue.elementalBurst = getUpdatedMaterial(
+        talentMaterial.elemental,
+        progression.elementalBurst - 1,
+        targetProgression.elementalBurst - 1
+      )
+    }
+  }
+
+  return combineDuplicateKey({
+    skipPreprocess: true,
+    arr: [
+      ...materialWithValue.ascension,
+      ...materialWithValue.normalAttack,
+      ...materialWithValue.elementalSkill,
+      ...materialWithValue.elementalBurst,
+    ],
+  })
+}
+
+function getUpdatedMaterial(
+  material: CharacterType.AscensionPhase[] | CharacterType.TalentPhase[],
+  from: number,
+  to: number
+) {
+  return combineDuplicateKey({
+    skipPreprocess: false,
+    arr: material.slice(from, to).map((m) => {
+      if (Utils.hasOwnProperty(m, 'local')) {
+        return {
+          mora: m.mora,
+          [m.common.name]: m.common.quantity,
+          [m.local.name]: m.local.quantity,
+          [m.gem.name]: m.gem.quantity,
+          [m.boss?.name ?? 'delete_this']: m.boss?.quantity ?? 0,
+        }
+      }
+
+      return {
+        mora: m.mora,
+        [m.common.name]: m.common.quantity,
+        [m.book.name]: m.book.quantity,
+        [m.special?.name ?? 'delete_this']: m.special?.quantity ?? 0,
+        [m.boss?.name ?? 'delete_this']: m.boss?.quantity ?? 0,
+      }
+    }),
+  })
+}
+
+function combineDuplicateKey(
+  obj:
+    | { skipPreprocess: false; arr: { [k: string]: number }[] }
+    | { skipPreprocess: true; arr: KV[] }
+) {
+  let tmpArr: KV[] = []
+
+  if (!obj.skipPreprocess) {
+    obj.arr.forEach((m) => {
+      Object.keys(m).forEach((k) => {
+        tmpArr.push({
+          key: k,
+          value: m[k],
+        })
+      })
+    })
+  } else {
+    tmpArr = obj.arr
+  }
+
+  // combine value of array with same value of object key
+  return tmpArr.reduce((acc, cur) => {
+    if (cur.key === 'delete_this') return acc
+    const idx = acc.findIndex((a) => a.key === cur.key)
+    if (idx === -1) {
+      acc.push(cur)
+    } else {
+      acc[idx].value += cur.value
+    }
+    return acc
+  }, [] as typeof tmpArr)
+}
+
+export function getCurrentItemsQuantity({
+  name,
+  progression,
+  targetProgression,
+}: {
+  name: CharacterType.Name
+  progression: CharacterType.Progression
+  targetProgression: CharacterType.Progression
+}) {
+  const { ascensionMaterial, talentMaterial } = getRequiredMaterial(name)
+
+  const materialWithValue = {
+    ascension: [] as KV[],
+    normalAttack: [] as KV[],
+    elementalSkill: [] as KV[],
+    elementalBurst: [] as KV[],
+  }
+
+  if (progression.ascension < targetProgression.ascension) {
+    materialWithValue.ascension = getUpdatedMaterial(
+      ascensionMaterial,
+      progression.ascension,
+      progression.ascension + 1
+    )
+  }
+
+  if (Array.isArray(talentMaterial)) {
+    if (progression.normalAttack < targetProgression.normalAttack) {
+      materialWithValue.normalAttack = getUpdatedMaterial(
+        talentMaterial,
+        progression.normalAttack - 1,
+        progression.normalAttack
+      )
+    }
+
+    if (progression.elementalSkill < targetProgression.elementalSkill) {
+      materialWithValue.elementalSkill = getUpdatedMaterial(
+        talentMaterial,
+        progression.elementalSkill - 1,
+        progression.elementalSkill
+      )
+    }
+
+    if (progression.elementalBurst < targetProgression.elementalBurst) {
+      materialWithValue.elementalBurst = getUpdatedMaterial(
+        talentMaterial,
+        progression.elementalBurst - 1,
+        progression.elementalBurst
+      )
+    }
+  } else {
+    if (progression.normalAttack < targetProgression.normalAttack) {
+      materialWithValue.normalAttack = getUpdatedMaterial(
+        talentMaterial.normal,
+        progression.normalAttack - 1,
+        progression.normalAttack
+      )
+    }
+
+    if (progression.elementalSkill < targetProgression.elementalSkill) {
+      materialWithValue.elementalSkill = getUpdatedMaterial(
+        talentMaterial.elemental,
+        progression.elementalSkill - 1,
+        progression.elementalSkill
+      )
+    }
+
+    if (progression.elementalBurst < targetProgression.elementalBurst) {
+      materialWithValue.elementalBurst = getUpdatedMaterial(
+        talentMaterial.elemental,
+        progression.elementalBurst - 1,
+        progression.elementalBurst
+      )
+    }
+  }
+
+  return materialWithValue
 }

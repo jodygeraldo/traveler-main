@@ -10,6 +10,7 @@ import useUser from '~/hooks/useUser'
 
 const navigation = [
   { name: 'Character', to: '/character' },
+  { name: 'Track', to: '/track' },
   { name: 'Inventory', to: '/inventory' },
   { name: 'Alchemy', to: '/alchemy' },
 ]

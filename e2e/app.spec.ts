@@ -69,7 +69,11 @@ test.describe('apps', () => {
       await page.fill('#Albedo-ascension', ALBEDO.ASCENSION)
 
       await Promise.all([
-        page.waitForResponse((response) => response.ok()),
+        page.waitForResponse(
+          (response) =>
+            response.url() ===
+            'http://localhost:3000/character/quick-update?_data=routes%2F_app.character.quick-update%2F_index'
+        ),
         page.click(`#Albedo-save`),
       ])
 
@@ -93,7 +97,11 @@ test.describe('apps', () => {
       await page.fill('#Amber-elemental-burst', AMBER.ELEMENTAL_BUSRT)
 
       await Promise.all([
-        page.waitForResponse((response) => response.ok()),
+        page.waitForResponse(
+          (response) =>
+            response.url() ===
+            'http://localhost:3000/character/quick-update?_data=routes%2F_app.character.quick-update%2F_index'
+        ),
         page.click(`#Amber-save`),
       ])
 
@@ -135,7 +143,11 @@ test.describe('apps', () => {
       await page.goto('/inventory/all')
 
       await Promise.all([
-        page.waitForResponse((response) => response.ok()),
+        page.waitForResponse(
+          (response) =>
+            response.url() ===
+            'http://localhost:3000/inventory/all?_data=routes%2F_app.inventory.%24type%2F_index'
+        ),
         page.fill(ITEM[0].SELECTOR, ITEM[0].QUANTITY),
       ])
 
@@ -144,7 +156,11 @@ test.describe('apps', () => {
       await expect(page.locator(ITEM[0].SELECTOR)).toHaveValue(ITEM[0].QUANTITY)
 
       await Promise.all([
-        page.waitForResponse((response) => response.ok()),
+        page.waitForResponse(
+          (response) =>
+            response.url() ===
+            'http://localhost:3000/inventory/talent-book?_data=routes%2F_app.inventory.%24type%2F_index'
+        ),
         page.fill(ITEM[0].SELECTOR, '120'),
       ])
 
@@ -157,7 +173,11 @@ test.describe('apps', () => {
       await page.goto('/inventory/all')
 
       await Promise.all([
-        page.waitForResponse((response) => response.ok()),
+        page.waitForResponse(
+          (response) =>
+            response.url() ===
+            'http://localhost:3000/inventory/all?_data=routes%2F_app.inventory.%24type%2F_index'
+        ),
         await page.locator(ITEM[2].SELECTOR).fill(ITEM[2].QUANTITY),
       ])
 
@@ -180,7 +200,11 @@ test.describe('apps', () => {
       await page.goto('/inventory/all')
 
       await Promise.all([
-        page.waitForResponse((response) => response.ok()),
+        page.waitForResponse(
+          (response) =>
+            response.url() ===
+            'http://localhost:3000/inventory/all?_data=routes%2F_app.inventory.%24type%2F_index'
+        ),
         page.fill(ITEM[0].SELECTOR, ITEM[0].QUANTITY),
       ])
 
@@ -196,7 +220,7 @@ test.describe('apps', () => {
 
       await page.click(ITEM_TO_CRAFT.LINK_SELECTOR)
       await page.waitForURL(
-        '/alchemy/crafting/all/craft-talent/Guide%20to%20Freedom'
+        '/alchemy/crafting/all/craft-talent/Guide-to-Freedom'
       )
       await page.fill('input[name="quantity"]', ITEM_TO_CRAFT.TO_CRAFT[0])
       await page.fill('input[name="bonusQuantity"]', ITEM_TO_CRAFT.BONUS[0])
@@ -206,7 +230,11 @@ test.describe('apps', () => {
       )
 
       await Promise.all([
-        page.waitForResponse((response) => response.ok()),
+        page.waitForResponse(
+          (response) =>
+            response.url() ===
+            'http://localhost:3000/alchemy/crafting/all/craft-talent/Guide-to-Freedom?_data=routes%2F_app.alchemy.crafting.%24type.%24craft.%24name%2F_index'
+        ),
         page.click('#craft'),
       ])
 
@@ -228,7 +256,7 @@ test.describe('apps', () => {
 
       await page.click(ITEM_TO_CRAFT.LINK_SELECTOR)
       await page.waitForURL(
-        '/alchemy/crafting/talent/craft-talent/Guide%20to%20Freedom'
+        '/alchemy/crafting/talent/craft-talent/Guide-to-Freedom'
       )
       await page.fill('input[name="quantity"]', ITEM_TO_CRAFT.TO_CRAFT[1])
       await page.fill('input[name="bonusQuantity"]', ITEM_TO_CRAFT.BONUS[1])
@@ -238,7 +266,11 @@ test.describe('apps', () => {
       )
 
       await Promise.all([
-        page.waitForResponse((response) => response.ok()),
+        page.waitForResponse(
+          (response) =>
+            response.url() ===
+            'http://localhost:3000/alchemy/crafting/talent/craft-talent/Guide-to-Freedom?_data=routes%2F_app.alchemy.crafting.%24type.%24craft.%24name%2F_index'
+        ),
         page.click('#craft'),
       ])
       await expect(page).toHaveURL('/alchemy/crafting/talent')
@@ -290,12 +322,16 @@ test.describe('apps', () => {
 
       await page.click(ITEM_TO_CRAFT.LINK_SELECTOR)
       await page.waitForURL(
-        '/alchemy/converting/all/convert-boss/Ring%20of%20Boreas'
+        '/alchemy/converting/all/convert-boss/Ring-of-Boreas'
       )
       await page.fill('input[name="quantity"]', ITEM_TO_CRAFT.TO_CRAFT)
 
       await Promise.all([
-        page.waitForResponse((response) => response.ok()),
+        page.waitForResponse(
+          (response) =>
+            response.url() ===
+            'http://localhost:3000/alchemy/converting/all/convert-boss/Ring-of-Boreas?_data=routes%2F_app.alchemy.converting.%24type.%24convert.%24name%2F_index'
+        ),
         page.click('#convert'),
       ])
       await expect(page).toHaveURL('/alchemy/converting/all')
@@ -321,12 +357,16 @@ test.describe('apps', () => {
 
       await page.click(ITEM[1].SELECTOR)
       await page.waitForURL(
-        '/alchemy/converting/talent-boss/convert-boss/Tail%20of%20Boreas'
+        '/alchemy/converting/talent-boss/convert-boss/Tail-of-Boreas'
       )
       await page.fill('input[name="quantity"]', ITEM_TO_CRAFT.TO_USE)
 
       await Promise.all([
-        page.waitForResponse((response) => response.ok()),
+        page.waitForResponse(
+          (response) =>
+            response.url() ===
+            'http://localhost:3000/alchemy/converting/talent-boss/convert-boss/Tail-of-Boreas?_data=routes%2F_app.alchemy.converting.%24type.%24convert.%24name%2F_index'
+        ),
         page.click('#convert'),
       ])
 
@@ -357,7 +397,7 @@ test.describe('apps', () => {
     })
   })
 
-  test.describe('character level up pages', () => {
+  test.describe('character level up page', () => {
     test('should display character required items table', async ({ page }) => {
       await page.click('#Ganyu-character-page-link')
       await page.waitForURL('/character/Ganyu/required-items')
@@ -366,7 +406,7 @@ test.describe('apps', () => {
       await expect(page.locator('h2:has-text("Talent")')).toBeVisible()
     })
 
-    test('should able to level up manually', async ({ page }) => {
+    test('should able to level up manually', async ({ page }, testInfo) => {
       await page.click('#Albedo-character-page-link')
       await page.waitForURL('/character/Albedo/required-items')
       await page.click('#manual_level_up-link')
@@ -379,12 +419,20 @@ test.describe('apps', () => {
       await page.fill('#elemental-burst', '10')
 
       await Promise.all([
-        page.waitForResponse((response) => response.ok()),
+        page.waitForResponse(
+          (response) =>
+            response.url() ===
+            'http://localhost:3000/character/Albedo/manual-levelup?_data=routes%2F_app.character.%24name.manual-levelup%2F_index'
+        ),
         page.click('button[type="submit"]'),
       ])
 
       await Promise.all([
-        page.waitForResponse((response) => response.ok()),
+        page.waitForResponse(
+          (response) =>
+            response.url() ===
+            'http://localhost:3000/character/Albedo/manual-levelup'
+        ),
         page.reload(),
       ])
 
@@ -441,13 +489,21 @@ test.describe('apps', () => {
 
       await expect(page.locator('text=Required character to 20.')).toBeVisible()
       await Promise.all([
-        page.waitForResponse((response) => response.ok()),
+        page.waitForResponse(
+          (response) =>
+            response.url() ===
+            'http://localhost:3000/character/Ganyu/inventory-levelup?_data=routes%2F_app.character.%24name.inventory-levelup%2F_index'
+        ),
         page.click('#jump-level'),
       ])
 
       await page.locator('#character-level').fill('30')
       await Promise.all([
-        page.waitForResponse((response) => response.ok()),
+        page.waitForResponse(
+          (response) =>
+            response.url() ===
+            'http://localhost:3000/character/Ganyu/inventory-levelup?_data=routes%2F_app.character.%24name.inventory-levelup%2F_index'
+        ),
         page.click('button:has-text("Ascend")'),
       ])
 
@@ -459,6 +515,27 @@ test.describe('apps', () => {
         page.locator('#test-shivada_jade_sliver-quantity')
       ).toBeHidden()
       await expect(page.locator('#test-qingxin-quantity')).toHaveText('2')
+    })
+  })
+
+  test.describe('track page', () => {
+    test('Should display empty state when no track', async ({ page }) => {
+      await page.locator('#Track-link-desktop').click()
+      await page.waitForURL('/track')
+      await expect(page.locator('h1:has-text("Tracks")')).toBeVisible()
+      await expect(
+        page.locator('a:has-text("Track a character")')
+      ).toBeVisible()
+    })
+
+    test('Should able to add track', async ({ page }) => {
+      await page.goto('/track')
+      await Promise.all([
+        page.waitForNavigation(),
+        page.click('a:has-text("Track a character")'),
+      ])
+
+      expect(page.url()).toMatch('/track/add')
     })
   })
 })

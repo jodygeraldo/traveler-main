@@ -240,6 +240,42 @@ function camelToKebab(str: string): string {
   return str.replace(/([A-Z])/g, (_, g) => `-${(g as string).toLowerCase()}`)
 }
 
+interface Custom extends React.SVGAttributes<SVGElement> {
+  name: 'dragDotsHandle2'
+  width?: number
+  height?: number
+  viewBox?: string
+  fill?: string
+  stroke?: string
+  strokeWidth?: number
+}
+
+export default function Icon({
+  name,
+  type,
+  width = 24,
+  height = 24,
+  viewBox = '0 0 24 24',
+  fill,
+  stroke,
+  strokeWidth,
+  ...props
+}: Custom) {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={viewBox}
+      fill={fill}
+      stroke={stroke}
+      strokeWidth={strokeWidth}
+      {...props}
+    >
+      <use href={`/icon/custom/${camelToKebab(name)}.svg#${name}`} />
+    </svg>
+  )
+}
+
 export function IconOutline({ name, ...props }: Props) {
   return (
     <svg
@@ -270,5 +306,6 @@ export function IconSolid({ name, ...props }: Props) {
   )
 }
 
+export const Base = Icon
 export const Solid = IconSolid
 export const Outline = IconOutline

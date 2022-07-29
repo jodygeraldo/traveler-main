@@ -2,8 +2,10 @@ import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as ReactTable from '@tanstack/react-table'
 import * as React from 'react'
+import * as Zod from 'zod'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
+import * as Utils from '~/utils'
 import * as UtilsServer from '~/utils/index.server'
 import CharacterCustomFirstCell from './CharacterCustomFirstCell'
 import * as Column from './column'
@@ -11,14 +13,18 @@ import * as CustomHeading from './CustomTableHeading'
 import * as ItemTable from './ItemTable'
 
 export const meta: RemixNode.MetaFunction = ({ params }) => ({
-  title: `${params.name} - Traveler Main`,
-  description: `${params.name} progression required materials table`,
+  title: `${Utils.deslugify(params.name ?? '')} - Traveler Main`,
+  description: `${Utils.deslugify(
+    params.name ?? ''
+  )} progression required materials table`,
 })
 
 export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
 
-  const { name } = params
+  const name = Zod.string()
+    .transform((str) => Utils.deslugify(str))
+    .parse(params.name)
   if (!UtilsServer.Character.validateCharacter(name)) {
     throw RemixNode.json(
       { message: `There is no character with name ${name}` },

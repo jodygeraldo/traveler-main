@@ -9,13 +9,18 @@ import Notification from '~/components/Notification'
 import * as CharacterModel from '~/models/character.server'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
+import * as Utils from '~/utils'
 import * as UtilsServer from '~/utils/index.server'
 import InventoryLevelUpForm from './InventoryLevelUpForm'
 import ItemWithImage from './ItemWithImage'
 
 export const meta: RemixNode.MetaFunction = ({ params }) => ({
-  title: `${params.name} Inventory Level Up - Traveler Main`,
-  description: `Help you set ${params.name} progression with inventory system integration`,
+  title: `${Utils.deslugify(
+    params.name ?? ''
+  )} Inventory Level Up - Traveler Main`,
+  description: `Help you set ${Utils.deslugify(
+    params.name ?? ''
+  )} progression with inventory system integration`,
 })
 
 const ParamsSchema = Zod.object({
@@ -37,7 +42,9 @@ interface ActionData {
 export async function action({ params, request }: RemixNode.ActionArgs) {
   const accountId = await Session.requireAccountId(request)
 
-  const { name } = params
+  const name = Zod.string()
+    .transform((str) => Utils.deslugify(str))
+    .parse(params.name)
   const validCharacter = UtilsServer.Character.validateCharacter(name)
   if (!validCharacter) {
     throw RemixNode.json(`Character ${name} not found`, {
@@ -89,7 +96,9 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
 export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
 
-  const { name } = params
+  const name = Zod.string()
+    .transform((str) => Utils.deslugify(str))
+    .parse(params.name)
   if (!UtilsServer.Character.validateCharacter(name)) {
     throw RemixNode.json(
       { message: `There is no character with name ${name}` },

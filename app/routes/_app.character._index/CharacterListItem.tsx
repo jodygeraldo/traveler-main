@@ -24,7 +24,7 @@ export default function CharacterListItem({
     <li>
       <RemixReact.Link
         id={`${name}-character-page-link`}
-        to={`/character/${name}`}
+        to={`./${Utils.slugify(name)}/required-items`}
         prefetch="intent"
         className="block hover:bg-gray-3"
       >

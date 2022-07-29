@@ -33,7 +33,7 @@ export function ItemLink({
     <RemixReact.Link
       id={`${Utils.toSnakeCase(name)}-link`}
       prefetch="intent"
-      to={`./${craft}/${name}`}
+      to={`./${craft}/${Utils.slugify(name)}`}
     >
       <Item
         name={name}

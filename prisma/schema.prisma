@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  previewFeatures = ["referentialIntegrity", "orderByNulls"]
 }
 
 datasource db {
@@ -103,6 +103,8 @@ model Inventory {
 
   account Account @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId String  @map("owner_id")
+
+  @@unique([name, ownerId])
 }
 
 model UserCharacter {
@@ -118,4 +120,24 @@ model UserCharacter {
 
   account Account @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId String  @map("owner_id")
+
+  track CharacterTrack?
+
+  @@unique([name, ownerId])
+}
+
+model CharacterTrack {
+  id                   String @id @default(cuid())
+  priority             Int?   @db.UnsignedSmallInt
+  targetLevel          Int    @map("target_level") @db.UnsignedSmallInt
+  targetAscension      Int    @map("target_ascension") @db.UnsignedSmallInt
+  targetNormalAttack   Int    @map("target_normal_attack") @db.UnsignedSmallInt
+  targetElementalSkill Int    @map("target_elemental_skill") @db.UnsignedSmallInt
+  targetElementalBurst Int    @map("target_elemental_burst") @db.UnsignedSmallInt
+
+  userCharacter UserCharacter @relation(fields: [name, ownerId], references: [name, ownerId])
+  name          String        @map("character_name")
+  ownerId       String        @map("owner_id")
+
+  @@unique([name, ownerId])
 }

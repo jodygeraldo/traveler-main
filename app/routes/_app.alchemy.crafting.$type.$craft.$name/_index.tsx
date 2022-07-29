@@ -11,6 +11,10 @@ import * as UtilsServer from '~/utils/index.server'
 import CatchBoundaryComponent from './CatchBoundary'
 import CraftItem from './CraftItem'
 
+export const meta: RemixNode.MetaFunction = ({ params }) => ({
+  title: `Craft ${Utils.deslugify(params.name ?? '')} - Traveler Main`,
+})
+
 const FormDataSchema = Zod.object({
   quantity: Zod.number().positive(),
   crafterName: Zod.string(),
@@ -22,7 +26,7 @@ const FormDataSchema = Zod.object({
 const ParamsSchema = Zod.object({
   type: Zod.enum(['all', 'enhancement', 'ascension', 'talent']),
   craft: Zod.enum(['craft-enhancement', 'craft-ascension', 'craft-talent']),
-  name: Zod.string(),
+  name: Zod.string().transform((string) => Utils.deslugify(string)),
 })
 
 interface ActionData {
@@ -84,6 +88,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   }
 
   const { name, craft } = result.data
+  console.log(name);
   const validItem = UtilsServer.Item.validateItem(name)
   if (!validItem) {
     throw RemixNode.json(`Item ${name} not found`, {
