@@ -35,13 +35,13 @@ export default function ProgressionField({
       </div>
       <div className="flex items-center gap-4 sm:col-span-6">
         <div>
-          <span className="sr-only">Current target level</span>
-          <span className="text-sm text-gray-12">{currentValue}</span>
+          <span className="sr-only">Current level</span>
+          <span className="text-sm text-gray-12">Lv. {currentValue}</span>
         </div>
 
         <span className="sr-only">To new target</span>
         <Icon.Solid
-          name="switchHorizontal"
+          name="arrowSmRight"
           className="h-5 w-5 text-gray-12"
           aria-hidden
         />
