@@ -3,6 +3,7 @@ import * as React from 'react'
 import * as Badge from '~/components/Badge'
 import * as Icon from '~/components/Icon'
 import Image from '~/components/Image'
+import useDebounce from '~/hooks/useDebounce'
 import * as Utils from '~/utils'
 
 interface Props {
@@ -17,27 +18,25 @@ export default function ItemList({ items }: Props) {
   const { pathname } = RemixReact.useLocation()
   const { Form, submit } = RemixReact.useFetcher()
 
-  let timerRef = React.useRef<NodeJS.Timeout>()
-  function handleChange(e: React.FormEvent<HTMLFormElement>, itemName: string) {
-    if (timerRef.current) clearTimeout(timerRef.current)
-    let $form = e.currentTarget
-    const quantity = (
-      $form.querySelector(
-        `#${Utils.toSnakeCase(itemName)}-quantity`
-      ) as HTMLInputElement
-    ).value
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement>,
+    itemName: string
+  ) {
+    const quantity = e.target.value
     if (quantity === '') return
-    let timer = setTimeout(
-      () =>
-        submit($form, {
-          method: 'post',
-          replace: true,
-          action: pathname === '/inventory' ? `${pathname}?index` : undefined,
-        }),
-      500
-    )
-    timerRef.current = timer
+
+    const formData = new FormData()
+    formData.append('name', itemName)
+    formData.append('quantity', quantity)
+
+    submit(formData, {
+      method: 'post',
+      replace: true,
+      action: pathname === '/inventory' ? `${pathname}?index` : undefined,
+    })
   }
+
+  const debouncedHandleChange = useDebounce(handleChange, 200)
 
   return (
     <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -62,11 +61,7 @@ export default function ItemList({ items }: Props) {
                 <span className="ml-1">{item.rarity}</span>
               </Badge.Rarity>
             </div>
-            <Form
-              method="post"
-              onChange={(e) => handleChange(e, item.name)}
-              className="w-20 pr-2"
-            >
+            <Form method="post" className="w-20 pr-2">
               <input type="hidden" name="name" value={item.name} />
               <div>
                 <label
@@ -84,6 +79,7 @@ export default function ItemList({ items }: Props) {
                   required
                   min={0}
                   max={9999}
+                  onChange={(e) => debouncedHandleChange(e, item.name)}
                 />
               </div>
             </Form>
