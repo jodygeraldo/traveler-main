@@ -18,7 +18,7 @@ const PUBLIC_URL =
 const Image = React.forwardRef<HTMLImageElement, Props>(
   ({ src, alt, className, width, height, ...props }, ref) => {
     return (
-      <picture className="inline-flex flex-shrink-0">
+      <picture className="flex flex-shrink-0">
         <source
           srcSet={`//images.weserv.nl/?url=${PUBLIC_URL}${src}&w=${width}${
             height ? '&h=' + height : ''
