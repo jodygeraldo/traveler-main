@@ -17,7 +17,9 @@ const navigation = [
 
 export default function AppNavbar() {
   function toggleOverflowHiddenToBody() {
-    document.body.classList.toggle('overflow-hidden')
+    if (document && document.body) {
+      document.body.classList.toggle('overflow-hidden')
+    }
   }
 
   const user = useUser()
