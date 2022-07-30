@@ -17,7 +17,8 @@ const FormDataSchema = Zod.object({
     'Elemental Skill',
     'Elemental Burst',
   ]),
-  toLevel: Zod.number().nonnegative(),
+  control: Zod.enum(['increment', 'decrement']),
+  level: Zod.number().nonnegative(),
 })
 
 export async function action({ params, request }: RemixNode.ActionArgs) {
@@ -25,7 +26,6 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
   const name = Zod.string()
     .transform((n) => Utils.deslugify(n))
     .parse(params.name)
-
   if (!UtilsServer.Character.validateCharacter(name)) {
     throw RemixNode.json(
       { message: `There is no character with name ${name}` },
@@ -38,7 +38,7 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
     throw new Error('Invalid data')
   }
 
-  const { kind, toLevel } = result.data
+  const { kind, control, level } = result.data
 
   const progression: {
     level?: number
@@ -49,6 +49,7 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
   } = {}
 
   const ascensionToLevel = [40, 50, 60, 70, 80, 90] as const
+  const toLevel = control === 'increment' ? level + 1 : level - 1
 
   if (kind === 'Ascension') {
     progression.level = ascensionToLevel[toLevel - 1]
@@ -227,10 +228,10 @@ export default function TrackDetailPage() {
                   </div>
                   <div className="mt-5 flex justify-center sm:mt-0">
                     <Button.Link
-                      to={`/character/${Utils.slugify(name)}/required-items`}
+                      to={`/character/${Utils.slugify(name)}/manual-levelup`}
                       className="text-center"
                     >
-                      Character page
+                      Edit level
                     </Button.Link>
                   </div>
                 </div>
@@ -337,6 +338,8 @@ function ProgressionField({
 }) {
   const fetcher = RemixReact.useFetcher()
 
+  const busy = fetcher.state === 'submitting'
+
   return (
     <fetcher.Form method="post" className="p-6">
       <h4 className="font-medium text-gray-12">{kind}</h4>
@@ -381,15 +384,56 @@ function ProgressionField({
           value={JSON.stringify(materials)}
         /> */}
 
-        <input type="hidden" name="toLevel" value={progression.to} />
-        <Button.Base
-          name="kind"
-          value={kind}
-          type="submit"
-          className="mt-4 w-full sm:mt-0 sm:w-auto"
-        >
-          Update {kind}
-        </Button.Base>
+        <input type="hidden" name="level" value={progression.from} />
+        <input type="hidden" name="kind" value={kind} />
+        <div className="hidden -space-x-px sm:block">
+          <Button.Group
+            type="submit"
+            name="control"
+            value="decrement"
+            position="left"
+          >
+            <span className="sr-only">Decrease level</span>
+            <Icon.Solid
+              name="chevronLeft"
+              className="h-5 w-5 text-gray-11"
+              aria-hidden
+            />
+          </Button.Group>
+          <Button.Group
+            type="submit"
+            name="control"
+            value="increment"
+            position="right"
+          >
+            <span className="sr-only">Increase level</span>
+            <Icon.Solid
+              name="chevronRight"
+              className="h-5 w-5 text-gray-11"
+              aria-hidden
+            />
+          </Button.Group>
+        </div>
+
+        <div className="mt-4 w-full xs:flex xs:items-center xs:gap-4 sm:hidden">
+          <Button.Base
+            type="submit"
+            name="control"
+            variant="secondary"
+            value="decrement"
+            className="mt-4 w-full sm:mt-0 sm:w-auto"
+          >
+            {busy ? 'Decreasing level...' : 'Decrease level'}
+          </Button.Base>
+          <Button.Base
+            type="submit"
+            name="control"
+            value="increment"
+            className="mt-4 w-full sm:mt-0 sm:w-auto"
+          >
+            {busy ? 'Increasing level...' : 'Increase level'}
+          </Button.Base>
+        </div>
       </div>
     </fetcher.Form>
   )
