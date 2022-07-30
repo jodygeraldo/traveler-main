@@ -2,20 +2,18 @@
 
 import * as React from 'react'
 
-export const debounce = (callback: (args: any) => void, delay: number) => {
-  let timeoutId: number | null = null
-  return (...args: any) => {
-    if (timeoutId) {
-      window.clearTimeout(timeoutId)
-    }
-    timeoutId = window.setTimeout(() => {
-      callback.apply(null, args)
+function debounce(fn: (...args: any[]) => void, delay: number) {
+  let timer: NodeJS.Timeout
+  return (...args: any[]) => {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      fn(...args)
     }, delay)
   }
 }
 
 export default function useDebounce(
-  callback: (args: any) => void,
+  callback: (...args: any[]) => void,
   delay: number
 ) {
   const callbackRef = React.useRef(callback)
