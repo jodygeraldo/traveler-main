@@ -178,7 +178,7 @@ export default function TrackList({ userTracks }: Props) {
                 </RemixReact.Form>
                 <Button.Link
                   styles="button"
-                  to={`./update?name=${Utils.slugify(track.name)}`}
+                  to={`./update/${Utils.slugify(track.name)}`}
                   variant="info"
                   className="w-full sm:order-1"
                 >

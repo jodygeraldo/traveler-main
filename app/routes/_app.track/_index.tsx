@@ -58,8 +58,9 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
 
 export default function TrackPage() {
   const { charactersTrackWithItems } = RemixReact.useLoaderData<typeof loader>()
+  const name = RemixReact.useParams().name || ''
 
-  const { pathname } = RemixReact.useLocation()
+  const { pathname, key } = RemixReact.useLocation()
 
   return (
     <main className="mx-auto max-w-3xl py-10 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -77,7 +78,7 @@ export default function TrackPage() {
         </Button.Link>
       </div>
 
-      <div className="mt-12">
+      <div key={key} className="mt-12">
         {charactersTrackWithItems.length > 0 ? (
           <TrackList userTracks={charactersTrackWithItems} />
         ) : (
@@ -85,7 +86,7 @@ export default function TrackPage() {
         )}
       </div>
 
-      {pathname === '/track/add' || pathname === '/track/update' ? (
+      {pathname === `/track/add` || pathname === `/track/update/${name}` ? (
         <RemixReact.Outlet />
       ) : null}
     </main>
