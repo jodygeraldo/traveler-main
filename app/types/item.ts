@@ -381,7 +381,7 @@ export type Name =
   | 'Tears of the Calamitous God'
   | 'The Meaning of Aeons'
 
-export interface BaseItem {
+export type BaseItem = {
   name: Name
   type:
     | 'SPECIAL'
@@ -408,7 +408,7 @@ export type CraftableItem = {
   doublable: boolean
 }
 
-export interface Item extends BaseItem {
+export type Item = {
   convertable: boolean
   craft: false | CraftMaterialItem | CraftableItem
-}
+} & BaseItem

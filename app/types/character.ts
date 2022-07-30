@@ -76,7 +76,7 @@ export type Region =
   | 'SNEZHNAYA'
   | 'UNKNOWN'
 
-export interface Character {
+export type Character = {
   name: Name
   weapon: Weapon
   vision: Vision
@@ -85,13 +85,13 @@ export interface Character {
   talent: [normalAttack: string, elementalSkill: string, elementalBurst: string]
 }
 
-export interface AscensionMaterial {
+export type AscensionMaterial = {
   gem: ItemType.AscensionGemGroupName
   boss?: ItemType.AscensionBoss
   local: ItemType.LocalSpecialty
   common: ItemType.CommonGroup
 }
-export interface TalentMaterial {
+export type TalentMaterial = {
   book: (
     | ItemType.TalentBookTeachings
     | ItemType.TalentBookGuide
@@ -102,13 +102,13 @@ export interface TalentMaterial {
   special: 'Crown of Insight'
 }
 
-export interface ProgressionMaterial {
+export type ProgressionMaterial = {
   name: Name
   ascension: AscensionMaterial
   talent: TalentMaterial | TalentMaterial[]
 }
 
-export interface AscensionPhase {
+export type AscensionPhase = {
   phase: { from: number; to: number }
   mora: number
   common: { name: string; quantity: number }
@@ -117,7 +117,7 @@ export interface AscensionPhase {
   boss?: { name: string; quantity: number }
 }
 
-export interface TalentPhase {
+export type TalentPhase = {
   level: { from: number; to: number }
   mora: number
   common: { name: string; quantity: number }
