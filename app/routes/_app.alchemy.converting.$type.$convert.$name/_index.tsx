@@ -94,7 +94,6 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   }
 
   const { name, convert } = result.data
-  console.log(name)
 
   const validItem = UtilsServer.Item.validateItem(name)
   if (!validItem) {

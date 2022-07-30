@@ -58,7 +58,10 @@ export default function ProgressionField({
             />
           </div>
         </div>
-        <p className="mt-1 text-sm text-danger-9 sm:col-span-9" id={`${id}-error`}>
+        <p
+          className="mt-1 text-sm text-danger-9 sm:col-span-9"
+          id={`${id}-error`}
+        >
           {error}
         </p>
       </div>

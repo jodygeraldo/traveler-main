@@ -4,7 +4,7 @@ import * as Icon from '~/components/Icon'
 export default function EmptyState() {
   return (
     <RemixReact.Link
-      to='./add'
+      to="./add"
       className="relative block w-full rounded-lg border-2 border-dashed border-gray-7 p-12 text-center hover:border-gray-8 focus:outline-none focus:ring-2 focus:ring-primary-8 focus:ring-offset-2 focus:ring-offset-gray-1"
     >
       <Icon.Outline

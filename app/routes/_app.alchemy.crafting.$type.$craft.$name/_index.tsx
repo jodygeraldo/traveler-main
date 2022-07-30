@@ -88,7 +88,6 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   }
 
   const { name, craft } = result.data
-  console.log(name);
   const validItem = UtilsServer.Item.validateItem(name)
   if (!validItem) {
     throw RemixNode.json(`Item ${name} not found`, {
