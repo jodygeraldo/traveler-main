@@ -33,17 +33,23 @@ export default function ProgressionField({
     <fetcher.Form method="post" className="p-6">
       <h4 className="font-medium text-gray-12">{kind}</h4>
 
-      <div className="sm:flex sm:items-center sm:justify-between sm:gap-8">
+      <div>
         <div className="mt-4 sm:flex sm:items-center sm:gap-8">
           <div className="flex items-center">
-            <span className="text-6xl text-gray-12">{progression.current}</span>
+            <span className="text-6xl tabular-nums text-gray-12">
+              0{progression.current}
+            </span>
             <span className="sr-only">to</span>
             <Icon.Solid
               name="arrowSmRight"
               className="h-10 w-10 text-gray-11"
               aria-hidden
             />
-            <span className="text-6xl text-gray-12">{progression.target}</span>
+            <span className="text-6xl tabular-nums text-gray-12">
+              {progression.target >= 10
+                ? progression.target
+                : `0${progression.target}`}
+            </span>
           </div>
           <div>
             {materials.map((m) => (
@@ -71,44 +77,15 @@ export default function ProgressionField({
         {targetLevel && (
           <input type="hidden" name="targetLevel" value={targetLevel} />
         )}
-        <div className="hidden -space-x-px sm:block">
-          <Button.Group
-            type="submit"
-            name="control"
-            value="decrement"
-            disabled={progression.current === minValue}
-            position="left"
-          >
-            <span className="sr-only">Decrease level</span>
-            <Icon.Solid
-              name="chevronLeft"
-              className="h-5 w-5 text-gray-11"
-              aria-hidden
-            />
-          </Button.Group>
-          <Button.Group
-            type="submit"
-            name="control"
-            value="increment"
-            position="right"
-          >
-            <span className="sr-only">Increase level</span>
-            <Icon.Solid
-              name="chevronRight"
-              className="h-5 w-5 text-gray-11"
-              aria-hidden
-            />
-          </Button.Group>
-        </div>
 
-        <div className="mt-4 w-full xs:flex xs:items-center xs:gap-4 sm:hidden">
+        <div className="mt-4 w-full xs:flex xs:items-center xs:gap-4">
           <Button.Base
             type="submit"
             name="control"
             variant="secondary"
             value="decrement"
             disabled={progression.current === minValue}
-            className="mt-4 w-full sm:mt-0 sm:w-auto"
+            className="mt-4 w-full"
           >
             {busy ? 'Decreasing level...' : 'Decrease level'}
           </Button.Base>
@@ -116,7 +93,7 @@ export default function ProgressionField({
             type="submit"
             name="control"
             value="increment"
-            className="mt-4 w-full sm:mt-0 sm:w-auto"
+            className="mt-4 w-full"
           >
             {busy ? 'Increasing level...' : 'Increase level'}
           </Button.Base>
