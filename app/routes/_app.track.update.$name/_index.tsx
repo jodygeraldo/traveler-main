@@ -15,11 +15,16 @@ import ProgressionField from './ProgressionField'
 
 const FormDataSchema = Zod.object({
   name: Zod.string(),
-  level: Zod.number().min(1).max(90),
-  ascension: Zod.number().min(0).max(6),
-  normalAttack: Zod.number().min(1).max(10),
-  elementalSkill: Zod.number().min(1).max(10),
-  elementalBurst: Zod.number().min(1).max(10),
+  level: Zod.number().min(1).max(90).optional(),
+  ascension: Zod.number().min(0).max(6).optional(),
+  normalAttack: Zod.number().min(1).max(10).optional(),
+  elementalSkill: Zod.number().min(1).max(10).optional(),
+  elementalBurst: Zod.number().min(1).max(10).optional(),
+  levelCurrent: Zod.number().min(1).max(90).optional(),
+  ascensionCurrent: Zod.number().min(0).max(6).optional(),
+  normalAttackCurrent: Zod.number().min(1).max(10).optional(),
+  elementalSkillCurrent: Zod.number().min(1).max(10).optional(),
+  elementalBurstCurrent: Zod.number().min(1).max(10).optional(),
 })
 
 export async function action({ request }: RemixNode.ActionArgs) {
@@ -30,7 +35,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
     return RemixNode.json({ ok: false, errors: result.errors }, { status: 400 })
   }
 
-  const { name, ...progression } = result.data
+  const { name, ...data } = result.data
 
   if (!UtilsServer.Character.validateCharacter(name)) {
     throw RemixNode.json(
@@ -39,13 +44,44 @@ export async function action({ request }: RemixNode.ActionArgs) {
     )
   }
 
-  const errors = UtilsServer.Character.validateAscensionRequirement(progression)
+  const progression = {
+    level: data.level
+      ? data.level !== data.levelCurrent
+        ? data.level
+        : undefined
+      : undefined,
+    normalAttack: data.normalAttack
+      ? data.normalAttack !== data.normalAttackCurrent
+        ? data.normalAttack
+        : undefined
+      : undefined,
+    elementalSkill: data.elementalSkill
+      ? data.elementalSkill !== data.elementalSkillCurrent
+        ? data.elementalSkill
+        : undefined
+      : undefined,
+    elementalBurst: data.elementalBurst
+      ? data.elementalBurst !== data.elementalBurstCurrent
+        ? data.elementalBurst
+        : undefined
+      : undefined,
+  }
+
+  const requireCheckProgression = {
+    // if not set it means ascension is on max level(6)
+    ascension: data.ascension ? data.ascension : 6,
+    ...progression,
+  }
+  const errors = UtilsServer.Character.validateAscensionRequirement(
+    requireCheckProgression
+  )
   if (errors) {
     return RemixNode.json({ ok: false, errors }, { status: 400 })
   }
 
-  await CharacterModel.upsertCharacterTrack({
+  await CharacterModel.updateTrackCharacter({
     name,
+    ascension: data.ascension,
     ...progression,
     accountId,
   })
@@ -67,23 +103,23 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     )
   }
 
-  const trackCharacter = await CharacterModel.getUserTrackCharacter({
+  const track = await CharacterModel.getUserTrackCharacter({
     name,
     accountId,
   })
-  if (!trackCharacter) {
+  if (!track) {
     throw RemixNode.json(
       { message: `You don't have track character with name ${name}` },
       { status: 404 }
     )
   }
 
-  return RemixNode.json({ trackCharacter })
+  return RemixNode.json({ track })
 }
 
 export default function TrackUpdatePage() {
   const name = Utils.deslugify(RemixReact.useParams().name || '')
-  const { trackCharacter } = RemixReact.useLoaderData<typeof loader>()
+  const { track } = RemixReact.useLoaderData<typeof loader>()
 
   const fetcher = RemixReact.useFetcher<{
     ok: boolean
@@ -171,8 +207,7 @@ export default function TrackUpdatePage() {
                             <ProgressionField
                               label="Level"
                               name="level"
-                              currentTarget={trackCharacter.targetLevel}
-                              currentValue={trackCharacter.userCharacter.level}
+                              value={track.level}
                               max={90}
                               error={fetcher.data?.errors?.level}
                             />
@@ -180,10 +215,7 @@ export default function TrackUpdatePage() {
                             <ProgressionField
                               label="Ascension"
                               name="ascension"
-                              currentTarget={trackCharacter.targetAscension}
-                              currentValue={
-                                trackCharacter.userCharacter.ascension
-                              }
+                              value={track.ascension}
                               max={6}
                               error={fetcher.data?.errors?.ascension}
                             />
@@ -192,10 +224,7 @@ export default function TrackUpdatePage() {
                               id="normal-attack"
                               label="Normal Attack"
                               name="normalAttack"
-                              currentTarget={trackCharacter.targetNormalAttack}
-                              currentValue={
-                                trackCharacter.userCharacter.normalAttack
-                              }
+                              value={track.normalAttack}
                               max={10}
                               error={fetcher.data?.errors?.normalAttack}
                             />
@@ -204,12 +233,7 @@ export default function TrackUpdatePage() {
                               id="elemental-skill"
                               label="Elemental Skill"
                               name="elementalSkill"
-                              currentTarget={
-                                trackCharacter.targetElementalSkill
-                              }
-                              currentValue={
-                                trackCharacter.userCharacter.elementalSkill
-                              }
+                              value={track.elementalSkill}
                               max={10}
                               error={fetcher.data?.errors?.elementalSkill}
                             />
@@ -218,12 +242,7 @@ export default function TrackUpdatePage() {
                               id="elemental-burst"
                               label="Elemental Burst"
                               name="elementalBurst"
-                              currentTarget={
-                                trackCharacter.targetElementalBurst
-                              }
-                              currentValue={
-                                trackCharacter.userCharacter.elementalBurst
-                              }
+                              value={track.elementalBurst}
                               max={10}
                               error={fetcher.data?.errors?.elementalBurst}
                             />

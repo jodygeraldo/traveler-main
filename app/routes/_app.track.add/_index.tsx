@@ -16,11 +16,16 @@ import ProgressionField from './ProgressionField'
 
 const FormDataSchema = Zod.object({
   name: Zod.string(),
-  level: Zod.number().min(1).max(90),
-  ascension: Zod.number().min(0).max(6),
-  normalAttack: Zod.number().min(1).max(10),
-  elementalSkill: Zod.number().min(1).max(10),
-  elementalBurst: Zod.number().min(1).max(10),
+  level: Zod.number().min(1).max(90).optional(),
+  ascension: Zod.number().min(0).max(6).optional(),
+  normalAttack: Zod.number().min(1).max(10).optional(),
+  elementalSkill: Zod.number().min(1).max(10).optional(),
+  elementalBurst: Zod.number().min(1).max(10).optional(),
+  levelCurrent: Zod.number().min(1).max(90).optional(),
+  ascensionCurrent: Zod.number().min(0).max(6).optional(),
+  normalAttackCurrent: Zod.number().min(1).max(10).optional(),
+  elementalSkillCurrent: Zod.number().min(1).max(10).optional(),
+  elementalBurstCurrent: Zod.number().min(1).max(10).optional(),
 })
 
 export async function action({ request }: RemixNode.ActionArgs) {
@@ -31,7 +36,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
     return RemixNode.json({ ok: false, errors: result.errors }, { status: 400 })
   }
 
-  const { name, ...progression } = result.data
+  const { name, ...data } = result.data
 
   if (!UtilsServer.Character.validateCharacter(name)) {
     throw RemixNode.json(
@@ -40,13 +45,44 @@ export async function action({ request }: RemixNode.ActionArgs) {
     )
   }
 
-  const errors = UtilsServer.Character.validateAscensionRequirement(progression)
+  const progression = {
+    level: data.level
+      ? data.level !== data.levelCurrent
+        ? data.level
+        : undefined
+      : undefined,
+    normalAttack: data.normalAttack
+      ? data.normalAttack !== data.normalAttackCurrent
+        ? data.normalAttack
+        : undefined
+      : undefined,
+    elementalSkill: data.elementalSkill
+      ? data.elementalSkill !== data.elementalSkillCurrent
+        ? data.elementalSkill
+        : undefined
+      : undefined,
+    elementalBurst: data.elementalBurst
+      ? data.elementalBurst !== data.elementalBurstCurrent
+        ? data.elementalBurst
+        : undefined
+      : undefined,
+  }
+
+  const requireCheckProgression = {
+    // if not set it means ascension is on max level(6)
+    ascension: data.ascension ? data.ascension : 6,
+    ...progression,
+  }
+  const errors = UtilsServer.Character.validateAscensionRequirement(
+    requireCheckProgression
+  )
   if (errors) {
     return RemixNode.json({ ok: false, errors }, { status: 400 })
   }
 
   await CharacterModel.upsertCharacterTrack({
     name,
+    ascension: data.ascension,
     ...progression,
     accountId,
   })
@@ -57,10 +93,10 @@ export async function action({ request }: RemixNode.ActionArgs) {
 export async function loader({ request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
 
-  const userTrackableCharactersName =
+  const userTrackableCharacterNames =
     await CharacterModel.getUserTrackableCharactersName(accountId)
   const nonTrackCharacterNames = UtilsServer.Character.getMissingCharacters(
-    userTrackableCharactersName
+    userTrackableCharacterNames
   )
 
   return RemixNode.json({ nonTrackCharacterNames })

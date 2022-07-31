@@ -48,16 +48,15 @@ export async function action({ request }: RemixNode.ActionArgs) {
 
 export async function loader({ request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
-  const charactersTrack = await CharacterModel.getUserTrackCharacters(accountId)
+  const tracks = await CharacterModel.getUserTrackCharacters(accountId)
 
-  const charactersTrackWithItems =
-    UtilsServer.Character.getCharactersTrackItems(charactersTrack)
+  const tracksWithItems = UtilsServer.Character.getCharactersTrackItems(tracks)
 
-  return RemixNode.json({ charactersTrackWithItems })
+  return RemixNode.json({ tracksWithItems })
 }
 
 export default function TrackPage() {
-  const { charactersTrackWithItems } = RemixReact.useLoaderData<typeof loader>()
+  const { tracksWithItems } = RemixReact.useLoaderData<typeof loader>()
   const name = RemixReact.useParams().name || ''
 
   const { pathname, key } = RemixReact.useLocation()
@@ -79,8 +78,8 @@ export default function TrackPage() {
       </div>
 
       <div key={key} className="mt-12">
-        {charactersTrackWithItems.length > 0 ? (
-          <TrackList userTracks={charactersTrackWithItems} />
+        {tracksWithItems.length > 0 ? (
+          <TrackList userTracks={tracksWithItems} />
         ) : (
           <EmptyState />
         )}

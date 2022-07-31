@@ -134,6 +134,14 @@ export type Progression = {
   elementalBurst: number
 }
 
+export type TrackProgression = {
+  level: { current: number; target: number | null }
+  ascension: { current: number; target: number | null }
+  normalAttack: { current: number; target: number | null }
+  elementalSkill: { current: number; target: number | null }
+  elementalBurst: { current: number; target: number | null }
+}
+
 export type CharacterProgression = {
   name: Name
   progression: Progression

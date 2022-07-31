@@ -5,27 +5,16 @@ import * as Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
 import Image from '~/components/Image'
 import Tooltip from '~/components/Tooltip'
+import type * as CharacterType from '~/types/character'
 import * as Utils from '~/utils'
 
 interface Props {
-  userTracks: {
+  userTracks: ({
     id: string
     name: string
     priority: number | null
-    userCharacter: {
-      level: number
-      ascension: number
-      normalAttack: number
-      elementalSkill: number
-      elementalBurst: number
-    }
-    targetLevel: number
-    targetAscension: number
-    targetNormalAttack: number
-    targetElementalSkill: number
-    targetElementalBurst: number
     itemNames: string[]
-  }[]
+  } & CharacterType.TrackProgression)[]
 }
 
 export default function TrackList({ userTracks }: Props) {
@@ -111,40 +100,22 @@ export default function TrackList({ userTracks }: Props) {
                       </div>
                       <div>
                         <ul>
-                          <LevelTrack
-                            name="Level"
-                            level={{
-                              current: track.userCharacter.level,
-                              target: track.targetLevel,
-                            }}
-                          />
+                          <LevelTrack name="Level" level={track.level} />
                           <LevelTrack
                             name="Ascension"
-                            level={{
-                              current: track.userCharacter.ascension,
-                              target: track.targetAscension,
-                            }}
+                            level={track.ascension}
                           />
                           <LevelTrack
                             name="Normal Attack"
-                            level={{
-                              current: track.userCharacter.normalAttack,
-                              target: track.targetNormalAttack,
-                            }}
+                            level={track.normalAttack}
                           />
                           <LevelTrack
                             name="Elemental Skill"
-                            level={{
-                              current: track.userCharacter.elementalSkill,
-                              target: track.targetElementalSkill,
-                            }}
+                            level={track.elementalSkill}
                           />
                           <LevelTrack
                             name="Elemental Burst"
-                            level={{
-                              current: track.userCharacter.elementalBurst,
-                              target: track.targetElementalBurst,
-                            }}
+                            level={track.elementalBurst}
                           />
                         </ul>
                       </div>
@@ -200,10 +171,10 @@ function LevelTrack({
   name: string
   level: {
     current: number
-    target: number
+    target: number | null
   }
 }) {
-  if (level.current === level.target) {
+  if (level.current === level.target || level.target === null) {
     return null
   }
 

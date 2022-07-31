@@ -9,6 +9,7 @@ import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
 import * as UtilsServer from '~/utils/index.server'
+import ProgressionField from './ProgressionField'
 
 const FormDataSchema = Zod.object({
   kind: Zod.enum([
@@ -19,6 +20,7 @@ const FormDataSchema = Zod.object({
   ]),
   control: Zod.enum(['increment', 'decrement']),
   level: Zod.number().nonnegative(),
+  targetLevel: Zod.number().nonnegative().optional(),
 })
 
 export async function action({ params, request }: RemixNode.ActionArgs) {
@@ -38,7 +40,7 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
     throw new Error('Invalid data')
   }
 
-  const { kind, control, level } = result.data
+  const { kind, control, level, targetLevel } = result.data
 
   const progression: {
     level?: number
@@ -48,18 +50,27 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
     elementalBurst?: number
   } = {}
 
-  const ascensionToLevel = [40, 50, 60, 70, 80, 90] as const
-  const toLevel = control === 'increment' ? level + 1 : level - 1
+  const ascensionToLevelOnIncrease = [20, 40, 50, 60, 70, 90] as const
+  const ascensionToLevelOnDecrease = [1, 20, 40, 50, 60, 70, 80] as const
+  const ascensionToLevel =
+    control === 'increment'
+      ? ascensionToLevelOnIncrease
+      : ascensionToLevelOnDecrease
+  const levelTo =
+    ascensionToLevel[
+      control === 'increment' ? level : level - 1 < 0 ? 0 : level - 1
+    ]
+  const progressTo = control === 'increment' ? level + 1 : level - 1
 
   if (kind === 'Ascension') {
-    progression.level = ascensionToLevel[toLevel - 1]
-    progression.ascension = toLevel
+    progression.level = levelTo > (targetLevel ?? 0) ? targetLevel : levelTo
+    progression.ascension = progressTo
   }
-  if (kind === 'Normal Attack') progression.normalAttack = toLevel
-  if (kind === 'Elemental Skill') progression.elementalSkill = toLevel
-  if (kind === 'Elemental Burst') progression.elementalBurst = toLevel
+  if (kind === 'Normal Attack') progression.normalAttack = progressTo
+  if (kind === 'Elemental Skill') progression.elementalSkill = progressTo
+  if (kind === 'Elemental Burst') progression.elementalBurst = progressTo
 
-  await CharacterModel.upsertCharacter({
+  await CharacterModel.updateCharacter({
     name,
     progression,
     accountId,
@@ -81,121 +92,114 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     )
   }
 
-  const trackCharacter = await CharacterModel.getUserTrackCharacter({
+  const track = await CharacterModel.getUserTrackCharacter({
     name,
     accountId,
   })
-  if (!trackCharacter) {
+  if (!track) {
     throw RemixNode.json(
       { message: `You don't have track character with name ${name}` },
       { status: 404 }
     )
   }
 
-  const material = UtilsServer.Character.getItemsQuantity({
+  const materials = UtilsServer.Character.getItemsQuantity({ name, ...track })
+
+  if (!Array.isArray(materials)) throw new Error('materials is not an array')
+
+  const currentMaterials = UtilsServer.Character.getItemsQuantity({
+    currentOnly: true,
     name,
-    progression: trackCharacter.userCharacter,
-    targetProgression: {
-      level: trackCharacter.targetLevel,
-      ascension: trackCharacter.targetAscension,
-      normalAttack: trackCharacter.targetNormalAttack,
-      elementalSkill: trackCharacter.targetElementalSkill,
-      elementalBurst: trackCharacter.targetElementalBurst,
-    },
+    ...track,
   })
 
-  const currentMaterial = UtilsServer.Character.getCurrentItemsQuantity({
-    name,
-    progression: trackCharacter.userCharacter,
-    targetProgression: {
-      level: trackCharacter.targetLevel,
-      ascension: trackCharacter.targetAscension,
-      normalAttack: trackCharacter.targetNormalAttack,
-      elementalSkill: trackCharacter.targetElementalSkill,
-      elementalBurst: trackCharacter.targetElementalBurst,
-    },
-  })
+  if (Array.isArray(currentMaterials))
+    throw new Error('materials is not an object')
 
-  return RemixNode.json({ trackCharacter, currentMaterial, material })
+  return RemixNode.json({
+    track,
+    currentMaterials,
+    materials,
+  })
 }
 
 export default function TrackDetailPage() {
-  const { trackCharacter, material, currentMaterial } =
+  const { track, materials, currentMaterials } =
     RemixReact.useLoaderData<typeof loader>()
   const name = Utils.deslugify(RemixReact.useParams().name ?? '')
 
   const currentMaterialArray: {
     kind: string
-    progression: { from: number; to: number }
+    progression: { current: number; target: number }
     material: { key: string; value: number }[]
   }[] = []
 
-  if (currentMaterial.ascension.length !== 0) {
+  if (currentMaterials.ascension.length !== 0) {
     currentMaterialArray.push({
       kind: 'Ascension',
       progression: {
-        from: trackCharacter.userCharacter.ascension,
-        to: trackCharacter.userCharacter.ascension + 1,
+        current: track.ascension.current,
+        target: track.ascension.current + 1,
       },
-      material: currentMaterial.ascension,
+      material: currentMaterials.ascension,
     })
   }
-  if (currentMaterial.normalAttack.length !== 0) {
+  if (currentMaterials.normalAttack.length !== 0) {
     currentMaterialArray.push({
       kind: 'Normal Attack',
       progression: {
-        from: trackCharacter.userCharacter.normalAttack,
-        to: trackCharacter.userCharacter.normalAttack + 1,
+        current: track.normalAttack.current,
+        target: track.normalAttack.current + 1,
       },
-      material: currentMaterial.normalAttack,
+      material: currentMaterials.normalAttack,
     })
   }
-  if (currentMaterial.elementalSkill.length !== 0) {
+  if (currentMaterials.elementalSkill.length !== 0) {
     currentMaterialArray.push({
       kind: 'Elemental Skill',
       progression: {
-        from: trackCharacter.userCharacter.elementalSkill,
-        to: trackCharacter.userCharacter.elementalSkill + 1,
+        current: track.elementalSkill.current,
+        target: track.elementalSkill.current + 1,
       },
-      material: currentMaterial.elementalSkill,
+      material: currentMaterials.elementalSkill,
     })
   }
-  if (currentMaterial.elementalBurst.length !== 0) {
+  if (currentMaterials.elementalBurst.length !== 0) {
     currentMaterialArray.push({
       kind: 'Elemental Burst',
       progression: {
-        from: trackCharacter.userCharacter.elementalBurst,
-        to: trackCharacter.userCharacter.elementalBurst + 1,
+        current: track.elementalBurst.current,
+        target: track.elementalBurst.current + 1,
       },
-      material: currentMaterial.elementalBurst,
+      material: currentMaterials.elementalBurst,
     })
   }
 
   const tracking = [
     {
       label: 'Level',
-      from: trackCharacter.userCharacter.level,
-      to: trackCharacter.targetLevel,
+      current: track.level.current,
+      target: track.level.target,
     },
     {
       label: 'Ascension',
-      from: trackCharacter.userCharacter.ascension,
-      to: trackCharacter.targetAscension,
+      current: track.ascension.current,
+      target: track.ascension.target,
     },
     {
       label: 'Normal Attack',
-      from: trackCharacter.userCharacter.normalAttack,
-      to: trackCharacter.targetNormalAttack,
+      current: track.normalAttack.current,
+      target: track.normalAttack.target,
     },
     {
       label: 'Elemental Skill',
-      from: trackCharacter.userCharacter.elementalSkill,
-      to: trackCharacter.targetElementalSkill,
+      current: track.elementalSkill.current,
+      target: track.elementalSkill.target,
     },
     {
       label: 'Elemental Burst',
-      from: trackCharacter.userCharacter.elementalBurst,
-      to: trackCharacter.targetElementalBurst,
+      current: track.elementalBurst.current,
+      target: track.elementalBurst.target,
     },
   ]
 
@@ -243,19 +247,19 @@ export default function TrackDetailPage() {
                     className="px-6 py-5 text-center text-sm font-medium"
                   >
                     <div className="flex items-center justify-center gap-2">
-                      {track.from === track.to ? (
-                        <span className="text-gray-12">{track.to}</span>
-                      ) : (
+                      {track.target && track.current !== track.target ? (
                         <>
-                          <span className="text-gray-12">{track.from}</span>
+                          <span className="text-gray-12">{track.current}</span>
                           <span className="sr-only">to</span>
                           <Icon.Solid
                             name="arrowSmRight"
                             className="h-5 w-5"
                             aria-hidden
                           />
-                          <span className="text-gray-12">{track.to}</span>
+                          <span className="text-gray-12">{track.target}</span>
                         </>
+                      ) : (
+                        <span className="text-gray-12">{track.current}</span>
                       )}
                     </div>
                     <span className="text-gray-11">{track.label}</span>
@@ -277,6 +281,7 @@ export default function TrackDetailPage() {
                     kind={kind}
                     progression={progression}
                     materials={material}
+                    targetLevel={track.level.target}
                   />
                 ))}
               </div>
@@ -294,7 +299,7 @@ export default function TrackDetailPage() {
                   Materials
                 </h2>
                 <div className="mt-6 flow-root">
-                  {material.map((m) => (
+                  {materials.map((m) => (
                     <div key={m.key} className="flex items-center gap-2">
                       <Image
                         src={`/item/${Utils.getImageSrc(m.key)}.png`}
@@ -318,123 +323,5 @@ export default function TrackDetailPage() {
         </div>
       </div>
     </main>
-  )
-}
-
-function ProgressionField({
-  kind,
-  materials,
-  progression,
-}: {
-  kind: string
-  progression: {
-    from: number
-    to: number
-  }
-  materials: {
-    key: string
-    value: number
-  }[]
-}) {
-  const fetcher = RemixReact.useFetcher()
-
-  const busy = fetcher.state === 'submitting'
-
-  return (
-    <fetcher.Form method="post" className="p-6">
-      <h4 className="font-medium text-gray-12">{kind}</h4>
-
-      <div className="sm:flex sm:items-center sm:justify-between sm:gap-8">
-        <div className="mt-4 sm:flex sm:items-center sm:gap-8">
-          <div className="flex items-center">
-            <span className="text-6xl text-gray-12">{progression.from}</span>
-            <span className="sr-only">to</span>
-            <Icon.Solid
-              name="arrowSmRight"
-              className="h-10 w-10 text-gray-11"
-              aria-hidden
-            />
-            <span className="text-6xl text-gray-12">{progression.to}</span>
-          </div>
-          <div>
-            {materials.map((m) => (
-              <div key={m.key} className="flex items-center gap-2">
-                <Image
-                  src={`/item/${Utils.getImageSrc(m.key)}.png`}
-                  className="h-5 w-5"
-                  alt=""
-                  width={20}
-                  height={20}
-                />
-                <span className="truncate capitalize text-gray-11">
-                  {m.key}
-                </span>
-                <span className="text-xs tabular-nums text-gray-12 xs:text-sm">
-                  x{m.value.toLocaleString()}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* use inventory system?? */}
-        {/* <input
-          type="hidden"
-          name="materials"
-          value={JSON.stringify(materials)}
-        /> */}
-
-        <input type="hidden" name="level" value={progression.from} />
-        <input type="hidden" name="kind" value={kind} />
-        <div className="hidden -space-x-px sm:block">
-          <Button.Group
-            type="submit"
-            name="control"
-            value="decrement"
-            position="left"
-          >
-            <span className="sr-only">Decrease level</span>
-            <Icon.Solid
-              name="chevronLeft"
-              className="h-5 w-5 text-gray-11"
-              aria-hidden
-            />
-          </Button.Group>
-          <Button.Group
-            type="submit"
-            name="control"
-            value="increment"
-            position="right"
-          >
-            <span className="sr-only">Increase level</span>
-            <Icon.Solid
-              name="chevronRight"
-              className="h-5 w-5 text-gray-11"
-              aria-hidden
-            />
-          </Button.Group>
-        </div>
-
-        <div className="mt-4 w-full xs:flex xs:items-center xs:gap-4 sm:hidden">
-          <Button.Base
-            type="submit"
-            name="control"
-            variant="secondary"
-            value="decrement"
-            className="mt-4 w-full sm:mt-0 sm:w-auto"
-          >
-            {busy ? 'Decreasing level...' : 'Decrease level'}
-          </Button.Base>
-          <Button.Base
-            type="submit"
-            name="control"
-            value="increment"
-            className="mt-4 w-full sm:mt-0 sm:w-auto"
-          >
-            {busy ? 'Increasing level...' : 'Increase level'}
-          </Button.Base>
-        </div>
-      </div>
-    </fetcher.Form>
   )
 }

@@ -22,6 +22,7 @@ export default function ProgressionField({
   if (currentValue < max) {
     return (
       <div className="space-y-1 px-4 sm:grid sm:grid-cols-9 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
+        <input type="hidden" name={`${name}Current`} value={currentValue} />
         <div className="sm:col-span-3">
           <label
             htmlFor={id || name}
@@ -68,5 +69,5 @@ export default function ProgressionField({
     )
   }
 
-  return <input type="hidden" name={name} defaultValue={currentValue} />
+  return null
 }

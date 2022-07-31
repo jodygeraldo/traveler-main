@@ -252,9 +252,13 @@ function getTalentMaterial(
   ]
 }
 
-export function validateAscensionRequirement(
-  progression: CharacterType.Progression
-) {
+export function validateAscensionRequirement(progression: {
+  level?: number
+  ascension: number
+  normalAttack?: number
+  elementalSkill?: number
+  elementalBurst?: number
+}) {
   function getErrorMessage(
     on: 'level' | 'normal attack' | 'elemental skill' | 'elemental burst',
     phase: number,
@@ -277,23 +281,39 @@ export function validateAscensionRequirement(
     maxLevel: number
     maxTalent: number
   }) {
-    const schema = Zod.object({
-      level: Zod.number().refine((val) => val <= maxLevel && val >= minLevel, {
-        message: getErrorMessage('level', phase, maxLevel, minLevel),
-      }),
+    const LevelSchema = progression.level
+      ? Zod.number().refine((val) => val <= maxLevel && val >= minLevel, {
+          message: getErrorMessage('level', phase, maxLevel, minLevel),
+        })
+      : Zod.undefined()
+
+    const NormalAttackSchema = progression.normalAttack
+      ? Zod.number().refine((val) => val <= maxTalent, {
+          message: getErrorMessage('normal attack', phase, maxTalent),
+        })
+      : Zod.undefined()
+
+    const ElementalSkillSchema = progression.elementalSkill
+      ? Zod.number().refine((val) => val <= maxTalent, {
+          message: getErrorMessage('elemental skill', phase, maxTalent),
+        })
+      : Zod.undefined()
+
+    const ElementalBurstSchema = progression.elementalBurst
+      ? Zod.number().refine((val) => val <= maxTalent, {
+          message: getErrorMessage('elemental burst', phase, maxTalent),
+        })
+      : Zod.undefined()
+
+    const Schema = Zod.object({
+      level: LevelSchema,
       ascension: Zod.number(),
-      normalAttack: Zod.number().refine((val) => val <= maxTalent, {
-        message: getErrorMessage('normal attack', phase, maxTalent),
-      }),
-      elementalSkill: Zod.number().refine((val) => val <= maxTalent, {
-        message: getErrorMessage('elemental skill', phase, maxTalent),
-      }),
-      elementalBurst: Zod.number().refine((val) => val <= maxTalent, {
-        message: getErrorMessage('elemental burst', phase, maxTalent),
-      }),
+      normalAttack: NormalAttackSchema,
+      elementalSkill: ElementalSkillSchema,
+      elementalBurst: ElementalBurstSchema,
     })
 
-    return schema.safeParse(progression)
+    return Schema.safeParse(progression)
   }
 
   function narrowErrors(errors: Zod.ZodIssue[]): { [key: string]: string } {
@@ -797,114 +817,202 @@ export function getCharacterInventoryLevelUpData({
 }
 
 export function getCharactersTrackItems(
-  tracks: {
+  tracks: ({
     id: string
     name: string
     priority: number | null
-    targetLevel: number
-    targetAscension: number
-    targetNormalAttack: number
-    targetElementalSkill: number
-    targetElementalBurst: number
-    userCharacter: CharacterType.Progression
-  }[]
+  } & CharacterType.TrackProgression)[]
 ) {
-  function getExcludedTalentItems({
+  function getIncludedItems({
     itemNames,
+    includedIndexArray,
+    minIndex,
+    maxIndex,
+  }: {
+    itemNames: string[]
+    includedIndexArray: number[][]
+    minIndex: number
+    maxIndex: number
+  }) {
+    const includedItemsIndex = Array.from(
+      // get all included items and then remove duplicates
+      new Set(includedIndexArray.slice(minIndex, maxIndex).flat())
+      // sort items by index
+    ).sort((a, b) => a - b)
+
+    // loop throught all items and filter out the ones that are not included or undefined
+    return includedItemsIndex
+      .map((i) => itemNames[i])
+      .filter((n) => n !== undefined)
+  }
+
+  function getIncludedTalentItems({
+    itemNames: fullItemNames,
     normalAttack,
     elementalSkill,
     elementalBurst,
   }: {
     itemNames: string[]
-    normalAttack: number
-    elementalSkill: number
-    elementalBurst: number
+    normalAttack: { current: number; target: number | null }
+    elementalSkill: { current: number; target: number | null }
+    elementalBurst: { current: number; target: number | null }
   }) {
-    function isTalentGreaterThan(
-      talent: 'all' | 'normal' | 'elemental',
-      level: number
-    ) {
-      if (talent === 'all')
-        return (
-          normalAttack > level &&
-          elementalSkill > level &&
-          elementalBurst > level
-        )
-      if (talent === 'normal') return normalAttack > level
-      if (talent === 'elemental')
-        return elementalSkill > level && elementalBurst > level
-    }
+    const minIndex = Math.min(
+      normalAttack.current - 1,
+      elementalSkill.current - 1,
+      elementalBurst.current - 1
+    )
 
-    const excludedTalentItems: string[] = []
+    const maxIndex = Math.max(
+      normalAttack.target ? normalAttack.target - 1 : 0,
+      elementalSkill.target ? elementalSkill.target - 1 : 0,
+      elementalBurst.target ? elementalBurst.target - 1 : 0
+    )
+
+    if (minIndex === maxIndex || minIndex === 9 || maxIndex === 0) return []
 
     // Characters (-Traveler)
-    if (itemNames.length === 17) {
-      if (isTalentGreaterThan('all', 1))
-        excludedTalentItems.push(itemNames[9], itemNames[12])
-      if (isTalentGreaterThan('all', 5))
-        excludedTalentItems.push(itemNames[10], itemNames[13])
-      if (isTalentGreaterThan('all', 9))
-        excludedTalentItems.push(
-          itemNames[11],
-          itemNames[14],
-          itemNames[15],
-          itemNames[16]
-        )
+    if (fullItemNames.length === 17) {
+      const itemNames = fullItemNames.slice(9)
+
+      const includedIndexArray = [
+        [0, 3],
+        [1, 4],
+        [1, 4],
+        [1, 4],
+        [1, 4],
+        [2, 5, 6],
+        [2, 5, 6],
+        [2, 5, 6],
+        [2, 5, 6, 7],
+      ]
+
+      return getIncludedItems({
+        itemNames,
+        includedIndexArray,
+        minIndex,
+        maxIndex,
+      })
     }
 
     // Travelers (-Geo vision)
-    if (itemNames.length === 22) {
-      if (isTalentGreaterThan('all', 1))
-        excludedTalentItems.push(itemNames[8], itemNames[11])
-      if (isTalentGreaterThan('all', 3)) excludedTalentItems.push(itemNames[13])
-      if (isTalentGreaterThan('all', 4)) excludedTalentItems.push(itemNames[14])
-      if (isTalentGreaterThan('all', 5))
-        excludedTalentItems.push(itemNames[9], itemNames[15])
-      if (isTalentGreaterThan('all', 7)) excludedTalentItems.push(itemNames[17])
-      if (isTalentGreaterThan('all', 8)) excludedTalentItems.push(itemNames[18])
-      if (isTalentGreaterThan('all', 9))
-        excludedTalentItems.push(
-          itemNames[10],
-          itemNames[19],
-          itemNames[20],
-          itemNames[21]
-        )
+    if (fullItemNames.length === 22) {
+      const itemNames = fullItemNames.slice(8)
+
+      const includedIndexArray = [
+        [0, 3],
+        [1, 4],
+        [1, 5],
+        [1, 6],
+        [1, 7],
+        [2, 8, 12],
+        [2, 9, 12],
+        [2, 10, 12],
+        [2, 11, 12, 13],
+      ]
+
+      return getIncludedItems({
+        itemNames,
+        includedIndexArray,
+        minIndex,
+        maxIndex,
+      })
     }
 
     // Traveler Geo
-    if (itemNames.length === 35) {
-      if (isTalentGreaterThan('normal', 1))
-        excludedTalentItems.push(itemNames[8], itemNames[14])
-      if (isTalentGreaterThan('normal', 3))
-        excludedTalentItems.push(itemNames[16])
-      if (isTalentGreaterThan('normal', 4))
-        excludedTalentItems.push(itemNames[17])
-      if (isTalentGreaterThan('normal', 5))
-        excludedTalentItems.push(itemNames[9], itemNames[18])
-      if (isTalentGreaterThan('normal', 7))
-        excludedTalentItems.push(itemNames[20])
-      if (isTalentGreaterThan('normal', 8))
-        excludedTalentItems.push(itemNames[21])
-      if (isTalentGreaterThan('normal', 9))
-        excludedTalentItems.push(itemNames[10], itemNames[22], itemNames[32])
-      if (isTalentGreaterThan('elemental', 1))
-        excludedTalentItems.push(itemNames[11], itemNames[23])
-      if (isTalentGreaterThan('elemental', 3))
-        excludedTalentItems.push(itemNames[25])
-      if (isTalentGreaterThan('elemental', 4))
-        excludedTalentItems.push(itemNames[26])
-      if (isTalentGreaterThan('elemental', 5))
-        excludedTalentItems.push(itemNames[12], itemNames[27])
-      if (isTalentGreaterThan('elemental', 7))
-        excludedTalentItems.push(itemNames[29])
-      if (isTalentGreaterThan('elemental', 8))
-        excludedTalentItems.push(itemNames[30])
-      if (isTalentGreaterThan('elemental', 9))
-        excludedTalentItems.push(itemNames[13], itemNames[31], itemNames[33])
-      if (isTalentGreaterThan('all', 9)) excludedTalentItems.push(itemNames[34])
+    if (fullItemNames.length === 35) {
+      const itemNames = fullItemNames.slice(8)
+
+      const includedIndexArrayNormal = [
+        [0, 6],
+        [1, 7],
+        [1, 8],
+        [1, 9],
+        [1, 10],
+        [2, 11, 24],
+        [2, 12, 24],
+        [2, 13, 24],
+        [2, 14, 24, 26],
+      ]
+
+      const includedNormal = getIncludedItems({
+        itemNames,
+        includedIndexArray: includedIndexArrayNormal,
+        minIndex: normalAttack.current - 1,
+        maxIndex: normalAttack.target ? normalAttack.target - 1 : 0,
+      })
+
+      const minIndexElemental = Math.min(
+        elementalSkill.current - 1,
+        elementalBurst.current - 1
+      )
+
+      const maxIndexElemental = Math.max(
+        elementalSkill.target ? elementalSkill.target - 1 : 0,
+        elementalBurst.target ? elementalBurst.target - 1 : 0
+      )
+
+      const includedIndexArrayElemental = [
+        [3, 15],
+        [4, 16],
+        [4, 17],
+        [4, 18],
+        [4, 19],
+        [5, 20, 25],
+        [5, 21, 25],
+        [5, 22, 25],
+        [5, 23, 25, 26],
+      ]
+
+      const includedElemental = getIncludedItems({
+        itemNames,
+        includedIndexArray: includedIndexArrayElemental,
+        minIndex: minIndexElemental,
+        maxIndex: maxIndexElemental,
+      })
+
+      return Array.from(new Set([...includedNormal, ...includedElemental]))
     }
 
-    return excludedTalentItems
+    return []
+  }
+
+  function getIncludedAscensionItems({
+    name,
+    itemNames: fullItemNames,
+    ascension,
+  }: {
+    name: CharacterType.Name
+    itemNames: string[]
+    ascension: { current: number; target: number | null }
+  }): string[] {
+    const isTraveler = name.includes('Traveler')
+
+    const itemNames = fullItemNames.slice(0, isTraveler ? 8 : 9)
+
+    if (
+      !ascension.target ||
+      ascension.current === ascension.target ||
+      ascension.target === 0
+    ) {
+      return []
+    }
+
+    const includedIndexArray = [
+      [0, 2, 7],
+      [0, 3, 7, 8],
+      [1, 3, 7, 8],
+      [1, 4, 7, 8],
+      [2, 4, 7, 8],
+      [2, 5, 7, 8],
+    ]
+
+    return getIncludedItems({
+      itemNames,
+      includedIndexArray,
+      minIndex: ascension.current,
+      maxIndex: ascension.target,
+    })
   }
 
   return tracks.map((track) => {
@@ -913,36 +1021,24 @@ export function getCharactersTrackItems(
     }
     const itemNames = getItemsToRetrieve(track.name)
 
-    const { ascension, normalAttack, elementalSkill, elementalBurst } =
-      track.userCharacter
-
-    const excludedAscensionItems: string[] = []
-    if (ascension > 0) excludedAscensionItems.push(itemNames[3])
-    if (ascension > 1 && track.name.includes('Traveler'))
-      excludedAscensionItems.push(itemNames[0])
-    if (ascension > 2) excludedAscensionItems.push(itemNames[4])
-    if (ascension > 3 && track.name.includes('Traveler'))
-      excludedAscensionItems.push(itemNames[1])
-    if (ascension > 4) excludedAscensionItems.push(itemNames[5])
-    if (ascension > 5) excludedAscensionItems.push(itemNames[6], itemNames[7])
-    if (ascension > 5 && track.name.includes('Traveler'))
-      excludedAscensionItems.push(itemNames[2])
-    if (ascension > 5 && !track.name.includes('Traveler'))
-      excludedAscensionItems.push(itemNames[8])
-
-    const excludedTalentItems = getExcludedTalentItems({
+    const includedAscensionItems = getIncludedAscensionItems({
+      name: track.name,
       itemNames,
-      normalAttack,
-      elementalSkill,
-      elementalBurst,
+      ascension: track.ascension,
     })
 
-    const excludedItems = [...excludedAscensionItems, ...excludedTalentItems]
-    const items = itemNames.filter((name) => !excludedItems.includes(name))
+    const includedTalentItems = getIncludedTalentItems({
+      itemNames,
+      normalAttack: track.normalAttack,
+      elementalSkill: track.elementalSkill,
+      elementalBurst: track.elementalBurst,
+    })
 
     return {
       ...track,
-      itemNames: Array.from(new Set(items)),
+      itemNames: Array.from(
+        new Set([...includedAscensionItems, ...includedTalentItems])
+      ),
     }
   })
 }
@@ -950,14 +1046,16 @@ export function getCharactersTrackItems(
 type KV = { key: string; value: number }
 
 export function getItemsQuantity({
+  currentOnly = false,
   name,
-  progression,
-  targetProgression,
+  ascension,
+  normalAttack,
+  elementalSkill,
+  elementalBurst,
 }: {
+  currentOnly?: boolean
   name: CharacterType.Name
-  progression: CharacterType.Progression
-  targetProgression: CharacterType.Progression
-}) {
+} & CharacterType.TrackProgression) {
   const { ascensionMaterial, talentMaterial } = getRequiredMaterial(name)
 
   const materialWithValue = {
@@ -967,62 +1065,55 @@ export function getItemsQuantity({
     elementalBurst: [] as KV[],
   }
 
-  if (progression.ascension < targetProgression.ascension) {
-    materialWithValue.ascension = getUpdatedMaterial(
-      ascensionMaterial,
-      progression.ascension,
-      targetProgression.ascension
-    )
+  if (ascension.target && ascension.current < ascension.target) {
+    materialWithValue.ascension = getUpdatedMaterial({
+      materials: ascensionMaterial,
+      progression: {
+        current: ascension.current,
+        target: currentOnly ? ascension.current + 1 : ascension.target,
+      },
+    })
   }
 
-  if (Array.isArray(talentMaterial)) {
-    if (progression.normalAttack < targetProgression.normalAttack) {
-      materialWithValue.normalAttack = getUpdatedMaterial(
-        talentMaterial,
-        progression.normalAttack - 1,
-        targetProgression.normalAttack - 1
-      )
-    }
+  if (normalAttack.target && normalAttack.current < normalAttack.target) {
+    materialWithValue.normalAttack = getUpdatedMaterial({
+      materials:
+        'normal' in talentMaterial ? talentMaterial.normal : talentMaterial,
+      progression: {
+        current: normalAttack.current - 1,
+        target: currentOnly ? ascension.current : normalAttack.target - 1,
+      },
+    })
+  }
 
-    if (progression.elementalSkill < targetProgression.elementalSkill) {
-      materialWithValue.elementalSkill = getUpdatedMaterial(
-        talentMaterial,
-        progression.elementalSkill - 1,
-        targetProgression.elementalSkill - 1
-      )
-    }
+  if (elementalSkill.target && elementalSkill.current < elementalSkill.target) {
+    materialWithValue.elementalSkill = getUpdatedMaterial({
+      materials:
+        'elemental' in talentMaterial
+          ? talentMaterial.elemental
+          : talentMaterial,
+      progression: {
+        current: elementalSkill.current - 1,
+        target: currentOnly ? ascension.current : elementalSkill.target - 1,
+      },
+    })
+  }
 
-    if (progression.elementalBurst < targetProgression.elementalBurst) {
-      materialWithValue.elementalBurst = getUpdatedMaterial(
-        talentMaterial,
-        progression.elementalBurst - 1,
-        targetProgression.elementalBurst - 1
-      )
-    }
-  } else {
-    if (progression.normalAttack < targetProgression.normalAttack) {
-      materialWithValue.normalAttack = getUpdatedMaterial(
-        talentMaterial.normal,
-        progression.normalAttack - 1,
-        targetProgression.normalAttack - 1
-      )
-    }
+  if (elementalBurst.target && elementalBurst.current < elementalBurst.target) {
+    materialWithValue.elementalBurst = getUpdatedMaterial({
+      materials:
+        'elemental' in talentMaterial
+          ? talentMaterial.elemental
+          : talentMaterial,
+      progression: {
+        current: elementalBurst.current - 1,
+        target: currentOnly ? ascension.current : elementalBurst.target - 1,
+      },
+    })
+  }
 
-    if (progression.elementalSkill < targetProgression.elementalSkill) {
-      materialWithValue.elementalSkill = getUpdatedMaterial(
-        talentMaterial.elemental,
-        progression.elementalSkill - 1,
-        targetProgression.elementalSkill - 1
-      )
-    }
-
-    if (progression.elementalBurst < targetProgression.elementalBurst) {
-      materialWithValue.elementalBurst = getUpdatedMaterial(
-        talentMaterial.elemental,
-        progression.elementalBurst - 1,
-        targetProgression.elementalBurst - 1
-      )
-    }
+  if (currentOnly) {
+    return materialWithValue
   }
 
   return combineDuplicateKey({
@@ -1036,14 +1127,19 @@ export function getItemsQuantity({
   })
 }
 
-function getUpdatedMaterial(
-  material: CharacterType.AscensionPhase[] | CharacterType.TalentPhase[],
-  from: number,
-  to: number
-) {
+function getUpdatedMaterial({
+  materials,
+  progression,
+}: {
+  materials: CharacterType.AscensionPhase[] | CharacterType.TalentPhase[]
+  progression: {
+    current: number
+    target: number
+  }
+}) {
   return combineDuplicateKey({
     skipPreprocess: false,
-    arr: material.slice(from, to).map((m) => {
+    arr: materials.slice(progression.current, progression.target).map((m) => {
       if (Utils.hasOwnProperty(m, 'local')) {
         return {
           mora: m.mora,
@@ -1096,83 +1192,4 @@ function combineDuplicateKey(
     }
     return acc
   }, [] as typeof tmpArr)
-}
-
-export function getCurrentItemsQuantity({
-  name,
-  progression,
-  targetProgression,
-}: {
-  name: CharacterType.Name
-  progression: CharacterType.Progression
-  targetProgression: CharacterType.Progression
-}) {
-  const { ascensionMaterial, talentMaterial } = getRequiredMaterial(name)
-
-  const materialWithValue = {
-    ascension: [] as KV[],
-    normalAttack: [] as KV[],
-    elementalSkill: [] as KV[],
-    elementalBurst: [] as KV[],
-  }
-
-  if (progression.ascension < targetProgression.ascension) {
-    materialWithValue.ascension = getUpdatedMaterial(
-      ascensionMaterial,
-      progression.ascension,
-      progression.ascension + 1
-    )
-  }
-
-  if (Array.isArray(talentMaterial)) {
-    if (progression.normalAttack < targetProgression.normalAttack) {
-      materialWithValue.normalAttack = getUpdatedMaterial(
-        talentMaterial,
-        progression.normalAttack - 1,
-        progression.normalAttack
-      )
-    }
-
-    if (progression.elementalSkill < targetProgression.elementalSkill) {
-      materialWithValue.elementalSkill = getUpdatedMaterial(
-        talentMaterial,
-        progression.elementalSkill - 1,
-        progression.elementalSkill
-      )
-    }
-
-    if (progression.elementalBurst < targetProgression.elementalBurst) {
-      materialWithValue.elementalBurst = getUpdatedMaterial(
-        talentMaterial,
-        progression.elementalBurst - 1,
-        progression.elementalBurst
-      )
-    }
-  } else {
-    if (progression.normalAttack < targetProgression.normalAttack) {
-      materialWithValue.normalAttack = getUpdatedMaterial(
-        talentMaterial.normal,
-        progression.normalAttack - 1,
-        progression.normalAttack
-      )
-    }
-
-    if (progression.elementalSkill < targetProgression.elementalSkill) {
-      materialWithValue.elementalSkill = getUpdatedMaterial(
-        talentMaterial.elemental,
-        progression.elementalSkill - 1,
-        progression.elementalSkill
-      )
-    }
-
-    if (progression.elementalBurst < targetProgression.elementalBurst) {
-      materialWithValue.elementalBurst = getUpdatedMaterial(
-        talentMaterial.elemental,
-        progression.elementalBurst - 1,
-        progression.elementalBurst
-      )
-    }
-  }
-
-  return materialWithValue
 }
