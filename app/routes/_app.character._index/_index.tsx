@@ -23,6 +23,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
   userPref.characterView = formData.get('characterView') ?? 'grid'
 
   return RemixNode.json(null, {
+    statusText: 'SUCCESS',
     headers: {
       'Set-Cookie': await Cookie.userPrefs.serialize(userPref),
     },

@@ -86,7 +86,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
     accountId,
   })
 
-  return RemixNode.json({ ok: true, errors: {} })
+  return RemixNode.json({ ok: true, errors: {} }, { statusText: 'SUCCESS' })
 }
 
 export async function loader({ params, request }: RemixNode.LoaderArgs) {

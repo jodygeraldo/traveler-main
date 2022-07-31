@@ -35,7 +35,7 @@ interface ActionData {
   }
 }
 
-export async function action({ params, request }: RemixNode.LoaderArgs) {
+export async function action({ params, request }: RemixNode.ActionArgs) {
   const accountId = await Session.requireAccountId(request)
 
   const { name, type } = ParamsSchema.parse(params)

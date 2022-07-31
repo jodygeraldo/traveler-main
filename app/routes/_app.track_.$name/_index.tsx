@@ -76,7 +76,7 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
     accountId,
   })
 
-  return null
+  return RemixNode.json(null, { statusText: 'SUCCESS' })
 }
 
 export async function loader({ params, request }: RemixNode.LoaderArgs) {

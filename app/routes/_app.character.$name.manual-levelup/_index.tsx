@@ -57,7 +57,10 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
     progression,
     accountId,
   })
-  return RemixNode.json({ success: true, errors: {} })
+  return RemixNode.json(
+    { success: true, errors: {} },
+    { statusText: 'SUCCESS' }
+  )
 }
 
 export async function loader({ params, request }: RemixNode.LoaderArgs) {

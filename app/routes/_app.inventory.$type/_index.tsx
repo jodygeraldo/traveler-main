@@ -30,7 +30,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
     quantity,
   })
 
-  return null
+  return RemixNode.json(null, { statusText: 'SUCCESS' })
 }
 
 export async function loader({ params, request }: RemixNode.LoaderArgs) {

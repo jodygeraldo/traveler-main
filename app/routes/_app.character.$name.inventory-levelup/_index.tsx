@@ -35,10 +35,6 @@ const ParamsSchema = Zod.object({
   materials: Zod.string().optional(),
 })
 
-interface ActionData {
-  success: boolean
-}
-
 export async function action({ params, request }: RemixNode.ActionArgs) {
   const accountId = await Session.requireAccountId(request)
 
@@ -90,7 +86,7 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
     })
   }
 
-  return RemixNode.json<ActionData>({ success: true })
+  return RemixNode.json({ success: true }, { statusText: 'SUCCESS' })
 }
 
 export async function loader({ params, request }: RemixNode.LoaderArgs) {
@@ -142,7 +138,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
 export default function TravelerInventoryLevelupPage() {
   const { progression, unlock, data, ascend } =
     RemixReact.useLoaderData<typeof loader>()
-  const actionData = RemixReact.useActionData<ActionData>()
+  const actionData = RemixReact.useActionData<typeof action>()
 
   const { items, material, possibleToLevel } = data
 
