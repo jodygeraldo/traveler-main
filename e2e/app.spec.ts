@@ -1,36 +1,42 @@
 import { expect, test } from '@playwright/test'
 import prisma from '~/db.server'
+import { createUser } from '~/models/user.server'
+
+const OK_STATUS_TEXT = 'SUCCESS'
 
 test.describe('apps', () => {
+  const EMAIL = 'test@test.com'
   const PASSWORD = 'test1234'
 
-  // login
-  test.beforeEach(async ({ page }, testInfo) => {
-    const EMAIL = `test${testInfo.line}@test.com`
+  test.beforeEach(async ({ page }) => {
+    await page.goto('.')
+    await page.click('#signin')
+    await page.fill('#email', EMAIL)
+    await page.fill('#password', PASSWORD)
+    await Promise.all([page.waitForNavigation(), page.click('#signin')])
+    await expect(page).toHaveURL('/character')
+  })
 
+  // cleanup user
+  test.beforeAll(async () => {
     await prisma.user
       .delete({
         where: { email: EMAIL },
       })
       .catch(() => {})
 
-    await page.goto('.')
-    await page.click('#signup')
-    await page.fill('#email', EMAIL)
-    await page.fill('#password', PASSWORD)
-    await page.fill('#confirm-password', PASSWORD)
-    await Promise.all([page.waitForNavigation(), page.click('#signup')])
-    await expect(page).toHaveURL('/character')
+    await createUser(EMAIL, PASSWORD).catch(() => {})
   })
 
   // cleanup user
-  test.afterEach(async ({ page: _ }, testInfo) => {
-    await prisma.user
-      .delete({
-        where: { email: `test${testInfo.line}@test.com` },
-      })
-      .catch(() => {})
-  })
+  test.afterAll(
+    async () =>
+      await prisma.user
+        .delete({
+          where: { email: EMAIL },
+        })
+        .catch(() => {})
+  )
 
   test.describe('character page', () => {
     test('all characters should be displayed', async ({ page }) => {
@@ -57,7 +63,7 @@ test.describe('apps', () => {
     test('can go to quick update page and update Albedo and Amber', async ({
       page,
     }) => {
-      await page.click('#quick-update')
+      await Promise.all([page.waitForNavigation(), page.click('#quick-update')])
       await expect(page).toHaveURL('/character/quick-update')
 
       const ALBEDO = {
@@ -70,9 +76,7 @@ test.describe('apps', () => {
 
       await Promise.all([
         page.waitForResponse(
-          (response) =>
-            response.url() ===
-            'http://localhost:3000/character/quick-update?_data=routes%2F_app.character.quick-update%2F_index'
+          async (response) => response.statusText() === OK_STATUS_TEXT
         ),
         page.click(`#Albedo-save`),
       ])
@@ -98,9 +102,7 @@ test.describe('apps', () => {
 
       await Promise.all([
         page.waitForResponse(
-          (response) =>
-            response.url() ===
-            'http://localhost:3000/character/quick-update?_data=routes%2F_app.character.quick-update%2F_index'
+          async (response) => response.statusText() === OK_STATUS_TEXT
         ),
         page.click(`#Amber-save`),
       ])
@@ -144,9 +146,7 @@ test.describe('apps', () => {
 
       await Promise.all([
         page.waitForResponse(
-          (response) =>
-            response.url() ===
-            'http://localhost:3000/inventory/all?_data=routes%2F_app.inventory.%24type%2F_index'
+          async (response) => response.statusText() === OK_STATUS_TEXT
         ),
         page.fill(ITEM[0].SELECTOR, ITEM[0].QUANTITY),
       ])
@@ -157,9 +157,7 @@ test.describe('apps', () => {
 
       await Promise.all([
         page.waitForResponse(
-          (response) =>
-            response.url() ===
-            'http://localhost:3000/inventory/talent-book?_data=routes%2F_app.inventory.%24type%2F_index'
+          async (response) => response.statusText() === OK_STATUS_TEXT
         ),
         page.fill(ITEM[0].SELECTOR, '120'),
       ])
@@ -174,9 +172,7 @@ test.describe('apps', () => {
 
       await Promise.all([
         page.waitForResponse(
-          (response) =>
-            response.url() ===
-            'http://localhost:3000/inventory/all?_data=routes%2F_app.inventory.%24type%2F_index'
+          async (response) => response.statusText() === OK_STATUS_TEXT
         ),
         await page.locator(ITEM[2].SELECTOR).fill(ITEM[2].QUANTITY),
       ])
@@ -201,9 +197,7 @@ test.describe('apps', () => {
 
       await Promise.all([
         page.waitForResponse(
-          (response) =>
-            response.url() ===
-            'http://localhost:3000/inventory/all?_data=routes%2F_app.inventory.%24type%2F_index'
+          async (response) => response.statusText() === OK_STATUS_TEXT
         ),
         page.fill(ITEM[0].SELECTOR, ITEM[0].QUANTITY),
       ])
@@ -229,14 +223,7 @@ test.describe('apps', () => {
         ITEM_TO_CRAFT.BONUS_TYPE[0]
       )
 
-      await Promise.all([
-        page.waitForResponse(
-          (response) =>
-            response.url() ===
-            'http://localhost:3000/alchemy/crafting/all/craft-talent/Guide-to-Freedom?_data=routes%2F_app.alchemy.crafting.%24type.%24craft.%24name%2F_index'
-        ),
-        page.click('#craft'),
-      ])
+      await Promise.all([page.waitForNavigation(), page.click('#craft')])
 
       await expect(page).toHaveURL('/alchemy/crafting/all')
 
@@ -265,14 +252,7 @@ test.describe('apps', () => {
         ITEM_TO_CRAFT.BONUS_TYPE[1]
       )
 
-      await Promise.all([
-        page.waitForResponse(
-          (response) =>
-            response.url() ===
-            'http://localhost:3000/alchemy/crafting/talent/craft-talent/Guide-to-Freedom?_data=routes%2F_app.alchemy.crafting.%24type.%24craft.%24name%2F_index'
-        ),
-        page.click('#craft'),
-      ])
+      await Promise.all([page.waitForNavigation(), page.click('#craft')])
       await expect(page).toHaveURL('/alchemy/crafting/talent')
 
       const SECOND_CRAFT_QUANTITY = (
@@ -297,16 +277,14 @@ test.describe('apps', () => {
 
       await Promise.all([
         page.waitForResponse(
-          (response) =>
-            response.request().postData() === 'name=Tail+of+Boreas&quantity=10'
+          async (response) => response.statusText() === OK_STATUS_TEXT
         ),
         page.fill(ITEM[1].SELECTOR, ITEM[1].QUANTITY),
       ])
 
       await Promise.all([
         page.waitForResponse(
-          (response) =>
-            response.request().postData() === 'name=Dream+Solvent&quantity=17'
+          async (response) => response.statusText() === OK_STATUS_TEXT
         ),
         page.fill(ITEM[2].SELECTOR, ITEM[2].QUANTITY),
       ])
@@ -326,14 +304,7 @@ test.describe('apps', () => {
       )
       await page.fill('input[name="quantity"]', ITEM_TO_CRAFT.TO_CRAFT)
 
-      await Promise.all([
-        page.waitForResponse(
-          (response) =>
-            response.url() ===
-            'http://localhost:3000/alchemy/converting/all/convert-boss/Ring-of-Boreas?_data=routes%2F_app.alchemy.converting.%24type.%24convert.%24name%2F_index'
-        ),
-        page.click('#convert'),
-      ])
+      await Promise.all([page.waitForNavigation(), page.click('#convert')])
       await expect(page).toHaveURL('/alchemy/converting/all')
 
       await page.goto('/alchemy/converting/talent-boss')
@@ -361,16 +332,7 @@ test.describe('apps', () => {
       )
       await page.fill('input[name="quantity"]', ITEM_TO_CRAFT.TO_USE)
 
-      await Promise.all([
-        page.waitForResponse(
-          (response) =>
-            response.url() ===
-            'http://localhost:3000/alchemy/converting/talent-boss/convert-boss/Tail-of-Boreas?_data=routes%2F_app.alchemy.converting.%24type.%24convert.%24name%2F_index'
-        ),
-        page.click('#convert'),
-      ])
-
-      await page.goto('/alchemy/converting/talent-boss')
+      await Promise.all([page.waitForNavigation(), page.click('#convert')])
 
       const SECOND_CRAFT_QUANTITY = (
         FIRST_CRAFT_QUANTITY - parseInt(ITEM_TO_CRAFT.TO_USE)
@@ -406,7 +368,7 @@ test.describe('apps', () => {
       await expect(page.locator('h2:has-text("Talent")')).toBeVisible()
     })
 
-    test('should able to level up manually', async ({ page }, testInfo) => {
+    test('should able to level up manually', async ({ page }) => {
       await page.click('#Albedo-character-page-link')
       await page.waitForURL('/character/Albedo/required-items')
       await page.click('#manual_level_up-link')
@@ -420,21 +382,12 @@ test.describe('apps', () => {
 
       await Promise.all([
         page.waitForResponse(
-          (response) =>
-            response.url() ===
-            'http://localhost:3000/character/Albedo/manual-levelup?_data=routes%2F_app.character.%24name.manual-levelup%2F_index'
+          async (response) => response.statusText() === OK_STATUS_TEXT
         ),
         page.click('button[type="submit"]'),
       ])
 
-      await Promise.all([
-        page.waitForResponse(
-          (response) =>
-            response.url() ===
-            'http://localhost:3000/character/Albedo/manual-levelup'
-        ),
-        page.reload(),
-      ])
+      await Promise.all([page.waitForNavigation(), page.reload()])
 
       await expect(page.locator('#level')).toHaveValue('90')
       await expect(page.locator('#ascension')).toHaveValue('6')
@@ -490,9 +443,7 @@ test.describe('apps', () => {
       await expect(page.locator('text=Required character to 20.')).toBeVisible()
       await Promise.all([
         page.waitForResponse(
-          (response) =>
-            response.url() ===
-            'http://localhost:3000/character/Ganyu/inventory-levelup?_data=routes%2F_app.character.%24name.inventory-levelup%2F_index'
+          async (response) => response.statusText() === OK_STATUS_TEXT
         ),
         page.click('#jump-level'),
       ])
@@ -500,9 +451,7 @@ test.describe('apps', () => {
       await page.locator('#character-level').fill('30')
       await Promise.all([
         page.waitForResponse(
-          (response) =>
-            response.url() ===
-            'http://localhost:3000/character/Ganyu/inventory-levelup?_data=routes%2F_app.character.%24name.inventory-levelup%2F_index'
+          async (response) => response.statusText() === OK_STATUS_TEXT
         ),
         page.click('button:has-text("Ascend")'),
       ])

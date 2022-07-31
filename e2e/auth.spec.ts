@@ -2,8 +2,6 @@ import { expect, test } from '@playwright/test'
 import prisma from '~/db.server'
 
 test.describe('auth flow', () => {
-  test.describe.configure({ mode: 'serial' })
-
   const EMAIL = 'test@test.com'
   const PASSWORD = 'test1234'
 
@@ -70,7 +68,7 @@ test.describe('auth flow', () => {
 
     // logout
     await page.click('#avatar-dropdown')
-    await page.click('#signout')
+    await Promise.all([page.waitForNavigation(), page.click('#signout')])
     await expect(page).toHaveURL('.')
   })
 })
