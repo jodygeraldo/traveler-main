@@ -282,13 +282,6 @@ test.describe('apps', () => {
         page.fill(ITEM[1].SELECTOR, ITEM[1].QUANTITY),
       ])
 
-      await Promise.all([
-        page.waitForResponse(
-          async (response) => response.statusText() === OK_STATUS_TEXT
-        ),
-        page.fill(ITEM[2].SELECTOR, ITEM[2].QUANTITY),
-      ])
-
       const ITEM_TO_CRAFT = {
         LINK_SELECTOR: '#ring_of_boreas-link',
         QUANTITY_SELECTOR: '#ring_of_boreas-quantity',
