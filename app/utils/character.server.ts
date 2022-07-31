@@ -1075,18 +1075,30 @@ export function getItemsQuantity({
     })
   }
 
-  if (normalAttack.target && normalAttack.current < normalAttack.target) {
+  const skipTalent = [0, 0, 2, 4, 6, 8, 10]
+
+  if (
+    normalAttack.target &&
+    normalAttack.current < normalAttack.target &&
+    (currentOnly ? normalAttack.current < skipTalent[ascension.current] : true)
+  ) {
     materialWithValue.normalAttack = getUpdatedMaterial({
       materials:
         'normal' in talentMaterial ? talentMaterial.normal : talentMaterial,
       progression: {
         current: normalAttack.current - 1,
-        target: currentOnly ? ascension.current : normalAttack.target - 1,
+        target: currentOnly ? normalAttack.current : normalAttack.target - 1,
       },
     })
   }
 
-  if (elementalSkill.target && elementalSkill.current < elementalSkill.target) {
+  if (
+    elementalSkill.target &&
+    elementalSkill.current < elementalSkill.target &&
+    (currentOnly
+      ? elementalSkill.current < skipTalent[ascension.current]
+      : true)
+  ) {
     materialWithValue.elementalSkill = getUpdatedMaterial({
       materials:
         'elemental' in talentMaterial
@@ -1094,12 +1106,20 @@ export function getItemsQuantity({
           : talentMaterial,
       progression: {
         current: elementalSkill.current - 1,
-        target: currentOnly ? ascension.current : elementalSkill.target - 1,
+        target: currentOnly
+          ? elementalSkill.current
+          : elementalSkill.target - 1,
       },
     })
   }
 
-  if (elementalBurst.target && elementalBurst.current < elementalBurst.target) {
+  if (
+    elementalBurst.target &&
+    elementalBurst.current < elementalBurst.target &&
+    (currentOnly
+      ? elementalBurst.current < skipTalent[ascension.current]
+      : true)
+  ) {
     materialWithValue.elementalBurst = getUpdatedMaterial({
       materials:
         'elemental' in talentMaterial
@@ -1107,7 +1127,9 @@ export function getItemsQuantity({
           : talentMaterial,
       progression: {
         current: elementalBurst.current - 1,
-        target: currentOnly ? ascension.current : elementalBurst.target - 1,
+        target: currentOnly
+          ? elementalBurst.current
+          : elementalBurst.target - 1,
       },
     })
   }
