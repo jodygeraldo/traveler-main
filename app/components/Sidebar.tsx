@@ -40,6 +40,7 @@ export default function Sidebar({ navigation }: Props) {
               prefetch="intent"
               key={nav.name}
               to={nav.to}
+              tabIndex={-1}
               className={({ isActive }) =>
                 clsx(
                   isActive ? 'text-gray-12' : 'text-gray-11',
