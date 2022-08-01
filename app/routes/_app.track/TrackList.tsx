@@ -80,7 +80,7 @@ export default function TrackList({ userTracks }: Props) {
                 </div>
                 <RemixReact.Link
                   to={`./${Utils.slugify(track.name)}`}
-                  className="py-4 px-4 hover:bg-gray-3 focus:outline focus:outline-primary-8 sm:flex sm:flex-1 sm:items-center sm:px-6"
+                  className="flex-1 py-4 px-4 hover:bg-gray-3 focus:outline focus:outline-primary-8 sm:flex sm:flex-1 sm:items-center sm:px-6"
                 >
                   <div className="sm:flex sm:min-w-0 sm:flex-1 sm:items-center">
                     <div className="flex-shrink-0">
@@ -122,7 +122,7 @@ export default function TrackList({ userTracks }: Props) {
                     </div>
                   </div>
 
-                  <div className="hidden md:grid md:grid-cols-4 md:gap-1 lg:grid-cols-6">
+                  <div className="hidden lg:grid lg:grid-cols-6 lg:gap-1">
                     {track.itemNames.map((name) => (
                       <ItemImage key={name} name={name} />
                     ))}
@@ -131,11 +131,7 @@ export default function TrackList({ userTracks }: Props) {
               </div>
 
               <div className="flex items-center gap-4 py-4 px-4 sm:justify-start sm:px-6">
-                <RemixReact.Form
-                  method="post"
-                  replace
-                  className="w-full sm:order-2"
-                >
+                <RemixReact.Form method="post" replace className="w-full">
                   <input type="hidden" name="name" value={track.name} />
                   <Button.Base
                     type="submit"
@@ -151,7 +147,7 @@ export default function TrackList({ userTracks }: Props) {
                   styles="button"
                   to={`./update/${Utils.slugify(track.name)}`}
                   variant="info"
-                  className="w-full sm:order-1"
+                  className="w-full"
                 >
                   Edit
                 </Button.Link>
