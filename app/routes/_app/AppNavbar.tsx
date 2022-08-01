@@ -62,7 +62,7 @@ export default function AppNavbar() {
                             isActive
                               ? 'bg-gray-5 text-gray-12'
                               : 'text-gray-11 hover:bg-gray-4 hover:text-gray-12',
-                            'inline-flex items-center rounded-md py-2 px-3 text-sm font-medium focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-7'
+                            'inline-flex items-center rounded-md py-2 px-3 text-sm font-medium focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-7'
                           )
                         }
                       >
@@ -102,7 +102,7 @@ export default function AppNavbar() {
                   className="relative ml-4 flex-shrink-0"
                 >
                   <div>
-                    <HeadlessUIReact.Menu.Button className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-9 shadow-sm focus:z-10 focus:outline-none focus:ring-2 focus:ring-gray-7 focus:ring-offset-2 focus:ring-offset-gray-1">
+                    <HeadlessUIReact.Menu.Button className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-9 shadow-sm focus:z-10 focus:outline-none focus:ring-2 focus:ring-primary-7 focus:ring-offset-2 focus:ring-offset-gray-1">
                       <Image
                         id="avatar-dropdown"
                         src="/character/traveler.png"
@@ -161,7 +161,7 @@ export default function AppNavbar() {
                       isActive
                         ? 'bg-gray-5 text-gray-12'
                         : 'text-gray-11 hover:bg-gray-4 hover:text-gray-12',
-                      'block rounded-md py-2 px-3 text-base font-medium focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-7'
+                      'block rounded-md py-2 px-3 text-base font-medium focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-7'
                     )
                   }
                 >
@@ -174,7 +174,7 @@ export default function AppNavbar() {
                 <RemixReact.Form method="post" action="/logout">
                   <button
                     type="submit"
-                    className="block w-full rounded-md py-2 px-3 text-left text-base font-medium text-gray-11 hover:bg-gray-4 hover:text-gray-12 focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-7"
+                    className="block w-full rounded-md py-2 px-3 text-left text-base font-medium text-gray-11 hover:bg-gray-4 hover:text-gray-12 focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-7"
                   >
                     Sign out
                   </button>

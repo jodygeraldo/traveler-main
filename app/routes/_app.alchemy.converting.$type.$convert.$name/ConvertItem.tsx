@@ -157,7 +157,7 @@ export default function ConvertItem({
                         type="number"
                         name="quantity"
                         id="quantity"
-                        className="w-full rounded-md border-gray-7 bg-gray-2 tabular-nums text-gray-11 shadow-sm focus:border-gray-8 focus:text-gray-12 focus:ring-gray-8 sm:text-sm"
+                        className="w-full rounded-md border-gray-7 bg-gray-2 tabular-nums text-gray-11 shadow-sm focus:border-gray-8 focus:text-gray-12 focus:ring-primary-8 sm:text-sm"
                         defaultValue={1}
                         min={1}
                         max={maxQuantityToConvert}

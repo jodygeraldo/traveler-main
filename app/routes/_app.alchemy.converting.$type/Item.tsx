@@ -34,6 +34,7 @@ export function ItemLink({
       id={`${Utils.toSnakeCase(name)}-link`}
       prefetch="intent"
       to={`./${convert}/${Utils.slugify(name)}`}
+      className="inline-block rounded-md focus:outline-none focus:ring-2 focus:ring-primary-8 focus:ring-offset-2 focus:ring-offset-gray-1"
     >
       <Item
         name={name}

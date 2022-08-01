@@ -80,7 +80,7 @@ export default function TrackList({ userTracks }: Props) {
                 </div>
                 <RemixReact.Link
                   to={`./${Utils.slugify(track.name)}`}
-                  className="py-4 px-4 hover:bg-gray-3 sm:flex sm:flex-1 sm:items-center sm:px-6"
+                  className="py-4 px-4 hover:bg-gray-3 focus:outline focus:outline-primary-8 sm:flex sm:flex-1 sm:items-center sm:px-6"
                 >
                   <div className="sm:flex sm:min-w-0 sm:flex-1 sm:items-center">
                     <div className="flex-shrink-0">

@@ -147,7 +147,7 @@ export default function CraftItem({
                           type="number"
                           name="quantity"
                           id="quantity"
-                          className="w-full rounded-md border-gray-7 bg-gray-2 tabular-nums text-gray-11 shadow-sm focus:border-gray-8 focus:text-gray-12 focus:ring-gray-8 sm:text-sm"
+                          className="w-full rounded-md border-gray-7 bg-gray-2 tabular-nums text-gray-11 shadow-sm focus:border-gray-8 focus:text-gray-12 focus:ring-primary-8 sm:text-sm"
                           defaultValue={1}
                           min={1}
                           max={Math.floor(crafter.quantity / 3)}
@@ -169,7 +169,7 @@ export default function CraftItem({
                               type="number"
                               name="bonusQuantity"
                               id="bonus-quantity"
-                              className="block w-full rounded-md border-gray-7 bg-gray-2 pr-[5.5rem] tabular-nums text-gray-11 shadow-sm focus:border-gray-8 focus:text-gray-12 focus:ring-gray-8 sm:text-sm"
+                              className="block w-full rounded-md border-gray-7 bg-gray-2 pr-[5.5rem] tabular-nums text-gray-11 shadow-sm focus:border-gray-8 focus:text-gray-12 focus:ring-primary-8 sm:text-sm"
                               defaultValue={0}
                               min={0}
                               max={Math.floor(crafter.quantity / 3)}
@@ -181,7 +181,7 @@ export default function CraftItem({
                               <select
                                 name="bonusType"
                                 id="bonus-type"
-                                className="h-full rounded-md border-transparent bg-transparent py-0 pl-2 pr-7 text-gray-11 focus:border-gray-8 focus:ring-gray-8 sm:text-sm"
+                                className="h-full rounded-md border-transparent bg-transparent py-0 pl-2 pr-7 text-gray-11 focus:border-gray-8 focus:ring-primary-8 sm:text-sm"
                               >
                                 {refundable && <option>Refund</option>}
                                 {doublable && <option>Bonus</option>}

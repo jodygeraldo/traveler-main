@@ -2,7 +2,7 @@ import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 import * as Zod from 'zod'
-import Button from '~/components/Button'
+import * as Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
 import Search from '~/components/Search'
 import * as Cookie from '~/cookies'
@@ -127,9 +127,14 @@ export default function CharactersPage() {
       </div>
 
       <div className="mt-4 flex items-center gap-4">
-        <RemixReact.Link to="./quick-update">
-          <Button id="quick-update">Quick update</Button>
-        </RemixReact.Link>
+        <Button.Link
+          styles="button"
+          prefetch="intent"
+          to="./quick-update"
+          id="quick-update"
+        >
+          Quick update
+        </Button.Link>
 
         <Search changeHandler={changeHandler} placeholder="Search character" />
       </div>

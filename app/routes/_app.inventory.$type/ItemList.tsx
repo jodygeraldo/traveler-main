@@ -74,7 +74,7 @@ export default function ItemList({ items }: Props) {
                   type="number"
                   name="quantity"
                   id={`${Utils.toSnakeCase(item.name)}-quantity`}
-                  className="w-full rounded-md border-gray-7 bg-gray-2 tabular-nums text-gray-11 shadow-sm focus:border-gray-8 focus:text-gray-12 focus:ring-gray-8 sm:text-sm"
+                  className="w-full rounded-md border-gray-7 bg-gray-2 tabular-nums text-gray-11 shadow-sm focus:border-gray-8 focus:text-gray-12 focus:ring-primary-8 sm:text-sm"
                   defaultValue={item.quantity ?? 0}
                   required
                   min={0}

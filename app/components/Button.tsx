@@ -77,9 +77,9 @@ const baseStyles: Record<KindProps, string> = {
   icon: 'group text-gray-11 hover:enabled:text-gray-12 inline-flex items-center rounded-md border border-transparent p-2 text-sm font-medium shadow-sm disabled:text-gray-6',
   group:
     'group relative inline-flex items-center justify-between text-sm transition p-2 border disabled:bg-gray-6',
-  text: 'group inline-flex items-center rounded-md text-sm font-semibold text-gray-11 hover:enabled:text-gray-12 focus:ring-gray-8',
+  text: 'group inline-flex items-center rounded-md text-sm font-semibold text-gray-11 hover:enabled:text-gray-12 focus:ring-primary-8',
   buttonLink:
-    'group inline-flex items-center rounded-md text-sm border border-gray-7 px-4 py-2 font-medium text-gray-11 shadow-sm hover:border-gray-8 focus:ring-gray-8',
+    'group inline-flex items-center rounded-md text-sm border border-gray-7 px-4 py-2 font-medium text-gray-11 shadow-sm hover:border-primary-8 focus:ring-primary-8',
 }
 
 const variantStyles: Record<VariantProps, string> = {
@@ -88,7 +88,7 @@ const variantStyles: Record<VariantProps, string> = {
   secondary:
     'bg-primary-3 text-primary-11 hover:bg-primary-4 focus:ring-primary-8 disabled:bg-primary-6',
   basic:
-    'bg-gray-3 text-gray-11 hover:bg-gray-4 focus:ring-gray-8 disabled:bg-gray-6',
+    'bg-gray-3 text-gray-11 hover:bg-gray-4 focus:ring-primary-8 disabled:bg-gray-6',
   success:
     'bg-success-3 text-success-11 hover:bg-success-4 focus:ring-success-8 disabled:bg-success-6',
   warning:

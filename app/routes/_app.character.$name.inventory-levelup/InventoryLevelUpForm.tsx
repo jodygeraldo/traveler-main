@@ -123,7 +123,7 @@ export default function InventoryLevelUpForm({
                   id="character-level"
                   type="number"
                   name="characterLevel"
-                  className="block w-full rounded-md border-gray-7 bg-gray-3 p-2 shadow-sm focus:border-primary-8 focus:ring-gray-8 sm:text-sm"
+                  className="block w-full rounded-md border-gray-7 bg-gray-3 p-2 shadow-sm focus:border-primary-8 focus:ring-primary-8 sm:text-sm"
                   defaultValue={characterLevel}
                   min={1}
                   max={90}

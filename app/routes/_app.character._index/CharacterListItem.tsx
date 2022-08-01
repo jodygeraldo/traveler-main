@@ -26,7 +26,7 @@ export default function CharacterListItem({
         id={`${name}-character-page-link`}
         to={`./${Utils.slugify(name)}/required-items`}
         prefetch="intent"
-        className="block hover:bg-gray-3"
+        className="block hover:bg-gray-3 focus:outline focus:outline-primary-8"
       >
         <div className="px-4 py-4 sm:px-6">
           <div className="flex items-center justify-between">

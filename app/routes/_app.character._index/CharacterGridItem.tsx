@@ -29,6 +29,7 @@ export default function CharacterGridItem({
         id={`${name}-character-page-link`}
         to={`./${Utils.slugify(name)}/required-items`}
         prefetch="intent"
+        className="inline-block rounded-md focus:outline-none focus:ring-2 focus:ring-primary-8 focus:ring-offset-2 focus:ring-offset-gray-1"
       >
         <div className="group relative rounded-b-md bg-gray-3 shadow-sm hover:bg-gray-4">
           <div className="absolute top-0 left-0">
