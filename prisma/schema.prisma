@@ -135,7 +135,7 @@ model CharacterTrack {
   targetElementalSkill Int?   @map("target_elemental_skill") @db.UnsignedSmallInt
   targetElementalBurst Int?   @map("target_elemental_burst") @db.UnsignedSmallInt
 
-  userCharacter UserCharacter @relation(fields: [name, ownerId], references: [name, ownerId])
+  userCharacter UserCharacter @relation(fields: [name, ownerId], references: [name, ownerId], onDelete: Cascade, onUpdate: Cascade)
   name          String        @map("character_name")
   ownerId       String        @map("owner_id")
 
