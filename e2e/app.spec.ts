@@ -5,7 +5,7 @@ import { createUser } from '~/models/user.server'
 const OK_STATUS_TEXT = 'SUCCESS'
 
 test.describe('apps', () => {
-  const EMAIL = 'test@test.com'
+  const EMAIL = 'test1@test.com'
   const PASSWORD = 'test1234'
 
   test.beforeEach(async ({ page }) => {
@@ -60,7 +60,7 @@ test.describe('apps', () => {
       await expect(page.locator('#Albedo-character-page-link')).toBeHidden()
     })
 
-    test('can go to quick update page and update Albedo and Amber', async ({
+    test.skip('can go to quick update page and update Albedo and Amber', async ({
       page,
     }) => {
       await Promise.all([page.waitForNavigation(), page.click('#quick-update')])
