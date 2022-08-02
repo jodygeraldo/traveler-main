@@ -7,7 +7,7 @@ import useSearchFilter from '~/hooks/useSearchFilter'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
-import * as UtilsServer from '~/utils/index.server'
+import * as ItemUtils from '~/utils/server/item.server'
 import Container from './Container'
 import ItemList from './ItemList'
 
@@ -51,7 +51,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
 
   if (type === 'ALL') {
     const inventory = await InventoryModel.getInventory({ accountId })
-    const items = UtilsServer.Item.getAllItems(inventory)
+    const items = ItemUtils.getAllItems(inventory)
 
     return RemixNode.json({ items })
   }
@@ -61,7 +61,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     accountId,
   })
 
-  const items = UtilsServer.Item.getItemsByType({
+  const items = ItemUtils.getItemsByType({
     type,
     userItems: inventory,
   })

@@ -5,7 +5,7 @@ import * as DB from '~/db.server'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
-import * as UtilsServer from '~/utils/index.server'
+import * as ItemUtils from '~/utils/server/item.server'
 import ItemList from './ItemList'
 
 export const meta: RemixNode.MetaFunction = () => ({
@@ -28,9 +28,9 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   let itemNames: string[] = []
 
   if (type === 'all') {
-    itemNames = UtilsServer.Item.getCraftItemNames()
+    itemNames = ItemUtils.getCraftItemNames()
   } else {
-    itemNames = UtilsServer.Item.getCraftItemNamesByType({
+    itemNames = ItemUtils.getCraftItemNamesByType({
       type: parsedType,
     })
   }
@@ -40,7 +40,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     accountId,
   })
 
-  const craftable = UtilsServer.Item.getCraftableItems({
+  const craftable = ItemUtils.getCraftableItems({
     userItems: inventory,
     type: type === 'all' ? undefined : parsedType,
   })

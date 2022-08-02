@@ -10,7 +10,8 @@ import * as CharacterModel from '~/models/character.server'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
-import * as UtilsServer from '~/utils/index.server'
+import * as CharacterUtils from '~/utils/server/character.server'
+import * as ItemUtils from '~/utils/server/item.server'
 import InventoryLevelUpForm from './InventoryLevelUpForm'
 import ItemWithImage from './ItemWithImage'
 
@@ -41,7 +42,7 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
   const name = Zod.string()
     .transform((str) => Utils.deslugify(str))
     .parse(params.name)
-  const validCharacter = UtilsServer.Character.validateCharacter(name)
+  const validCharacter = CharacterUtils.validateCharacter(name)
   if (!validCharacter) {
     throw RemixNode.json(`Character ${name} not found`, {
       status: 404,
@@ -95,34 +96,34 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const name = Zod.string()
     .transform((str) => Utils.deslugify(str))
     .parse(params.name)
-  if (!UtilsServer.Character.validateCharacter(name)) {
+  if (!CharacterUtils.validateCharacter(name)) {
     throw RemixNode.json(
       { message: `There is no character with name ${name}` },
       { status: 404, statusText: 'Character not found' }
     )
   }
 
-  const fullItemNames = UtilsServer.Character.getItemsToRetrieve(name)
+  const fullItemNames = CharacterUtils.getItemsToRetrieve(name)
 
   const [userCharacter, userItems] = await Promise.all([
     CharacterModel.getUserCharacter({ name, accountId }),
     InventoryModel.getRequiredItems({ names: fullItemNames, accountId }),
   ])
 
-  const fullItems = UtilsServer.Item.getItemsByNames({
+  const fullItems = ItemUtils.getItemsByNames({
     names: fullItemNames,
     userItems,
   })
-  const unlock = UtilsServer.Character.getUnlock(userCharacter?.ascension ?? 0)
+  const unlock = CharacterUtils.getUnlock(userCharacter?.ascension ?? 0)
 
-  const data = UtilsServer.Character.getCharacterInventoryLevelUpData({
+  const data = CharacterUtils.getCharacterInventoryLevelUpData({
     name,
     progression: userCharacter,
     itemNames: fullItemNames,
     userItems: fullItems,
   })
 
-  const ascend = UtilsServer.Character.getAscendStatus({
+  const ascend = CharacterUtils.getAscendStatus({
     ascension: userCharacter?.ascension,
     level: userCharacter?.level,
   })

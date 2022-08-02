@@ -10,7 +10,7 @@ import * as Icon from '~/components/Icon'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
-import * as UtilsServer from '~/utils/index.server'
+import * as CharacterUtils from '~/utils/server/character.server'
 import ProgressionField from './ProgressionField'
 
 const FormDataSchema = Zod.object({
@@ -37,7 +37,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
 
   const { name, ...data } = result.data
 
-  if (!UtilsServer.Character.validateCharacter(name)) {
+  if (!CharacterUtils.validateCharacter(name)) {
     throw RemixNode.json(
       { message: `There is no character with name ${name}` },
       { status: 404, statusText: 'Character not found' }
@@ -72,7 +72,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
     ascension: data.ascension ? data.ascension : 6,
     ...progression,
   }
-  const errors = UtilsServer.Character.validateAscensionRequirement(
+  const errors = CharacterUtils.validateAscensionRequirement(
     requireCheckProgression
   )
   if (errors) {
@@ -96,7 +96,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     .transform((n) => Utils.deslugify(n))
     .parse(params.name)
 
-  if (!UtilsServer.Character.validateCharacter(name)) {
+  if (!CharacterUtils.validateCharacter(name)) {
     throw RemixNode.json(
       { message: `There is no character with name ${name}` },
       { status: 404, statusText: 'Character not found' }

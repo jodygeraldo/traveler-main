@@ -4,7 +4,7 @@ import * as RemixParamsHelper from 'remix-params-helper'
 import * as Zod from 'zod'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
-import * as UtilsServer from '~/utils/index.server'
+import * as CharacterUtils from '~/utils/server/character.server'
 import DataGrid from './DataGrid'
 
 export const meta: RemixNode.MetaFunction = () => ({
@@ -28,7 +28,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
   }
   const { name, ...progression } = result.data
 
-  const validCharacter = UtilsServer.Character.validateCharacter(name)
+  const validCharacter = CharacterUtils.validateCharacter(name)
   if (!validCharacter) {
     throw RemixNode.json(`Character ${name} not found`, {
       status: 404,
@@ -51,8 +51,7 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
   const userCharacters = await CharacterModel.getUserCharacters({
     accountId: accId,
   })
-  const characters =
-    UtilsServer.Character.getCharactersProgression(userCharacters)
+  const characters = CharacterUtils.getCharactersProgression(userCharacters)
 
   return RemixNode.json({ characters })
 }

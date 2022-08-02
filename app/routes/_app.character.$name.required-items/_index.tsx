@@ -6,7 +6,7 @@ import * as Zod from 'zod'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
-import * as UtilsServer from '~/utils/index.server'
+import * as CharacterUtils from '~/utils/server/character.server'
 import CharacterCustomFirstCell from './CharacterCustomFirstCell'
 import * as Column from './column'
 import * as CustomHeading from './CustomTableHeading'
@@ -25,7 +25,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const name = Zod.string()
     .transform((str) => Utils.deslugify(str))
     .parse(params.name)
-  if (!UtilsServer.Character.validateCharacter(name)) {
+  if (!CharacterUtils.validateCharacter(name)) {
     throw RemixNode.json(
       { message: `There is no character with name ${name}` },
       { status: 404, statusText: 'Character not found' }
@@ -36,13 +36,13 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     name,
     accountId,
   })
-  const character = UtilsServer.Character.getCharacter({
+  const character = CharacterUtils.getCharacter({
     name,
     progression: userCharacter,
   })
 
   const { ascensionMaterial, talentMaterial } =
-    UtilsServer.Character.getRequiredMaterial(name)
+    CharacterUtils.getRequiredMaterial(name)
 
   return RemixNode.json({
     character,

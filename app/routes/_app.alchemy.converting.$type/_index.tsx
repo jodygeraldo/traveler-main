@@ -5,7 +5,7 @@ import * as DB from '~/db.server'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
-import * as UtilsServer from '~/utils/index.server'
+import * as ItemUtils from '~/utils/server/item.server'
 import ItemList from './ItemList'
 
 export const meta: RemixNode.MetaFunction = () => ({
@@ -29,12 +29,12 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     itemNames = [
       'Dust of Azoth',
       'Dream Solvent',
-      ...UtilsServer.Item.getConvertableItemNames(),
+      ...ItemUtils.getConvertableItemNames(),
     ]
   } else {
     itemNames = [
       type === 'ascension-gem' ? 'Dust of Azoth' : 'Dream Solvent',
-      ...UtilsServer.Item.getConvertableItemNamesByType(parsedType),
+      ...ItemUtils.getConvertableItemNamesByType(parsedType),
     ]
   }
 
@@ -43,7 +43,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     accountId,
   })
 
-  const convertableItems = UtilsServer.Item.getConvertableItems({
+  const convertableItems = ItemUtils.getConvertableItems({
     userItems: inventory,
     type: type === 'all' ? undefined : parsedType,
   })

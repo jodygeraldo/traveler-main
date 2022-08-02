@@ -4,7 +4,7 @@ import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import type * as CharacterTypes from '~/types/character'
 import * as Utils from '~/utils'
-import * as UtilsServer from '~/utils/index.server'
+import * as CharacterUtils from '~/utils/server/character.server'
 
 export async function loader({ request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
@@ -18,7 +18,7 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
   }
 
   const name = result.data
-  const validCharacter = UtilsServer.Character.validateCharacter(name)
+  const validCharacter = CharacterUtils.validateCharacter(name)
   if (!validCharacter) {
     throw RemixNode.json(
       { message: `Character ${name} not found` },

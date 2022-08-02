@@ -8,7 +8,7 @@ import Image from '~/components/Image'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
-import * as UtilsServer from '~/utils/index.server'
+import * as CharacterUtils from '~/utils/server/character.server'
 import ProgressionField from './ProgressionField'
 
 const FormDataSchema = Zod.object({
@@ -28,7 +28,7 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
   const name = Zod.string()
     .transform((n) => Utils.deslugify(n))
     .parse(params.name)
-  if (!UtilsServer.Character.validateCharacter(name)) {
+  if (!CharacterUtils.validateCharacter(name)) {
     throw RemixNode.json(
       { message: `There is no character with name ${name}` },
       { status: 404, statusText: 'Character not found' }
@@ -85,7 +85,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     .transform((n) => Utils.deslugify(n))
     .parse(params.name)
 
-  if (!UtilsServer.Character.validateCharacter(name)) {
+  if (!CharacterUtils.validateCharacter(name)) {
     throw RemixNode.json(
       { message: `There is no character with name ${name}` },
       { status: 404, statusText: 'Character not found' }
@@ -103,11 +103,11 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     )
   }
 
-  const materials = UtilsServer.Character.getItemsQuantity({ name, ...track })
+  const materials = CharacterUtils.getItemsQuantity({ name, ...track })
 
   if (!Array.isArray(materials)) throw new Error('materials is not an array')
 
-  const currentMaterials = UtilsServer.Character.getItemsQuantity({
+  const currentMaterials = CharacterUtils.getItemsQuantity({
     currentOnly: true,
     name,
     ...track,

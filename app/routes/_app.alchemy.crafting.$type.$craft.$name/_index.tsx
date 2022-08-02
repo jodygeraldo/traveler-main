@@ -7,7 +7,7 @@ import useMatchesData from '~/hooks/useMatchesData'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
-import * as UtilsServer from '~/utils/index.server'
+import * as ItemUtils from '~/utils/server/item.server'
 import CatchBoundaryComponent from './CatchBoundary'
 import CraftItem from './CraftItem'
 
@@ -40,7 +40,7 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
 
   const { name, type } = ParamsSchema.parse(params)
 
-  const validItem = UtilsServer.Item.validateItem(name)
+  const validItem = ItemUtils.validateItem(name)
   if (!validItem) {
     throw RemixNode.json(`Item ${name} not found`, {
       status: 404,
@@ -88,7 +88,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   }
 
   const { name, craft } = result.data
-  const validItem = UtilsServer.Item.validateItem(name)
+  const validItem = ItemUtils.validateItem(name)
   if (!validItem) {
     throw RemixNode.json(`Item ${name} not found`, {
       status: 404,
@@ -103,7 +103,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
       ? DB.ItemType.ASCENSION_GEM
       : DB.ItemType.TALENT_BOOK
 
-  const isValidItem = UtilsServer.Item.isValidCraftable({
+  const isValidItem = ItemUtils.isValidCraftable({
     name,
     type: itemType,
   })
@@ -123,7 +123,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     )
   }
 
-  const item = UtilsServer.Item.getCrafterItem(name)
+  const item = ItemUtils.getCrafterItem(name)
 
   return RemixNode.json({ item })
 }

@@ -7,7 +7,7 @@ import useMatchesData from '~/hooks/useMatchesData'
 import * as InventoryModel from '~/models/inventory.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
-import * as UtilsServer from '~/utils/index.server'
+import * as ItemUtils from '~/utils/server/item.server'
 import CatchBoundaryComponent from './CatchBoundary'
 import ConvertItem from './ConvertItem'
 
@@ -39,7 +39,7 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
 
   const { name, type } = ParamsSchema.parse(params)
 
-  const validItem = UtilsServer.Item.validateItem(name)
+  const validItem = ItemUtils.validateItem(name)
   if (!validItem) {
     throw RemixNode.json(`Item ${name} not found`, {
       status: 404,
@@ -95,7 +95,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
 
   const { name, convert } = result.data
 
-  const validItem = UtilsServer.Item.validateItem(name)
+  const validItem = ItemUtils.validateItem(name)
   if (!validItem) {
     throw RemixNode.json(`Item ${name} not found`, {
       status: 404,
@@ -108,7 +108,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
       ? DB.ItemType.TALENT_BOSS
       : DB.ItemType.ASCENSION_GEM
 
-  const isValidConvertable = UtilsServer.Item.isValidConvertable({
+  const isValidConvertable = ItemUtils.isValidConvertable({
     name,
     type: itemType,
   })
@@ -124,7 +124,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     )
   }
 
-  const converter = UtilsServer.Item.getConverterItems({
+  const converter = ItemUtils.getConverterItems({
     name,
     type: itemType,
   })

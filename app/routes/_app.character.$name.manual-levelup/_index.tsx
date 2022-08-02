@@ -7,7 +7,7 @@ import Notification from '~/components/Notification'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
-import * as UtilsServer from '~/utils/index.server'
+import * as CharacterUtils from '~/utils/server/character.server'
 import InputField from './InputField'
 
 export const meta: RemixNode.MetaFunction = ({ params }) => ({
@@ -31,7 +31,7 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
   const name = Zod.string()
     .transform((str) => Utils.deslugify(str))
     .parse(params.name)
-  if (!UtilsServer.Character.validateCharacter(name)) {
+  if (!CharacterUtils.validateCharacter(name)) {
     throw RemixNode.json(
       { message: `There is no character with name ${name}` },
       { status: 404, statusText: 'Character not found' }
@@ -47,7 +47,7 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
   }
 
   const progression = { ...result.data }
-  const errors = UtilsServer.Character.validateAscensionRequirement(progression)
+  const errors = CharacterUtils.validateAscensionRequirement(progression)
   if (errors) {
     return RemixNode.json({ success: false, errors }, { status: 400 })
   }
@@ -69,7 +69,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const name = Zod.string()
     .transform((str) => Utils.deslugify(str))
     .parse(params.name)
-  if (!UtilsServer.Character.validateCharacter(name)) {
+  if (!CharacterUtils.validateCharacter(name)) {
     throw RemixNode.json(
       { message: `There is no character with name ${name}` },
       { status: 404, statusText: 'Character not found' }
@@ -81,7 +81,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     accountId: accId,
   })
 
-  const character = UtilsServer.Character.getCharacterProgression({
+  const character = CharacterUtils.getCharacterProgression({
     name,
     progression: userCharacter,
   })

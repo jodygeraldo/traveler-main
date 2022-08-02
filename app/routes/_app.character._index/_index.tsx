@@ -8,7 +8,7 @@ import * as Cookie from '~/cookies'
 import useSearchFilter from '~/hooks/useSearchFilter'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
-import * as UtilsServer from '~/utils/index.server'
+import * as CharacterUtils from '~/utils/server/character.server'
 import CharacterGrid from './CharacterGrid'
 import CharacterList from './CharacterList'
 
@@ -35,7 +35,7 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
   const userCharacters = await CharacterModel.getUserCharacters({
     accountId,
   })
-  const characters = UtilsServer.Character.getCharacters(userCharacters)
+  const characters = CharacterUtils.getCharacters(userCharacters)
 
   const characterView = await Cookie.getCharacterViewPref(request)
 
