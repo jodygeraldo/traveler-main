@@ -1,42 +1,37 @@
 import { expect, test } from '@playwright/test'
 import prisma from '~/db.server'
-import { createUser } from '~/models/user.server'
 
 const OK_STATUS_TEXT = 'SUCCESS'
 
 test.describe('apps', () => {
-  const EMAIL = 'test1@test.com'
   const PASSWORD = 'test1234'
 
-  test.beforeEach(async ({ page }) => {
-    await page.goto('.')
-    await page.click('#signin')
-    await page.fill('#email', EMAIL)
-    await page.fill('#password', PASSWORD)
-    await Promise.all([page.waitForNavigation(), page.click('#signin')])
-    await expect(page).toHaveURL('/character')
-  })
+  test.beforeEach(async ({ page }, testInfo) => {
+    const EMAIL = `test${testInfo.line}@test.com`
 
-  // cleanup user
-  test.beforeAll(async () => {
     await prisma.user
       .delete({
         where: { email: EMAIL },
       })
       .catch(() => {})
 
-    await createUser(EMAIL, PASSWORD).catch(() => {})
+    await page.goto('.')
+    await page.click('#signup')
+    await page.fill('#email', EMAIL)
+    await page.fill('#password', PASSWORD)
+    await page.fill('#confirm-password', PASSWORD)
+    await Promise.all([page.waitForNavigation(), page.click('#signup')])
+    await expect(page).toHaveURL('/character')
   })
 
   // cleanup user
-  test.afterAll(
-    async () =>
-      await prisma.user
-        .delete({
-          where: { email: EMAIL },
-        })
-        .catch(() => {})
-  )
+  test.afterEach(async ({ page: _ }, testInfo) => {
+    await prisma.user
+      .delete({
+        where: { email: `test${testInfo.line}@test.com` },
+      })
+      .catch(() => {})
+  })
 
   test.describe('character page', () => {
     test('all characters should be displayed', async ({ page }) => {
@@ -280,6 +275,13 @@ test.describe('apps', () => {
           async (response) => response.statusText() === OK_STATUS_TEXT
         ),
         page.fill(ITEM[1].SELECTOR, ITEM[1].QUANTITY),
+      ])
+
+      await Promise.all([
+        page.waitForResponse(
+          async (response) => response.statusText() === OK_STATUS_TEXT
+        ),
+        page.fill(ITEM[2].SELECTOR, ITEM[2].QUANTITY),
       ])
 
       const ITEM_TO_CRAFT = {

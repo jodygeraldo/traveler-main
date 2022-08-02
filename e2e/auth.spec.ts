@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test'
 import prisma from '~/db.server'
 
 test.describe('auth flow', () => {
+  test.describe.configure({ mode: 'serial' })
   const EMAIL = 'test@test.com'
   const PASSWORD = 'test1234'
 
