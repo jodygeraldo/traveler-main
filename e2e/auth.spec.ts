@@ -1,6 +1,14 @@
 import { expect, test } from '@playwright/test'
 import prisma from '~/db.server'
 
+async function cleanupUser(email: string) {
+  await prisma.user
+    .delete({
+      where: { email },
+    })
+    .catch(() => {})
+}
+
 test.describe('auth flow', () => {
   test.describe.configure({ mode: 'serial' })
   const EMAIL = 'test@test.com'
@@ -10,25 +18,8 @@ test.describe('auth flow', () => {
     await page.goto('.')
   })
 
-  // cleanup user
-  test.beforeAll(
-    async () =>
-      await prisma.user
-        .delete({
-          where: { email: EMAIL },
-        })
-        .catch(() => {})
-  )
-
-  // cleanup user
-  test.afterAll(
-    async () =>
-      await prisma.user
-        .delete({
-          where: { email: EMAIL },
-        })
-        .catch(() => {})
-  )
+  test.beforeAll(async () => await cleanupUser(EMAIL))
+  test.afterAll(async () => await cleanupUser(EMAIL))
 
   test('landing page should have a correct title', async ({ page }) => {
     await expect(
