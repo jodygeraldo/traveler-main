@@ -117,7 +117,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: 🎭 Run Playwright
-        run: npx playwright test
+        run: npx playwright test --workers=4
 
   build:
     name: 🐳 Build
