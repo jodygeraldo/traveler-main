@@ -1,9 +1,9 @@
-import { expect, test as baseTest } from '@playwright/test'
+import { test as baseTest } from '@playwright/test'
 import fs from 'node:fs'
 import path from 'node:path'
-export { expect }
+export { expect } from '@playwright/test'
 
-const users = [
+export const users = [
   {
     email: 'playwright1@jodygeraldo.com',
     password: 'playwright1234',
@@ -36,7 +36,7 @@ export const test = baseTest.extend({
     // Override storage state, use worker index to look up logged-in info and generate it lazily.
     const fileName = path.join(
       testInfo.project.outputDir,
-      'storage-' + testInfo.workerIndex + '.json'
+      'storage-' + testInfo.workerIndex
     )
     if (!fs.existsSync(fileName)) {
       // Make sure we are not using any other storage state.
@@ -46,10 +46,11 @@ export const test = baseTest.extend({
       await page.locator('#email').fill(users[testInfo.workerIndex].email)
       await page.locator('#password').fill(users[testInfo.workerIndex].password)
       await Promise.all([
-        page.waitForResponse((response) => response.status() === 200),
+        page.waitForNavigation({
+          url: (url) => url.pathname === '/character',
+        }),
         page.click('#signin'),
       ])
-      await expect(page).toHaveURL('http://localhost:3000/character')
       await page.context().storageState({ path: fileName })
       await page.close()
     }
