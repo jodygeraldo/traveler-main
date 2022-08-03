@@ -241,6 +241,13 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
 
   await Promise.all([
     page.waitForNavigation({
+      url: (url) => url.pathname === '/alchemy/crafting/talent',
+    }),
+    page.reload(),
+  ])
+
+  await Promise.all([
+    page.waitForNavigation({
       url: (url) =>
         url.pathname ===
         '/alchemy/crafting/talent/craft-talent/Guide-to-Freedom',
