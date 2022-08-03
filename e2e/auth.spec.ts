@@ -30,13 +30,13 @@ test('auth flow', async ({ page }) => {
   await page.fill('#password', PASSWORD)
   await page.fill('#confirm-password', PASSWORD)
   await Promise.all([
-    page.waitForNavigation({ url: (url) => url.pathname === '/character' }),
+    page.waitForNavigation(),
     page.click('#signup'),
   ])
 
   await page.click('#avatar-dropdown')
   await Promise.all([
-    page.waitForNavigation({ url: (url) => url.pathname === '/' }),
+    page.waitForNavigation(),
     page.click('#signout'),
   ])
 
@@ -48,13 +48,13 @@ test('auth flow', async ({ page }) => {
   await page.fill('#email', EMAIL)
   await page.fill('#password', PASSWORD)
   await Promise.all([
-    page.waitForNavigation({ url: (url) => url.pathname === '/character' }),
+    page.waitForNavigation(),
     page.click('#signin'),
   ])
 
   await page.click('#avatar-dropdown')
   await Promise.all([
-    page.waitForNavigation({ url: (url) => url.pathname === '/' }),
+    page.waitForNavigation(),
     page.click('#signout'),
   ])
 })
