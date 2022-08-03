@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 export { expect }
 
-export const users = [
+const users = [
   {
     email: 'playwright1@jodygeraldo.com',
     password: 'playwright1234',
