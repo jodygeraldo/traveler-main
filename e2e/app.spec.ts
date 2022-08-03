@@ -86,6 +86,7 @@ test.describe('apps', () => {
     await page.locator('#search').fill('Amber')
     await expect(page.locator('#Amber-character-page-link')).toBeVisible()
     await expect(page.locator('#Albedo-character-page-link')).toBeHidden()
+    
 
     // TODO: QUICK UPDATE PAGE
     // * can go to quick update page and update Albedo and Amber
