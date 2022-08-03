@@ -69,8 +69,8 @@ test.describe('apps', () => {
     //   ASCENSION: '6',
     // }
 
-    // await page.fill('#Albedo-level', ALBEDO.LEVEL)
-    // await page.fill('#Albedo-ascension', ALBEDO.ASCENSION)
+    // await page.locator('#Albedo-level', ALBEDO.LEVEL)
+    // await page.locator('#Albedo-ascension', ALBEDO.ASCENSION)
 
     // await Promise.all([
     //   page.waitForResponse(
@@ -92,11 +92,11 @@ test.describe('apps', () => {
     //   ELEMENTAL_BUSRT: '2',
     // }
 
-    // await page.fill('#Amber-level', AMBER.LEVEL)
-    // await page.fill('#Amber-ascension', AMBER.ASCENSION)
-    // await page.fill('#Amber-normal-attack', AMBER.NORMAL_ATTACK)
-    // await page.fill('#Amber-elemental-skill', AMBER.ELEMENTAL_SKILL)
-    // await page.fill('#Amber-elemental-burst', AMBER.ELEMENTAL_BUSRT)
+    // await page.locator('#Amber-level', AMBER.LEVEL)
+    // await page.locator('#Amber-ascension', AMBER.ASCENSION)
+    // await page.locator('#Amber-normal-attack', AMBER.NORMAL_ATTACK)
+    // await page.locator('#Amber-elemental-skill', AMBER.ELEMENTAL_SKILL)
+    // await page.locator('#Amber-elemental-burst', AMBER.ELEMENTAL_BUSRT)
 
     // await Promise.all([
     //   page.waitForResponse(
@@ -287,7 +287,7 @@ test.describe('apps', () => {
       }),
       page.locator(CONVERT.SELECTOR[0]).click(),
     ])
-    await page.fill('input[name="quantity"]', CONVERT.TO_CRAFT)
+    await page.locator('input[name="quantity"]').fill(CONVERT.TO_CRAFT)
 
     await Promise.all([
       page.waitForNavigation({
@@ -310,7 +310,7 @@ test.describe('apps', () => {
     await expect(page.locator(ITEM[2][0])).toHaveText(CONVERT.EXPECT.CRAFTER[1])
   })
 
-  test('Character page flow', async ({ page }) => {
+  test.skip('Character page flow', async ({ page }) => {
     // * should display character required items table
     await page.goto(BASE_PATH)
     await Promise.all([
@@ -366,7 +366,7 @@ test.describe('apps', () => {
       page.locator('#jump-level').click(),
     ])
 
-    await page.fill('#character-level', '30')
+    await page.locator('#character-level').fill('30')
     await Promise.all([
       page.waitForResponse(
         async (response) => response.statusText() === OK_STATUS_TEXT
@@ -386,11 +386,11 @@ test.describe('apps', () => {
     // * should able to level up manually
     await page.goto('/character/Albedo/manual-levelup')
 
-    await page.fill('#level', '90')
-    await page.fill('#ascension', '6')
-    await page.fill('#normal-attack', '10')
-    await page.fill('#elemental-skill', '10')
-    await page.fill('#elemental-burst', '10')
+    await page.locator('#level').fill('90')
+    await page.locator('#ascension').fill('6')
+    await page.locator('#normal-attack').fill('10')
+    await page.locator('#elemental-skill').fill('10')
+    await page.locator('#elemental-burst').fill('10')
 
     await Promise.all([
       page.waitForResponse(
@@ -408,7 +408,7 @@ test.describe('apps', () => {
     await expect(page.locator('#elemental-burst')).toHaveValue('10')
   })
 
-  test('Track page flow', async ({ page }) => {
+  test.skip('Track page flow', async ({ page }) => {
     await page.goto('/character')
     await Promise.all([
       page.waitForNavigation({
