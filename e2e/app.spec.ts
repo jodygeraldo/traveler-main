@@ -126,7 +126,10 @@ test.describe('apps', () => {
 
     // * can go to inventory page
     await page.goto(BASE_PATH)
-    await page.locator('#Inventory-link-desktop').click()
+    await Promise.all([
+      page.waitForNavigation(),
+      page.locator('#Inventory-link-desktop').click(),
+    ])
     await expect(page).toHaveURL('/inventory/all')
     await expect(page.locator('h1:has-text("Inventory")')).toBeVisible()
 
@@ -145,11 +148,17 @@ test.describe('apps', () => {
       page.locator(ITEM[1][0]).fill(ITEM[1][1]),
     ])
 
-    await page.click('#talent_book-link')
+    await Promise.all([
+      page.waitForNavigation(),
+      page.locator('#talent_book-link').click(),
+    ])
     await expect(page).toHaveURL('/inventory/talent-book')
     await expect(page.locator(ITEM[0][0])).toHaveValue(ITEM[0][1])
 
-    await page.click('#all-link')
+    await Promise.all([
+      page.waitForNavigation(),
+      page.locator('#all-link').click(),
+    ])
     await expect(page).toHaveURL('/inventory/all')
 
     // * can search for items and update quantity
@@ -187,7 +196,10 @@ test.describe('apps', () => {
     } as const
 
     // * can go to alchemy crafting page
-    await page.locator('#Alchemy-link-desktop').click()
+    await Promise.all([
+      page.waitForNavigation(),
+      page.locator('#Alchemy-link-desktop').click(),
+    ])
     await expect(page).toHaveURL('/alchemy/crafting/all')
     await expect(page.locator('h1:has-text("Alchemy Crafting")')).toBeVisible()
 
@@ -206,7 +218,10 @@ test.describe('apps', () => {
     ])
     await expect(page).toHaveURL('/alchemy/crafting/all')
 
-    await page.locator('#crafting-talent-link').click()
+    await Promise.all([
+      page.waitForNavigation(),
+      page.locator('#crafting-talent-link').click(),
+    ])
     await expect(page).toHaveURL('/alchemy/crafting/talent')
 
     await expect(page.locator(CRAFT.SELECTOR[1])).toHaveText(
@@ -229,7 +244,7 @@ test.describe('apps', () => {
       page.locator('#craft').click(),
     ])
     await expect(page).toHaveURL('/alchemy/crafting/talent')
-    await page.reload()
+    await Promise.all([page.waitForNavigation(), page.reload()])
 
     await expect(page.locator(CRAFT.SELECTOR[1])).toHaveText(
       CRAFT.EXPECT.CRAFT[1]
@@ -237,7 +252,10 @@ test.describe('apps', () => {
     await expect(page.locator(ITEM[0][0])).toHaveText(CRAFT.EXPECT.CRAFTER[1])
 
     // * can convert items
-    await page.locator('#converting-all-link').click()
+    await Promise.all([
+      page.waitForNavigation(),
+      page.locator('#converting-all-link').click(),
+    ])
     await expect(page).toHaveURL('/alchemy/converting/all')
 
     await page.locator(CONVERT.SELECTOR[0]).click()
@@ -250,7 +268,10 @@ test.describe('apps', () => {
     ])
     await expect(page).toHaveURL('/alchemy/converting/all')
 
-    await page.locator('#converting-talent_boss-link').click()
+    await Promise.all([
+      page.waitForNavigation(),
+      page.locator('#converting-talent_boss-link').click(),
+    ])
     await expect(page).toHaveURL('/alchemy/converting/talent-boss')
 
     await expect(page.locator(CONVERT.SELECTOR[1])).toHaveText(
@@ -355,11 +376,17 @@ test.describe('apps', () => {
 
   test('Track page flow', async ({ page }) => {
     await page.goto('/character')
-    await page.click('#Track-link-desktop')
+    await Promise.all([
+      page.waitForNavigation(),
+      page.locator('#Track-link-desktop').click(),
+    ])
     await expect(page).toHaveURL('/track')
     await expect(page.locator('h1:has-text("Tracks")')).toBeVisible()
 
-    await page.locator('a:has-text("Track a character")').click()
+    await Promise.all([
+      page.waitForNavigation(),
+      page.locator('a:has-text("Track a character")').click(),
+    ])
     await expect(page).toHaveURL('/track/add')
 
     await page.locator('input[role="combobox"]').click()
@@ -409,7 +436,10 @@ test.describe('apps', () => {
     await page.locator('input[name="elementalSkill"]').click()
     await page.locator('input[name="elementalBurst"]').fill('2')
 
-    await page.locator('button:has-text("Track")').click()
+    await Promise.all([
+      page.waitForNavigation(),
+      page.locator('button:has-text("Track")').click(),
+    ])
     await expect(page).toHaveURL('/track')
 
     await expect(page.locator('text=Diluc')).toBeVisible()
@@ -419,7 +449,10 @@ test.describe('apps', () => {
     await expect(page.locator('text=Elemental Skill 1')).toBeVisible()
     await expect(page.locator('text=Elemental Burst 1')).toBeVisible()
 
-    await page.locator('a[href="/track/Diluc"]').click()
+    await Promise.all([
+      page.waitForNavigation(),
+      page.locator('a[href="/track/Diluc"]').click(),
+    ])
     await expect(page).toHaveURL('/track/Diluc')
 
     await expect(page.locator('h4:has-text("Ascension")')).toBeVisible()
@@ -434,7 +467,10 @@ test.describe('apps', () => {
 
     await page.locator('text=Increase level').nth(1).click()
 
-    await page.locator('a:has-text("Track")').click()
+    await Promise.all([
+      page.waitForNavigation(),
+      page.locator('a:has-text("Track")').click(),
+    ])
     await expect(page).toHaveURL('/track')
 
     await Promise.all([
@@ -446,13 +482,19 @@ test.describe('apps', () => {
     await page.locator('input[name="ascension"]').click()
     await page.locator('input[name="ascension"]').fill('3')
 
-    await page.locator('button:has-text("Update")').click()
+    await Promise.all([
+      page.waitForNavigation(),
+      page.locator('button:has-text("Update")').click(),
+    ])
     await expect(page).toHaveURL('/track')
 
     await expect(page.locator('text=Ascension 2')).toBeVisible()
     await expect(page.locator('text=Elemental Skill 1')).toBeVisible()
 
-    await page.locator('text=delete').click()
+    await Promise.all([
+      page.waitForNavigation(),
+      page.locator('text=delete').click(),
+    ])
     await expect(page).toHaveURL('/track')
     await expect(page.locator('a[href="/track/Diluc"]')).toBeHidden()
   })
