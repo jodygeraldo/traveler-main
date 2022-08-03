@@ -204,8 +204,13 @@ test.describe('apps', () => {
     await expect(page.locator('h1:has-text("Alchemy Crafting")')).toBeVisible()
 
     // * can craft items
-    await page.locator(CRAFT.SELECTOR[0]).click()
-    await page.waitForURL('/alchemy/crafting/all/craft-talent/Guide-to-Freedom')
+    await Promise.all([
+      page.waitForNavigation(),
+      page.locator(CRAFT.SELECTOR[0]).click(),
+    ])
+    await expect(page).toHaveURL(
+      '/alchemy/crafting/all/craft-talent/Guide-to-Freedom'
+    )
     await page.locator('input[name="quantity"]').fill(CRAFT.TO_CRAFT[0])
     await page.locator('input[name="bonusQuantity"]').fill(CRAFT.BONUS[0])
     await page
@@ -229,8 +234,11 @@ test.describe('apps', () => {
     )
     await expect(page.locator(ITEM[0][0])).toHaveText(CRAFT.EXPECT.CRAFTER[0])
 
-    await page.locator(CRAFT.SELECTOR[0]).click()
-    await page.waitForURL(
+    await Promise.all([
+      page.waitForNavigation(),
+      page.locator(CRAFT.SELECTOR[0]).click(),
+    ])
+    await expect(page).toHaveURL(
       '/alchemy/crafting/talent/craft-talent/Guide-to-Freedom'
     )
     await page.locator('input[name="quantity"]').fill(CRAFT.TO_CRAFT[1])
@@ -258,8 +266,13 @@ test.describe('apps', () => {
     ])
     await expect(page).toHaveURL('/alchemy/converting/all')
 
-    await page.locator(CONVERT.SELECTOR[0]).click()
-    await page.waitForURL('/alchemy/converting/all/convert-boss/Ring-of-Boreas')
+    await Promise.all([
+      page.waitForNavigation(),
+      page.locator(CONVERT.SELECTOR[0]).click(),
+    ])
+    await expect(page).toHaveURL(
+      '/alchemy/converting/all/convert-boss/Ring-of-Boreas'
+    )
     await page.fill('input[name="quantity"]', CONVERT.TO_CRAFT)
 
     await Promise.all([
@@ -284,8 +297,11 @@ test.describe('apps', () => {
   test('Character page flow', async ({ page }) => {
     // * should display character required items table
     await page.goto(BASE_PATH)
-    await page.click('#Ganyu-character-page-link')
-    await page.waitForURL('/character/Ganyu/required-items')
+    await Promise.all([
+      page.waitForNavigation(),
+      page.click('#Ganyu-character-page-link'),
+    ])
+    await expect(page).toHaveURL('/character/Ganyu/required-items')
     await expect(page.locator('h1:has-text("Ganyu")')).toBeVisible()
     await expect(page.locator('h2:has-text("Ascension")')).toBeVisible()
     await expect(page.locator('h2:has-text("Talent")')).toBeVisible()
