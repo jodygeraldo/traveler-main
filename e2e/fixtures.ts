@@ -58,7 +58,6 @@ const password = 'playwright1234'
 
 export const test = baseTest.extend({
   storageState: async ({ browser }, use, testInfo) => {
-    console.log('workerIndex: ' + testInfo.workerIndex)
     // Override storage state, use worker index to look up logged-in info and generate it lazily.
     const fileName = path.join(
       testInfo.project.outputDir,
