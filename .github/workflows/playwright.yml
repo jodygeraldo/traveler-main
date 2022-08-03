@@ -1,5 +1,7 @@
 name: 🎭 Playwright
 on: [push]
+env:
+  SESSION_SECRET: secret-${{ github.sha }}
 jobs:
   test:
     runs-on: ubuntu-latest
