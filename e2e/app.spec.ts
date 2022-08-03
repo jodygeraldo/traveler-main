@@ -127,10 +127,11 @@ test.describe('apps', () => {
     // * can go to inventory page
     await page.goto(BASE_PATH)
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/inventory/all',
+      }),
       page.locator('#Inventory-link-desktop').click(),
     ])
-    await expect(page).toHaveURL('/inventory/all')
     await expect(page.locator('h1:has-text("Inventory")')).toBeVisible()
 
     // * can update quantity of items
@@ -149,17 +150,20 @@ test.describe('apps', () => {
     ])
 
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/inventory/talent-book',
+      }),
       page.locator('#talent_book-link').click(),
     ])
-    await expect(page).toHaveURL('/inventory/talent-book')
+
     await expect(page.locator(ITEM[0][0])).toHaveValue(ITEM[0][1])
 
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/inventory/all',
+      }),
       page.locator('#all-link').click(),
     ])
-    await expect(page).toHaveURL('/inventory/all')
 
     // * can search for items and update quantity
     await Promise.all([
@@ -197,20 +201,24 @@ test.describe('apps', () => {
 
     // * can go to alchemy crafting page
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/alchemy/crafting/all',
+      }),
       page.locator('#Alchemy-link-desktop').click(),
     ])
-    await expect(page).toHaveURL('/alchemy/crafting/all')
+
     await expect(page.locator('h1:has-text("Alchemy Crafting")')).toBeVisible()
 
     // * can craft items
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) =>
+          url.pathname ===
+          '/alchemy/crafting/all/craft-talent/Guide-to-Freedom',
+      }),
       page.locator(CRAFT.SELECTOR[0]).click(),
     ])
-    await expect(page).toHaveURL(
-      '/alchemy/crafting/all/craft-talent/Guide-to-Freedom'
-    )
+
     await page.locator('input[name="quantity"]').fill(CRAFT.TO_CRAFT[0])
     await page.locator('input[name="bonusQuantity"]').fill(CRAFT.BONUS[0])
     await page
@@ -218,16 +226,18 @@ test.describe('apps', () => {
       .selectOption(CRAFT.BONUS_TYPE[0])
 
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/alchemy/crafting/all',
+      }),
       page.locator('#craft').click(),
     ])
-    await expect(page).toHaveURL('/alchemy/crafting/all')
 
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/alchemy/crafting/talent',
+      }),
       page.locator('#crafting-talent-link').click(),
     ])
-    await expect(page).toHaveURL('/alchemy/crafting/talent')
 
     await expect(page.locator(CRAFT.SELECTOR[1])).toHaveText(
       CRAFT.EXPECT.CRAFT[0]
@@ -235,12 +245,13 @@ test.describe('apps', () => {
     await expect(page.locator(ITEM[0][0])).toHaveText(CRAFT.EXPECT.CRAFTER[0])
 
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) =>
+          url.pathname ===
+          '/alchemy/crafting/talent/craft-talent/Guide-to-Freedom',
+      }),
       page.locator(CRAFT.SELECTOR[0]).click(),
     ])
-    await expect(page).toHaveURL(
-      '/alchemy/crafting/talent/craft-talent/Guide-to-Freedom'
-    )
     await page.locator('input[name="quantity"]').fill(CRAFT.TO_CRAFT[1])
     await page.locator('input[name="bonusQuantity"]').fill(CRAFT.BONUS[1])
     await page
@@ -248,10 +259,11 @@ test.describe('apps', () => {
       .selectOption(CRAFT.BONUS_TYPE[1])
 
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/alchemy/crafting/talent',
+      }),
       page.locator('#craft').click(),
     ])
-    await expect(page).toHaveURL('/alchemy/crafting/talent')
     await Promise.all([page.waitForNavigation(), page.reload()])
 
     await expect(page.locator(CRAFT.SELECTOR[1])).toHaveText(
@@ -261,31 +273,35 @@ test.describe('apps', () => {
 
     // * can convert items
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/alchemy/converting/all',
+      }),
       page.locator('#converting-all-link').click(),
     ])
-    await expect(page).toHaveURL('/alchemy/converting/all')
 
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) =>
+          url.pathname ===
+          '/alchemy/converting/all/convert-boss/Ring-of-Boreas',
+      }),
       page.locator(CONVERT.SELECTOR[0]).click(),
     ])
-    await expect(page).toHaveURL(
-      '/alchemy/converting/all/convert-boss/Ring-of-Boreas'
-    )
     await page.fill('input[name="quantity"]', CONVERT.TO_CRAFT)
 
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/alchemy/converting/all',
+      }),
       page.locator('#convert').click(),
     ])
-    await expect(page).toHaveURL('/alchemy/converting/all')
 
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/alchemy/converting/talent-boss',
+      }),
       page.locator('#converting-talent_boss-link').click(),
     ])
-    await expect(page).toHaveURL('/alchemy/converting/talent-boss')
 
     await expect(page.locator(CONVERT.SELECTOR[1])).toHaveText(
       CONVERT.EXPECT.CRAFT
@@ -298,10 +314,12 @@ test.describe('apps', () => {
     // * should display character required items table
     await page.goto(BASE_PATH)
     await Promise.all([
-      page.waitForNavigation(),
-      page.click('#Ganyu-character-page-link'),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/character/Ganyu/required-items',
+      }),
+      page.locator('#Ganyu-character-page-link').click(),
     ])
-    await expect(page).toHaveURL('/character/Ganyu/required-items')
+
     await expect(page.locator('h1:has-text("Ganyu")')).toBeVisible()
     await expect(page.locator('h2:has-text("Ascension")')).toBeVisible()
     await expect(page.locator('h2:has-text("Talent")')).toBeVisible()
@@ -378,7 +396,7 @@ test.describe('apps', () => {
       page.waitForResponse(
         async (response) => response.statusText() === OK_STATUS_TEXT
       ),
-      page.click('button[type="submit"]'),
+      page.locator('button[type="submit"]').click(),
     ])
 
     await Promise.all([page.waitForNavigation(), page.reload()])
@@ -393,17 +411,20 @@ test.describe('apps', () => {
   test('Track page flow', async ({ page }) => {
     await page.goto('/character')
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/track',
+      }),
       page.locator('#Track-link-desktop').click(),
     ])
-    await expect(page).toHaveURL('/track')
+
     await expect(page.locator('h1:has-text("Tracks")')).toBeVisible()
 
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/track/add',
+      }),
       page.locator('a:has-text("Track a character")').click(),
     ])
-    await expect(page).toHaveURL('/track/add')
 
     await page.locator('input[role="combobox"]').click()
     await page.locator('input[role="combobox"]').fill('diluc')
@@ -453,10 +474,11 @@ test.describe('apps', () => {
     await page.locator('input[name="elementalBurst"]').fill('2')
 
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/track',
+      }),
       page.locator('button:has-text("Track")').click(),
     ])
-    await expect(page).toHaveURL('/track')
 
     await expect(page.locator('text=Diluc')).toBeVisible()
     await expect(page.locator('text=Level 1')).toBeVisible()
@@ -466,10 +488,11 @@ test.describe('apps', () => {
     await expect(page.locator('text=Elemental Burst 1')).toBeVisible()
 
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/track/Diluc',
+      }),
       page.locator('a[href="/track/Diluc"]').click(),
     ])
-    await expect(page).toHaveURL('/track/Diluc')
 
     await expect(page.locator('h4:has-text("Ascension")')).toBeVisible()
     await page.locator('text=Increase level').click()
@@ -484,34 +507,38 @@ test.describe('apps', () => {
     await page.locator('text=Increase level').nth(1).click()
 
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/track',
+      }),
       page.locator('a:has-text("Track")').click(),
     ])
-    await expect(page).toHaveURL('/track')
 
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/track/update/Diluc',
+      }),
       page.locator('a[href="/track/update/Diluc"]').click(),
     ])
-    await expect(page).toHaveURL('/track/update/Diluc')
 
     await page.locator('input[name="ascension"]').click()
     await page.locator('input[name="ascension"]').fill('3')
 
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForNavigation({
+        url: (url) => url.pathname === '/track',
+      }),
       page.locator('button:has-text("Update")').click(),
     ])
-    await expect(page).toHaveURL('/track')
 
     await expect(page.locator('text=Ascension 2')).toBeVisible()
     await expect(page.locator('text=Elemental Skill 1')).toBeVisible()
 
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForResponse(
+        async (response) => response.statusText() === OK_STATUS_TEXT
+      ),
       page.locator('text=delete').click(),
     ])
-    await expect(page).toHaveURL('/track')
     await expect(page.locator('a[href="/track/Diluc"]')).toBeHidden()
   })
 })
