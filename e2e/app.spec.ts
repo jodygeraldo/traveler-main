@@ -210,7 +210,6 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
     page.waitForNavigation({
       url: (url) =>
         url.pathname === '/alchemy/crafting/all/craft-talent/Guide-to-Freedom',
-      waitUntil: 'networkidle',
     }),
     page.locator(CRAFT.SELECTOR[0]).click(),
   ])
@@ -224,7 +223,6 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
   await Promise.all([
     page.waitForNavigation({
       url: (url) => url.pathname === '/alchemy/crafting/all',
-      waitUntil: 'networkidle',
     }),
     page.locator('#craft').click(),
   ])
@@ -232,7 +230,6 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
   await Promise.all([
     page.waitForNavigation({
       url: (url) => url.pathname === '/alchemy/crafting/talent',
-      waitUntil: 'networkidle',
     }),
     page.locator('#crafting-talent-link').click(),
   ])
@@ -245,7 +242,6 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
   await Promise.all([
     page.waitForNavigation({
       url: (url) => url.pathname === '/alchemy/crafting/talent',
-      waitUntil: 'networkidle',
     }),
     page.reload(),
   ])
@@ -255,7 +251,6 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
       url: (url) =>
         url.pathname ===
         '/alchemy/crafting/talent/craft-talent/Guide-to-Freedom',
-      waitUntil: 'networkidle',
     }),
     page.locator(CRAFT.SELECTOR[0]).click(),
   ])
@@ -268,11 +263,9 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
   await Promise.all([
     page.waitForNavigation({
       url: (url) => url.pathname === '/alchemy/crafting/talent',
-      waitUntil: 'networkidle',
     }),
     page.locator('#craft').click(),
   ])
-  await Promise.all([page.waitForNavigation(), page.reload()])
 
   await expect(page.locator(CRAFT.SELECTOR[1])).toHaveText(
     CRAFT.EXPECT.CRAFT[1]
@@ -283,7 +276,6 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
   await Promise.all([
     page.waitForNavigation({
       url: (url) => url.pathname === '/alchemy/converting/all',
-      waitUntil: 'networkidle',
     }),
     page.locator('#converting-all-link').click(),
   ])
@@ -292,7 +284,6 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
     page.waitForNavigation({
       url: (url) =>
         url.pathname === '/alchemy/converting/all/convert-boss/Ring-of-Boreas',
-      waitUntil: 'networkidle',
     }),
     page.locator(CONVERT.SELECTOR[0]).click(),
   ])
@@ -301,7 +292,6 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
   await Promise.all([
     page.waitForNavigation({
       url: (url) => url.pathname === '/alchemy/converting/all',
-      waitUntil: 'networkidle',
     }),
     page.locator('#convert').click(),
   ])
@@ -309,7 +299,6 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
   await Promise.all([
     page.waitForNavigation({
       url: (url) => url.pathname === '/alchemy/converting/talent-boss',
-      waitUntil: 'networkidle',
     }),
     page.locator('#converting-talent_boss-link').click(),
   ])
