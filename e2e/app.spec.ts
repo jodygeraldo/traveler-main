@@ -3,7 +3,7 @@ import { expect, test, users } from './fixtures'
 
 const OK_STATUS_TEXT = 'SUCCESS'
 const BASE_PATH = '/character'
-const DATA_ROUTES = 'data=routes'
+const DATA_ROUTES = /_data=routes/
 
 async function cleanupUser({
   email,
@@ -30,7 +30,7 @@ async function cleanupUser({
     .catch((e) => console.error(e))
 }
 
-test.skip('Characters page flow', async ({ page }, testInfo) => {
+test('Characters page flow', async ({ page }, testInfo) => {
   const currentUser = users[testInfo.workerIndex]
   await cleanupUser(currentUser)
 
@@ -268,18 +268,12 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
 
   // * can update quantity of items
   await Promise.all([
-    page.waitForRequest(
-      async (request) =>
-        request.method() === 'POST' && request.url().includes(DATA_ROUTES)
-    ),
+    page.waitForRequest(DATA_ROUTES),
     page.locator(ITEM[0][0]).fill(ITEM[0][1]),
   ])
 
   await Promise.all([
-    page.waitForRequest(
-      async (request) =>
-        request.method() === 'POST' && request.url().includes(DATA_ROUTES)
-    ),
+    page.waitForRequest(DATA_ROUTES),
     page.locator(ITEM[1][0]).fill(ITEM[1][1]),
   ])
 
@@ -301,10 +295,7 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
 
   // * can search for items and update quantity
   await Promise.all([
-    page.waitForRequest(
-      async (request) =>
-        request.method() === 'POST' && request.url().includes(DATA_ROUTES)
-    ),
+    page.waitForRequest(DATA_ROUTES),
     page.locator(ITEM[2][0]).fill(ITEM[2][1]),
   ])
 
@@ -336,9 +327,7 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
 
   // * can go to alchemy crafting page
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/alchemy/crafting/all',
-    }),
+    page.waitForNavigation(),
     page.locator('#Alchemy-link-desktop').click(),
   ])
 
@@ -346,10 +335,7 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
 
   // * can craft items
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) =>
-        url.pathname === '/alchemy/crafting/all/craft-talent/Guide-to-Freedom',
-    }),
+    page.waitForNavigation(),
     page.locator(CRAFT.SELECTOR[0]).click(),
   ])
 
@@ -359,17 +345,10 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
     .locator('select[name="bonusType"]')
     .selectOption(CRAFT.BONUS_TYPE[0])
 
-  await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/alchemy/crafting/all',
-    }),
-    page.locator('#craft').click(),
-  ])
+  await Promise.all([page.waitForNavigation(), page.locator('#craft').click()])
 
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/alchemy/crafting/talent',
-    }),
+    page.waitForNavigation(),
     page.locator('#crafting-talent-link').click(),
   ])
 
@@ -378,19 +357,10 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
   )
   await expect(page.locator(ITEM[0][0])).toHaveText(CRAFT.EXPECT.CRAFTER[0])
 
-  await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/alchemy/crafting/talent',
-    }),
-    page.reload(),
-  ])
+  await Promise.all([page.waitForNavigation(), page.reload()])
 
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) =>
-        url.pathname ===
-        '/alchemy/crafting/talent/craft-talent/Guide-to-Freedom',
-    }),
+    page.waitForNavigation(),
     page.locator(CRAFT.SELECTOR[0]).click(),
   ])
   await page.locator('input[name="quantity"]').fill(CRAFT.TO_CRAFT[1])
@@ -400,9 +370,7 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
     .selectOption(CRAFT.BONUS_TYPE[1])
 
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/alchemy/crafting/talent',
-    }),
+    page.waitForRequest(DATA_ROUTES),
     page.locator('#craft').click(),
   ])
 
@@ -413,33 +381,24 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
 
   // * can convert items
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/alchemy/converting/all',
-    }),
+    page.waitForNavigation(),
     page.locator('#converting-all-link').click(),
   ])
 
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) =>
-        url.pathname === '/alchemy/converting/all/convert-boss/Ring-of-Boreas',
-    }),
+    page.waitForNavigation(),
     page.locator(CONVERT.SELECTOR[0]).click(),
   ])
 
   await page.locator('input[name="quantity"]').fill(CONVERT.TO_CRAFT)
 
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/alchemy/converting/all',
-    }),
+    page.waitForNavigation(),
     page.locator('#convert').click(),
   ])
 
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/alchemy/converting/talent-boss',
-    }),
+    page.waitForNavigation(),
     page.locator('#converting-talent_boss-link').click(),
   ])
 
@@ -450,7 +409,7 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
   await expect(page.locator(ITEM[2][0])).toHaveText(CONVERT.EXPECT.CRAFTER[1])
 })
 
-test.skip('Character page flow', async ({ page }, testInfo) => {
+test('Character page flow', async ({ page }, testInfo) => {
   const currentUser = users[testInfo.workerIndex]
   await cleanupUser(currentUser)
 
@@ -476,23 +435,15 @@ test.skip('Character page flow', async ({ page }, testInfo) => {
   // * should able to level up with inventory items
   await page.goto('/inventory/all')
   await Promise.all([
-    page.waitForResponse(
-      (response) =>
-        response.request().postData() === 'name=Whopperflower+Nectar&quantity=4'
-    ),
+    page.waitForRequest(DATA_ROUTES),
     page.locator(ITEM[0][0]).fill(ITEM[0][1]),
   ])
   await Promise.all([
-    page.waitForResponse(
-      (response) =>
-        response.request().postData() === 'name=Shivada+Jade+Sliver&quantity=6'
-    ),
+    page.waitForRequest(DATA_ROUTES),
     page.locator(ITEM[1][0]).fill(ITEM[1][1]),
   ])
   await Promise.all([
-    page.waitForResponse(
-      (response) => response.request().postData() === 'name=Qingxin&quantity=5'
-    ),
+    page.waitForRequest(DATA_ROUTES),
     page.locator(ITEM[2][0]).fill(ITEM[2][1]),
   ])
 
@@ -500,17 +451,13 @@ test.skip('Character page flow', async ({ page }, testInfo) => {
 
   await expect(page.locator('text=Required character to 20.')).toBeVisible()
   await Promise.all([
-    page.waitForResponse(
-      async (response) => response.statusText() === OK_STATUS_TEXT
-    ),
+    page.waitForRequest(DATA_ROUTES),
     page.locator('#jump-level').click(),
   ])
 
   await page.locator('#character-level').fill('30')
   await Promise.all([
-    page.waitForResponse(
-      async (response) => response.statusText() === OK_STATUS_TEXT
-    ),
+    page.waitForRequest(DATA_ROUTES),
     page.locator('button:has-text("Ascend")').click(),
   ])
 
@@ -531,13 +478,9 @@ test.skip('Character page flow', async ({ page }, testInfo) => {
   await page.locator('#elemental-burst').fill('10')
 
   await Promise.all([
-    page.waitForResponse(
-      async (response) => response.statusText() === OK_STATUS_TEXT
-    ),
+    page.waitForRequest(DATA_ROUTES),
     page.locator('button[type="submit"]').click(),
   ])
-
-  await Promise.all([page.waitForNavigation(), page.reload()])
 
   await expect(page.locator('#level')).toHaveValue('90')
   await expect(page.locator('#ascension')).toHaveValue('6')
