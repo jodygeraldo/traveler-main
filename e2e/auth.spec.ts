@@ -9,7 +9,7 @@ async function cleanupUser(email: string) {
     .catch(() => {})
 }
 
-test.describe(() => {
+test.describe.skip(() => {
   const EMAIL = 'test@test.com'
   const PASSWORD = 'test1234'
 

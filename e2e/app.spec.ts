@@ -29,7 +29,7 @@ async function cleanupUser({
     .catch((e) => console.error(e))
 }
 
-test.describe('apps', () => {
+test.describe.skip('apps', () => {
   test.beforeEach(async ({ page: _ }, testInfo) => {
     const currentUser = users[testInfo.workerIndex]
     await cleanupUser(currentUser)
