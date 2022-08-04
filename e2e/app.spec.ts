@@ -173,7 +173,10 @@ test('Track page flow', async ({ page }, testInfo) => {
   await page.locator('input[name="elementalSkill"]').click()
   await page.locator('input[name="elementalBurst"]').fill('2')
 
-  await Promise.all([page.waitForNavigation(), page.locator('#track').click()])
+  await Promise.all([
+    page.waitForResponse(DATA_ROUTES),
+    page.locator('#track').click(),
+  ])
 
   await expect(page.locator('text=Diluc')).toBeVisible()
   await expect(page.locator('text=Level 1')).toBeVisible()
@@ -321,7 +324,10 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
     .locator('select[name="bonusType"]')
     .selectOption(CRAFT.BONUS_TYPE[0])
 
-  await Promise.all([page.waitForNavigation(), page.locator('#craft').click()])
+  await Promise.all([
+    page.waitForResponse(DATA_ROUTES),
+    page.locator('#craft').click(),
+  ])
 
   await Promise.all([
     page.waitForNavigation(),
@@ -346,7 +352,7 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
     .selectOption(CRAFT.BONUS_TYPE[1])
 
   await Promise.all([
-    page.waitForRequest(DATA_ROUTES),
+    page.waitForResponse(DATA_ROUTES),
     page.locator('#craft').click(),
   ])
 
@@ -369,7 +375,7 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
   await page.locator('input[name="quantity"]').fill(CONVERT.TO_CRAFT)
 
   await Promise.all([
-    page.waitForRequest(DATA_ROUTES),
+    page.waitForResponse(DATA_ROUTES),
     page.locator('#convert').click(),
   ])
 
@@ -431,7 +437,7 @@ test('Character page flow', async ({ page }, testInfo) => {
 
   await page.locator('#character-level').fill('30')
   await Promise.all([
-    page.waitForRequest(DATA_ROUTES),
+    page.waitForResponse(DATA_ROUTES),
     page.locator('button:has-text("Ascend")').click(),
   ])
 
