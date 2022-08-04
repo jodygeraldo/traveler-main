@@ -70,7 +70,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
 
   const requireCheckProgression = {
     // if not set it means ascension is on max level(6)
-    ascension: data.ascension ? data.ascension : 6,
+    ascension: data.ascension || data.ascension === 0 ? data.ascension : 6,
     ...progression,
   }
   const errors = CharacterUtils.validateAscensionRequirement(
