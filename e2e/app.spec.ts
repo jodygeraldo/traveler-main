@@ -177,7 +177,8 @@ test('Track page flow', async ({ page }, testInfo) => {
     page.waitForResponse(DATA_ROUTES),
     page.locator('#track').click(),
   ])
-
+  
+  await expect(page).toHaveURL('/track')
   await expect(page.locator('text=Diluc')).toBeVisible()
   await expect(page.locator('text=Level 1')).toBeVisible()
   await expect(page.locator('text=Ascension 0')).toBeVisible()
@@ -191,10 +192,22 @@ test('Track page flow', async ({ page }, testInfo) => {
   ])
 
   await expect(page.locator('h4:has-text("Ascension")')).toBeVisible()
-  await page.locator('text=Increase level').click()
-  await page.locator('text=Decrease level').click()
-  await page.locator('text=Increase level').click()
-  await page.locator('text=Increase level').click()
+  await Promise.all([
+    page.waitForResponse(DATA_ROUTES),
+    page.locator('text=Increase level').click(),
+  ])
+  await Promise.all([
+    page.waitForResponse(DATA_ROUTES),
+    page.locator('text=Decrease level').click(),
+  ])
+  await Promise.all([
+    page.waitForResponse(DATA_ROUTES),
+    page.locator('text=Increase level').click(),
+  ])
+  await Promise.all([
+    page.waitForResponse(DATA_ROUTES),
+    page.locator('text=Increase level').click(),
+  ])
   await expect(page.locator('text=Increase level')).toHaveCount(3)
 
   await page.locator('text=Increase level').first().click()
@@ -375,7 +388,7 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
   await page.locator('input[name="quantity"]').fill(CONVERT.TO_CRAFT)
 
   await Promise.all([
-    page.waitForResponse(DATA_ROUTES),
+    page.waitForRequest(DATA_ROUTES),
     page.locator('#convert').click(),
   ])
 
@@ -437,7 +450,7 @@ test('Character page flow', async ({ page }, testInfo) => {
 
   await page.locator('#character-level').fill('30')
   await Promise.all([
-    page.waitForResponse(DATA_ROUTES),
+    page.waitForRequest(DATA_ROUTES),
     page.locator('button:has-text("Ascend")').click(),
   ])
 
