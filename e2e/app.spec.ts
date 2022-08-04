@@ -173,10 +173,7 @@ test('Track page flow', async ({ page }, testInfo) => {
   await page.locator('input[name="elementalSkill"]').click()
   await page.locator('input[name="elementalBurst"]').fill('2')
 
-  await Promise.all([
-    page.waitForResponse(/_data=root/),
-    page.locator('#track').click(),
-  ])
+  await Promise.all([page.waitForNavigation(), page.locator('#track').click()])
 
   await expect(page.locator('text=Diluc')).toBeVisible()
   await expect(page.locator('text=Level 1')).toBeVisible()
