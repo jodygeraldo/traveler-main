@@ -228,7 +228,7 @@ test('Track page flow', async ({ page }, testInfo) => {
   await page.locator('input[name="ascension"]').fill('3')
 
   await Promise.all([
-    page.waitForRequest(DATA_ROUTES),
+    page.waitForResponse(DATA_ROUTES),
     page.locator('button:has-text("Update")').click(),
   ])
 
@@ -236,7 +236,7 @@ test('Track page flow', async ({ page }, testInfo) => {
   await expect(page.locator('text=Elemental Skill 1')).toBeVisible()
 
   await Promise.all([
-    page.waitForRequest(DATA_ROUTES),
+    page.waitForResponse(DATA_ROUTES),
     page.locator('text=delete').click(),
   ])
   await expect(page.locator('a[href="/track/Diluc"]')).toBeHidden()
@@ -263,12 +263,12 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
 
   // * can update quantity of items
   await Promise.all([
-    page.waitForRequest(DATA_ROUTES),
+    page.waitForResponse(DATA_ROUTES),
     page.locator(ITEM[0][0]).fill(ITEM[0][1]),
   ])
 
   await Promise.all([
-    page.waitForRequest(DATA_ROUTES),
+    page.waitForResponse(DATA_ROUTES),
     page.locator(ITEM[1][0]).fill(ITEM[1][1]),
   ])
 
@@ -286,7 +286,7 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
 
   // * can search for items and update quantity
   await Promise.all([
-    page.waitForRequest(DATA_ROUTES),
+    page.waitForResponse(DATA_ROUTES),
     page.locator(ITEM[2][0]).fill(ITEM[2][1]),
   ])
 
@@ -420,15 +420,15 @@ test('Character page flow', async ({ page }, testInfo) => {
   // * should able to level up with inventory items
   await page.goto('/inventory/all')
   await Promise.all([
-    page.waitForRequest(DATA_ROUTES),
+    page.waitForResponse(DATA_ROUTES),
     page.locator(ITEM[0][0]).fill(ITEM[0][1]),
   ])
   await Promise.all([
-    page.waitForRequest(DATA_ROUTES),
+    page.waitForResponse(DATA_ROUTES),
     page.locator(ITEM[1][0]).fill(ITEM[1][1]),
   ])
   await Promise.all([
-    page.waitForRequest(DATA_ROUTES),
+    page.waitForResponse(DATA_ROUTES),
     page.locator(ITEM[2][0]).fill(ITEM[2][1]),
   ])
 
@@ -436,13 +436,13 @@ test('Character page flow', async ({ page }, testInfo) => {
 
   await expect(page.locator('text=Required character to 20.')).toBeVisible()
   await Promise.all([
-    page.waitForRequest(DATA_ROUTES),
+    page.waitForResponse(DATA_ROUTES),
     page.locator('#jump-level').click(),
   ])
 
   await page.locator('#character-level').fill('30')
   await Promise.all([
-    page.waitForRequest(DATA_ROUTES),
+    page.waitForResponse(DATA_ROUTES),
     page.locator('button:has-text("Ascend")').click(),
   ])
 
@@ -463,7 +463,7 @@ test('Character page flow', async ({ page }, testInfo) => {
   await page.locator('#elemental-burst').fill('10')
 
   await Promise.all([
-    page.waitForRequest(DATA_ROUTES),
+    page.waitForResponse(DATA_ROUTES),
     page.locator('button[type="submit"]').click(),
   ])
 
