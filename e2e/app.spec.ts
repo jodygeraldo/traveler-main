@@ -174,7 +174,7 @@ test('Track page flow', async ({ page }, testInfo) => {
   await page.locator('input[name="elementalBurst"]').fill('2')
 
   await Promise.all([
-    page.waitForRequest(DATA_ROUTES),
+    page.waitForResponse(DATA_ROUTES),
     page.locator('#track').click(),
   ])
 
@@ -388,7 +388,7 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
   await page.locator('input[name="quantity"]').fill(CONVERT.TO_CRAFT)
 
   await Promise.all([
-    page.waitForRequest(DATA_ROUTES),
+    page.waitForNavigation(),
     page.locator('#convert').click(),
   ])
 
