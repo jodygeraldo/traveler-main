@@ -174,13 +174,11 @@ test('Track page flow', async ({ page }, testInfo) => {
   await page.locator('input[name="elementalBurst"]').fill('2')
 
   await Promise.all([
-    page.waitForRequest(DATA_ROUTES),
+    page.waitForResponse(/_data=root/),
     page.locator('#track').click(),
   ])
 
-  await page.waitForNavigation({ url: (url) => url.pathname === '/track' })
-
-  await expect(page.locator('text=Diluc')).toBeVisible({timeout: 10000})
+  await expect(page.locator('text=Diluc')).toBeVisible()
   await expect(page.locator('text=Level 1')).toBeVisible()
   await expect(page.locator('text=Ascension 0')).toBeVisible()
   await expect(page.locator('text=Normal Attack 1')).toBeVisible()
