@@ -99,6 +99,11 @@ export default function TrackList({ userTracks }: Props) {
                         </p>
                       </div>
                       <div>
+                        {track.itemNames.length === 0 && (
+                          <p className="text-sm text-gray-11">
+                            Progression are on track
+                          </p>
+                        )}
                         <ul>
                           <LevelTrack name="Level" level={track.level} />
                           <LevelTrack

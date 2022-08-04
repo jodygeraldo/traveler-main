@@ -288,39 +288,41 @@ export default function TrackDetailPage() {
             </div>
           </section>
         </div>
-        <div className="grid grid-cols-1 gap-4">
-          <section aria-labelledby="announcements-title">
-            <div className="overflow-hidden rounded-lg bg-gray-2 shadow">
-              <div className="p-6">
-                <h2
-                  className="font-medium text-gray-12"
-                  id="announcements-title"
-                >
-                  Materials
-                </h2>
-                <div className="mt-6 flow-root">
-                  {materials.map((m) => (
-                    <div key={m.key} className="flex items-center gap-2">
-                      <Image
-                        src={`/item/${Utils.getImageSrc(m.key)}.png`}
-                        className="h-5 w-5"
-                        alt=""
-                        width={20}
-                        height={20}
-                      />
-                      <span className="truncate capitalize text-gray-11">
-                        {m.key}
-                      </span>
-                      <span className="text-xs tabular-nums text-gray-12 xs:text-sm">
-                        x{m.value.toLocaleString()}
-                      </span>
-                    </div>
-                  ))}
+        {materials.length !== 0 && (
+          <div className="grid grid-cols-1 gap-4">
+            <section aria-labelledby="announcements-title">
+              <div className="overflow-hidden rounded-lg bg-gray-2 shadow">
+                <div className="p-6">
+                  <h2
+                    className="font-medium text-gray-12"
+                    id="announcements-title"
+                  >
+                    Materials
+                  </h2>
+                  <div className="mt-6 flow-root">
+                    {materials.map((m) => (
+                      <div key={m.key} className="flex items-center gap-2">
+                        <Image
+                          src={`/item/${Utils.getImageSrc(m.key)}.png`}
+                          className="h-5 w-5"
+                          alt=""
+                          width={20}
+                          height={20}
+                        />
+                        <span className="truncate capitalize text-gray-11">
+                          {m.key}
+                        </span>
+                        <span className="text-xs tabular-nums text-gray-12 xs:text-sm">
+                          x{m.value.toLocaleString()}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
-        </div>
+            </section>
+          </div>
+        )}
       </div>
     </main>
   )
