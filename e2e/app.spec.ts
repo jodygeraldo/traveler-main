@@ -174,10 +174,10 @@ test('Track page flow', async ({ page }, testInfo) => {
   await page.locator('input[name="elementalBurst"]').fill('2')
 
   await Promise.all([
-    page.waitForResponse(DATA_ROUTES),
+    page.waitForRequest(DATA_ROUTES),
     page.locator('#track').click(),
   ])
-  
+
   await expect(page).toHaveURL('/track')
   await expect(page.locator('text=Diluc')).toBeVisible()
   await expect(page.locator('text=Level 1')).toBeVisible()
@@ -392,11 +392,7 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
     page.locator('#convert').click(),
   ])
 
-  await Promise.all([
-    page.waitForNavigation(),
-    page.locator('#converting-talent_boss-link').click(),
-  ])
-
+  await page.locator('#converting-talent_boss-link').click()
   await expect(page.locator(CONVERT.SELECTOR[1])).toHaveText(
     CONVERT.EXPECT.CRAFT
   )
