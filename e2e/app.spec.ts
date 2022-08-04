@@ -1,7 +1,6 @@
 import prisma from '~/db.server'
 import { expect, test, users } from './fixtures'
 
-const OK_STATUS_TEXT = 'SUCCESS'
 const BASE_PATH = '/character'
 const DATA_ROUTES = /_data=routes/
 
@@ -110,24 +109,20 @@ test('Characters page flow', async ({ page }, testInfo) => {
   // )
 })
 
-test.skip('Track page flow', async ({ page }, testInfo) => {
+test('Track page flow', async ({ page }, testInfo) => {
   const currentUser = users[testInfo.workerIndex]
   await cleanupUser(currentUser)
 
   await page.goto('/character')
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/track',
-    }),
+    page.waitForNavigation(),
     page.locator('#Track-link-desktop').click(),
   ])
 
   await expect(page.locator('h1:has-text("Tracks")')).toBeVisible()
 
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/track/add',
-    }),
+    page.waitForNavigation(),
     page.locator('a:has-text("Track a character")').click(),
   ])
 
@@ -178,12 +173,7 @@ test.skip('Track page flow', async ({ page }, testInfo) => {
   await page.locator('input[name="elementalSkill"]').click()
   await page.locator('input[name="elementalBurst"]').fill('2')
 
-  await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/track',
-    }),
-    page.locator('#track').click(),
-  ])
+  await Promise.all([page.waitForNavigation(), page.locator('#track').click()])
 
   await expect(page.locator('text=Diluc')).toBeVisible()
   await expect(page.locator('text=Level 1')).toBeVisible()
@@ -193,9 +183,7 @@ test.skip('Track page flow', async ({ page }, testInfo) => {
   await expect(page.locator('text=Elemental Burst 1')).toBeVisible()
 
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/track/Diluc',
-    }),
+    page.waitForNavigation(),
     page.locator('a[href="/track/Diluc"]').click(),
   ])
 
@@ -212,16 +200,12 @@ test.skip('Track page flow', async ({ page }, testInfo) => {
   await page.locator('text=Increase level').nth(1).click()
 
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/track',
-    }),
+    page.waitForNavigation(),
     page.locator('a:has-text("Track")').click(),
   ])
 
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/track/update/Diluc',
-    }),
+    page.waitForNavigation(),
     page.locator('a[href="/track/update/Diluc"]').click(),
   ])
 
@@ -229,9 +213,7 @@ test.skip('Track page flow', async ({ page }, testInfo) => {
   await page.locator('input[name="ascension"]').fill('3')
 
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/track',
-    }),
+    page.waitForRequest(DATA_ROUTES),
     page.locator('button:has-text("Update")').click(),
   ])
 
@@ -239,9 +221,7 @@ test.skip('Track page flow', async ({ page }, testInfo) => {
   await expect(page.locator('text=Elemental Skill 1')).toBeVisible()
 
   await Promise.all([
-    page.waitForResponse(
-      async (response) => response.statusText() === OK_STATUS_TEXT
-    ),
+    page.waitForRequest(DATA_ROUTES),
     page.locator('text=delete').click(),
   ])
   await expect(page.locator('a[href="/track/Diluc"]')).toBeHidden()
@@ -278,18 +258,14 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
   ])
 
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/inventory/talent-book',
-    }),
+    page.waitForNavigation(),
     page.locator('#talent_book-link').click(),
   ])
 
   await expect(page.locator(ITEM[0][0])).toHaveValue(ITEM[0][1])
 
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/inventory/all',
-    }),
+    page.waitForNavigation(),
     page.locator('#all-link').click(),
   ])
 
@@ -393,7 +369,7 @@ test('Inventory & Alchemy page flow', async ({ page }, testInfo) => {
   await page.locator('input[name="quantity"]').fill(CONVERT.TO_CRAFT)
 
   await Promise.all([
-    page.waitForNavigation(),
+    page.waitForRequest(DATA_ROUTES),
     page.locator('#convert').click(),
   ])
 
@@ -416,9 +392,7 @@ test('Character page flow', async ({ page }, testInfo) => {
   // * should display character required items table
   await page.goto(BASE_PATH)
   await Promise.all([
-    page.waitForNavigation({
-      url: (url) => url.pathname === '/character/Ganyu/required-items',
-    }),
+    page.waitForNavigation(),
     page.locator('#Ganyu-character-page-link').click(),
   ])
 
