@@ -1,3 +1,4 @@
+import type * as DB from '~/db.server'
 import type * as ItemType from '~/types/item'
 
 export type Name =
@@ -55,26 +56,9 @@ export type Name =
   | 'Yun Jin'
   | 'Zhongli'
 
-export type Weapon = 'BOW' | 'CATALYST' | 'CLAYMORE' | 'POLEARM' | 'SWORD'
-
-export type Vision =
-  | 'ANEMO'
-  | 'CRYO'
-  | 'DENDRO'
-  | 'ELECTRO'
-  | 'GEO'
-  | 'HYDRO'
-  | 'PYRO'
-
-export type Region =
-  | 'MONDSTADT'
-  | 'LIYUE'
-  | 'INAZUMA'
-  | 'SUMERU'
-  | 'FONTAINE'
-  | 'NATLAN'
-  | 'SNEZHNAYA'
-  | 'UNKNOWN'
+export type Weapon = DB.Weapon
+export type Vision = DB.Vision
+export type Region = DB.Region
 
 export type Character = {
   name: Name
@@ -89,7 +73,7 @@ export type AscensionMaterial = {
   gem: ItemType.AscensionGemGroupName
   boss?: ItemType.AscensionBoss
   local: ItemType.LocalSpecialty
-  common: ItemType.CommonGroup
+  common: ItemType.CharacterCommonGroup
 }
 export type TalentMaterial = {
   book: (
@@ -98,7 +82,7 @@ export type TalentMaterial = {
     | ItemType.TalentBookPhilosophies
   )[]
   boss: ItemType.TalentBoss
-  common: ItemType.CommonGroup
+  common: ItemType.CharacterCommonGroup
   special: 'Crown of Insight'
 }
 

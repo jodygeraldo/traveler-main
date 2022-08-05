@@ -1,72 +1,6 @@
-export type Common1 =
-  | 'Slime Condensate'
-  | 'Damaged Mask'
-  | 'Divining Scroll'
-  | 'Firm Arrowhead'
-  | 'Heavy Horn'
-  | 'Dead Ley Line Branch'
-  | 'Chaos Device'
-  | 'Mist Grass Pollen'
-  | "Hunter's Sacrificial Knife"
-  | "Recruit's Insignia"
-  | 'Treasure Hoarder Insignia'
-  | 'Whopperflower Nectar'
-  | 'Fragile Bone Shard'
-  | 'Old Handguard'
-  | 'Chaos Gear'
-  | 'Dismal Prism'
-  | 'Spectral Husk'
-  | 'Concealed Claw'
-  | 'Gloomy Statuette'
-  | 'Fungal Spores'
+import type * as DB from '~/db.server'
 
-export type Common2 =
-  | 'Slime Secretions'
-  | 'Stained Mask'
-  | 'Sealed Scroll'
-  | 'Sharp Arrowhead'
-  | 'Black Bronze Horn'
-  | 'Dead Ley Line Leaves'
-  | 'Chaos Circuit'
-  | 'Mist Grass'
-  | "Agent's Sacrificial Knife"
-  | "Sergeant's Insignia"
-  | 'Silver Raven Insignia'
-  | 'Shimmering Nectar'
-  | 'Sturdy Bone Shard'
-  | 'Kageuchi Handguard'
-  | 'Chaos Axis'
-  | 'Crystal Prism'
-  | 'Spectral Heart'
-  | 'Concealed Unguis'
-  | 'Dark Statuette'
-  | 'Luminescent Pollen'
-
-export type Common3 =
-  | 'Slime Concentrate'
-  | 'Ominous Mask'
-  | 'Forbidden Curse Scroll'
-  | 'Weathered Arrowhead'
-  | 'Black Crystal Horn'
-  | 'Ley Line Sprout'
-  | 'Chaos Core'
-  | 'Mist Grass Wick'
-  | "Inspector's Sacrificial Knife"
-  | "Lieutenant's Insignia"
-  | 'Golden Raven Insignia'
-  | 'Energy Nectar'
-  | 'Fossilized Bone Shard'
-  | 'Famed Handguard'
-  | 'Chaos Oculus'
-  | 'Polarizing Prism'
-  | 'Spectral Nucleus'
-  | 'Concealed Talon'
-  | 'Deathly Statuette'
-  | 'Crystalline Cyst Dust'
-
-export type CommonGroup = [Common1, Common2, Common3]
-
-export type CommonGroupName =
+export type CharacterCommonGroupName =
   | 'Slime'
   | 'Hilichurl Masks'
   | 'Samachurl Scrolls'
@@ -78,6 +12,92 @@ export type CommonGroupName =
   | 'Spectral Cores'
   | 'Fungal Spore Powder'
 
+export type CharacterCommonR1 =
+  | 'Slime Condensate'
+  | 'Damaged Mask'
+  | 'Divining Scroll'
+  | 'Firm Arrowhead'
+  | "Recruit's Insignia"
+  | 'Treasure Hoarder Insignia'
+  | 'Whopperflower Nectar'
+  | 'Old Handguard'
+  | 'Spectral Husk'
+  | 'Fungal Spores'
+
+export type CharacterCommonR2 =
+  | 'Slime Secretions'
+  | 'Stained Mask'
+  | 'Sealed Scroll'
+  | 'Sharp Arrowhead'
+  | "Sergeant's Insignia"
+  | 'Silver Raven Insignia'
+  | 'Shimmering Nectar'
+  | 'Kageuchi Handguard'
+  | 'Spectral Heart'
+  | 'Luminescent Pollen'
+
+export type CharacterCommonR3 =
+  | 'Slime Concentrate'
+  | 'Ominous Mask'
+  | 'Forbidden Curse Scroll'
+  | 'Weathered Arrowhead'
+  | "Lieutenant's Insignia"
+  | 'Golden Raven Insignia'
+  | 'Energy Nectar'
+  | 'Famed Handguard'
+  | 'Spectral Nucleus'
+  | 'Crystalline Cyst Dust'
+
+export type WeaponCommonGroupName =
+  | 'Hilichurl Horns'
+  | 'Ley Line Branches'
+  | 'Chaos Parts'
+  | 'Mist Grasses'
+  | 'Sacrificial Knives'
+  | 'Bone Shards'
+  | 'Sentinel Chaos Parts'
+  | 'Prisms'
+  | 'Concealed Riftwolf Claws'
+  | 'Statuettes'
+
+export type WeaponCommonR1 =
+  | 'Heavy Horn'
+  | 'Dead Ley Line Branch'
+  | 'Chaos Device'
+  | 'Mist Grass Pollen'
+  | "Hunter's Sacrificial Knife"
+  | 'Fragile Bone Shard'
+  | 'Chaos Gear'
+  | 'Dismal Prism'
+  | 'Concealed Claw'
+  | 'Gloomy Statuette'
+
+export type WeaponCommonR2 =
+  | 'Black Bronze Horn'
+  | 'Dead Ley Line Leaves'
+  | 'Chaos Circuit'
+  | 'Mist Grass'
+  | "Agent's Sacrificial Knife"
+  | 'Sturdy Bone Shard'
+  | 'Chaos Axis'
+  | 'Crystal Prism'
+  | 'Concealed Unguis'
+  | 'Dark Statuette'
+
+export type WeaponCommonR3 =
+  | 'Black Crystal Horn'
+  | 'Ley Line Sprout'
+  | 'Chaos Core'
+  | 'Mist Grass Wick'
+  | "Inspector's Sacrificial Knife"
+  | 'Fossilized Bone Shard'
+  | 'Chaos Oculus'
+  | 'Polarizing Prism'
+  | 'Concealed Talon'
+  | 'Deathly Statuette'
+
+export type AscensionGemType = 'Sliver' | 'Fragment' | 'Chunk' | 'Gemstone'
+
 export type AscensionGemGroupName =
   | 'Prithiva Topaz'
   | 'Shivada Jade'
@@ -86,6 +106,8 @@ export type AscensionGemGroupName =
   | 'Vajrada Amethyst'
   | 'Vayuda Turquoise'
   | 'Brilliant Diamond'
+
+export type AscensionGem = `${AscensionGemGroupName} ${AscensionGemType}`
 
 export type AscensionBoss =
   | 'Basalt Pillar'
@@ -132,6 +154,23 @@ export type LocalSpecialty =
   | 'Fluorescent Fungus'
   | 'Jueyun Chili'
 
+export type TalentBookGroupName =
+  | 'Freedom'
+  | 'Resistance'
+  | 'Ballad'
+  | 'Prosperity'
+  | 'Diligence'
+  | 'Gold'
+  | 'Transience'
+  | 'Elegance'
+  | 'Light'
+
+export type TalentBookTeachings = `Teachings of ${TalentBookGroupName}`
+
+export type TalentBookGuide = `Guide to ${TalentBookGroupName}`
+
+export type TalentBookPhilosophies = `Philosophies of ${TalentBookGroupName}`
+
 export type TalentBoss =
   | 'Tusk of Monoceros Caeli'
   | 'Molten Moment'
@@ -152,38 +191,23 @@ export type TalentBoss =
   | 'Hellfire Butterfly'
   | 'The Meaning of Aeons'
 
-export type TalentBookTeachings =
-  | 'Teachings of Freedom'
-  | 'Teachings of Resistance'
-  | 'Teachings of Ballad'
-  | 'Teachings of Prosperity'
-  | 'Teachings of Diligence'
-  | 'Teachings of Gold'
-  | 'Teachings of Transience'
-  | 'Teachings of Elegance'
-  | 'Teachings of Light'
+export type Special = 'Crown of Insight'
 
-export type TalentBookGuide =
-  | 'Guide to Freedom'
-  | 'Guide to Resistance'
-  | 'Guide to Ballad'
-  | 'Guide to Prosperity'
-  | 'Guide to Diligence'
-  | 'Guide to Gold'
-  | 'Guide to Transience'
-  | 'Guide to Elegance'
-  | 'Guide to Light'
-
-export type TalentBookPhilosophies =
-  | 'Philosophies of Freedom'
-  | 'Philosophies of Resistance'
-  | 'Philosophies of Ballad'
-  | 'Philosophies of Prosperity'
-  | 'Philosophies of Diligence'
-  | 'Philosophies of Gold'
-  | 'Philosophies of Transience'
-  | 'Philosophies of Elegance'
-  | 'Philosophies of Light'
+export type Name =
+  | CharacterCommonR1
+  | CharacterCommonR2
+  | CharacterCommonR3
+  | WeaponCommonR1
+  | WeaponCommonR2
+  | WeaponCommonR3
+  | AscensionGem
+  | AscensionBoss
+  | LocalSpecialty
+  | TalentBookTeachings
+  | TalentBookGuide
+  | TalentBookPhilosophies
+  | TalentBoss
+  | Special
 
 export type TalentBookGroup = [
   TalentBookTeachings,
@@ -191,224 +215,18 @@ export type TalentBookGroup = [
   TalentBookPhilosophies
 ]
 
-export type TalentBookGroupName =
-  | 'Resistance'
-  | 'Freedom'
-  | 'Ballad'
-  | 'Prosperity'
-  | 'Gold'
-  | 'Diligence'
-  | 'Light'
-  | 'Elegance'
-  | 'Transience'
+export type CharacterCommonGroup = [
+  CharacterCommonR1,
+  CharacterCommonR2,
+  CharacterCommonR3
+]
 
-export type Name =
-  | 'Crown of Insight'
-  | 'Dream Solvent'
-  | 'Dust of Azoth'
-  | 'Slime Concentrate'
-  | 'Slime Secretions'
-  | 'Slime Condensate'
-  | 'Ominous Mask'
-  | 'Stained Mask'
-  | 'Damaged Mask'
-  | 'Forbidden Curse Scroll'
-  | 'Sealed Scroll'
-  | 'Divining Scroll'
-  | 'Weathered Arrowhead'
-  | 'Sharp Arrowhead'
-  | 'Firm Arrowhead'
-  | 'Black Crystal Horn'
-  | 'Black Bronze Horn'
-  | 'Heavy Horn'
-  | 'Ley Line Sprout'
-  | 'Dead Ley Line Leaves'
-  | 'Dead Ley Line Branch'
-  | 'Chaos Core'
-  | 'Chaos Circuit'
-  | 'Chaos Device'
-  | 'Mist Grass Wick'
-  | 'Mist Grass'
-  | 'Mist Grass Pollen'
-  | "Inspector's Sacrificial Knife"
-  | "Agent's Sacrificial Knife"
-  | "Hunter's Sacrificial Knife"
-  | "Lieutenant's Insignia"
-  | "Sergeant's Insignia"
-  | "Recruit's Insignia"
-  | 'Golden Raven Insignia'
-  | 'Silver Raven Insignia'
-  | 'Treasure Hoarder Insignia'
-  | 'Energy Nectar'
-  | 'Shimmering Nectar'
-  | 'Whopperflower Nectar'
-  | 'Fossilized Bone Shard'
-  | 'Sturdy Bone Shard'
-  | 'Fragile Bone Shard'
-  | 'Famed Handguard'
-  | 'Kageuchi Handguard'
-  | 'Old Handguard'
-  | 'Chaos Oculus'
-  | 'Chaos Axis'
-  | 'Chaos Gear'
-  | 'Polarizing Prism'
-  | 'Crystal Prism'
-  | 'Dismal Prism'
-  | 'Spectral Nucleus'
-  | 'Spectral Heart'
-  | 'Spectral Husk'
-  | 'Concealed Talon'
-  | 'Concealed Unguis'
-  | 'Concealed Claw'
-  | 'Deathly Statuette'
-  | 'Dark Statuette'
-  | 'Gloomy Statuette'
-  | 'Crystalline Cyst Dust'
-  | 'Luminescent Pollen'
-  | 'Fungal Spores'
-  | 'Brilliant Diamond Gemstone'
-  | 'Brilliant Diamond Chunk'
-  | 'Brilliant Diamond Fragment'
-  | 'Brilliant Diamond Sliver'
-  | 'Agnidus Agate Gemstone'
-  | 'Agnidus Agate Chunk'
-  | 'Agnidus Agate Fragment'
-  | 'Agnidus Agate Sliver'
-  | 'Varunada Lazurite Gemstone'
-  | 'Varunada Lazurite Chunk'
-  | 'Varunada Lazurite Fragment'
-  | 'Varunada Lazurite Sliver'
-  | 'Vajrada Amethyst Gemstone'
-  | 'Vajrada Amethyst Chunk'
-  | 'Vajrada Amethyst Fragment'
-  | 'Vajrada Amethyst Sliver'
-  | 'Vayuda Turquoise Gemstone'
-  | 'Vayuda Turquoise Chunk'
-  | 'Vayuda Turquoise Fragment'
-  | 'Vayuda Turquoise Sliver'
-  | 'Shivada Jade Gemstone'
-  | 'Shivada Jade Chunk'
-  | 'Shivada Jade Fragment'
-  | 'Shivada Jade Sliver'
-  | 'Prithiva Topaz Gemstone'
-  | 'Prithiva Topaz Chunk'
-  | 'Prithiva Topaz Fragment'
-  | 'Prithiva Topaz Sliver'
-  | 'Hurricane Seed'
-  | 'Lightning Prism'
-  | 'Basalt Pillar'
-  | 'Hoarfrost Core'
-  | 'Everflame Seed'
-  | 'Cleansing Heart'
-  | 'Juvenile Jade'
-  | 'Crystalline Bloom'
-  | 'Marionette Core'
-  | 'Perpetual Heart'
-  | 'Smoldering Pearl'
-  | 'Dew of Repudiation'
-  | 'Storm Beads'
-  | 'Riftborn Regalia'
-  | "Dragonheir's False Fin"
-  | 'Runic Fang'
-  | 'Wolfhook'
-  | 'Valberry'
-  | 'Cecilia'
-  | 'Windwheel Aster'
-  | 'Philanemo Mushroom'
-  | 'Small Lamp Grass'
-  | 'Calla Lily'
-  | 'Dandelion Seed'
-  | 'Cor Lapis'
-  | 'Jueyun Chili'
-  | 'Noctilucous Jade'
-  | 'Silk Flower'
-  | 'Glaze Lily'
-  | 'Qingxin'
-  | 'Starconch'
-  | 'Violetgrass'
-  | 'Onikabuto'
-  | 'Sakura Bloom'
-  | 'Crystal Marrow'
-  | 'Dendrobium'
-  | 'Naku Weed'
-  | 'Sea Ganoderma'
-  | 'Sango Pearl'
-  | 'Amakumo Fruit'
-  | 'Fluorescent Fungus'
-  | 'Philosophies of Freedom'
-  | 'Guide to Freedom'
-  | 'Teachings of Freedom'
-  | 'Philosophies of Resistance'
-  | 'Guide to Resistance'
-  | 'Teachings of Resistance'
-  | 'Philosophies of Ballad'
-  | 'Guide to Ballad'
-  | 'Teachings of Ballad'
-  | 'Philosophies of Prosperity'
-  | 'Guide to Prosperity'
-  | 'Teachings of Prosperity'
-  | 'Philosophies of Diligence'
-  | 'Guide to Diligence'
-  | 'Teachings of Diligence'
-  | 'Philosophies of Gold'
-  | 'Guide to Gold'
-  | 'Teachings of Gold'
-  | 'Philosophies of Transience'
-  | 'Guide to Transience'
-  | 'Teachings of Transience'
-  | 'Philosophies of Elegance'
-  | 'Guide to Elegance'
-  | 'Teachings of Elegance'
-  | 'Philosophies of Light'
-  | 'Guide to Light'
-  | 'Teachings of Light'
-  | "Dvalin's Plume"
-  | "Dvalin's Claw"
-  | "Dvalin's Sigh"
-  | 'Tail of Boreas'
-  | 'Ring of Boreas'
-  | 'Spirit Locket of Boreas'
-  | 'Tusk of Monoceros Caeli'
-  | 'Shard of a Foul Legacy'
-  | 'Shadow of the Warrior'
-  | "Dragon Lord's Crown"
-  | 'Bloodjade Branch'
-  | 'Gilded Scale'
-  | 'Molten Moment'
-  | 'Hellfire Butterfly'
-  | 'Ashen Heart'
-  | 'Mudra of the Malefic General'
-  | 'Tears of the Calamitous God'
-  | 'The Meaning of Aeons'
+export type WeaponCommonGroup = [WeaponCommonR1, WeaponCommonR2, WeaponCommonR3]
 
-export type BaseItem = {
-  name: Name
-  type:
-    | 'SPECIAL'
-    | 'COMMON'
-    | 'ASCENSION_GEM'
-    | 'ASCENSION_BOSS'
-    | 'LOCAL_SPECIALTY'
-    | 'TALENT_BOOK'
-    | 'TALENT_BOSS'
-  rarity: 1 | 2 | 3 | 4 | 5
-}
-
-export type CraftMaterialItem = {
-  craftable: 'Material'
-}
-
-export type CraftableItem = {
-  craftable: 'Craftable' | 'CraftableAndMaterial'
-  crafter: {
-    name: Name
-    quantity: number
-  }
-  refundable: boolean
-  doublable: boolean
-}
+export type ItemType = DB.ItemType
 
 export type Item = {
-  convertable: boolean
-  craft: false | CraftMaterialItem | CraftableItem
-} & BaseItem
+  name: Name
+  type: ItemType
+  rarity: 1 | 2 | 3 | 4 | 5
+}
