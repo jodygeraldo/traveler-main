@@ -2,7 +2,10 @@ import * as DB from '~/db.server'
 import type * as CharacterType from '~/types/character'
 import type * as ItemType from '~/types/item'
 
-const commonMaterial: Record<ItemType.CommonGroupName, ItemType.CommonGroup> = {
+const commonMaterial: Record<
+  ItemType.CharacterCommonGroupName,
+  ItemType.CharacterCommonGroup
+> = {
   Slime: ['Slime Condensate', 'Slime Secretions', 'Slime Concentrate'],
   'Hilichurl Masks': ['Damaged Mask', 'Stained Mask', 'Ominous Mask'],
   'Samachurl Scrolls': [

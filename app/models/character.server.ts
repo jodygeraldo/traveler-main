@@ -319,65 +319,6 @@ export async function upsertCharacter({
   })
 }
 
-export async function updateCharacterByInventory({
-  name,
-  kind,
-  level,
-  materials,
-  accountId,
-}: {
-  name: CharacterType.Name
-  level?: number
-  accountId: string
-  materials: {
-    name: string
-    quantity: number
-    rarity: number
-  }[]
-  kind:
-    | 'Ascension'
-    | 'Talent Normal Attack'
-    | 'Talent Elemental Skill'
-    | 'Talent Elemental Burst'
-}) {
-  if (kind === 'Ascension') {
-    await prisma.userCharacter.updateMany({
-      where: {
-        ownerId: accountId,
-        name: {
-          contains: name.includes('Traveler') ? 'Traveler' : name,
-        },
-      },
-      data: { level, ascension: { increment: 1 } },
-    })
-  }
-
-  if (kind !== 'Ascension') {
-    const toUpdate: Record<
-      typeof kind,
-      'normalAttack' | 'elementalSkill' | 'elementalBurst'
-    > = {
-      'Talent Normal Attack': 'normalAttack',
-      'Talent Elemental Skill': 'elementalSkill',
-      'Talent Elemental Burst': 'elementalBurst',
-    }
-
-    await prisma.userCharacter.update({
-      where: { name_ownerId: { name, ownerId: accountId } },
-      data: { [toUpdate[kind]]: { increment: 1 } },
-    })
-  }
-
-  const ItemsToUpdate = materials.map((material) =>
-    prisma.inventory.update({
-      where: { name_ownerId: { name: material.name, ownerId: accountId } },
-      data: { quantity: { decrement: material.quantity } },
-    })
-  )
-
-  await prisma.$transaction(ItemsToUpdate)
-}
-
 export async function upsertCharacterTrack({
   name,
   level,

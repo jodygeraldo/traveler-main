@@ -12,10 +12,6 @@ const navigation = [
     to: './required-items',
   },
   {
-    name: 'Inventory Level Up',
-    to: './inventory-levelup',
-  },
-  {
     name: 'Manual Level Up',
     to: './manual-levelup',
   },
