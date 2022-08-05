@@ -7,9 +7,10 @@ node_modules
 /app/tailwind.css
 .DS_Store
 /tmp
-/app/oldroutes
 
 /coverage
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+.cache
