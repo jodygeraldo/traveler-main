@@ -10,16 +10,12 @@ interface Props {
 export default function CharacterGrid({ characters }: Props) {
   return (
     <div>
-      <ul id="grid-view" className="flex flex-wrap gap-5">
+      <ul
+        id="grid-view"
+        className="grid grid-cols-1 gap-y-4 gap-x-6 sm:grid-cols-2 lg:grid-cols-3"
+      >
         {characters.map((character) => (
-          <li key={character.name}>
-            <CharacterGridItem
-              name={character.name}
-              vision={character.vision}
-              rarity={character.rarity}
-              level={character.progression.level}
-            />
-          </li>
+          <CharacterGridItem key={character.name} {...character} />
         ))}
       </ul>
     </div>
