@@ -71,6 +71,13 @@ interface ButtonGroupProps
   active?: boolean
 }
 
+interface ButtonMenuProps
+  extends BaseProps,
+    Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof BaseProps> {
+  type?: 'button' | 'submit' | 'reset'
+  isRadix?: boolean
+}
+
 const baseStyles: Record<KindProps, string> = {
   button:
     'group inline-flex items-center justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium shadow-sm',
@@ -260,10 +267,32 @@ const ButtonGroup = React.forwardRef<HTMLButtonElement, ButtonGroupProps>(
 )
 ButtonGroup.displayName = 'ButtonGroup'
 
+const ButtonMenu = React.forwardRef<HTMLButtonElement, ButtonMenuProps>(
+  ({ type = 'button', isRadix = false, children, ...props }, ref) => (
+    <button
+      ref={ref}
+      type={type}
+      className={clsx(
+        'w-full rounded-md py-2 px-4',
+        'text-left text-sm text-gray-11',
+        'disabled:text-gray-8 radix-disabled:text-gray-8',
+        isRadix &&
+          'radix-highlighted:bg-gray-4 radix-highlighted:text-gray-12 radix-highlighted:outline-none',
+        isRadix && 'radix-state-open:text-gray-12'
+      )}
+      {...props}
+    >
+      {children}
+    </button>
+  )
+)
+ButtonMenu.displayName = 'ButtonMenu'
+
 export default Button
-export { ButtonIcon, ButtonLink, ButtonLinkExternal, ButtonGroup }
+export { ButtonIcon, ButtonLink, ButtonLinkExternal, ButtonGroup, ButtonMenu }
 export const Base = Button
 export const Icon = ButtonIcon
 export const Link = ButtonLink
 export const LinkExternal = ButtonLinkExternal
 export const Group = ButtonGroup
+export const Menu = ButtonMenu
