@@ -1,32 +1,59 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
-import clsx from 'clsx'
+import * as RPH from 'remix-params-helper'
 import * as Zod from 'zod'
-import * as Icon from '~/components/Icon'
 import Search from '~/components/Search'
-import * as Cookie from '~/cookies'
 import useSearchFilter from '~/hooks/useSearchFilter'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as CharacterUtils from '~/utils/server/character.server'
 import CharacterGridView from './CharacterGridView'
-import CharacterListView from './CharacterListView'
 
 export const meta: RemixNode.MetaFunction = () => ({
   title: 'Characters - Traveler Main',
 })
 
-export async function action({ request }: RemixNode.ActionArgs) {
-  const formData = await request.formData()
-  const userPref = await Cookie.getUserPrefsCookie(request)
-  userPref.characterView = formData.get('characterView') ?? 'grid'
+const FormDataSchema = Zod.object({
+  name: Zod.string(),
+  ascension: Zod.number(),
+  level: Zod.number().optional(),
+  normalAttack: Zod.number().optional(),
+  elementalSkill: Zod.number().optional(),
+  elementalBurst: Zod.number().optional(),
+})
 
-  return RemixNode.json(null, {
-    statusText: 'SUCCESS',
-    headers: {
-      'Set-Cookie': await Cookie.userPrefs.serialize(userPref),
-    },
+export async function action({ request }: RemixNode.ActionArgs) {
+  const accountId = await Session.requireAccountId(request)
+
+  const result = await RPH.getFormData(request, FormDataSchema)
+  if (!result.success) {
+    return RemixNode.json(
+      { success: result.success, errors: result.errors },
+      { status: 400 }
+    )
+  }
+
+  const { name, ...progression } = result.data
+
+  if (!CharacterUtils.validateCharacter(name)) {
+    throw RemixNode.json(`Character ${name} not found`, {
+      status: 404,
+      statusText: 'Character Not Found',
+    })
+  }
+
+  const errors = CharacterUtils.validateAscensionRequirement(progression)
+  if (errors) {
+    return RemixNode.json({ success: false, errors }, { status: 400 })
+  }
+
+  await CharacterModel.upsertCharacter({
+    name,
+    progression,
+    accountId,
   })
+
+  return RemixNode.json(null)
 }
 
 export async function loader({ request }: RemixNode.LoaderArgs) {
@@ -37,18 +64,11 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
   })
   const characters = CharacterUtils.getCharacters(userCharacters)
 
-  const characterView = await Cookie.getCharacterViewPref(request)
-
-  return RemixNode.json({ characters, view: characterView })
+  return RemixNode.json({ characters })
 }
 
 export default function CharactersPage() {
-  const { characters, view } = RemixReact.useLoaderData<typeof loader>()
-  const fetcher = RemixReact.useFetcher()
-
-  const optimisticView = fetcher.submission
-    ? Zod.string().parse(fetcher.submission.formData.get('characterView'))
-    : view
+  const { characters } = RemixReact.useLoaderData<typeof loader>()
 
   const { searchItems, showSearch, changeHandler } = useSearchFilter({
     items: characters,
@@ -58,73 +78,9 @@ export default function CharactersPage() {
   return (
     <main className="mx-auto max-w-3xl py-10 lg:max-w-7xl">
       <div className="px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
-        <div className="flex items-center">
-          <h1 className="text-2xl font-bold leading-7 text-primary-12 sm:truncate sm:text-3xl">
-            Characters
-          </h1>
-
-          <fetcher.Form
-            action="/character?index"
-            method="post"
-            replace={true}
-            className="ml-6 flex items-center rounded-lg bg-gray-3 p-0.5"
-          >
-            <button
-              id="switch-list-view"
-              type="submit"
-              name="characterView"
-              value="list"
-              className={clsx(
-                optimisticView === 'list'
-                  ? 'bg-gray-2 shadow-sm'
-                  : 'hover:bg-gray-2 hover:shadow-sm',
-                'rounded-md p-1.5 text-gray-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-8'
-              )}
-            >
-              {optimisticView === 'list' ? (
-                <Icon.Solid
-                  name="viewList"
-                  className="h-5 w-5"
-                  aria-hidden="true"
-                />
-              ) : (
-                <Icon.Outline
-                  name="viewList"
-                  className="h-5 w-5"
-                  aria-hidden="true"
-                />
-              )}
-              <span className="sr-only">Use list view</span>
-            </button>
-            <button
-              id="switch-grid-view"
-              type="submit"
-              name="characterView"
-              value="grid"
-              className={clsx(
-                optimisticView === 'list'
-                  ? 'hover:bg-gray-2 hover:shadow-sm'
-                  : 'bg-gray-2 shadow-sm',
-                'ml-0.5 rounded-md p-1.5 text-gray-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-8'
-              )}
-            >
-              {optimisticView === 'list' ? (
-                <Icon.Outline
-                  name="viewGrid"
-                  className="h-5 w-5"
-                  aria-hidden="true"
-                />
-              ) : (
-                <Icon.Solid
-                  name="viewGrid"
-                  className="h-5 w-5"
-                  aria-hidden="true"
-                />
-              )}
-              <span className="sr-only">Use grid view</span>
-            </button>
-          </fetcher.Form>
-        </div>
+        <h1 className="text-2xl font-bold leading-7 text-primary-12 sm:truncate sm:text-3xl">
+          Characters
+        </h1>
 
         <div className="mt-4 sm:mt-0">
           <Search
@@ -135,15 +91,7 @@ export default function CharactersPage() {
       </div>
 
       <div className="mt-12">
-        {optimisticView === 'list' ? (
-          <CharacterListView
-            characters={showSearch ? searchItems : characters}
-          />
-        ) : (
-          <CharacterGridView
-            characters={showSearch ? searchItems : characters}
-          />
-        )}
+        <CharacterGridView characters={showSearch ? searchItems : characters} />
       </div>
     </main>
   )
