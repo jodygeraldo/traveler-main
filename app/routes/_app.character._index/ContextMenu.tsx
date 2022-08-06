@@ -54,7 +54,7 @@ export default function ContextMenu({ name, progression, children }: Props) {
         <RadixContextMenu.Content
           className={clsx(
             'mt-2 w-48 rounded-md bg-gray-3 p-1 shadow-lg ring-1 ring-overlay-black-1',
-            'focus:outline-none'
+            'origin-radix-context-menu [animation:scaleIn_150ms_ease-out] focus:outline-none'
           )}
         >
           <RadixContextMenu.Item asChild>
