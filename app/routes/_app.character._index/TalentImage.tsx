@@ -87,7 +87,7 @@ export function Talent({
           height={sizes[size][1]}
         />
       </Tooltip>
-      <span className="ml-0.5 text-sm font-medium tabular-nums text-gray-11">
+      <span className="text-sm font-medium tabular-nums text-gray-11">
         {level}
       </span>
     </div>
