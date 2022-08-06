@@ -1,10 +1,11 @@
-import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
+import * as Button from '~/components/Button'
 import Image from '~/components/Image'
 import type * as CharacterType from '~/types/character'
 import * as Utils from '~/utils'
 import ContextMenu from './ContextMenu'
-import TalentGroup from './TalentImage'
+import Dialog from './Dialog'
+import TalentGroup from './TalentGroup'
 
 type Props = { characters: CharacterType.CharacterWithProgression[] }
 
@@ -31,18 +32,9 @@ export function CharacterGridItem({
   progression,
 }: CharacterType.CharacterWithProgression) {
   return (
-    <li className="bg-gray-2 transition-colors hover:bg-gray-3 sm:rounded-md">
-      <ContextMenu name={name} progression={progression}>
-        <RemixReact.Link
-          id={`${name}-character-page-link`}
-          to={`./${Utils.slugify(name)}/required-items`}
-          prefetch="intent"
-          className={clsx(
-            'block sm:rounded-md',
-            'focus:outline-none focus:ring-2 focus:ring-primary-8 focus:ring-offset-2 focus:ring-offset-gray-1',
-            'radix-state-open:outline-none radix-state-open:ring-2 radix-state-open:ring-primary-8 radix-state-open:ring-offset-2 radix-state-open:ring-offset-gray-1'
-          )}
-        >
+    <li className="bg-gray-2 sm:rounded-md">
+      <div className="block sm:rounded-md">
+        <ContextMenu name={name} progression={progression}>
           <div className="flex items-center rounded-md">
             <div className="relative flex-shrink-0 rounded-l-md pl-4 sm:pl-6">
               <Image
@@ -72,7 +64,7 @@ export function CharacterGridItem({
                   {name}
                 </h2>
 
-                <div className="flex gap-4 text-gray-11">
+                <div className="flex gap-4 text-gray-11 sm:block">
                   <p>Lv. {progression.level}</p>
                   <p>Ascension {progression.ascension}</p>
                 </div>
@@ -88,8 +80,26 @@ export function CharacterGridItem({
               </div>
             </div>
           </div>
-        </RemixReact.Link>
-      </ContextMenu>
+        </ContextMenu>
+
+        <div className="flex items-center justify-between gap-4 px-4 pb-4 sm:px-6">
+          <Dialog name={name} progression={progression}>
+            <Button.Base variant="basic" className="w-full">
+              Edit level
+            </Button.Base>
+          </Dialog>
+
+          <Button.Link
+            to={`./${Utils.slugify(name)}/required-items`}
+            prefetch="intent"
+            id={`${name}-character-page-link`}
+            styles="button"
+            className="w-full"
+          >
+            Detail
+          </Button.Link>
+        </div>
+      </div>
     </li>
   )
 }
