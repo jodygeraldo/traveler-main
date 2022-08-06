@@ -74,7 +74,7 @@ export default function DataGrid({ characters, submit }: Props) {
   )
 
   const columnHelper =
-    ReactTable.createColumnHelper<CharacterType.CharacterProgression>()
+    ReactTable.createColumnHelper<CharacterType.CharacterNameWithProgression>()
 
   const columns = React.useMemo(
     () => [

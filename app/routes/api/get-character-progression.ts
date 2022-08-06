@@ -42,7 +42,7 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
     accountId,
   })
 
-  return RemixNode.json<CharacterTypes.CharacterProgression>({
+  return RemixNode.json<CharacterTypes.CharacterNameWithProgression>({
     name,
     progression: characterProgression || DEFAULT_PROGRESSION,
   })

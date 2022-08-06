@@ -124,7 +124,7 @@ export default function AddTrackPage() {
   }, [submitFetcher.data])
 
   const progressionfetcher =
-    RemixReact.useFetcher<CharacterTypes.CharacterProgression>()
+    RemixReact.useFetcher<CharacterTypes.CharacterNameWithProgression>()
 
   function handleFetchProgression(name: string) {
     if (name === '') return

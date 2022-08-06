@@ -126,7 +126,11 @@ export type TrackProgression = {
   elementalBurst: { current: number; target: number | null }
 }
 
-export type CharacterProgression = {
+export type CharacterNameWithProgression = {
   name: Name
+  progression: Progression
+}
+
+export type CharacterWithProgression = Character & {
   progression: Progression
 }
