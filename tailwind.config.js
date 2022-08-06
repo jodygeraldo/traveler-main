@@ -152,6 +152,7 @@ module.exports = {
       addVariant('data-side-bottom', '&[data-state="open"][data-side="bottom"]')
       addVariant('data-side-left', '&[data-state="open"][data-side="left"]')
     }),
+    require('tailwindcss-radix'),
     require('@tailwindcss/aspect-ratio'),
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),

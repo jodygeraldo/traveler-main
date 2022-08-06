@@ -9,8 +9,8 @@ import useSearchFilter from '~/hooks/useSearchFilter'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as CharacterUtils from '~/utils/server/character.server'
-import CharacterGrid from './CharacterGrid'
-import CharacterList from './CharacterList'
+import CharacterGridView from './CharacterGridView'
+import CharacterListView from './CharacterListView'
 
 export const meta: RemixNode.MetaFunction = () => ({
   title: 'Characters - Traveler Main',
@@ -56,8 +56,8 @@ export default function CharactersPage() {
   })
 
   return (
-    <main className="mx-auto max-w-3xl py-10 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-      <div className="sm:flex sm:items-center sm:justify-between">
+    <main className="mx-auto max-w-3xl py-10 lg:max-w-7xl">
+      <div className="px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
         <div className="flex items-center">
           <h1 className="text-2xl font-bold leading-7 text-primary-12 sm:truncate sm:text-3xl">
             Characters
@@ -134,23 +134,15 @@ export default function CharactersPage() {
         </div>
       </div>
 
-      {/* <div className="mt-4 flex items-center gap-4">
-        <Button.Link
-          styles="button"
-          prefetch="intent"
-          to="./quick-update"
-          id="quick-update"
-        >
-          Quick update
-        </Button.Link>
-
-      </div> */}
-
       <div className="mt-12">
         {optimisticView === 'list' ? (
-          <CharacterList characters={showSearch ? searchItems : characters} />
+          <CharacterListView
+            characters={showSearch ? searchItems : characters}
+          />
         ) : (
-          <CharacterGrid characters={showSearch ? searchItems : characters} />
+          <CharacterGridView
+            characters={showSearch ? searchItems : characters}
+          />
         )}
       </div>
     </main>
