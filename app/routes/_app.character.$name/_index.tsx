@@ -11,10 +11,6 @@ const navigation = [
     name: 'Required Items',
     to: './required-items',
   },
-  {
-    name: 'Manual Level Up',
-    to: './manual-levelup',
-  },
 ]
 
 export async function loader({ params }: RemixNode.LoaderArgs) {
