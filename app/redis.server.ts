@@ -25,12 +25,13 @@ export async function get(key: string) {
   try {
     await client.connect()
     const cache = await client.get(key)
-    await client.disconnect()
     if (!cache) return
 
     return JSON.parse(cache)
   } catch (error) {
     console.error(`Redis Error .get: ${error}`)
+  } finally {
+    await client.disconnect()
   }
 }
 
@@ -38,9 +39,10 @@ export async function set(key: string, value: any) {
   try {
     await client.connect()
     await client.set(key, JSON.stringify(value))
-    await client.disconnect()
   } catch (error) {
     console.error(`Redis Error .set: ${error}`)
+  } finally {
+    await client.disconnect()
   }
 }
 
@@ -48,9 +50,10 @@ export async function del(key: string | string[]) {
   try {
     await client.connect()
     await client.del(key)
-    await client.disconnect()
   } catch (error) {
     console.error(`Redis Error .del: ${error}`)
+  } finally {
+    await client.disconnect()
   }
 }
 
