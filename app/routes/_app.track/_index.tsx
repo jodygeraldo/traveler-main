@@ -33,14 +33,15 @@ export async function action({ request }: RemixNode.ActionArgs) {
   }
 
   if (intent === 'reorder') {
-    await CharacterModel.updateCharacterTrackOrder(
-      Zod.object({
+    await CharacterModel.updateCharacterTrackOrder({
+      orders: Zod.object({
         id: Zod.string(),
         priority: Zod.number().nonnegative(),
       })
         .array()
-        .parse(JSON.parse(Zod.string().parse(orders)))
-    )
+        .parse(JSON.parse(Zod.string().parse(orders))),
+      accountId,
+    })
   }
 
   return RemixNode.json(null, { statusText: 'SUCCESS' })

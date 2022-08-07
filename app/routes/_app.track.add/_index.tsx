@@ -94,7 +94,7 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
 
   const userTrackableCharacterNames =
-    await CharacterModel.getUserTrackableCharactersName(accountId)
+    await CharacterModel.getUserNonTrackableCharactersName(accountId)
   const nonTrackCharacterNames = CharacterUtils.getMissingCharacters(
     userTrackableCharacterNames
   )

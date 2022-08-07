@@ -1,4 +1,6 @@
+import * as Zod from 'zod'
 import prisma from '~/db.server'
+import * as Redis from '~/redis.server'
 import type * as CharacterType from '~/types/character'
 
 const DEFAULT_PROGRESSION = {
@@ -9,8 +11,36 @@ const DEFAULT_PROGRESSION = {
   elementalBurst: 1,
 }
 
-export async function getUserCharacters({ accountId }: { accountId: string }) {
-  return prisma.userCharacter.findMany({
+function getRedisCharacterKeys(accountId: string) {
+  return [
+    `getUserCharacters:${accountId}`,
+    `getUserCharacter:${accountId}`,
+    `getUserNonTrackableCharactersName:${accountId}`,
+    `getUserTrackCharacters:${accountId}`,
+    `getUserTrackCharacter:${accountId}`,
+  ]
+}
+
+const UserCharacterSchema = Zod.object({
+  name: Zod.string(),
+  level: Zod.number(),
+  ascension: Zod.number(),
+  normalAttack: Zod.number(),
+  elementalSkill: Zod.number(),
+  elementalBurst: Zod.number(),
+})
+
+export async function getUserCharacters(accountId: string) {
+  const UserCharactersSchema = UserCharacterSchema.array()
+
+  const userCharactersCache = await Redis.getSafe({
+    key: `getUserCharacters:${accountId}`,
+    schema: UserCharactersSchema,
+  })
+
+  if (userCharactersCache) return userCharactersCache
+
+  const userCharacters = await prisma.userCharacter.findMany({
     where: {
       ownerId: accountId,
     },
@@ -23,11 +53,23 @@ export async function getUserCharacters({ accountId }: { accountId: string }) {
       elementalBurst: true,
     },
   })
+
+  await Redis.set(`getUserCharacters:${accountId}`, userCharacters)
+
+  return userCharacters
 }
 
-export async function getUserTrackableCharactersName(accountId: string) {
-  const maxCharactersName = (
-    await prisma.userCharacter.findMany({
+export async function getUserNonTrackableCharactersName(accountId: string) {
+  const userNonTrackableCharactersNameCache = await Redis.getSafe({
+    key: `getUserNonTrackableCharactersName:${accountId}`,
+    schema: Zod.string().array(),
+  })
+
+  if (userNonTrackableCharactersNameCache)
+    return userNonTrackableCharactersNameCache
+
+  const [userMaxLevelCharacters, userTrackedCharacters] = await Promise.all([
+    prisma.userCharacter.findMany({
       where: {
         ownerId: accountId,
         level: { equals: 90 },
@@ -37,17 +79,26 @@ export async function getUserTrackableCharactersName(accountId: string) {
         elementalBurst: { equals: 10 },
       },
       select: { name: true },
-    })
-  ).map((character) => character.name)
-
-  const charactersName = (
-    await prisma.characterTrack.findMany({
+    }),
+    prisma.characterTrack.findMany({
       where: { ownerId: accountId },
       select: { name: true },
-    })
-  ).map((character) => character.name)
+    }),
+  ])
 
-  return Array.from(new Set([...maxCharactersName, ...charactersName]))
+  const userNonTrackableCharactersName = Array.from(
+    new Set([
+      ...userMaxLevelCharacters.map((c) => c.name),
+      ...userTrackedCharacters.map((c) => c.name),
+    ])
+  )
+
+  Redis.set(
+    `getUserNonTrackableCharactersName:${accountId}`,
+    userNonTrackableCharactersName
+  )
+
+  return userNonTrackableCharactersName
 }
 
 export async function getUserCharacter({
@@ -57,7 +108,14 @@ export async function getUserCharacter({
   name: CharacterType.Name
   accountId: string
 }) {
-  return prisma.userCharacter.findUnique({
+  const userCharacterCache = await Redis.getSafe({
+    key: `getUserCharacter:${accountId}`,
+    schema: UserCharacterSchema.nullable(),
+  })
+
+  if (userCharacterCache) return userCharacterCache
+
+  const userCharacter = await prisma.userCharacter.findUnique({
     where: {
       name_ownerId: {
         name,
@@ -72,10 +130,50 @@ export async function getUserCharacter({
       elementalBurst: true,
     },
   })
+
+  await Redis.set(`getUserCharacter:${accountId}`, userCharacter)
+
+  return userCharacter
 }
 
+const UserTrackCharacterSchema = Zod.object({
+  level: Zod.object({
+    current: Zod.number(),
+    target: Zod.number().nullable(),
+  }),
+  ascension: Zod.object({
+    current: Zod.number(),
+    target: Zod.number().nullable(),
+  }),
+  normalAttack: Zod.object({
+    current: Zod.number(),
+    target: Zod.number().nullable(),
+  }),
+  elementalSkill: Zod.object({
+    current: Zod.number(),
+    target: Zod.number().nullable(),
+  }),
+  elementalBurst: Zod.object({
+    current: Zod.number(),
+    target: Zod.number().nullable(),
+  }),
+})
+
 export async function getUserTrackCharacters(accountId: string) {
-  const characters = await prisma.characterTrack.findMany({
+  const UserTrackCharactersSchema = UserTrackCharacterSchema.extend({
+    id: Zod.string(),
+    name: Zod.string(),
+    priority: Zod.number().nullable(),
+  }).array()
+
+  const userTrackCharactersCache = await Redis.getSafe({
+    key: `getUserTrackCharacters:${accountId}`,
+    schema: UserTrackCharactersSchema,
+  })
+
+  if (userTrackCharactersCache) return userTrackCharactersCache
+
+  const userTrackCharacters = await prisma.characterTrack.findMany({
     where: { ownerId: accountId },
     select: {
       id: true,
@@ -99,7 +197,7 @@ export async function getUserTrackCharacters(accountId: string) {
     orderBy: [{ priority: { sort: 'asc', nulls: 'last' } }, { name: 'asc' }],
   })
 
-  return characters.map((character) => ({
+  const updatedUserTrackCharacters = userTrackCharacters.map((character) => ({
     id: character.id,
     name: character.name,
     priority: character.priority,
@@ -124,6 +222,13 @@ export async function getUserTrackCharacters(accountId: string) {
       target: character.targetElementalBurst,
     },
   }))
+
+  await Redis.set(
+    `getUserTrackCharacters:${accountId}`,
+    updatedUserTrackCharacters
+  )
+
+  return updatedUserTrackCharacters
 }
 
 export async function getUserTrackCharacter({
@@ -133,7 +238,14 @@ export async function getUserTrackCharacter({
   name: string
   accountId: string
 }) {
-  const character = await prisma.characterTrack.findUnique({
+  const userTrackCharacterCache = await Redis.getSafe({
+    key: `getUserTrackCharacter:${accountId}`,
+    schema: UserTrackCharacterSchema.nullable(),
+  })
+
+  if (userTrackCharacterCache) return userTrackCharacterCache
+
+  const userTrackCharacter = await prisma.characterTrack.findUnique({
     where: { name_ownerId: { name, ownerId: accountId } },
     select: {
       targetLevel: true,
@@ -153,30 +265,37 @@ export async function getUserTrackCharacter({
     },
   })
 
-  if (!character) return null
+  if (!userTrackCharacter) return null
 
-  return {
+  const updatedUserTrackCharacter = {
     level: {
-      current: character.userCharacter.level,
-      target: character.targetLevel,
+      current: userTrackCharacter.userCharacter.level,
+      target: userTrackCharacter.targetLevel,
     },
     ascension: {
-      current: character.userCharacter.ascension,
-      target: character.targetAscension,
+      current: userTrackCharacter.userCharacter.ascension,
+      target: userTrackCharacter.targetAscension,
     },
     normalAttack: {
-      current: character.userCharacter.normalAttack,
-      target: character.targetNormalAttack,
+      current: userTrackCharacter.userCharacter.normalAttack,
+      target: userTrackCharacter.targetNormalAttack,
     },
     elementalSkill: {
-      current: character.userCharacter.elementalSkill,
-      target: character.targetElementalSkill,
+      current: userTrackCharacter.userCharacter.elementalSkill,
+      target: userTrackCharacter.targetElementalSkill,
     },
     elementalBurst: {
-      current: character.userCharacter.elementalBurst,
-      target: character.targetElementalBurst,
+      current: userTrackCharacter.userCharacter.elementalBurst,
+      target: userTrackCharacter.targetElementalBurst,
     },
   }
+
+  await Redis.set(
+    `getUserTrackCharacter:${accountId}`,
+    updatedUserTrackCharacter
+  )
+
+  return updatedUserTrackCharacter
 }
 
 export async function updateCharacter({
@@ -194,40 +313,46 @@ export async function updateCharacter({
   }
   accountId: string
 }) {
-  if (name.includes('Traveler')) {
-    return prisma.$transaction([
-      prisma.userCharacter.update({
-        where: { name_ownerId: { name, ownerId: accountId } },
-        data: { ...progression },
-      }),
-      prisma.userCharacter.updateMany({
-        where: {
-          ownerId: accountId,
-          name: {
-            contains: 'Traveler',
+  try {
+    if (name.includes('Traveler')) {
+      await prisma.$transaction([
+        prisma.userCharacter.update({
+          where: { name_ownerId: { name, ownerId: accountId } },
+          data: { ...progression },
+        }),
+        prisma.userCharacter.updateMany({
+          where: {
+            ownerId: accountId,
+            name: {
+              contains: 'Traveler',
+            },
+            NOT: { name },
           },
-          NOT: { name },
+          data: {
+            level: progression.level,
+            ascension: progression.ascension,
+          },
+        }),
+      ])
+    } else {
+      await prisma.userCharacter.upsert({
+        where: { name_ownerId: { name, ownerId: accountId } },
+        create: {
+          ownerId: accountId,
+          name,
+          ...DEFAULT_PROGRESSION,
+          ...progression,
         },
-        data: {
-          level: progression.level,
-          ascension: progression.ascension,
+        update: {
+          ...progression,
         },
-      }),
-    ])
-  }
+      })
+    }
 
-  return prisma.userCharacter.upsert({
-    where: { name_ownerId: { name, ownerId: accountId } },
-    create: {
-      ownerId: accountId,
-      name,
-      ...DEFAULT_PROGRESSION,
-      ...progression,
-    },
-    update: {
-      ...progression,
-    },
-  })
+    await Redis.del(getRedisCharacterKeys(accountId))
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 export async function upsertCharacter({
@@ -245,78 +370,84 @@ export async function upsertCharacter({
   }
   accountId: string
 }) {
-  if (name.includes('Traveler')) {
-    const characters = await prisma.userCharacter.findMany({
-      where: {
-        ownerId: accountId,
-        name: {
-          contains: 'Traveler',
+  try {
+    if (name.includes('Traveler')) {
+      const characters = await prisma.userCharacter.findMany({
+        where: {
+          ownerId: accountId,
+          name: {
+            contains: 'Traveler',
+          },
         },
-      },
-    })
-
-    let names = ['Traveler Geo', 'Traveler Electro']
-    if (name.includes('Geo')) names[0] = 'Traveler Anemo'
-    if (name.includes('Electro')) names[1] = 'Traveler Geo'
-
-    if (characters.length === 0) {
-      return prisma.userCharacter.createMany({
-        data: [
-          {
-            ownerId: accountId,
-            name,
-            ...DEFAULT_PROGRESSION,
-            ...progression,
-          },
-          {
-            ownerId: accountId,
-            name: names[0],
-            ...progression,
-            ...DEFAULT_PROGRESSION,
-          },
-          {
-            ownerId: accountId,
-            name: names[1],
-            ...progression,
-            ...DEFAULT_PROGRESSION,
-          },
-        ],
       })
-    } else {
-      return prisma.$transaction([
-        prisma.userCharacter.update({
-          where: { id: characters.find((c) => c.name === name)!.id },
-          data: { ...progression },
-        }),
-        prisma.userCharacter.updateMany({
-          where: {
-            ownerId: accountId,
-            name: {
-              contains: 'Traveler',
-            },
-            NOT: { name },
-          },
-          data: {
-            level: progression.level,
-            ascension: progression.ascension,
-          },
-        }),
-      ])
-    }
-  }
 
-  return prisma.userCharacter.upsert({
-    where: { name_ownerId: { name, ownerId: accountId } },
-    create: {
-      ownerId: accountId,
-      name,
-      ...DEFAULT_PROGRESSION,
-      ...progression,
-    },
-    update: {
-      ...progression,
-    },
-  })
+      let names = ['Traveler Geo', 'Traveler Electro']
+      if (name.includes('Geo')) names[0] = 'Traveler Anemo'
+      if (name.includes('Electro')) names[1] = 'Traveler Geo'
+
+      if (characters.length === 0) {
+        return prisma.userCharacter.createMany({
+          data: [
+            {
+              ownerId: accountId,
+              name,
+              ...DEFAULT_PROGRESSION,
+              ...progression,
+            },
+            {
+              ownerId: accountId,
+              name: names[0],
+              ...progression,
+              ...DEFAULT_PROGRESSION,
+            },
+            {
+              ownerId: accountId,
+              name: names[1],
+              ...progression,
+              ...DEFAULT_PROGRESSION,
+            },
+          ],
+        })
+      } else {
+        return prisma.$transaction([
+          prisma.userCharacter.update({
+            where: { id: characters.find((c) => c.name === name)!.id },
+            data: { ...progression },
+          }),
+          prisma.userCharacter.updateMany({
+            where: {
+              ownerId: accountId,
+              name: {
+                contains: 'Traveler',
+              },
+              NOT: { name },
+            },
+            data: {
+              level: progression.level,
+              ascension: progression.ascension,
+            },
+          }),
+        ])
+      }
+    } else {
+      await prisma.userCharacter.upsert({
+        where: { name_ownerId: { name, ownerId: accountId } },
+        create: {
+          ownerId: accountId,
+          name,
+          ...DEFAULT_PROGRESSION,
+          ...progression,
+        },
+        update: {
+          ...progression,
+        },
+      })
+    }
+
+    await Redis.del(getRedisCharacterKeys(accountId))
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 export async function upsertCharacterTrack({
@@ -336,30 +467,19 @@ export async function upsertCharacterTrack({
   elementalBurst?: number
   accountId: string
 }) {
-  return prisma.userCharacter.upsert({
-    where: {
-      name_ownerId: {
-        name,
-        ownerId: accountId,
-      },
-    },
-    create: {
-      name,
-      ownerId: accountId,
-      ...DEFAULT_PROGRESSION,
-      track: {
-        create: {
-          targetLevel: level,
-          targetAscension: ascension,
-          targetNormalAttack: normalAttack,
-          targetElementalSkill: elementalSkill,
-          targetElementalBurst: elementalBurst,
+  try {
+    await prisma.userCharacter.upsert({
+      where: {
+        name_ownerId: {
+          name,
+          ownerId: accountId,
         },
       },
-    },
-    update: {
-      track: {
-        upsert: {
+      create: {
+        name,
+        ownerId: accountId,
+        ...DEFAULT_PROGRESSION,
+        track: {
           create: {
             targetLevel: level,
             targetAscension: ascension,
@@ -367,17 +487,34 @@ export async function upsertCharacterTrack({
             targetElementalSkill: elementalSkill,
             targetElementalBurst: elementalBurst,
           },
-          update: {
-            targetLevel: level,
-            targetAscension: ascension,
-            targetNormalAttack: normalAttack,
-            targetElementalSkill: elementalSkill,
-            targetElementalBurst: elementalBurst,
+        },
+      },
+      update: {
+        track: {
+          upsert: {
+            create: {
+              targetLevel: level,
+              targetAscension: ascension,
+              targetNormalAttack: normalAttack,
+              targetElementalSkill: elementalSkill,
+              targetElementalBurst: elementalBurst,
+            },
+            update: {
+              targetLevel: level,
+              targetAscension: ascension,
+              targetNormalAttack: normalAttack,
+              targetElementalSkill: elementalSkill,
+              targetElementalBurst: elementalBurst,
+            },
           },
         },
       },
-    },
-  })
+    })
+
+    await Redis.del(getRedisCharacterKeys(accountId))
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 export async function updateTrackCharacter({
@@ -397,16 +534,26 @@ export async function updateTrackCharacter({
   elementalBurst?: number
   accountId: string
 }) {
-  return prisma.characterTrack.update({
-    where: { name_ownerId: { name, ownerId: accountId } },
-    data: {
-      targetLevel: level,
-      targetAscension: ascension,
-      targetNormalAttack: normalAttack,
-      targetElementalSkill: elementalSkill,
-      targetElementalBurst: elementalBurst,
-    },
-  })
+  try {
+    await prisma.characterTrack.update({
+      where: { name_ownerId: { name, ownerId: accountId } },
+      data: {
+        targetLevel: level,
+        targetAscension: ascension,
+        targetNormalAttack: normalAttack,
+        targetElementalSkill: elementalSkill,
+        targetElementalBurst: elementalBurst,
+      },
+    })
+
+    await Redis.del([
+      `getUserNonTrackableCharactersName:${accountId}`,
+      `getUserTrackCharacters:${accountId}`,
+      `getUserTrackCharacter:${accountId}`,
+    ])
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 export async function deleteTrackCharacter({
@@ -416,23 +563,42 @@ export async function deleteTrackCharacter({
   name: string
   accountId: string
 }) {
-  return prisma.characterTrack.delete({
-    where: { name_ownerId: { name, ownerId: accountId } },
-  })
+  try {
+    await prisma.characterTrack.delete({
+      where: { name_ownerId: { name, ownerId: accountId } },
+    })
+
+    await Redis.del([
+      `getUserNonTrackableCharactersName:${accountId}`,
+      `getUserTrackCharacters:${accountId}`,
+      `getUserTrackCharacter:${accountId}`,
+    ])
+  } catch (error) {
+    console.error(error)
+  }
 }
 
-export async function updateCharacterTrackOrder(
+export async function updateCharacterTrackOrder({
+  orders,
+  accountId,
+}: {
   orders: {
     id: string
     priority: number
   }[]
-) {
-  const queries = orders.map((order) =>
-    prisma.characterTrack.update({
-      where: { id: order.id },
-      data: { priority: order.priority },
-    })
-  )
+  accountId: string
+}) {
+  try {
+    const queries = orders.map((order) =>
+      prisma.characterTrack.update({
+        where: { id: order.id },
+        data: { priority: order.priority },
+      })
+    )
+    await prisma.$transaction(queries)
 
-  return prisma.$transaction(queries)
+    await Redis.del(`getUserTrackCharacters:${accountId}`)
+  } catch (error) {
+    console.error(error)
+  }
 }
