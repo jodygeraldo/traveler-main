@@ -1,3 +1,4 @@
+import * as RemixNode from '@remix-run/node'
 import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import * as CharacterData from '~/data/character.server'
@@ -11,10 +12,34 @@ export function getMissingCharacters(names: string[]) {
     .map((character) => character.name)
 }
 
-export function validateCharacter(
+export function isValidCharacterName(
   name: string | undefined
 ): name is CharacterType.Name {
-  return CharacterData.characters.findIndex((c) => c.name === name) !== -1
+  return CharacterData.characters.some((character) => character.name === name)
+}
+
+export function parseCharacterNameOrThrow({
+  name,
+  doDesglugify,
+}: {
+  name: string | undefined
+  doDesglugify?: boolean
+}): CharacterType.Name {
+  const BaseSchema = Zod.string()
+  const Schema = doDesglugify
+    ? BaseSchema.transform((str) => Utils.deslugify(str))
+    : BaseSchema
+
+  const updatedName = Schema.parse(name)
+
+  if (!isValidCharacterName(updatedName)) {
+    throw RemixNode.json(`Character ${updatedName} not found`, {
+      status: 404,
+      statusText: 'Character Not Found',
+    })
+  }
+
+  return updatedName
 }
 
 const DEFAULT_PROGRESSION: CharacterType.Progression = {
@@ -668,13 +693,12 @@ export function getCharactersTrackItems(
   }
 
   return tracks.map((track) => {
-    if (!validateCharacter(track.name)) {
-      throw new Error('Invalid character name')
-    }
-    const itemNames = getItemsToRetrieve(track.name)
+    const name = parseCharacterNameOrThrow({ name: track.name })
+
+    const itemNames = getItemsToRetrieve(name)
 
     const includedAscensionItems = getIncludedAscensionItems({
-      name: track.name,
+      name,
       itemNames,
       ascension: track.ascension,
     })

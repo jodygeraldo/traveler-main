@@ -38,12 +38,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
 
   const { name, ...data } = result.data
 
-  if (!CharacterUtils.validateCharacter(name)) {
-    throw RemixNode.json(
-      { message: `There is no character with name ${name}` },
-      { status: 404, statusText: 'Character not found' }
-    )
-  }
+  const parsedName = CharacterUtils.parseCharacterNameOrThrow({ name })
 
   const progression = {
     level: data.level
@@ -81,7 +76,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
   }
 
   await CharacterModel.upsertCharacterTrack({
-    name,
+    name: parsedName,
     ascension: data.ascension,
     ...progression,
     accountId,
@@ -93,17 +88,17 @@ export async function action({ request }: RemixNode.ActionArgs) {
 export async function loader({ request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
 
-  const userTrackableCharacterNames =
+  const userNonTrackableCharacterNames =
     await CharacterModel.getUserNonTrackableCharactersName(accountId)
-  const nonTrackCharacterNames = CharacterUtils.getMissingCharacters(
-    userTrackableCharacterNames
+  const trackableCharacterNames = CharacterUtils.getMissingCharacters(
+    userNonTrackableCharacterNames
   )
 
-  return RemixNode.json({ nonTrackCharacterNames })
+  return RemixNode.json({ trackableCharacterNames: trackableCharacterNames })
 }
 
 export default function AddTrackPage() {
-  const { nonTrackCharacterNames } = RemixReact.useLoaderData<typeof loader>()
+  const { trackableCharacterNames } = RemixReact.useLoaderData<typeof loader>()
 
   const submitFetcher = RemixReact.useFetcher<{
     ok: boolean
@@ -196,9 +191,9 @@ export default function AddTrackPage() {
                           </div>
 
                           <div className="space-y-6 py-6 sm:space-y-0 sm:divide-y sm:divide-gray-6 sm:py-0">
-                            {nonTrackCharacterNames.length > 0 ? (
+                            {trackableCharacterNames.length > 0 ? (
                               <Combobox
-                                options={nonTrackCharacterNames}
+                                options={trackableCharacterNames}
                                 fetchProgressionHandler={handleFetchProgression}
                               />
                             ) : (
@@ -297,11 +292,11 @@ export default function AddTrackPage() {
                               disabled={busy}
                               onClick={() => setOpen(false)}
                             >
-                              {nonTrackCharacterNames.length > 0
+                              {trackableCharacterNames.length > 0
                                 ? 'Cancel'
                                 : 'Close'}
                             </Button.Base>
-                            {nonTrackCharacterNames.length > 0 && (
+                            {trackableCharacterNames.length > 0 && (
                               <Button.Base
                                 id="track"
                                 type="submit"

@@ -37,12 +37,9 @@ export async function action({ request }: RemixNode.ActionArgs) {
 
   const { name, ...data } = result.data
 
-  if (!CharacterUtils.validateCharacter(name)) {
-    throw RemixNode.json(
-      { message: `There is no character with name ${name}` },
-      { status: 404, statusText: 'Character not found' }
-    )
-  }
+  const parsedName = CharacterUtils.parseCharacterNameOrThrow({
+    name,
+  })
 
   const progression = {
     level: data.level
@@ -80,7 +77,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
   }
 
   await CharacterModel.updateTrackCharacter({
-    name,
+    name: parsedName,
     ascension: data.ascension,
     ...progression,
     accountId,
@@ -92,16 +89,10 @@ export async function action({ request }: RemixNode.ActionArgs) {
 export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
 
-  const name = Zod.string()
-    .transform((n) => Utils.deslugify(n))
-    .parse(params.name)
-
-  if (!CharacterUtils.validateCharacter(name)) {
-    throw RemixNode.json(
-      { message: `There is no character with name ${name}` },
-      { status: 404, statusText: 'Character not found' }
-    )
-  }
+  const name = CharacterUtils.parseCharacterNameOrThrow({
+    name: params.name,
+    doDesglugify: true,
+  })
 
   const track = await CharacterModel.getUserTrackCharacter({
     name,

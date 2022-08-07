@@ -1,7 +1,5 @@
 import * as RemixNode from '@remix-run/node'
-import * as Zod from 'zod'
 
-export function loader({ params }: RemixNode.LoaderArgs) {
-  const name = Zod.string().parse(params.name)
-  return RemixNode.redirect(`/character/${name}/required-items`)
+export function loader({ request }: RemixNode.LoaderArgs) {
+  return RemixNode.redirect(`${new URL(request.url).toString()}/required-items`)
 }

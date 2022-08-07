@@ -2,7 +2,6 @@ import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as ReactTable from '@tanstack/react-table'
 import * as React from 'react'
-import * as Zod from 'zod'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
@@ -22,15 +21,10 @@ export const meta: RemixNode.MetaFunction = ({ params }) => ({
 export async function loader({ params, request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
 
-  const name = Zod.string()
-    .transform((str) => Utils.deslugify(str))
-    .parse(params.name)
-  if (!CharacterUtils.validateCharacter(name)) {
-    throw RemixNode.json(
-      { message: `There is no character with name ${name}` },
-      { status: 404, statusText: 'Character not found' }
-    )
-  }
+  const name = CharacterUtils.parseCharacterNameOrThrow({
+    name: params.name,
+    doDesglugify: true,
+  })
 
   const userCharacter = await CharacterModel.getUserCharacter({
     name,

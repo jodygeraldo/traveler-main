@@ -35,12 +35,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
 
   const { name, ...progression } = result.data
 
-  if (!CharacterUtils.validateCharacter(name)) {
-    throw RemixNode.json(`Character ${name} not found`, {
-      status: 404,
-      statusText: 'Character Not Found',
-    })
-  }
+  const parsedName = CharacterUtils.parseCharacterNameOrThrow({ name })
 
   const errors = CharacterUtils.validateAscensionRequirement(progression)
   if (errors) {
@@ -48,12 +43,12 @@ export async function action({ request }: RemixNode.ActionArgs) {
   }
 
   await CharacterModel.upsertCharacter({
-    name,
+    name: parsedName,
     progression,
     accountId,
   })
 
-  return RemixNode.json(null)
+  return RemixNode.json({ success: true, errors: {} })
 }
 
 export async function loader({ request }: RemixNode.LoaderArgs) {
