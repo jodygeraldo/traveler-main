@@ -59,9 +59,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
 export async function loader({ request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
 
-  const userCharacters = await CharacterModel.getUserCharacters({
-    accountId,
-  })
+  const userCharacters = await CharacterModel.getUserCharacters(accountId)
   const characters = CharacterUtils.getCharacters(userCharacters)
 
   return RemixNode.json({ characters })
