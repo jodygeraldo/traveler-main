@@ -32,7 +32,7 @@ export function CharacterCustomTableHeading({
                   : Utils.getImageSrc(name)
               }.png`}
               alt=""
-              className="h-8 w-8 flex-shrink-0"
+              className="h-8 w-8 flex-shrink-0 rounded-full bg-primary-9"
               width={32}
               height={32}
             />
@@ -69,7 +69,7 @@ export function TravelerGeoCustomTableHeading({
               <Image
                 src={`/talent/${t}_${Utils.getImageSrc(name)}.png`}
                 alt=""
-                className="h-8 w-8 flex-shrink-0"
+                className="h-8 w-8 flex-shrink-0 rounded-full bg-primary-9"
                 width={32}
                 height={32}
               />
@@ -80,7 +80,7 @@ export function TravelerGeoCustomTableHeading({
             <Image
               src={`/talent/normal_attack_sword.png`}
               alt=""
-              className="h-8 w-8 flex-shrink-0"
+              className="h-8 w-8 flex-shrink-0 rounded-full bg-primary-9"
               width={32}
               height={32}
             />

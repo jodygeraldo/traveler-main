@@ -187,7 +187,7 @@ export default function Toolbar() {
                 alt=""
                 width={24}
                 height={24}
-                className="h-6 w-6"
+                className="h-6 w-6 rounded-full bg-primary-9"
               />
             </ToggleItem>
           ))}
@@ -212,7 +212,7 @@ export default function Toolbar() {
                 alt=""
                 width={24}
                 height={24}
-                className="h-6 w-6"
+                className="h-6 w-6 rounded-full bg-primary-9"
               />
             </ToggleItem>
           ))}
@@ -285,7 +285,7 @@ export default function Toolbar() {
                 alt=""
                 width={24}
                 height={24}
-                className="h-6 w-6"
+                className="h-6 w-6 rounded-full bg-primary-9"
               />
             </ToggleItem>
           ))}
@@ -307,7 +307,7 @@ export default function Toolbar() {
                 alt=""
                 width={24}
                 height={24}
-                className="h-6 w-6"
+                className="h-6 w-6 rounded-full bg-primary-9"
               />
             </ToggleItem>
           ))}

@@ -75,14 +75,17 @@ export function Talent({
   size?: 'sm' | 'md' | 'lg'
 }) {
   return (
-    <div className="flex items-center">
+    <div className="flex items-center gap-0.5">
       <Tooltip text={label}>
         <Image
           src={`/talent/${type}_${Utils.getImageSrc(
             type === 'normal_attack' ? weapon : name
           )}.png`}
           alt={label}
-          className={clsx(sizes[size][0], 'flex-shrink-0')}
+          className={clsx(
+            sizes[size][0],
+            'flex-shrink-0 rounded-full bg-primary-9'
+          )}
           width={sizes[size][1]}
           height={sizes[size][1]}
         />

@@ -25,7 +25,7 @@ export default function CharacterCustomFirstCell({
             : Utils.getImageSrc(name)
         }.png`}
         alt=""
-        className="h-6 w-6 flex-shrink-0"
+        className="h-6 w-6 flex-shrink-0 rounded-full bg-primary-9"
         width={24}
         height={24}
       />
