@@ -160,9 +160,9 @@ export default function Toolbar() {
               <Image
                 src={image}
                 alt=""
-                width={20}
-                height={20}
-                className="h-5 w-5"
+                width={24}
+                height={24}
+                className="h-6 w-6"
               />
             </ToggleItem>
           ))}
@@ -185,9 +185,9 @@ export default function Toolbar() {
               <Image
                 src={image}
                 alt=""
-                width={20}
-                height={20}
-                className="h-5 w-5"
+                width={24}
+                height={24}
+                className="h-6 w-6"
               />
             </ToggleItem>
           ))}
@@ -210,9 +210,9 @@ export default function Toolbar() {
               <Image
                 src={image}
                 alt=""
-                width={20}
-                height={20}
-                className="h-5 w-5"
+                width={24}
+                height={24}
+                className="h-6 w-6"
               />
             </ToggleItem>
           ))}
@@ -233,14 +233,14 @@ export default function Toolbar() {
           <ToggleItem value="4" label="4 star">
             <Icon.Solid
               name="star"
-              className="h-5 w-5 text-rarity-4"
+              className="h-6 w-6 text-rarity-4"
               aria-hidden
             />
           </ToggleItem>
           <ToggleItem value="5" label="5 star">
             <Icon.Solid
               name="star"
-              className="h-5 w-5 text-rarity-5"
+              className="h-6 w-6 text-rarity-5"
               aria-hidden
             />
           </ToggleItem>
@@ -261,9 +261,9 @@ export default function Toolbar() {
               <Image
                 src={image}
                 alt=""
-                width={20}
-                height={20}
-                className="h-5 w-5"
+                width={24}
+                height={24}
+                className="h-6 w-6"
               />
             </ToggleItem>
           ))}
@@ -283,9 +283,9 @@ export default function Toolbar() {
               <Image
                 src={image}
                 alt=""
-                width={20}
-                height={20}
-                className="h-5 w-5"
+                width={24}
+                height={24}
+                className="h-6 w-6"
               />
             </ToggleItem>
           ))}
@@ -305,9 +305,9 @@ export default function Toolbar() {
               <Image
                 src={image}
                 alt=""
-                width={20}
-                height={20}
-                className="h-5 w-5"
+                width={24}
+                height={24}
+                className="h-6 w-6"
               />
             </ToggleItem>
           ))}
@@ -325,14 +325,14 @@ export default function Toolbar() {
           <ToggleItem value="4" label="4 star">
             <Icon.Solid
               name="star"
-              className="h-5 w-5 text-rarity-4"
+              className="h-6 w-6 text-rarity-4"
               aria-hidden
             />
           </ToggleItem>
           <ToggleItem value="5" label="5 star">
             <Icon.Solid
               name="star"
-              className="h-5 w-5 text-rarity-5"
+              className="h-6 w-6 text-rarity-5"
               aria-hidden
             />
           </ToggleItem>
