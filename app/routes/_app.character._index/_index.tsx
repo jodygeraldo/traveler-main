@@ -1,5 +1,6 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
+import * as React from 'react'
 import * as RPH from 'remix-params-helper'
 import * as Zod from 'zod'
 import Search from '~/components/Search'
@@ -52,39 +53,11 @@ export async function action({ request }: RemixNode.ActionArgs) {
   return RemixNode.json({ success: true, errors: {} })
 }
 
-const SearchParamsSchema = Zod.object({
-  vision: Zod.string().optional(),
-  weapon: Zod.string().optional(),
-  region: Zod.string().optional(),
-  rarity: Zod.number().optional(),
-})
-
 export async function loader({ request }: RemixNode.LoaderArgs) {
-  const result = RPH.getSearchParams(request, SearchParamsSchema)
-  if (!result.success) {
-    throw RemixNode.json(
-      { success: result.success, errors: result.errors },
-      { status: 400 }
-    )
-  }
-
-  const { vision, weapon, region, rarity } = result.data
-
   const accountId = await Session.requireAccountId(request)
 
-  console.time('search')
   const userCharacters = await CharacterModel.getUserCharacters(accountId)
-  console.timeEnd('search')
-  const characters = CharacterUtils.getCharacters(userCharacters).filter(
-    (c) => {
-      if (vision && c.vision !== vision.toUpperCase()) return false
-      if (weapon && c.weapon !== weapon.toUpperCase()) return false
-      if (region && c.region !== region.toUpperCase()) return false
-      if (rarity && c.rarity !== rarity) return false
-
-      return true
-    }
-  )
+  const characters = CharacterUtils.getCharacters(userCharacters)
 
   return RemixNode.json({ characters })
 }
@@ -92,8 +65,27 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
 export default function CharactersPage() {
   const { characters } = RemixReact.useLoaderData<typeof loader>()
 
+  const [searchParams] = RemixReact.useSearchParams()
+  const vision = searchParams.get('vision')
+  const weapon = searchParams.get('weapon')
+  const region = searchParams.get('region')
+  const rarity = searchParams.get('rarity')
+
+  const filteredCharacters = React.useMemo(
+    () =>
+      characters.filter((c) => {
+        if (vision && c.vision !== vision.toUpperCase()) return false
+        if (weapon && c.weapon !== weapon.toUpperCase()) return false
+        if (region && c.region !== region.toUpperCase()) return false
+        if (rarity && c.rarity.toString() !== rarity) return false
+
+        return true
+      }),
+    [characters, vision, weapon, region, rarity]
+  )
+
   const { searchItems, showSearch, changeHandler } = useSearchFilter({
-    items: characters,
+    items: filteredCharacters,
     searchBy: 'name',
   })
 
@@ -117,8 +109,16 @@ export default function CharactersPage() {
       </div>
 
       <div className="mt-4">
-        <CharacterGridView characters={showSearch ? searchItems : characters} />
+        <CharacterGridView
+          characters={showSearch ? searchItems : filteredCharacters}
+        />
       </div>
     </main>
   )
+}
+
+export const unstable_shouldReload: RemixReact.ShouldReloadFunction = ({
+  submission,
+}) => {
+  return !!submission && submission.method !== 'GET'
 }
