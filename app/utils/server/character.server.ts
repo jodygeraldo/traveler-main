@@ -535,9 +535,9 @@ export function getCharactersTrackItems(
     elementalBurst: { current: number; target: number | null }
   }) {
     const minIndex = Math.min(
-      normalAttack.current - 1,
-      elementalSkill.current - 1,
-      elementalBurst.current - 1
+      normalAttack.target ? normalAttack.current - 1 : 9,
+      elementalSkill.target ? elementalSkill.current - 1 : 9,
+      elementalBurst.target ? elementalBurst.current - 1 : 9
     )
 
     const maxIndex = Math.max(
@@ -615,13 +615,13 @@ export function getCharactersTrackItems(
       const includedNormal = getIncludedItems({
         itemNames,
         includedIndexArray: includedIndexArrayNormal,
-        minIndex: normalAttack.current - 1,
+        minIndex: normalAttack.target ? normalAttack.current - 1 : 9,
         maxIndex: normalAttack.target ? normalAttack.target - 1 : 0,
       })
 
       const minIndexElemental = Math.min(
-        elementalSkill.current - 1,
-        elementalBurst.current - 1
+        elementalSkill.target ? elementalSkill.current - 1 : 9,
+        elementalBurst.target ? elementalBurst.current - 1 : 9
       )
 
       const maxIndexElemental = Math.max(
