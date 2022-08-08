@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { IconSolid } from './Icon'
+import * as Icon from './Icon'
 
 interface Controlled {
   value?: string
@@ -28,7 +28,7 @@ const Search = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
           className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
           aria-hidden="true"
         >
-          <IconSolid
+          <Icon.Solid
             name="search"
             className="mr-3 h-4 w-4 text-gray-8"
             aria-hidden="true"

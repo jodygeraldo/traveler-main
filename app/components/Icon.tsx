@@ -250,7 +250,7 @@ interface CustomProps extends React.ComponentPropsWithRef<'svg'> {
   strokeWidth?: number
 }
 
-const IconCustom = React.forwardRef<SVGSVGElement, CustomProps>(
+export const IconCustom = React.forwardRef<SVGSVGElement, CustomProps>(
   (
     {
       name,
@@ -281,7 +281,7 @@ const IconCustom = React.forwardRef<SVGSVGElement, CustomProps>(
 )
 IconCustom.displayName = 'IconCustom'
 
-const IconOutline = React.forwardRef<SVGSVGElement, Props>(
+export const IconOutline = React.forwardRef<SVGSVGElement, Props>(
   ({ name, ...props }, ref) => (
     <svg
       ref={ref}
@@ -299,7 +299,7 @@ const IconOutline = React.forwardRef<SVGSVGElement, Props>(
 )
 IconOutline.displayName = 'IconOutline'
 
-const IconSolid = React.forwardRef<SVGSVGElement, Props>(
+export const IconSolid = React.forwardRef<SVGSVGElement, Props>(
   ({ name, ...props }, ref) => (
     <svg
       ref={ref}
