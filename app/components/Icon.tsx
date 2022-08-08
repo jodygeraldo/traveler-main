@@ -232,7 +232,7 @@ type IconId =
   | 'zoomIn'
   | 'zoomOut'
 
-interface Props extends React.SVGAttributes<SVGElement> {
+interface Props extends React.ComponentPropsWithRef<'svg'> {
   name: IconId
 }
 
@@ -240,7 +240,7 @@ function camelToKebab(str: string): string {
   return str.replace(/([A-Z])/g, (_, g) => `-${(g as string).toLowerCase()}`)
 }
 
-interface Custom extends React.SVGAttributes<SVGElement> {
+interface CustomProps extends React.ComponentPropsWithRef<'svg'> {
   name: 'dragDotsHandle2'
   width?: number
   height?: number
@@ -250,19 +250,23 @@ interface Custom extends React.SVGAttributes<SVGElement> {
   strokeWidth?: number
 }
 
-export default function Icon({
-  name,
-  type,
-  width = 24,
-  height = 24,
-  viewBox = '0 0 24 24',
-  fill,
-  stroke,
-  strokeWidth,
-  ...props
-}: Custom) {
-  return (
+const IconCustom = React.forwardRef<SVGSVGElement, CustomProps>(
+  (
+    {
+      name,
+      type,
+      width = 24,
+      height = 24,
+      viewBox = '0 0 24 24',
+      fill,
+      stroke,
+      strokeWidth,
+      ...props
+    },
+    ref
+  ) => (
     <svg
+      ref={ref}
       width={width}
       height={height}
       viewBox={viewBox}
@@ -274,11 +278,13 @@ export default function Icon({
       <use href={`/icon/custom/${camelToKebab(name)}.svg#${name}`} />
     </svg>
   )
-}
+)
+IconCustom.displayName = 'IconCustom'
 
-export function IconOutline({ name, ...props }: Props) {
-  return (
+const IconOutline = React.forwardRef<SVGSVGElement, Props>(
+  ({ name, ...props }, ref) => (
     <svg
+      ref={ref}
       width="24"
       height="24"
       viewBox="0 0 24 24"
@@ -290,11 +296,13 @@ export function IconOutline({ name, ...props }: Props) {
       <use href={`/icon/outline/${camelToKebab(name)}.svg#${name}`} />
     </svg>
   )
-}
+)
+IconOutline.displayName = 'IconOutline'
 
-export function IconSolid({ name, ...props }: Props) {
-  return (
+const IconSolid = React.forwardRef<SVGSVGElement, Props>(
+  ({ name, ...props }, ref) => (
     <svg
+      ref={ref}
       width="20"
       height="20"
       viewBox="0 0 20 20"
@@ -304,8 +312,9 @@ export function IconSolid({ name, ...props }: Props) {
       <use href={`/icon/solid/${camelToKebab(name)}.svg#${name}`} />
     </svg>
   )
-}
+)
+IconSolid.displayName = 'IconSolid'
 
-export const Base = Icon
+export const Custom = IconCustom
 export const Solid = IconSolid
 export const Outline = IconOutline

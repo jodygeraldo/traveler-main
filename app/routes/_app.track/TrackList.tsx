@@ -67,7 +67,7 @@ export default function TrackList({ userTracks }: Props) {
                     //  onPointerDown={(e) => controls.start(e)}
                   >
                     <span className="sr-only">Drag handle</span>
-                    <Icon.Base
+                    <Icon.Custom
                       name="dragDotsHandle2"
                       width={15}
                       height={15}
