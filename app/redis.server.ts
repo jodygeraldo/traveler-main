@@ -1,25 +1,12 @@
 import * as Redis from 'redis'
 import invariant from 'tiny-invariant'
-
 import type * as Zod from 'zod'
 
 invariant(process.env.REDIS_URL, 'REDIS_URL must be set')
 
-let client: Redis.RedisClientType
+const client = Redis.createClient({ url: process.env.REDIS_URL })
 
-declare global {
-  var __redis__: Redis.RedisClientType
-}
-
-if (process.env.NODE_ENV === 'production') {
-  client = Redis.createClient({ url: process.env.REDIS_URL })
-} else {
-  if (!global.__redis__) {
-    global.__redis__ = Redis.createClient({ url: process.env.REDIS_URL })
-    client = global.__redis__
-  }
-  client = global.__redis__
-}
+client.on("error", (err) => console.log("Redis client error", err));
 
 export async function get(key: string) {
   try {
@@ -31,7 +18,7 @@ export async function get(key: string) {
   } catch (error) {
     console.error(`Redis Error .get: ${error}`)
   } finally {
-    await client.disconnect()
+    await client.quit()
   }
 }
 
@@ -42,7 +29,7 @@ export async function set(key: string, value: any) {
   } catch (error) {
     console.error(`Redis Error .set: ${error}`)
   } finally {
-    await client.disconnect()
+    await client.quit()
   }
 }
 
@@ -53,7 +40,7 @@ export async function del(key: string | string[]) {
   } catch (error) {
     console.error(`Redis Error .del: ${error}`)
   } finally {
-    await client.disconnect()
+    await client.quit()
   }
 }
 
