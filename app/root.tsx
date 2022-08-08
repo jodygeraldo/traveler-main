@@ -68,3 +68,7 @@ export default function App() {
     </html>
   )
 }
+
+export function unstable_shouldReload() {
+  return false
+}
