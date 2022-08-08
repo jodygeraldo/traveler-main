@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import * as Button from '~/components/Button'
 import Image from '~/components/Image'
 import type * as CharacterType from '~/types/character'
@@ -16,12 +17,19 @@ export default function CharacterGridView({ characters }: Props) {
         id="grid-view"
         className="grid grid-cols-1 gap-y-4 gap-x-6 md:grid-cols-2 lg:grid-cols-3"
       >
-        {characters.map((character) => (
-          <CharacterGridItem key={character.name} {...character} />
-        ))}
+        <AnimatePresence>
+          {characters.map((character) => (
+            <CharacterGridItem key={character.name} {...character} />
+          ))}
+        </AnimatePresence>
       </ul>
     </div>
   )
+}
+
+const variants = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1 },
 }
 
 export function CharacterGridItem({
@@ -31,8 +39,16 @@ export function CharacterGridItem({
   talent,
   progression,
 }: CharacterType.CharacterWithProgression) {
+  const shouldReduceMotion = useReducedMotion()
+
   return (
-    <li className="bg-gray-2 sm:rounded-md">
+    <motion.li
+      layout={shouldReduceMotion ? undefined : true}
+      variants={variants}
+      initial="hidden"
+      animate="show"
+      className="bg-gray-2 sm:rounded-md"
+    >
       <div className="block sm:rounded-md">
         <ContextMenu name={name} progression={progression}>
           <div className="flex items-center rounded-md">
@@ -100,6 +116,6 @@ export function CharacterGridItem({
           </Button.Link>
         </div>
       </div>
-    </li>
+    </motion.li>
   )
 }
