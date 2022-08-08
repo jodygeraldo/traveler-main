@@ -94,11 +94,37 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
     userNonTrackableCharacterNames
   )
 
-  return RemixNode.json({ trackableCharacterNames: trackableCharacterNames })
+  const DEFAULT_PROGRESSION = {
+    level: 1,
+    ascension: 0,
+    normalAttack: 1,
+    elementalSkill: 1,
+    elementalBurst: 1,
+  }
+
+  let firstCharacter: CharacterTypes.CharacterNameWithProgression | undefined
+
+  if (trackableCharacterNames.length > 0) {
+    const characterProgression = await CharacterModel.getUserCharacter({
+      name: trackableCharacterNames[0] ?? '',
+      accountId,
+    })
+
+    firstCharacter = {
+      name: trackableCharacterNames[0],
+      progression: characterProgression || DEFAULT_PROGRESSION,
+    }
+  }
+
+  return RemixNode.json({
+    trackableCharacterNames,
+    firstCharacter,
+  })
 }
 
 export default function AddTrackPage() {
-  const { trackableCharacterNames } = RemixReact.useLoaderData<typeof loader>()
+  const { trackableCharacterNames, firstCharacter } =
+    RemixReact.useLoaderData<typeof loader>()
 
   const submitFetcher = RemixReact.useFetcher<{
     ok: boolean
@@ -192,10 +218,133 @@ export default function AddTrackPage() {
 
                           <div className="space-y-6 py-6 sm:space-y-0 sm:divide-y sm:divide-gray-6 sm:py-0">
                             {trackableCharacterNames.length > 0 ? (
-                              <Combobox
-                                options={trackableCharacterNames}
-                                fetchProgressionHandler={handleFetchProgression}
-                              />
+                              <>
+                                <Combobox
+                                  options={trackableCharacterNames}
+                                  fetchProgressionHandler={
+                                    handleFetchProgression
+                                  }
+                                />
+
+                                {(firstCharacter || character) && (
+                                  <>
+                                    <div className="px-4 sm:px-6 sm:py-5">
+                                      <p className="text-gray-11">
+                                        Last updated progression for{' '}
+                                        <span className="text-gray-12">
+                                          {character
+                                            ? character.name
+                                            : firstCharacter.name}
+                                        </span>
+                                      </p>
+                                    </div>
+
+                                    <ProgressionField
+                                      label="Level"
+                                      name="level"
+                                      currentValue={
+                                        character
+                                          ? character.progression.level
+                                          : firstCharacter.progression.level
+                                      }
+                                      min={
+                                        character
+                                          ? character.progression.level
+                                          : firstCharacter.progression.level
+                                      }
+                                      max={90}
+                                      error={submitFetcher.data?.errors?.level}
+                                    />
+
+                                    <ProgressionField
+                                      label="Ascension"
+                                      name="ascension"
+                                      currentValue={
+                                        character
+                                          ? character.progression.ascension
+                                          : firstCharacter.progression.ascension
+                                      }
+                                      min={
+                                        character
+                                          ? character.progression.ascension
+                                          : firstCharacter.progression.ascension
+                                      }
+                                      max={6}
+                                      error={
+                                        submitFetcher.data?.errors?.ascension
+                                      }
+                                    />
+
+                                    <ProgressionField
+                                      id="normal-attack"
+                                      label="Normal Attack"
+                                      name="normalAttack"
+                                      currentValue={
+                                        character
+                                          ? character.progression.normalAttack
+                                          : firstCharacter.progression
+                                              .normalAttack
+                                      }
+                                      min={
+                                        character
+                                          ? character.progression.normalAttack
+                                          : firstCharacter.progression
+                                              .normalAttack
+                                      }
+                                      max={10}
+                                      error={
+                                        submitFetcher.data?.errors?.normalAttack
+                                      }
+                                    />
+
+                                    <ProgressionField
+                                      id="elemental-skill"
+                                      label="Elemental Skill"
+                                      name="elementalSkill"
+                                      currentValue={
+                                        character
+                                          ? character.progression.elementalSkill
+                                          : firstCharacter.progression
+                                              .elementalSkill
+                                      }
+                                      min={
+                                        character
+                                          ? character.progression.elementalSkill
+                                          : firstCharacter.progression
+                                              .elementalSkill
+                                      }
+                                      max={10}
+                                      error={
+                                        submitFetcher.data?.errors
+                                          ?.elementalSkill
+                                      }
+                                    />
+
+                                    <ProgressionField
+                                      id="elemental-burst"
+                                      label="Elemental Burst"
+                                      name="elementalBurst"
+                                      currentValue={
+                                        character
+                                          ? character.progression.elementalBurst
+                                          : firstCharacter.progression
+                                              .elementalBurst
+                                      }
+                                      min={
+                                        character
+                                          ? character.progression.elementalBurst
+                                          : firstCharacter.progression
+                                              .elementalBurst
+                                      }
+                                      max={10}
+                                      error={
+                                        submitFetcher.data?.errors
+                                          ?.elementalBurst
+                                      }
+                                    />
+                                  </>
+                                )}
+                              </>
                             ) : (
                               <div className="mt-12 px-4 text-center sm:px-6">
                                 <h3 className="text-lg font-medium leading-6 text-gray-12">
@@ -207,79 +356,6 @@ export default function AddTrackPage() {
                                   characters maxed out and/or tracked.
                                 </p>
                               </div>
-                            )}
-
-                            {character && (
-                              <>
-                                <div className="px-4 sm:px-6 sm:py-5">
-                                  <p className="text-gray-11">
-                                    Last updated progression for{' '}
-                                    <span className="text-gray-12">
-                                      {character.name}
-                                    </span>
-                                  </p>
-                                </div>
-
-                                <ProgressionField
-                                  label="Level"
-                                  name="level"
-                                  currentValue={character.progression.level}
-                                  min={character.progression.level}
-                                  max={90}
-                                  error={submitFetcher.data?.errors?.level}
-                                />
-
-                                <ProgressionField
-                                  label="Ascension"
-                                  name="ascension"
-                                  currentValue={character.progression.ascension}
-                                  min={character.progression.ascension}
-                                  max={6}
-                                  error={submitFetcher.data?.errors?.ascension}
-                                />
-
-                                <ProgressionField
-                                  id="normal-attack"
-                                  label="Normal Attack"
-                                  name="normalAttack"
-                                  currentValue={
-                                    character.progression.normalAttack
-                                  }
-                                  min={character.progression.normalAttack}
-                                  max={10}
-                                  error={
-                                    submitFetcher.data?.errors?.normalAttack
-                                  }
-                                />
-
-                                <ProgressionField
-                                  id="elemental-skill"
-                                  label="Elemental Skill"
-                                  name="elementalSkill"
-                                  currentValue={
-                                    character.progression.elementalSkill
-                                  }
-                                  min={character.progression.elementalSkill}
-                                  max={10}
-                                  error={
-                                    submitFetcher.data?.errors?.elementalSkill
-                                  }
-                                />
-
-                                <ProgressionField
-                                  id="elemental-burst"
-                                  label="Elemental Burst"
-                                  name="elementalBurst"
-                                  currentValue={
-                                    character.progression.elementalBurst
-                                  }
-                                  min={character.progression.elementalBurst}
-                                  max={10}
-                                  error={
-                                    submitFetcher.data?.errors?.elementalBurst
-                                  }
-                                />
-                              </>
                             )}
                           </div>
                         </div>
