@@ -11,13 +11,25 @@ const DEFAULT_PROGRESSION = {
   elementalBurst: 1,
 }
 
-function getRedisCharacterKeys(accountId: string) {
+function getRedisCharacterKeys(accountId: string, name: string) {
+  const travelers = ['Traveler Anemo', 'Traveler Geo', 'Traveler Electro']
+  const keysWithName = travelers.includes(name)
+    ? travelers
+        .map((name) => [
+          `getUserCharacter:${name}:${accountId}`,
+          `getUserTrackCharacter:${name}:${accountId}`,
+        ])
+        .flat()
+    : [
+        `getUserCharacter:${name}:${accountId}`,
+        `getUserTrackCharacter:${name}:${accountId}`,
+      ]
+
   return [
+    ...keysWithName,
     `getUserCharacters:${accountId}`,
-    `getUserCharacter:${accountId}`,
     `getUserNonTrackableCharactersName:${accountId}`,
     `getUserTrackCharacters:${accountId}`,
-    `getUserTrackCharacter:${accountId}`,
   ]
 }
 
@@ -109,7 +121,7 @@ export async function getUserCharacter({
   accountId: string
 }) {
   const userCharacterCache = await Redis.getSafe({
-    key: `getUserCharacter:${accountId}`,
+    key: `getUserCharacter:${name}:${accountId}`,
     schema: UserCharacterSchema.nullable(),
   })
 
@@ -131,7 +143,7 @@ export async function getUserCharacter({
     },
   })
 
-  await Redis.set(`getUserCharacter:${accountId}`, userCharacter)
+  await Redis.set(`getUserCharacter:${name}:${accountId}`, userCharacter)
 
   return userCharacter
 }
@@ -239,7 +251,7 @@ export async function getUserTrackCharacter({
   accountId: string
 }) {
   const userTrackCharacterCache = await Redis.getSafe({
-    key: `getUserTrackCharacter:${accountId}`,
+    key: `getUserTrackCharacter:${name}:${accountId}`,
     schema: UserTrackCharacterSchema.nullable(),
   })
 
@@ -291,7 +303,7 @@ export async function getUserTrackCharacter({
   }
 
   await Redis.set(
-    `getUserTrackCharacter:${accountId}`,
+    `getUserTrackCharacter:${name}:${accountId}`,
     updatedUserTrackCharacter
   )
 
@@ -334,6 +346,8 @@ export async function updateCharacter({
           },
         }),
       ])
+
+      await Redis.del(getRedisCharacterKeys(accountId, name))
     } else {
       await prisma.userCharacter.upsert({
         where: { name_ownerId: { name, ownerId: accountId } },
@@ -347,9 +361,9 @@ export async function updateCharacter({
           ...progression,
         },
       })
-    }
 
-    await Redis.del(getRedisCharacterKeys(accountId))
+      await Redis.del(getRedisCharacterKeys(accountId, name))
+    }
   } catch (error) {
     console.error(error)
   }
@@ -444,7 +458,7 @@ export async function upsertCharacter({
       })
     }
 
-    await Redis.del(getRedisCharacterKeys(accountId))
+    await Redis.del(getRedisCharacterKeys(accountId, name))
   } catch (error) {
     console.error(error)
   }
@@ -511,7 +525,7 @@ export async function upsertCharacterTrack({
       },
     })
 
-    await Redis.del(getRedisCharacterKeys(accountId))
+    await Redis.del(getRedisCharacterKeys(accountId, name))
   } catch (error) {
     console.error(error)
   }
@@ -549,7 +563,7 @@ export async function updateTrackCharacter({
     await Redis.del([
       `getUserNonTrackableCharactersName:${accountId}`,
       `getUserTrackCharacters:${accountId}`,
-      `getUserTrackCharacter:${accountId}`,
+      `getUserTrackCharacter:${name}:${accountId}`,
     ])
   } catch (error) {
     console.error(error)
@@ -571,7 +585,7 @@ export async function deleteTrackCharacter({
     await Redis.del([
       `getUserNonTrackableCharactersName:${accountId}`,
       `getUserTrackCharacters:${accountId}`,
-      `getUserTrackCharacter:${accountId}`,
+      `getUserTrackCharacter:${name}:${accountId}`,
     ])
   } catch (error) {
     console.error(error)
