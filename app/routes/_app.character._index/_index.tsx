@@ -8,6 +8,7 @@ import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as CharacterUtils from '~/utils/server/character.server'
 import CharacterGridView from './CharacterGridView'
+import Toolbar from './Filter'
 
 export const meta: RemixNode.MetaFunction = () => ({
   title: 'Characters - Traveler Main',
@@ -51,11 +52,39 @@ export async function action({ request }: RemixNode.ActionArgs) {
   return RemixNode.json({ success: true, errors: {} })
 }
 
+const SearchParamsSchema = Zod.object({
+  vision: Zod.string().optional(),
+  weapon: Zod.string().optional(),
+  region: Zod.string().optional(),
+  rarity: Zod.number().optional(),
+})
+
 export async function loader({ request }: RemixNode.LoaderArgs) {
+  const result = RPH.getSearchParams(request, SearchParamsSchema)
+  if (!result.success) {
+    throw RemixNode.json(
+      { success: result.success, errors: result.errors },
+      { status: 400 }
+    )
+  }
+
+  const { vision, weapon, region, rarity } = result.data
+
   const accountId = await Session.requireAccountId(request)
 
+  console.time('search')
   const userCharacters = await CharacterModel.getUserCharacters(accountId)
-  const characters = CharacterUtils.getCharacters(userCharacters)
+  console.timeEnd('search')
+  const characters = CharacterUtils.getCharacters(userCharacters).filter(
+    (c) => {
+      if (vision && c.vision !== vision.toUpperCase()) return false
+      if (weapon && c.weapon !== weapon.toUpperCase()) return false
+      if (region && c.region !== region.toUpperCase()) return false
+      if (rarity && c.rarity !== rarity) return false
+
+      return true
+    }
+  )
 
   return RemixNode.json({ characters })
 }
@@ -83,7 +112,11 @@ export default function CharactersPage() {
         </div>
       </div>
 
-      <div className="mt-12">
+      <div className="mt-8 sm:px-6 lg:px-8">
+        <Toolbar />
+      </div>
+
+      <div className="mt-4">
         <CharacterGridView characters={showSearch ? searchItems : characters} />
       </div>
     </main>
