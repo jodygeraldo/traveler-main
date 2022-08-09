@@ -16,6 +16,7 @@ import ProgressionField from './ProgressionField'
 const FormDataSchema = Zod.object({
   kind: Zod.enum([
     'edit',
+    'delete',
     'Ascension',
     'Normal Attack',
     'Elemental Skill',
@@ -30,6 +31,7 @@ const FormDataSchema = Zod.object({
   editNormalAttack: Zod.number().optional(),
   editElementalSkill: Zod.number().optional(),
   editElementalBurst: Zod.number().optional(),
+  deleteName: Zod.string().optional(),
 })
 
 export async function action({ params, request }: RemixNode.ActionArgs) {
@@ -44,7 +46,17 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
     throw new Error('Invalid data')
   }
 
-  const { kind, control, level, targetLevel, ...editProgression } = result.data
+  const { kind, control, level, targetLevel, deleteName, ...editProgression } =
+    result.data
+
+  if (kind === 'delete') {
+    await CharacterModel.deleteTrackCharacter({
+      name: Zod.string().parse(deleteName),
+      accountId,
+    })
+
+    return RemixNode.redirect('/track')
+  }
 
   if (kind === 'edit') {
     const name = Zod.string().parse(editProgression.editName)
@@ -120,10 +132,16 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     doDesglugify: true,
   })
 
-  const track = await CharacterModel.getUserTrackCharacter({
-    name,
-    accountId,
-  })
+  const [track, trackStatus] = await Promise.all([
+    CharacterModel.getUserTrackCharacter({
+      name,
+      accountId,
+    }),
+    CharacterModel.getUserCharacterTrackStatus({
+      name,
+      accountId,
+    }),
+  ])
   if (!track) {
     throw RemixNode.json(
       { message: `You don't have track character with name ${name}` },
@@ -148,11 +166,12 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     track,
     currentMaterials,
     materials,
+    trackStatus,
   })
 }
 
 export default function TrackDetailPage() {
-  const { track, materials, currentMaterials } =
+  const { track, materials, currentMaterials, trackStatus } =
     RemixReact.useLoaderData<typeof loader>()
   const name = Utils.deslugify(RemixReact.useParams().name ?? '')
 
@@ -324,41 +343,57 @@ export default function TrackDetailPage() {
             </div>
           </section>
         </div>
-        {materials.length !== 0 && (
+        {trackStatus.isMaxLevel || materials.length !== 0 ? (
           <div className="grid grid-cols-1 gap-4">
-            <section aria-labelledby="announcements-title">
+            <section aria-labelledby="side-title">
               <div className="overflow-hidden rounded-lg bg-gray-2 shadow">
                 <div className="p-6">
-                  <h2
-                    className="font-medium text-gray-12"
-                    id="announcements-title"
-                  >
-                    Materials
+                  <h2 className="font-medium text-gray-12" id="side-title">
+                    {trackStatus.isMaxLevel ? 'Max level' : 'Materials'}
                   </h2>
-                  <div className="mt-6 flow-root">
-                    {materials.map((m) => (
-                      <div key={m.key} className="flex items-center gap-2">
-                        <Image
-                          src={`/item/${Utils.getImageSrc(m.key)}.png`}
-                          className="h-5 w-5"
-                          alt=""
-                          width={20}
-                          height={20}
-                        />
-                        <span className="truncate capitalize text-gray-11">
-                          {m.key}
-                        </span>
-                        <span className="text-xs tabular-nums text-gray-12 xs:text-sm">
-                          x{m.value.toLocaleString()}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
+                  {trackStatus.isMaxLevel && (
+                    <RemixReact.Form replace={true} method="post">
+                      <p className="mt-6 text-sm text-gray-11">
+                        Your character is already on max levels.
+                      </p>
+                      <input type="hidden" name="deleteName" value={name} />
+                      <Button.Base
+                        type="submit"
+                        name="kind"
+                        value="delete"
+                        className="mt-2 w-full"
+                        variant="info"
+                      >
+                        Delete Track
+                      </Button.Base>
+                    </RemixReact.Form>
+                  )}
+                  {materials.length !== 0 && (
+                    <div className="mt-6 flow-root">
+                      {materials.map((m) => (
+                        <div key={m.key} className="flex items-center gap-2">
+                          <Image
+                            src={`/item/${Utils.getImageSrc(m.key)}.png`}
+                            className="h-5 w-5"
+                            alt=""
+                            width={20}
+                            height={20}
+                          />
+                          <span className="truncate capitalize text-gray-11">
+                            {m.key}
+                          </span>
+                          <span className="text-xs tabular-nums text-gray-12 xs:text-sm">
+                            x{m.value.toLocaleString()}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </section>
           </div>
-        )}
+        ) : null}
       </div>
     </main>
   )
