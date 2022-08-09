@@ -124,6 +124,12 @@ export function getCharacterProgression({
   return { name, progression }
 }
 
+export function getCharacterDetail(name: CharacterType.Name) {
+  const character = CharacterData.charactersDetail.find((c) => c.name === name)
+  invariant(character, `Character ${name} not found`)
+  return character
+}
+
 export function getRequiredMaterial(name: CharacterType.Name) {
   const character = CharacterData.characterMaterial.find(
     (character) => character.name === name
