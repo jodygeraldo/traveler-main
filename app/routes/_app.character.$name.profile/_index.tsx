@@ -24,6 +24,7 @@ export default function CharacterProfilePage() {
         width={384}
         height="auto"
         className="h-auto sm:w-96"
+        centered
       />
 
       <div className="mx-auto mt-6 max-w-5xl">

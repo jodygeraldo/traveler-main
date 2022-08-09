@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import * as React from 'react'
 
 interface BaseProps {
@@ -6,6 +7,7 @@ interface BaseProps {
   className?: string
   width: number
   height?: number | string
+  centered?: boolean
 }
 
 interface Props
@@ -16,9 +18,11 @@ const PUBLIC_URL =
   'https://zgdynxzpcpwowgbwrwik.supabase.co/storage/v1/object/public/tm-image'
 
 const Image = React.forwardRef<HTMLImageElement, Props>(
-  ({ src, alt, className, width, height, ...props }, ref) => {
+  ({ src, alt, className, width, height, centered, ...props }, ref) => {
     return (
-      <picture className="flex flex-shrink-0 justify-center">
+      <picture
+        className={clsx(centered && 'justify-center', 'flex flex-shrink-0')}
+      >
         <source
           srcSet={`//images.weserv.nl/?url=${PUBLIC_URL}${src}&w=${width}${
             height ? '&h=' + height : ''
