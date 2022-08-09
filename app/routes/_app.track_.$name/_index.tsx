@@ -1,6 +1,7 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as RemixParamsHelper from 'remix-params-helper'
+import invariant from 'tiny-invariant'
 import * as Zod from 'zod'
 import * as Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
@@ -9,18 +10,26 @@ import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
 import * as CharacterUtils from '~/utils/server/character.server'
+import Dialog from './Dialog'
 import ProgressionField from './ProgressionField'
 
 const FormDataSchema = Zod.object({
   kind: Zod.enum([
+    'edit',
     'Ascension',
     'Normal Attack',
     'Elemental Skill',
     'Elemental Burst',
   ]),
-  control: Zod.enum(['increment', 'decrement']),
-  level: Zod.number().nonnegative(),
+  control: Zod.enum(['increment', 'decrement']).optional(),
+  level: Zod.number().nonnegative().optional(),
   targetLevel: Zod.number().nonnegative().optional(),
+  editName: Zod.string().optional(),
+  editAscension: Zod.number().optional(),
+  editLevel: Zod.number().optional(),
+  editNormalAttack: Zod.number().optional(),
+  editElementalSkill: Zod.number().optional(),
+  editElementalBurst: Zod.number().optional(),
 })
 
 export async function action({ params, request }: RemixNode.ActionArgs) {
@@ -35,7 +44,34 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
     throw new Error('Invalid data')
   }
 
-  const { kind, control, level, targetLevel } = result.data
+  const { kind, control, level, targetLevel, ...editProgression } = result.data
+
+  if (kind === 'edit') {
+    const name = Zod.string().parse(editProgression.editName)
+
+    const progression = {
+      ascension: Zod.number().parse(editProgression.editAscension),
+      level: editProgression.editLevel,
+      normalAttack: editProgression.editNormalAttack,
+      elementalSkill: editProgression.editElementalSkill,
+      elementalBurst: editProgression.editElementalBurst,
+    }
+
+    const parsedName = CharacterUtils.parseCharacterNameOrThrow({ name })
+
+    const errors = CharacterUtils.validateAscensionRequirement(progression)
+    if (errors) {
+      return RemixNode.json({ success: false, errors }, { status: 400 })
+    }
+
+    await CharacterModel.upsertCharacter({
+      name: parsedName,
+      progression,
+      accountId,
+    })
+
+    return RemixNode.json({ success: true, errors: {} })
+  }
 
   const progression: {
     level?: number
@@ -44,6 +80,9 @@ export async function action({ params, request }: RemixNode.ActionArgs) {
     elementalSkill?: number
     elementalBurst?: number
   } = {}
+
+  invariant(control !== undefined, 'control is required')
+  invariant(level !== undefined, 'level is required')
 
   const ascensionToLevelOnIncrease = [20, 40, 50, 60, 70, 90] as const
   const ascensionToLevelOnDecrease = [1, 20, 40, 50, 60, 70, 80] as const
@@ -220,12 +259,20 @@ export default function TrackDetailPage() {
                     </h3>
                   </div>
                   <div className="mt-5 flex justify-center sm:mt-0">
-                    <Button.Link
-                      to={`/character/${Utils.slugify(name)}/manual-levelup`}
-                      className="text-center"
+                    <Dialog
+                      name={name}
+                      progression={{
+                        level: track.level.current,
+                        ascension: track.ascension.current,
+                        normalAttack: track.normalAttack.current,
+                        elementalSkill: track.elementalSkill.current,
+                        elementalBurst: track.elementalBurst.current,
+                      }}
                     >
-                      Edit level
-                    </Button.Link>
+                      <Button.Base variant="basic" className="text-center">
+                        Edit level
+                      </Button.Base>
+                    </Dialog>
                   </div>
                 </div>
               </div>
