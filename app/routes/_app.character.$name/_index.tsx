@@ -12,6 +12,10 @@ import * as CharacterUtils from '~/utils/server/character.server'
 
 const navigation = [
   {
+    name: 'Profile',
+    to: './profile',
+  },
+  {
     name: 'Required Items',
     to: './required-items',
   },
