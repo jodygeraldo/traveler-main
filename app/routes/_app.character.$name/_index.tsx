@@ -16,8 +16,8 @@ const navigation = [
     to: './profile',
   },
   {
-    name: 'Required Items',
-    to: './required-items',
+    name: 'Material',
+    to: './material',
   },
 ]
 
