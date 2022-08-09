@@ -30,7 +30,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     name,
     accountId,
   })
-  const character = CharacterUtils.getCharacter({
+  const character = CharacterUtils.getCharacterWithProgression({
     name,
     progression: userCharacter,
   })
@@ -45,7 +45,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
   })
 }
 
-export default function CharacterPage() {
+export default function CharacterMaterialPage() {
   const { character, ascensionMaterial, talentMaterial } =
     RemixReact.useLoaderData<typeof loader>()
   const [hideAscension, setHideAscension] = React.useState(

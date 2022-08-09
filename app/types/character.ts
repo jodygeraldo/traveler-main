@@ -69,6 +69,22 @@ export type Character = {
   talent: [normalAttack: string, elementalSkill: string, elementalBurst: string]
 }
 
+export type CharacterDetail = {
+  name: Name
+  title: string
+  description: string
+  affiliation: string
+  constellation: string
+  hp: number
+  atk: number
+  def: number
+  ascensionBonus: {
+    stat: string
+    value: number
+    fixedValue?: boolean
+  }
+}
+
 export type AscensionMaterial = {
   gem: ItemType.AscensionGemGroupName
   boss?: ItemType.AscensionBoss

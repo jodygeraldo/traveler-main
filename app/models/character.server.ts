@@ -18,11 +18,13 @@ function getRedisCharacterKeys(accountId: string, name: string) {
         .map((name) => [
           `getUserCharacter:${name}:${accountId}`,
           `getUserTrackCharacter:${name}:${accountId}`,
+          `getUserCharacterTrackStatus:${name}:${accountId}`,
         ])
         .flat()
     : [
         `getUserCharacter:${name}:${accountId}`,
         `getUserTrackCharacter:${name}:${accountId}`,
+        `getUserCharacterTrackStatus:${name}:${accountId}`,
       ]
 
   return [
@@ -310,6 +312,52 @@ export async function getUserTrackCharacter({
   return updatedUserTrackCharacter
 }
 
+export async function getUserCharacterTrackStatus({
+  name,
+  accountId,
+}: {
+  name: CharacterType.Name
+  accountId: string
+}) {
+  const UserCharacterTrackStatusSchema = Zod.object({
+    tracked: Zod.boolean(),
+    isMaxLevel: Zod.boolean(),
+  })
+
+  const userCharacterTrackStatusCache = await Redis.getSafe({
+    key: `getUserCharacterTrackStatus:${name}:${accountId}`,
+    schema: UserCharacterTrackStatusSchema,
+  })
+
+  if (userCharacterTrackStatusCache) return userCharacterTrackStatusCache
+
+  const character = await prisma.userCharacter.findUnique({
+    where: { name_ownerId: { name, ownerId: accountId } },
+    include: { track: true },
+  })
+
+  const status = {
+    tracked: false,
+    isMaxLevel: false,
+  }
+
+  if (!character) {
+    await Redis.set(`getUserCharacterTrackStatus:${name}:${accountId}`, status)
+    return status
+  }
+
+  status.tracked = character.track !== null
+  status.isMaxLevel =
+    character.level === 90 &&
+    character.ascension === 6 &&
+    character.normalAttack === 10 &&
+    character.elementalSkill === 10 &&
+    character.elementalBurst === 10
+
+  await Redis.set(`getUserCharacterTrackStatus:${name}:${accountId}`, status)
+  return status
+}
+
 export async function updateCharacter({
   name,
   progression,
@@ -586,6 +634,7 @@ export async function deleteTrackCharacter({
       `getUserNonTrackableCharactersName:${accountId}`,
       `getUserTrackCharacters:${accountId}`,
       `getUserTrackCharacter:${name}:${accountId}`,
+      `getUserCharacterTrackStatus:${name}:${accountId}`
     ])
   } catch (error) {
     console.error(error)

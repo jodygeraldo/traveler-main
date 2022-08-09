@@ -92,7 +92,13 @@ export function getCharactersProgression(
   })
 }
 
-export function getCharacter({
+export function getCharacter(name: CharacterType.Name) {
+  const character = CharacterData.characters.find((c) => c.name === name)
+  invariant(character, `Character ${name} not found`)
+  return character
+}
+
+export function getCharacterWithProgression({
   name,
   progression,
 }: {
@@ -116,6 +122,12 @@ export function getCharacterProgression({
 }) {
   if (!progression) return { name, progression: DEFAULT_PROGRESSION }
   return { name, progression }
+}
+
+export function getCharacterDetail(name: CharacterType.Name) {
+  const character = CharacterData.charactersDetail.find((c) => c.name === name)
+  invariant(character, `Character ${name} not found`)
+  return character
 }
 
 export function getRequiredMaterial(name: CharacterType.Name) {
