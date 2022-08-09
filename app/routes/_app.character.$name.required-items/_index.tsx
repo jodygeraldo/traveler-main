@@ -30,7 +30,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
     name,
     accountId,
   })
-  const character = CharacterUtils.getCharacter({
+  const character = CharacterUtils.getCharacterWithProgression({
     name,
     progression: userCharacter,
   })
