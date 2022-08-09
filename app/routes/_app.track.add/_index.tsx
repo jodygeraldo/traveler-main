@@ -102,16 +102,30 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
     elementalBurst: 1,
   }
 
+  const url = new URL(request.url)
+  const nameQuery = url.searchParams.get('name')
+
   let firstCharacter: CharacterTypes.CharacterNameWithProgression | undefined
+
+  const name = nameQuery
+    ? CharacterUtils.parseCharacterNameOrThrow({
+        name: nameQuery,
+        doDesglugify: true,
+      })
+    : undefined
 
   if (trackableCharacterNames.length > 0) {
     const characterProgression = await CharacterModel.getUserCharacter({
-      name: trackableCharacterNames[0] ?? '',
+      name: name
+        ? trackableCharacterNames.includes(name)
+          ? name
+          : trackableCharacterNames[0] ?? ''
+        : trackableCharacterNames[0] ?? '',
       accountId,
     })
 
     firstCharacter = {
-      name: trackableCharacterNames[0],
+      name: name ? name : trackableCharacterNames[0],
       progression: characterProgression || DEFAULT_PROGRESSION,
     }
   }
@@ -221,6 +235,7 @@ export default function AddTrackPage() {
                               <>
                                 <Combobox
                                   options={trackableCharacterNames}
+                                  defaultValue={firstCharacter?.name}
                                   fetchProgressionHandler={
                                     handleFetchProgression
                                   }

@@ -8,12 +8,19 @@ import * as Utils from '~/utils'
 
 interface Props {
   options: string[]
+  defaultValue?: string
   fetchProgressionHandler: (option: string) => void
 }
 
-export default function Combobox({ options, fetchProgressionHandler }: Props) {
+export default function Combobox({
+  options,
+  defaultValue,
+  fetchProgressionHandler,
+}: Props) {
   const [query, setQuery] = React.useState('')
-  const [selectedOption, setSelectedOption] = React.useState(options[0])
+  const [selectedOption, setSelectedOption] = React.useState(
+    defaultValue ? defaultValue : options[0]
+  )
 
   const filteredOptions =
     query === ''

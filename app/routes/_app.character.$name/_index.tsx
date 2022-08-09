@@ -106,7 +106,7 @@ export default function CharacterLayout() {
               <div className="mt-4">
                 <Button.Link
                   styles="button"
-                  to={`/track/add?${Utils.slugify(character.name)}`}
+                  to={`/track/add?name=${Utils.slugify(character.name)}`}
                   className="w-full sm:w-auto"
                 >
                   Track
