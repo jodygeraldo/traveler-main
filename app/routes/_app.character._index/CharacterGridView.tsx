@@ -106,7 +106,7 @@ export function CharacterGridItem({
           </Dialog>
 
           <Button.Link
-            to={`./${Utils.slugify(name)}/required-items`}
+            to={`./${Utils.slugify(name)}/profile`}
             prefetch="intent"
             id={`${name}-character-page-link`}
             styles="button"

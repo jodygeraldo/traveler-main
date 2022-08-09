@@ -5,7 +5,7 @@ interface BaseProps {
   alt: string
   className?: string
   width: number
-  height?: number
+  height?: number | string
 }
 
 interface Props
@@ -18,7 +18,7 @@ const PUBLIC_URL =
 const Image = React.forwardRef<HTMLImageElement, Props>(
   ({ src, alt, className, width, height, ...props }, ref) => {
     return (
-      <picture className="flex flex-shrink-0">
+      <picture className="flex flex-shrink-0 justify-center">
         <source
           srcSet={`//images.weserv.nl/?url=${PUBLIC_URL}${src}&w=${width}${
             height ? '&h=' + height : ''
