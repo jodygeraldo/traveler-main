@@ -225,14 +225,14 @@ export default function Toolbar() {
         onValueChange={handleRarityChange}
         className="space-x-1"
       >
-        <ToggleItem value="4" label="4 star">
+        <ToggleItem value="4" label="4 stars">
           <Icon.Solid
             name="star"
             className="h-6 w-6 text-rarity-4"
             aria-hidden
           />
         </ToggleItem>
-        <ToggleItem value="5" label="5 star">
+        <ToggleItem value="5" label="5 stars">
           <Icon.Solid
             name="star"
             className="h-6 w-6 text-rarity-5"
