@@ -95,22 +95,20 @@ export default function AppNavbar() {
               </div>
               <div className="hidden lg:relative lg:z-10 lg:flex lg:items-center">
                 {/* Profile dropdown */}
-                <HeadlessUIReact.Menu
-                  as="div"
-                  className="relative ml-4 flex-shrink-0"
-                >
-                  <div>
-                    <HeadlessUIReact.Menu.Button className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-9 shadow-sm focus:z-10 focus:outline-none focus:ring-2 focus:ring-primary-7 focus:ring-offset-2 focus:ring-offset-gray-1">
-                      <Image
-                        id="avatar-dropdown"
-                        src="/character/traveler.png"
-                        alt={`Account ${user.accounts[0].name}`}
-                        className="h-8 w-8 rounded-full"
-                        width={32}
-                        height={32}
-                      />
-                    </HeadlessUIReact.Menu.Button>
-                  </div>
+                <HeadlessUIReact.Menu as="div">
+                  <HeadlessUIReact.Menu.Button
+                    data-testid="avatar-dropdown"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-9 shadow-sm focus:z-10 focus:outline-none focus:ring-2 focus:ring-primary-7 focus:ring-offset-2 focus:ring-offset-gray-1"
+                  >
+                    <Image
+                      src="/character/traveler.png"
+                      alt={`Account ${user.accounts[0].name}`}
+                      className="h-8 w-8 rounded-full"
+                      width={32}
+                      height={32}
+                    />
+                  </HeadlessUIReact.Menu.Button>
+
                   <HeadlessUIReact.Transition
                     as={React.Fragment}
                     enter="transition ease-out duration-100"
