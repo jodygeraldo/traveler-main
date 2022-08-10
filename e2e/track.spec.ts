@@ -68,6 +68,8 @@ test('Track page flow', async ({ page }, testInfo) => {
     page.locator('button:has-text("Track")').click(),
   ])
 
+  await page.waitForSelector('a[href="/track/Bennett"]')
+
   await expect(page).toHaveURL('/track')
   await page.locator('text=Bennett').click()
   await expect(page).toHaveURL('/track/Bennett')
