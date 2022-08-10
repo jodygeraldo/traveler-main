@@ -62,7 +62,7 @@ export default function CharacterLayout() {
                     <Image
                       src={`/weapon/${Utils.getImageSrc(character.weapon)}.png`}
                       alt={character.weapon}
-                      className="h-6 w-6"
+                      className="h-6 w-6 rounded-full bg-primary-9"
                       width={24}
                       height={24}
                     />
@@ -90,6 +90,12 @@ export default function CharacterLayout() {
                     {`${character.region}`}
                   </Badge.Base>
                 )}
+                {character.tags &&
+                  character.tags.map((tag) => (
+                    <Badge.Base key={tag} variant="info" size="sm" squared>
+                      {tag}
+                    </Badge.Base>
+                  ))}
                 {trackStatus.tracked && (
                   <RemixReact.Link
                     to={`/track/${Utils.slugify(character.name)}`}

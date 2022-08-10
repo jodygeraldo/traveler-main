@@ -19,7 +19,7 @@ export default function CharacterProfilePage() {
   return (
     <div className="mt-8 items-start md:flex">
       <Image
-        src={`/character/full/${Utils.getImageSrc(character.name)}.png`}
+        src={`/character/full_v2/${Utils.getImageSrc(character.name)}.png`}
         alt=""
         width={384}
         height="auto"

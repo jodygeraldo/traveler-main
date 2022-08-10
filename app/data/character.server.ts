@@ -105,6 +105,7 @@ export const characters: CharacterType.Character[] = [
     region: DB.Region.UNKNOWN,
     rarity: 5,
     talent: ['Rapid Fire', 'Frozen Wilds', 'Prophecies of Dawn'],
+    tags: ['LIMITED']
   },
   {
     name: 'Amber',
