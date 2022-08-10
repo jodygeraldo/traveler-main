@@ -14,7 +14,7 @@ export default function CharacterGridView({ characters }: Props) {
   return (
     <div className="sm:px-6 lg:px-8">
       <ul
-        id="grid-view"
+        data-testid="grid-view"
         className="grid grid-cols-1 gap-y-4 gap-x-6 md:grid-cols-2 lg:grid-cols-3"
       >
         <AnimatePresence>

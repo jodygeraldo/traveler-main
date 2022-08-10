@@ -90,7 +90,10 @@ export function Talent({
           height={sizes[size][1]}
         />
       </Tooltip>
-      <span className="text-sm font-medium tabular-nums text-gray-11">
+      <span
+        data-testid={`${type}_${Utils.getImageSrc(name)}`}
+        className="text-sm font-medium tabular-nums text-gray-11"
+      >
         {level}
       </span>
     </div>
