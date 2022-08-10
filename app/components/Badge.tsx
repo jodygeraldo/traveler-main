@@ -19,6 +19,7 @@ interface BadgeProps extends BaseProps {
   size?: 'xs' | 'sm'
   squared?: boolean
   roundedFull?: boolean
+  hoverable?: boolean
 }
 
 interface BadgeRarityProps extends BaseProps {
@@ -34,6 +35,15 @@ const colorVariant: Record<Variant, string> = {
   info: 'bg-info-4 text-info-11',
 }
 
+const hoverableVariant: Record<Variant, string> = {
+  primary: 'hover:bg-primary-5',
+  secondary: 'hover:bg-gray-5',
+  success: 'hover:bg-success-5',
+  danger: 'hover:bg-danger-5',
+  warning: 'hover:bg-warning-5',
+  info: 'hover:bg-info-5',
+}
+
 const rarityVariant: Record<BadgeRarityProps['rarity'], string> = {
   1: 'bg-rarity-1/20 text-rarity-1',
   2: 'bg-rarity-2/20 text-rarity-2',
@@ -47,6 +57,7 @@ export function Badge({
   size = 'xs',
   squared = false,
   roundedFull = false,
+  hoverable,
   children,
   className,
 }: BadgeProps) {
@@ -62,6 +73,7 @@ export function Badge({
         !roundedFull && size === 'sm' && squared && 'rounded-md px-2.5',
         roundedFull && 'p-1',
         !squared && 'rounded-full',
+        hoverable && hoverableVariant[variant],
         'inline-flex items-center py-0.5 font-medium'
       )}
     >
@@ -84,4 +96,5 @@ export function BadgeRarity({ rarity, children, className }: BadgeRarityProps) {
   )
 }
 
+export const Base = Badge
 export const Rarity = BadgeRarity

@@ -1,43 +1,45 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
-import * as Zod from 'zod'
+import * as Badge from '~/components/Badge'
+import * as Button from '~/components/Button'
+import Image from '~/components/Image'
 import SidebarSub from '~/components/Sidebar'
+import Tooltip from '~/components/Tooltip'
+import * as CharacterModel from '~/models/character.server'
+import * as Session from '~/session.server'
 import * as Utils from '~/utils'
-import * as UtilsServer from '~/utils/index.server'
-import ConstellationImage from './ConstellationImage'
+import * as CharacterUtils from '~/utils/server/character.server'
 
 const navigation = [
   {
-    name: 'Required Items',
-    to: './required-items',
+    name: 'Profile',
+    to: './profile',
   },
   {
-    name: 'Inventory Level Up',
-    to: './inventory-levelup',
-  },
-  {
-    name: 'Manual Level Up',
-    to: './manual-levelup',
+    name: 'Material',
+    to: './material',
   },
 ]
 
-export async function loader({ params }: RemixNode.LoaderArgs) {
-  const name = Zod.string()
-    .transform((str) => Utils.deslugify(str))
-    .parse(params.name)
-  const validCharacter = UtilsServer.Character.validateCharacter(name)
-  if (!validCharacter) {
-    throw RemixNode.json(`Character ${name} not found`, {
-      status: 404,
-      statusText: 'Character Not Found',
-    })
-  }
+export async function loader({ params, request }: RemixNode.LoaderArgs) {
+  const accountId = await Session.requireAccountId(request)
 
-  return RemixNode.json({ name })
+  const name = CharacterUtils.parseCharacterNameOrThrow({
+    name: params.name,
+    doDesglugify: true,
+  })
+
+  return RemixNode.json({
+    character: CharacterUtils.getCharacter(name),
+    trackStatus: await CharacterModel.getUserCharacterTrackStatus({
+      name,
+      accountId,
+    }),
+  })
 }
 
 export default function CharacterLayout() {
-  const { name } = RemixReact.useLoaderData<typeof loader>()
+  const { character, trackStatus } = RemixReact.useLoaderData<typeof loader>()
 
   return (
     <div className="py-10">
@@ -49,20 +51,74 @@ export default function CharacterLayout() {
         </div>
 
         <main className="mt-8 lg:col-span-10 lg:mt-0">
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
-              {name}
-            </h1>
-            {name.includes('Traveler') ? (
-              <div className="flex items-center rounded-full bg-gray-2 p-1">
-                <ConstellationImage name="Aether" />
-                <ConstellationImage name="Lumine" />
+          <div className="sm:flex sm:items-center sm:justify-between">
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-2xl font-bold leading-7 text-gray-12 sm:truncate sm:text-3xl">
+                  {character.name}
+                </h1>
+                <div className="flex items-center gap-2 rounded-full bg-gray-2 px-2 py-1 shadow">
+                  <Tooltip text={Utils.toCapitalized(character.weapon)}>
+                    <Image
+                      src={`/weapon/${Utils.getImageSrc(character.weapon)}.png`}
+                      alt={character.weapon}
+                      className="h-6 w-6 rounded-full bg-primary-9"
+                      width={24}
+                      height={24}
+                    />
+                  </Tooltip>
+                  <Tooltip text={Utils.toCapitalized(character.vision)}>
+                    <Image
+                      src={`/element/${Utils.getImageSrc(
+                        character.vision
+                      )}.png`}
+                      alt={character.vision}
+                      className="h-6 w-6"
+                      width={24}
+                      height={24}
+                    />
+                  </Tooltip>
+                </div>
               </div>
-            ) : (
-              <div className="rounded-full bg-gray-2 p-1">
-                <ConstellationImage name={name} />
+
+              <div className="mt-1 flex items-center gap-2">
+                <Badge.Base variant="info" size="sm" squared>
+                  {`${character.rarity}-STARS`}
+                </Badge.Base>
+                {character.region !== 'UNKNOWN' && (
+                  <Badge.Base variant="info" size="sm" squared>
+                    {`${character.region}`}
+                  </Badge.Base>
+                )}
+                {character.tags &&
+                  character.tags.map((tag) => (
+                    <Badge.Base key={tag} variant="info" size="sm" squared>
+                      {tag}
+                    </Badge.Base>
+                  ))}
+                {trackStatus.tracked && (
+                  <RemixReact.Link
+                    to={`/track/${Utils.slugify(character.name)}`}
+                  >
+                    <Badge.Base variant="info" size="sm" squared hoverable>
+                      TRACKED
+                    </Badge.Base>
+                  </RemixReact.Link>
+                )}
               </div>
-            )}
+            </div>
+
+            {!trackStatus.isMaxLevel && !trackStatus.tracked ? (
+              <div className="mt-4">
+                <Button.Link
+                  styles="button"
+                  to={`/track/add?name=${Utils.slugify(character.name)}`}
+                  className="w-full sm:w-auto"
+                >
+                  Track
+                </Button.Link>
+              </div>
+            ) : null}
           </div>
 
           <RemixReact.Outlet />

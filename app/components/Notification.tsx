@@ -40,7 +40,7 @@ export default function Notification({ success }: { success?: boolean }) {
             <div
               className={clsx(
                 success ? 'bg-success-12' : 'bg-danger-12',
-                'pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg shadow-lg ring-1 ring-gray-7 ring-opacity-5'
+                'pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg shadow-lg ring-1 ring-primary-7 ring-opacity-5'
               )}
             >
               <div className="p-4">

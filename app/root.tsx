@@ -68,3 +68,15 @@ export default function App() {
     </html>
   )
 }
+
+export const unstable_shouldReload: RemixReact.ShouldReloadFunction = ({
+  submission,
+  prevUrl,
+}) => {
+  return (
+    !!submission &&
+    (prevUrl.pathname === '/login' ||
+      prevUrl.pathname === '/join' ||
+      prevUrl.pathname === '/logout')
+  )
+}

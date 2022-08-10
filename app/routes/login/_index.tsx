@@ -24,6 +24,7 @@ const ParamsSchema = Zod.object({
 })
 
 interface ActionData {
+  ok: boolean
   errors?: {
     email?: string
     password?: string
@@ -34,7 +35,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
   const result = await RemixParamsHelper.getFormData(request, ParamsSchema)
   if (!result.success) {
     return RemixNode.json<ActionData>(
-      { errors: result.errors },
+      { ok: false, errors: result.errors },
       { status: 400 }
     )
   }
@@ -45,7 +46,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
 
   if (!user) {
     return RemixNode.json<ActionData>(
-      { errors: { email: 'Invalid email or password' } },
+      { ok: false, errors: { email: 'Invalid email or password' } },
       { status: 400 }
     )
   }
@@ -62,7 +63,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
 export async function loader({ request }: RemixNode.LoaderArgs) {
   const userId = await Session.getUserId(request)
   if (userId) return RemixNode.redirect('/')
-  return RemixNode.json({})
+  return RemixNode.json({ ok: true })
 }
 
 export default function LoginPage() {

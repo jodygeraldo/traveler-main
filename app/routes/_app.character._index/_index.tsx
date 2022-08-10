@@ -1,145 +1,116 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
-import clsx from 'clsx'
+import * as RPH from 'remix-params-helper'
 import * as Zod from 'zod'
-import Button from '~/components/Button'
-import * as Icon from '~/components/Icon'
-import Search from '~/components/Search'
-import * as Cookie from '~/cookies'
-import useSearchFilter from '~/hooks/useSearchFilter'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
-import * as UtilsServer from '~/utils/index.server'
-import CharacterGrid from './CharacterGrid'
-import CharacterList from './CharacterList'
+import * as CharacterUtils from '~/utils/server/character.server'
+import CharacterGridView from './CharacterGridView'
+import Toolbar from './Filter'
+import SearchCharacter from './SearchCharacter'
 
 export const meta: RemixNode.MetaFunction = () => ({
   title: 'Characters - Traveler Main',
 })
 
-export async function action({ request }: RemixNode.ActionArgs) {
-  const formData = await request.formData()
-  const userPref = await Cookie.getUserPrefsCookie(request)
-  userPref.characterView = formData.get('characterView') ?? 'grid'
+const FormDataSchema = Zod.object({
+  name: Zod.string(),
+  ascension: Zod.number(),
+  level: Zod.number().optional(),
+  normalAttack: Zod.number().optional(),
+  elementalSkill: Zod.number().optional(),
+  elementalBurst: Zod.number().optional(),
+})
 
-  return RemixNode.json(null, {
-    headers: {
-      'Set-Cookie': await Cookie.userPrefs.serialize(userPref),
-    },
+export async function action({ request }: RemixNode.ActionArgs) {
+  const accountId = await Session.requireAccountId(request)
+
+  const result = await RPH.getFormData(request, FormDataSchema)
+  if (!result.success) {
+    return RemixNode.json(
+      { success: result.success, errors: result.errors },
+      { status: 400 }
+    )
+  }
+
+  const { name, ...progression } = result.data
+
+  const parsedName = CharacterUtils.parseCharacterNameOrThrow({ name })
+
+  const errors = CharacterUtils.validateAscensionRequirement(progression)
+  if (errors) {
+    return RemixNode.json({ success: false, errors }, { status: 400 })
+  }
+
+  await CharacterModel.upsertCharacter({
+    name: parsedName,
+    progression,
+    accountId,
   })
+
+  return RemixNode.json({ success: true, errors: {} })
 }
 
 export async function loader({ request }: RemixNode.LoaderArgs) {
   const accountId = await Session.requireAccountId(request)
 
-  const userCharacters = await CharacterModel.getUserCharacters({
-    accountId,
-  })
-  const characters = UtilsServer.Character.getCharacters(userCharacters)
+  const userCharacters = await CharacterModel.getUserCharacters(accountId)
+  const characters = CharacterUtils.getCharacters(userCharacters)
 
-  const characterView = await Cookie.getCharacterViewPref(request)
-
-  return RemixNode.json({ characters, view: characterView })
+  return RemixNode.json({ characters })
 }
 
 export default function CharactersPage() {
-  const { characters, view } = RemixReact.useLoaderData<typeof loader>()
-  const fetcher = RemixReact.useFetcher()
+  const { characters } = RemixReact.useLoaderData<typeof loader>()
 
-  const optimisticView = fetcher.submission
-    ? Zod.string().parse(fetcher.submission.formData.get('characterView'))
-    : view
+  const [searchParams] = RemixReact.useSearchParams()
+  const vision = searchParams.get('vision')
+  const weapon = searchParams.get('weapon')
+  const region = searchParams.get('region')
+  const rarity = searchParams.get('rarity')
+  const q = searchParams.get('q')
 
-  const { searchItems, showSearch, changeHandler } = useSearchFilter({
-    items: characters,
-    searchBy: 'name',
+  const filteredCharacters = characters.filter((c) => {
+    if (vision && c.vision !== vision.toUpperCase()) return false
+    if (weapon && c.weapon !== weapon.toUpperCase()) return false
+    if (region && c.region !== region.toUpperCase()) return false
+    if (rarity && c.rarity.toString() !== rarity) return false
+    if (q && !c.name.toLowerCase().includes(q.toLowerCase())) return false
+
+    return true
   })
 
   return (
-    <main className="mx-auto max-w-3xl py-10 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-      <div className="flex items-center">
+    <main className="mx-auto max-w-3xl py-10 lg:max-w-7xl">
+      <div className="px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
         <h1 className="text-2xl font-bold leading-7 text-primary-12 sm:truncate sm:text-3xl">
           Characters
         </h1>
 
-        <fetcher.Form
-          action="/character?index"
-          method="post"
-          replace={true}
-          className="ml-6 flex items-center rounded-lg bg-gray-3 p-0.5"
-        >
-          <button
-            id="switch-list-view"
-            type="submit"
-            name="characterView"
-            value="list"
-            className={clsx(
-              optimisticView === 'list'
-                ? 'bg-gray-2 shadow-sm'
-                : 'hover:bg-gray-2 hover:shadow-sm',
-              'rounded-md p-1.5 text-gray-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-8'
-            )}
-          >
-            {optimisticView === 'list' ? (
-              <Icon.Solid
-                name="viewList"
-                className="h-5 w-5"
-                aria-hidden="true"
-              />
-            ) : (
-              <Icon.Outline
-                name="viewList"
-                className="h-5 w-5"
-                aria-hidden="true"
-              />
-            )}
-            <span className="sr-only">Use list view</span>
-          </button>
-          <button
-            id="switch-grid-view"
-            type="submit"
-            name="characterView"
-            value="grid"
-            className={clsx(
-              optimisticView === 'list'
-                ? 'hover:bg-gray-2 hover:shadow-sm'
-                : 'bg-gray-2 shadow-sm',
-              'ml-0.5 rounded-md p-1.5 text-gray-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-8'
-            )}
-          >
-            {optimisticView === 'list' ? (
-              <Icon.Outline
-                name="viewGrid"
-                className="h-5 w-5"
-                aria-hidden="true"
-              />
-            ) : (
-              <Icon.Solid
-                name="viewGrid"
-                className="h-5 w-5"
-                aria-hidden="true"
-              />
-            )}
-            <span className="sr-only">Use grid view</span>
-          </button>
-        </fetcher.Form>
+        <div className="mt-4 sm:mt-0">
+          <SearchCharacter />
+        </div>
       </div>
 
-      <div className="mt-4 flex items-center gap-4">
-        <RemixReact.Link to="./quick-update">
-          <Button id="quick-update">Quick update</Button>
-        </RemixReact.Link>
-
-        <Search changeHandler={changeHandler} placeholder="Search character" />
+      <div className="mt-8 sm:px-6 lg:px-8">
+        <Toolbar />
       </div>
 
-      <div className="mt-8">
-        {optimisticView === 'list' ? (
-          <CharacterList characters={showSearch ? searchItems : characters} />
+      <div className="mt-4">
+        {filteredCharacters.length > 0 ? (
+          <CharacterGridView characters={filteredCharacters} />
         ) : (
-          <CharacterGrid characters={showSearch ? searchItems : characters} />
+          <div className="text-center">
+            <p className="text-gray-11">No characters found</p>
+          </div>
         )}
       </div>
     </main>
   )
+}
+
+export const unstable_shouldReload: RemixReact.ShouldReloadFunction = ({
+  submission,
+}) => {
+  return !!submission && submission.method !== 'GET'
 }

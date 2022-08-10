@@ -35,6 +35,7 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
 }
 
 interface ActionData {
+  ok: boolean
   errors: {
     email?: string
     password?: string
@@ -45,7 +46,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
   const result = await RemixParamsHelper.getFormData(request, ParamsSchema)
   if (!result.success) {
     return RemixNode.json<ActionData>(
-      { errors: result.errors },
+      { ok: false, errors: result.errors },
       { status: 400 }
     )
   }
@@ -54,7 +55,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
 
   if (password !== confirmPassword) {
     return RemixNode.json<ActionData>(
-      { errors: { password: 'Passwords do not match' } },
+      { ok: false, errors: { password: 'Passwords do not match' } },
       { status: 400 }
     )
   }
@@ -62,7 +63,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
   const existingUser = await UserModel.getUserByEmail(email)
   if (existingUser) {
     return RemixNode.json<ActionData>(
-      { errors: { email: 'A user already exists with this email' } },
+      { ok: false, errors: { email: 'A user already exists with this email' } },
       { status: 400 }
     )
   }
@@ -155,7 +156,7 @@ export default function Join() {
                 id="confirm-password"
                 autoComplete="new-password"
                 className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-7 bg-gray-3 px-3 py-2 text-gray-12 placeholder-gray-8 focus:z-10 focus:border-primary-8 focus:outline-none focus:ring-primary-8 sm:text-sm"
-                placeholder="confirm password"
+                placeholder="Confirm password"
                 {...inputProps('confirmPassword')}
                 type="password"
               />

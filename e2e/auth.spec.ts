@@ -1,76 +1,46 @@
 import { expect, test } from '@playwright/test'
 import prisma from '~/db.server'
 
-test.describe('auth flow', () => {
-  test.describe.configure({ mode: 'serial' })
+test('auth flow', async ({ page }) => {
+  const email = 'playwright-auth@jodygeraldo.com'
+  const password = 'test1234'
+  await prisma.user.delete({ where: { email } }).catch((e) => console.log(e))
 
-  const EMAIL = 'test@test.com'
-  const PASSWORD = 'test1234'
+  // * landing page should have a correct title
+  await page.goto('.')
+  await expect(
+    page.locator('text=Companion For Genshin Impact Nerds')
+  ).toBeVisible()
 
-  test.beforeEach(async ({ page }) => {
-    await page.goto('.')
-  })
+  // * can go to sign up page and create an account
+  await page.locator('text=Create new account').click()
+  await expect(page).toHaveURL('/join')
+  await expect(page.locator('text=Sign up new account')).toBeVisible()
 
-  // cleanup user
-  test.beforeAll(
-    async () =>
-      await prisma.user
-        .delete({
-          where: { email: EMAIL },
-        })
-        .catch(() => {})
-  )
+  await page.locator('[placeholder="Email address"]').fill(email)
+  await page.locator('[placeholder="Password"]').fill(password)
+  await page.locator('[placeholder="Confirm password"]').fill(password)
+  await Promise.all([
+    page.waitForNavigation(),
+    page.locator('button:has-text("Sign up")').click(),
+  ])
+  await expect(page).toHaveURL('/character')
 
-  // cleanup user
-  test.afterAll(
-    async () =>
-      await prisma.user
-        .delete({
-          where: { email: EMAIL },
-        })
-        .catch(() => {})
-  )
+  await page.locator('[data-testid="avatar-dropdown"]').click()
+  await page.locator('button[role="menuitem"]:has-text("Sign out")').click()
+  await expect(page).toHaveURL('.')
 
-  test('landing page should have a correct title', async ({ page }) => {
-    await expect(
-      page.locator('text=Companion For Genshin Impact Nerds')
-    ).toBeVisible()
-  })
+  // * can go to login page and sign in
+  await page.locator('text=Sign in').click()
+  await expect(page).toHaveURL('/login')
+  await expect(page.locator('text=Sign in to your account')).toBeVisible()
 
-  test('can go to sign up page and create an account', async ({ page }) => {
-    // click sign up button to go to /join
-    await page.click('#signup')
-    await expect(page).toHaveURL('/join')
-    await expect(page.locator('text=Sign up new account')).toBeVisible()
+  await page.locator('[placeholder="Email address"]').fill(email)
+  await page.locator('[placeholder="Password"]').fill(password)
+  await page.locator('button:has-text("Sign in")').click()
+  await expect(page).toHaveURL('/character')
 
-    // filling input
-    await page.fill('#email', EMAIL)
-    await page.fill('#password', PASSWORD)
-    await page.fill('#confirm-password', PASSWORD)
-    await Promise.all([page.waitForNavigation(), page.click('#signup')])
-    await expect(page).toHaveURL('/character')
-
-    // logout
-    await page.click('#avatar-dropdown')
-    await page.click('#signout')
-    await expect(page).toHaveURL('.')
-  })
-
-  test('can go to login page and sign in', async ({ page }) => {
-    // click sign in button to go to /login
-    await page.click('#signin')
-    await expect(page).toHaveURL('/login')
-    await expect(page.locator('text=Sign in to your account')).toBeVisible()
-
-    // filling input
-    await page.fill('#email', EMAIL)
-    await page.fill('#password', PASSWORD)
-    await Promise.all([page.waitForNavigation(), page.click('#signin')])
-    await expect(page).toHaveURL('/character')
-
-    // logout
-    await page.click('#avatar-dropdown')
-    await page.click('#signout')
-    await expect(page).toHaveURL('.')
-  })
+  await page.locator('[data-testid="avatar-dropdown"]').click()
+  await page.locator('button[role="menuitem"]:has-text("Sign out")').click()
+  await expect(page).toHaveURL('.')
 })

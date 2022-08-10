@@ -29,7 +29,7 @@ export default function Sidebar({ navigation }: Props) {
                   isActive
                     ? 'bg-gray-3 text-gray-12'
                     : 'text-gray-11 hover:bg-gray-2 hover:text-gray-12',
-                  'flex items-center rounded-md px-3 py-2 text-sm font-medium focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-7'
+                  'flex items-center rounded-md px-3 py-2 text-sm font-medium focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-7'
                 )
               }
             >
@@ -40,10 +40,11 @@ export default function Sidebar({ navigation }: Props) {
               prefetch="intent"
               key={nav.name}
               to={nav.to}
+              tabIndex={-1}
               className={({ isActive }) =>
                 clsx(
                   isActive ? 'text-gray-12' : 'text-gray-11',
-                  'pointer-events-none flex items-center rounded-md px-2 py-2 text-sm font-medium focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-7'
+                  'pointer-events-none flex items-center rounded-md px-2 py-2 text-sm font-medium focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-7'
                 )
               }
             >
@@ -64,7 +65,7 @@ export default function Sidebar({ navigation }: Props) {
                     isActive
                       ? 'bg-gray-3 text-gray-12'
                       : 'text-gray-11 hover:bg-gray-2 hover:text-gray-12',
-                    'flex items-center rounded-md py-2 pl-6 pr-2 text-sm font-medium focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-7'
+                    'flex items-center rounded-md py-2 pl-6 pr-2 text-sm font-medium focus:z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-7'
                   )
                 }
               >

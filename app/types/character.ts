@@ -1,3 +1,4 @@
+import type * as DB from '~/db.server'
 import type * as ItemType from '~/types/item'
 
 export type Name =
@@ -55,60 +56,60 @@ export type Name =
   | 'Yun Jin'
   | 'Zhongli'
 
-export type Weapon = 'BOW' | 'CATALYST' | 'CLAYMORE' | 'POLEARM' | 'SWORD'
+export type Weapon = DB.Weapon
+export type Vision = DB.Vision
+export type Region = DB.Region
 
-export type Vision =
-  | 'ANEMO'
-  | 'CRYO'
-  | 'DENDRO'
-  | 'ELECTRO'
-  | 'GEO'
-  | 'HYDRO'
-  | 'PYRO'
-
-export type Region =
-  | 'MONDSTADT'
-  | 'LIYUE'
-  | 'INAZUMA'
-  | 'SUMERU'
-  | 'FONTAINE'
-  | 'NATLAN'
-  | 'SNEZHNAYA'
-  | 'UNKNOWN'
-
-export interface Character {
+export type Character = {
   name: Name
   weapon: Weapon
   vision: Vision
   region: Region
   rarity: 4 | 5
   talent: [normalAttack: string, elementalSkill: string, elementalBurst: string]
+  tags?: string[]
 }
 
-export interface AscensionMaterial {
+export type CharacterDetail = {
+  name: Name
+  title: string
+  description: string
+  affiliation: string
+  constellation: string
+  hp: number
+  atk: number
+  def: number
+  ascensionBonus: {
+    stat: string
+    value: number
+    fixedValue?: boolean
+  }
+}
+
+export type AscensionMaterial = {
   gem: ItemType.AscensionGemGroupName
   boss?: ItemType.AscensionBoss
   local: ItemType.LocalSpecialty
-  common: ItemType.CommonGroup
+  common: ItemType.CharacterCommonGroup
 }
-export interface TalentMaterial {
+export type TalentMaterial = {
   book: (
     | ItemType.TalentBookTeachings
     | ItemType.TalentBookGuide
     | ItemType.TalentBookPhilosophies
   )[]
   boss: ItemType.TalentBoss
-  common: ItemType.CommonGroup
+  common: ItemType.CharacterCommonGroup
   special: 'Crown of Insight'
 }
 
-export interface ProgressionMaterial {
+export type ProgressionMaterial = {
   name: Name
   ascension: AscensionMaterial
   talent: TalentMaterial | TalentMaterial[]
 }
 
-export interface AscensionPhase {
+export type AscensionPhase = {
   phase: { from: number; to: number }
   mora: number
   common: { name: string; quantity: number }
@@ -117,7 +118,7 @@ export interface AscensionPhase {
   boss?: { name: string; quantity: number }
 }
 
-export interface TalentPhase {
+export type TalentPhase = {
   level: { from: number; to: number }
   mora: number
   common: { name: string; quantity: number }
@@ -134,7 +135,19 @@ export type Progression = {
   elementalBurst: number
 }
 
-export type CharacterProgression = {
+export type TrackProgression = {
+  level: { current: number; target: number | null }
+  ascension: { current: number; target: number | null }
+  normalAttack: { current: number; target: number | null }
+  elementalSkill: { current: number; target: number | null }
+  elementalBurst: { current: number; target: number | null }
+}
+
+export type CharacterNameWithProgression = {
   name: Name
+  progression: Progression
+}
+
+export type CharacterWithProgression = Character & {
   progression: Progression
 }

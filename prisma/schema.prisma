@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  previewFeatures = ["referentialIntegrity", "orderByNulls"]
 }
 
 datasource db {
@@ -31,28 +31,10 @@ model Account {
   name    String
   default Boolean @default(false)
 
-  inventory  Inventory[]
   characters UserCharacter[]
 
   user    User   @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId String @unique @map("owner_id")
-}
-
-enum ItemType {
-  COMMON
-  ASCENSION_GEM
-  ASCENSION_BOSS
-  LOCAL_SPECIALTY
-  TALENT_BOOK
-  TALENT_BOSS
-  SPECIAL
-}
-
-model Item {
-  id        String      @id @default(cuid())
-  name      String      @unique
-  type      ItemType
-  Inventory Inventory[]
 }
 
 enum Region {
@@ -84,6 +66,22 @@ enum Weapon {
   SWORD
 }
 
+enum ItemType {
+  COMMON
+  ASCENSION_GEM
+  ASCENSION_BOSS
+  LOCAL_SPECIALTY
+  TALENT_BOOK
+  TALENT_BOSS
+  SPECIAL
+}
+
+model Item {
+  id   String   @id @default(cuid())
+  name String   @unique
+  type ItemType
+}
+
 model Character {
   id            String          @id @default(cuid())
   name          String          @unique
@@ -94,17 +92,6 @@ model Character {
   UserCharacter UserCharacter[]
 }
 
-model Inventory {
-  id       String @id @default(cuid())
-  quantity Int    @db.UnsignedSmallInt
-
-  item Item   @relation(fields: [name], references: [name])
-  name String @map("item_name")
-
-  account Account @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  ownerId String  @map("owner_id")
-}
-
 model UserCharacter {
   id             String @id @default(cuid())
   level          Int    @db.UnsignedSmallInt
@@ -113,9 +100,29 @@ model UserCharacter {
   elementalSkill Int    @map("elemental_skill") @db.UnsignedSmallInt
   elementalBurst Int    @map("elemental_burst") @db.UnsignedSmallInt
 
-  character Character @relation(fields: [name], references: [name])
+  character Character @relation(fields: [name], references: [name], onDelete: SetNull, onUpdate: Cascade)
   name      String    @map("character_name")
 
   account Account @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId String  @map("owner_id")
+
+  track CharacterTrack?
+
+  @@unique([name, ownerId])
+}
+
+model CharacterTrack {
+  id                   String @id @default(cuid())
+  priority             Int?   @db.UnsignedSmallInt
+  targetLevel          Int?   @map("target_level") @db.UnsignedSmallInt
+  targetAscension      Int?   @map("target_ascension") @db.UnsignedSmallInt
+  targetNormalAttack   Int?   @map("target_normal_attack") @db.UnsignedSmallInt
+  targetElementalSkill Int?   @map("target_elemental_skill") @db.UnsignedSmallInt
+  targetElementalBurst Int?   @map("target_elemental_burst") @db.UnsignedSmallInt
+
+  userCharacter UserCharacter @relation(fields: [name, ownerId], references: [name, ownerId], onDelete: Cascade, onUpdate: Cascade)
+  name          String         @map("character_name")
+  ownerId       String         @map("owner_id")
+
+  @@unique([name, ownerId])
 }
