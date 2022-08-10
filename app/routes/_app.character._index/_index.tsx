@@ -1,15 +1,13 @@
 import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
-import * as React from 'react'
 import * as RPH from 'remix-params-helper'
 import * as Zod from 'zod'
-import Search from '~/components/Search'
-import useSearchFilter from '~/hooks/useSearchFilter'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as CharacterUtils from '~/utils/server/character.server'
 import CharacterGridView from './CharacterGridView'
 import Toolbar from './Filter'
+import SearchCharacter from './SearchCharacter'
 
 export const meta: RemixNode.MetaFunction = () => ({
   title: 'Characters - Traveler Main',
@@ -70,23 +68,16 @@ export default function CharactersPage() {
   const weapon = searchParams.get('weapon')
   const region = searchParams.get('region')
   const rarity = searchParams.get('rarity')
+  const q = searchParams.get('q')
 
-  const filteredCharacters = React.useMemo(
-    () =>
-      characters.filter((c) => {
-        if (vision && c.vision !== vision.toUpperCase()) return false
-        if (weapon && c.weapon !== weapon.toUpperCase()) return false
-        if (region && c.region !== region.toUpperCase()) return false
-        if (rarity && c.rarity.toString() !== rarity) return false
+  const filteredCharacters = characters.filter((c) => {
+    if (vision && c.vision !== vision.toUpperCase()) return false
+    if (weapon && c.weapon !== weapon.toUpperCase()) return false
+    if (region && c.region !== region.toUpperCase()) return false
+    if (rarity && c.rarity.toString() !== rarity) return false
+    if (q && !c.name.toLowerCase().includes(q.toLowerCase())) return false
 
-        return true
-      }),
-    [characters, vision, weapon, region, rarity]
-  )
-
-  const { searchItems, showSearch, changeHandler } = useSearchFilter({
-    items: filteredCharacters,
-    searchBy: 'name',
+    return true
   })
 
   return (
@@ -97,10 +88,7 @@ export default function CharactersPage() {
         </h1>
 
         <div className="mt-4 sm:mt-0">
-          <Search
-            changeHandler={changeHandler}
-            placeholder="Search character"
-          />
+          <SearchCharacter />
         </div>
       </div>
 
@@ -109,9 +97,13 @@ export default function CharactersPage() {
       </div>
 
       <div className="mt-4">
-        <CharacterGridView
-          characters={showSearch ? searchItems : filteredCharacters}
-        />
+        {filteredCharacters.length > 0 ? (
+          <CharacterGridView characters={filteredCharacters} />
+        ) : (
+          <div className="text-center">
+            <p className="text-gray-11">No characters found</p>
+          </div>
+        )}
       </div>
     </main>
   )
