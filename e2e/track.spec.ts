@@ -62,15 +62,16 @@ test('Track page flow', async ({ page }, testInfo) => {
   await page.locator('input[name="normalAttack"]').fill('2')
   await page.locator('input[name="elementalSkill"]').fill('2')
   await page.locator('input[name="elementalBurst"]').fill('2')
-
   await Promise.all([
-    page.waitForNavigation(),
+    page.waitForResponse(
+      (response) =>
+        response.url().includes('_data') &&
+        response.request().method() === 'GET'
+    ),
     page.locator('button:has-text("Track")').click(),
   ])
-
-  await page.waitForSelector('a[href="/track/Bennett"]')
-
   await expect(page).toHaveURL('/track')
+
   await page.locator('text=Bennett').click()
   await expect(page).toHaveURL('/track/Bennett')
   await expect(page.locator('text=Bennett')).toBeVisible()

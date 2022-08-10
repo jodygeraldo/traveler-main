@@ -20,7 +20,10 @@ test('auth flow', async ({ page }) => {
   await page.locator('[placeholder="Email address"]').fill(email)
   await page.locator('[placeholder="Password"]').fill(password)
   await page.locator('[placeholder="Confirm password"]').fill(password)
-  await page.locator('button:has-text("Sign up")').click()
+  await Promise.all([
+    page.waitForNavigation(),
+    page.locator('button:has-text("Sign up")').click(),
+  ])
   await expect(page).toHaveURL('/character')
 
   await page.locator('[data-testid="avatar-dropdown"]').click()
