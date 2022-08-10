@@ -156,7 +156,7 @@ export default function Join() {
                 id="confirm-password"
                 autoComplete="new-password"
                 className="relative block w-full appearance-none rounded-none rounded-b-md border border-gray-7 bg-gray-3 px-3 py-2 text-gray-12 placeholder-gray-8 focus:z-10 focus:border-primary-8 focus:outline-none focus:ring-primary-8 sm:text-sm"
-                placeholder="confirm password"
+                placeholder="Confirm password"
                 {...inputProps('confirmPassword')}
                 type="password"
               />
