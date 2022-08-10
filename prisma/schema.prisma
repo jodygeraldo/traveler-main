@@ -22,7 +22,7 @@ model User {
 model Password {
   hash String
 
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   userId String @unique @map("user_id")
 }
 
@@ -33,7 +33,7 @@ model Account {
 
   characters UserCharacter[]
 
-  user    User   @relation(fields: [ownerId], references: [id])
+  user    User   @relation(fields: [ownerId], references: [id], onDelete: SetNull, onUpdate: SetNull)
   ownerId String @unique @map("owner_id")
 }
 
