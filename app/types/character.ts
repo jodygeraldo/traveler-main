@@ -67,6 +67,7 @@ export type Character = {
   region: Region
   rarity: 4 | 5
   talent: [normalAttack: string, elementalSkill: string, elementalBurst: string]
+  tags?: string[]
 }
 
 export type CharacterDetail = {
