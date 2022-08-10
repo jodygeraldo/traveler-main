@@ -7,27 +7,27 @@ export const users = [
   {
     email: 'playwright1@jodygeraldo.com',
     password: 'playwright1234',
-    accoundId: 'cl6c6wyqy2254n4veqz2bcxcf',
+    accountId: 'cl6c6wyqy2254n4veqz2bcxcf',
   },
   {
     email: 'playwright2@jodygeraldo.com',
     password: 'playwright1234',
-    accoundId: 'cl6c6xbdk2279n4veykbfb3v4',
+    accountId: 'cl6c6xbdk2279n4veykbfb3v4',
   },
   {
     email: 'playwright3@jodygeraldo.com',
     password: 'playwright1234',
-    accoundId: 'cl6c6xmn62304n4ve8gne1xvo',
+    accountId: 'cl6c6xmn62304n4ve8gne1xvo',
   },
   {
     email: 'playwright4@jodygeraldo.com',
     password: 'playwright1234',
-    accoundId: 'cl6c6xzno2329n4vepct8on7a',
+    accountId: 'cl6c6xzno2329n4vepct8on7a',
   },
   {
     email: 'playwright@jodygeraldo.com',
     password: 'playwright1234',
-    accoundId: 'cl6c5vo4p2153n4ve7m76q3fd',
+    accountId: 'cl6c5vo4p2153n4ve7m76q3fd',
   },
 ]
 

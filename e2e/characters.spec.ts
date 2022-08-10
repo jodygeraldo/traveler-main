@@ -9,7 +9,7 @@ test('Characters page flow', async ({ page }, testInfo) => {
       data: {
         accounts: {
           update: {
-            where: { id: currentUser.accoundId },
+            where: { id: currentUser.accountId },
             data: {
               characters: { deleteMany: {} },
             },
