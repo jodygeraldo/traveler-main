@@ -7,12 +7,12 @@ invariant(process.env.REDIS_URL, 'REDIS_URL must be set')
 const client = Redis.createClient({ url: process.env.REDIS_URL })
 
 client.on('error', (err) => console.log('Redis client error', err))
+client.connect()
+client.on('ready', () => console.log('Redis client connected'))
 
 export async function get(key: string) {
   try {
-    await client.connect()
     const cache = await client.get(key)
-    await client.quit()
     if (!cache) return
 
     return JSON.parse(cache)
@@ -23,9 +23,7 @@ export async function get(key: string) {
 
 export async function set(key: string, value: any) {
   try {
-    await client.connect()
     await client.set(key, JSON.stringify(value))
-    await client.quit()
   } catch (error) {
     console.error(`Redis Error .set: ${error}`)
   }
@@ -33,9 +31,7 @@ export async function set(key: string, value: any) {
 
 export async function del(key: string | string[]) {
   try {
-    await client.connect()
     await client.del(key)
-    await client.quit()
   } catch (error) {
     console.error(`Redis Error .del: ${error}`)
   }
