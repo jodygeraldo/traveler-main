@@ -1,8 +1,10 @@
 import prisma from '~/db.server'
+import * as Redis from '~/redis.server'
 import { expect, test, users } from './fixtures'
 
 test('Characters page flow', async ({ page }, testInfo) => {
   const currentUser = users[testInfo.workerIndex]
+  await Redis.del(`getUserCharacters:${currentUser.accountId}`)
   await prisma.user
     .update({
       where: { email: currentUser.email },
