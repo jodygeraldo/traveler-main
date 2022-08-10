@@ -108,7 +108,7 @@ export function CharacterGridItem({
           <Button.Link
             to={`./${Utils.slugify(name)}/profile`}
             prefetch="intent"
-            id={`${name}-character-page-link`}
+            data-testid={`${name}-character-page-link`}
             styles="button"
             className="w-full"
           >

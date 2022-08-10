@@ -35,15 +35,25 @@ test('Characters page flow', async ({ page }, testInfo) => {
     'aria-checked',
     'true'
   )
-  await expect(page.locator('#Albedo-character-page-link')).toBeHidden()
-  await expect(page.locator('#Diluc-character-page-link')).toBeHidden()
-  await expect(page.locator('#Amber-character-page-link')).toBeVisible()
+  await expect(
+    page.locator('[data-testid="Albedo-character-page-link"]')
+  ).toBeHidden()
+  await expect(
+    page.locator('[data-testid="Diluc-character-page-link"]')
+  ).toBeHidden()
+  await expect(
+    page.locator('[data-testid="Amber-character-page-link"]')
+  ).toBeVisible()
 
   // * can search for characters
   await page.locator('#search').fill('Bennett')
   await expect(page.locator('[data-testid="grid-view"] > li')).toHaveCount(1)
-  await expect(page.locator('#Amber-character-page-link')).toBeHidden()
-  await expect(page.locator('#Bennett-character-page-link')).toBeVisible()
+  await expect(
+    page.locator('[data-testid="Amber-character-page-link"]')
+  ).toBeHidden()
+  await expect(
+    page.locator('[data-testid="Bennett-character-page-link"]')
+  ).toBeVisible()
 
   // * can do quick level update
   await page.locator('text=Edit level').click()
