@@ -100,8 +100,6 @@ test('Track page flow', async ({ page }, testInfo) => {
   await page.locator('input[name="level"]').fill('50')
   await page.locator('button:has-text("Update")').click()
   await expect(page).toHaveURL('/track')
-  await expect(page.locator('text=Elemental Burst')).toBeHidden()
-  await expect(page.locator('text=Elemental Skill')).toBeVisible()
 
   await page.locator('text=delete').click()
   await expect(page).toHaveURL('/track')
