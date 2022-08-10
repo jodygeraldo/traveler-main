@@ -60,6 +60,7 @@ test('Track page flow', async ({ page }, testInfo) => {
 
   await page.locator('button:has-text("Track")').click()
   await expect(page).toHaveURL('/track')
+  await expect(page.locator('text=Bennett')).toBeVisible()
 
   await page.locator('text=Bennett').click()
   await expect(page).toHaveURL('/track/Bennett')
