@@ -4,7 +4,12 @@ import { expect, test, users } from './fixtures'
 
 test('Track page flow', async ({ page }, testInfo) => {
   const currentUser = users[testInfo.workerIndex]
-  await Redis.del(`getUserTrackCharacters:${currentUser.accountId}`)
+  await Redis.del([
+    `getUserCharacterTrackStatus:Bennett:${currentUser.accountId}`,
+    `getUserNonTrackableCharactersName:${currentUser.accountId}`,
+    `getUserTrackCharacters:${currentUser.accountId}`,
+    `getUserTrackCharacter:Bennett:${currentUser.accountId}`,
+  ])
   await prisma.user
     .update({
       where: { email: currentUser.email },
@@ -58,10 +63,12 @@ test('Track page flow', async ({ page }, testInfo) => {
   await page.locator('input[name="elementalSkill"]').fill('2')
   await page.locator('input[name="elementalBurst"]').fill('2')
 
-  await page.locator('button:has-text("Track")').click()
-  await expect(page).toHaveURL('/track')
-  await expect(page.locator('text=Bennett')).toBeVisible()
+  await Promise.all([
+    page.waitForNavigation(),
+    page.locator('button:has-text("Track")').click(),
+  ])
 
+  await expect(page).toHaveURL('/track')
   await page.locator('text=Bennett').click()
   await expect(page).toHaveURL('/track/Bennett')
   await expect(page.locator('text=Bennett')).toBeVisible()
