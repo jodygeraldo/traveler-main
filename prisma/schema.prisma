@@ -22,7 +22,7 @@ model User {
 model Password {
   hash String
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String @unique @map("user_id")
 }
 
@@ -33,7 +33,7 @@ model Account {
 
   characters UserCharacter[]
 
-  user    User   @relation(fields: [ownerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  user    User  @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId String @unique @map("owner_id")
 }
 
@@ -103,8 +103,8 @@ model UserCharacter {
   character Character @relation(fields: [name], references: [name], onDelete: SetNull, onUpdate: Cascade)
   name      String    @map("character_name")
 
-  account Account @relation(fields: [ownerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  ownerId String  @map("owner_id")
+  account Account? @relation(fields: [ownerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  ownerId String   @map("owner_id")
 
   track CharacterTrack?
 
@@ -120,9 +120,9 @@ model CharacterTrack {
   targetElementalSkill Int?   @map("target_elemental_skill") @db.UnsignedSmallInt
   targetElementalBurst Int?   @map("target_elemental_burst") @db.UnsignedSmallInt
 
-  userCharacter UserCharacter @relation(fields: [name, ownerId], references: [name, ownerId], onDelete: SetNull, onUpdate: Cascade)
-  name          String        @map("character_name")
-  ownerId       String        @map("owner_id")
+  userCharacter UserCharacter? @relation(fields: [name, ownerId], references: [name, ownerId], onDelete: SetNull, onUpdate: Cascade)
+  name          String         @map("character_name")
+  ownerId       String         @map("owner_id")
 
   @@unique([name, ownerId])
 }
