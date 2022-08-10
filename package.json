@@ -36,7 +36,7 @@
   ],
   "dependencies": {
     "@headlessui/react": "^1.6.5",
-    "@prisma/client": "^4.1.0",
+    "@prisma/client": "^4.2.0",
     "@radix-ui/react-context-menu": "^1.0.0",
     "@radix-ui/react-dialog": "^1.0.0",
     "@radix-ui/react-toolbar": "^1.0.0",
