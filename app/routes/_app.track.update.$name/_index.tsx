@@ -83,7 +83,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
     accountId,
   })
 
-  return RemixNode.json({ ok: true, errors: {} }, { statusText: 'SUCCESS' })
+  return RemixNode.redirect('/track')
 }
 
 export async function loader({ params, request }: RemixNode.LoaderArgs) {
@@ -111,24 +111,12 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
 export default function TrackUpdatePage() {
   const name = Utils.deslugify(RemixReact.useParams().name || '')
   const { track } = RemixReact.useLoaderData<typeof loader>()
-
-  const fetcher = RemixReact.useFetcher<{
-    ok: boolean
-    errors: {
-      [key: string]: string
-    }
-  }>()
+  const actionData = RemixReact.useActionData<typeof action>()
 
   const navigate = RemixReact.useNavigate()
-  const busy = fetcher.state === 'submitting'
+  const busy = RemixReact.useTransition().state === 'submitting'
 
   const [open, setOpen] = React.useState(true)
-
-  React.useEffect(() => {
-    if (fetcher.data?.ok) {
-      setOpen(false)
-    }
-  }, [fetcher.data])
 
   return (
     <HeadlessUI.Transition.Root show={open} as={React.Fragment}>
@@ -168,7 +156,7 @@ export default function TrackUpdatePage() {
                     exit={{ x: '100%' }}
                   >
                     <HeadlessUI.Dialog.Panel className="pointer-events-auto w-screen max-w-2xl">
-                      <fetcher.Form
+                      <RemixReact.Form
                         method="post"
                         className="flex h-full flex-col overflow-y-scroll bg-gray-2 shadow-xl"
                       >
@@ -200,7 +188,7 @@ export default function TrackUpdatePage() {
                               name="level"
                               value={track.level}
                               max={90}
-                              error={fetcher.data?.errors?.level}
+                              error={actionData?.errors?.level}
                             />
 
                             <ProgressionField
@@ -208,7 +196,7 @@ export default function TrackUpdatePage() {
                               name="ascension"
                               value={track.ascension}
                               max={6}
-                              error={fetcher.data?.errors?.ascension}
+                              error={actionData?.errors?.ascension}
                             />
 
                             <ProgressionField
@@ -217,7 +205,7 @@ export default function TrackUpdatePage() {
                               name="normalAttack"
                               value={track.normalAttack}
                               max={10}
-                              error={fetcher.data?.errors?.normalAttack}
+                              error={actionData?.errors?.normalAttack}
                             />
 
                             <ProgressionField
@@ -226,7 +214,7 @@ export default function TrackUpdatePage() {
                               name="elementalSkill"
                               value={track.elementalSkill}
                               max={10}
-                              error={fetcher.data?.errors?.elementalSkill}
+                              error={actionData?.errors?.elementalSkill}
                             />
 
                             <ProgressionField
@@ -235,7 +223,7 @@ export default function TrackUpdatePage() {
                               name="elementalBurst"
                               value={track.elementalBurst}
                               max={10}
-                              error={fetcher.data?.errors?.elementalBurst}
+                              error={actionData?.errors?.elementalBurst}
                             />
                           </div>
                         </div>
@@ -260,7 +248,7 @@ export default function TrackUpdatePage() {
                             </Button.Base>
                           </div>
                         </div>
-                      </fetcher.Form>
+                      </RemixReact.Form>
                     </HeadlessUI.Dialog.Panel>
                   </motion.div>
                 )}

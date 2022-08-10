@@ -82,7 +82,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
     accountId,
   })
 
-  return RemixNode.json({ ok: true, errors: {} }, { statusText: 'SUCCESS' })
+  return RemixNode.redirect('/track')
 }
 
 export async function loader({ request }: RemixNode.LoaderArgs) {
@@ -139,24 +139,12 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
 export default function AddTrackPage() {
   const { trackableCharacterNames, firstCharacter } =
     RemixReact.useLoaderData<typeof loader>()
-
-  const submitFetcher = RemixReact.useFetcher<{
-    ok: boolean
-    errors: {
-      [key: string]: string
-    }
-  }>()
+  const actionData = RemixReact.useActionData<typeof action>()
 
   const navigate = RemixReact.useNavigate()
-  const busy = submitFetcher.state === 'submitting'
+  const busy = RemixReact.useTransition().state === 'submitting'
 
   const [open, setOpen] = React.useState(true)
-
-  React.useEffect(() => {
-    if (submitFetcher.data?.ok) {
-      setOpen(false)
-    }
-  }, [submitFetcher.data])
 
   const progressionfetcher =
     RemixReact.useFetcher<CharacterTypes.CharacterNameWithProgression>()
@@ -206,7 +194,7 @@ export default function AddTrackPage() {
                     exit={{ x: '100%' }}
                   >
                     <HeadlessUI.Dialog.Panel className="pointer-events-auto w-screen max-w-2xl">
-                      <submitFetcher.Form
+                      <RemixReact.Form
                         method="post"
                         className="flex h-full flex-col overflow-y-scroll bg-gray-2 shadow-xl"
                       >
@@ -268,7 +256,7 @@ export default function AddTrackPage() {
                                           : firstCharacter.progression.level
                                       }
                                       max={90}
-                                      error={submitFetcher.data?.errors?.level}
+                                      error={actionData?.errors?.level}
                                     />
 
                                     <ProgressionField
@@ -285,9 +273,7 @@ export default function AddTrackPage() {
                                           : firstCharacter.progression.ascension
                                       }
                                       max={6}
-                                      error={
-                                        submitFetcher.data?.errors?.ascension
-                                      }
+                                      error={actionData?.errors?.ascension}
                                     />
 
                                     <ProgressionField
@@ -307,9 +293,7 @@ export default function AddTrackPage() {
                                               .normalAttack
                                       }
                                       max={10}
-                                      error={
-                                        submitFetcher.data?.errors?.normalAttack
-                                      }
+                                      error={actionData?.errors?.normalAttack}
                                     />
 
                                     <ProgressionField
@@ -329,10 +313,7 @@ export default function AddTrackPage() {
                                               .elementalSkill
                                       }
                                       max={10}
-                                      error={
-                                        submitFetcher.data?.errors
-                                          ?.elementalSkill
-                                      }
+                                      error={actionData?.errors?.elementalSkill}
                                     />
 
                                     <ProgressionField
@@ -352,10 +333,7 @@ export default function AddTrackPage() {
                                               .elementalBurst
                                       }
                                       max={10}
-                                      error={
-                                        submitFetcher.data?.errors
-                                          ?.elementalBurst
-                                      }
+                                      error={actionData?.errors?.elementalBurst}
                                     />
                                   </>
                                 )}
@@ -398,7 +376,7 @@ export default function AddTrackPage() {
                             )}
                           </div>
                         </div>
-                      </submitFetcher.Form>
+                      </RemixReact.Form>
                     </HeadlessUI.Dialog.Panel>
                   </motion.div>
                 )}
