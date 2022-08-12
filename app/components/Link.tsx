@@ -21,8 +21,8 @@ const LinkMenu = React.forwardRef<HTMLAnchorElement, ButtonMenuProps>(
       className={clsx(
         'inline-block w-full rounded-md py-2 px-4',
         'text-left text-sm text-gray-11',
-        'disabled:text-gray-8',
-        'radix-highlighted:bg-gray-4 radix-highlighted:text-gray-12 radix-highlighted:outline-none'
+        'radix-disabled:text-gray-8',
+        'radix-highlighted:bg-gray-4 radix-highlighted:text-gray-12 radix-highlighted:outline-none radix-state-open:text-gray-12'
       )}
       {...props}
     >

@@ -1,22 +1,18 @@
+import * as React from 'react'
+import logoTextUrl from '~/assets/logoipsum-222.svg'
 import logoUrl from '~/assets/logoipsum-logo-15.svg'
 
-interface Props {
-  logo?: boolean
-  text?: boolean
-  className?: string
+export default function Logo({
+  ...props
+}: Omit<React.ComponentPropsWithRef<'img'>, 'src'>) {
+  return <img {...props} src={logoUrl} alt={props.alt} />
 }
 
-export default function Logo({ logo = true, text = false, className }: Props) {
-  // logo with text
-  if (logo && text) {
-    return <img className={className} src={logoUrl} alt="Qomik" />
-  }
-
-  // text only
-  if (text && !logo) {
-    return <img className={className} src={logoUrl} alt="Qomik" />
-  }
-
-  // logo only (default)
-  return <img className={className} src={logoUrl} alt="Qomik" />
+export function LogoWithText({
+  ...props
+}: Omit<React.ComponentPropsWithRef<'img'>, 'src'>) {
+  return <img {...props} src={logoTextUrl} alt={props.alt} />
 }
+
+export const WithText = LogoWithText
+export const WithoutText = Logo
