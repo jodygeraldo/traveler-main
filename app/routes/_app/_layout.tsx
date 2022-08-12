@@ -2,6 +2,9 @@ import * as RadixDialog from '@radix-ui/react-dialog'
 import * as RadixDropdownMenu from '@radix-ui/react-dropdown-menu'
 import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
+import type { Variants } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
+import * as React from 'react'
 import * as Icon from '~/components/Icon'
 import * as Link from '~/components/Link'
 import * as Logo from '~/components/Logo'
@@ -68,9 +71,37 @@ function DesktopSidebar() {
   )
 }
 
+const sidebarVariants: Variants = {
+  hidden: {
+    x: -9999,
+    transition: {
+      staggerChildren: 0.2,
+      staggerDirection: -1,
+      ease: 'easeInOut',
+      duration: 0.3,
+    },
+  },
+  show: {
+    x: 0,
+    transition: {
+      staggerChildren: 0.2,
+      staggerDirection: 1,
+      ease: 'easeInOut',
+      duration: 0.3,
+    },
+  },
+}
+
+const overlayVariants: Variants = {
+  hidden: { opacity: 0, transition: { ease: 'easeInOut', duration: 0.3 } },
+  show: { opacity: 1, transition: { ease: 'easeInOut', duration: 0.3 } },
+}
+
 function MobileSidebar() {
+  const [open, setOpen] = React.useState(false)
+
   return (
-    <RadixDialog.Root>
+    <RadixDialog.Root open={open} onOpenChange={setOpen}>
       <RadixDialog.Trigger
         type="button"
         className="border-r border-gray-6 px-4 text-white focus:bg-gray-3 focus:outline-none lg:hidden"
@@ -79,54 +110,74 @@ function MobileSidebar() {
         <Icon.Outline name="menuAlt2" className="h-6 w-6" aria-hidden="true" />
       </RadixDialog.Trigger>
 
-      <RadixDialog.Portal>
-        <div className="relative z-40 ">
-          <RadixDialog.Overlay className="fixed inset-0 bg-overlay-black-12 transition-opacity" />
+      <AnimatePresence>
+        {open && (
+          <RadixDialog.Portal forceMount>
+            <div className="relative z-40">
+              <RadixDialog.Overlay asChild>
+                <motion.div
+                  className="fixed inset-0 bg-overlay-black-12"
+                  variants={overlayVariants}
+                  initial="hidden"
+                  animate="show"
+                  exit="hidden"
+                />
+              </RadixDialog.Overlay>
 
-          <div className="fixed inset-0 z-40 flex">
-            <RadixDialog.Content className="relative flex max-w-xs flex-1 flex-col bg-gray-2 pt-5 pb-4">
-              <div className="absolute top-0 right-0 -mr-12">
-                <RadixDialog.Close
-                  aria-label="Close"
-                  className="ml-1 flex h-10 w-10 items-center justify-center rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-7"
-                >
-                  <Icon.Solid name="x" className="h-6 w-6 text-gray-11" />
-                </RadixDialog.Close>
-              </div>
-
-              <div className="flex flex-shrink-0 items-center px-4">
-                <Logo.LogoWithText className="h-8 w-auto" />
-              </div>
-
-              <div className="mt-5 h-0 flex-1 overflow-y-auto">
-                <nav className="px-2">
-                  <div className="space-y-1">
-                    {navigation.map((item) => (
-                      <RemixReact.NavLink
-                        key={item.name}
-                        to={item.to}
-                        prefetch="intent"
-                        className={({ isActive }) =>
-                          clsx(
-                            isActive
-                              ? 'bg-gray-5 text-gray-12'
-                              : 'text-gray-11 hover:bg-gray-4',
-                            'flex rounded-md px-2 py-2 font-medium leading-5 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-7'
-                          )
-                        }
+              <div className="fixed inset-0 z-40 flex">
+                <RadixDialog.Content asChild>
+                  <motion.div
+                    className="relative flex max-w-xs flex-1 flex-col bg-gray-2 pt-5 pb-4"
+                    variants={sidebarVariants}
+                    initial="hidden"
+                    animate="show"
+                    exit="hidden"
+                  >
+                    <div className="absolute top-0 right-0 -mr-12">
+                      <RadixDialog.Close
+                        aria-label="Close"
+                        className="ml-1 flex h-10 w-10 items-center justify-center rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-7"
                       >
-                        {item.name}
-                      </RemixReact.NavLink>
-                    ))}
-                  </div>
-                </nav>
+                        <Icon.Solid name="x" className="h-6 w-6 text-gray-11" />
+                      </RadixDialog.Close>
+                    </div>
+
+                    <div className="flex flex-shrink-0 items-center px-4">
+                      <Logo.LogoWithText className="h-8 w-auto" />
+                    </div>
+
+                    <div className="mt-5 h-0 flex-1 overflow-y-auto">
+                      <nav className="px-2">
+                        <div className="space-y-1">
+                          {navigation.map((item) => (
+                            <RemixReact.NavLink
+                              key={item.name}
+                              to={item.to}
+                              prefetch="intent"
+                              className={({ isActive }) =>
+                                clsx(
+                                  isActive
+                                    ? 'bg-gray-5 text-gray-12'
+                                    : 'text-gray-11 hover:bg-gray-4',
+                                  'flex rounded-md px-2 py-2 font-medium leading-5 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-7'
+                                )
+                              }
+                            >
+                              {item.name}
+                            </RemixReact.NavLink>
+                          ))}
+                        </div>
+                      </nav>
+                    </div>
+                  </motion.div>
+                </RadixDialog.Content>
+                {/* Dummy element to force sidebar to shrink to fit close icon */}
+                <div className="w-14 flex-shrink-0" aria-hidden="true" />
               </div>
-            </RadixDialog.Content>
-            {/* Dummy element to force sidebar to shrink to fit close icon */}
-            <div className="w-14 flex-shrink-0" aria-hidden="true" />
-          </div>
-        </div>
-      </RadixDialog.Portal>
+            </div>
+          </RadixDialog.Portal>
+        )}
+      </AnimatePresence>
     </RadixDialog.Root>
   )
 }
