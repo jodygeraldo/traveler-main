@@ -2,6 +2,7 @@ import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as ReactTable from '@tanstack/react-table'
 import * as React from 'react'
+import * as Breadcrumb from '~/components/Breadcrumb'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as Utils from '~/utils'
@@ -156,4 +157,8 @@ export default function CharacterMaterialPage() {
       />
     </>
   )
+}
+
+export const handle = {
+  breadcrumb: () => <Breadcrumb.Link to="./material">Material</Breadcrumb.Link>,
 }

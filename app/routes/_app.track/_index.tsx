@@ -3,6 +3,7 @@ import * as RemixReact from '@remix-run/react'
 import * as RemixParamsHelper from 'remix-params-helper'
 import * as Zod from 'zod'
 import * as Button from '~/components/Button'
+import PageHeading from '~/components/PageHeading'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as CharacterUtils from '~/utils/server/character.server'
@@ -63,32 +64,26 @@ export default function TrackPage() {
   const { pathname, key } = RemixReact.useLocation()
 
   return (
-    <main className="mx-auto max-w-3xl py-10 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-      <div className="sm:flex sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-bold leading-7 text-primary-12 sm:truncate sm:text-3xl">
-          Tracks
-        </h1>
-
-        <Button.Link
-          styles="button"
-          to="./add"
-          className="mt-4 w-full sm:mt-0 sm:w-auto"
-        >
+    <>
+      <PageHeading title="Characters">
+        <Button.Link styles="button" to="./add" className="w-full sm:w-auto">
           Track new character
         </Button.Link>
-      </div>
+      </PageHeading>
 
-      <div key={key} className="mt-12">
-        {tracksWithItems.length > 0 ? (
-          <TrackList userTracks={tracksWithItems} />
-        ) : (
-          <EmptyState />
-        )}
-      </div>
+      <div className="my-8">
+        <div key={key} className="px-4 sm:px-6 lg:px-8">
+          {tracksWithItems.length > 0 ? (
+            <TrackList userTracks={tracksWithItems} />
+          ) : (
+            <EmptyState />
+          )}
+        </div>
 
-      {pathname === `/track/add` || pathname === `/track/update/${name}` ? (
-        <RemixReact.Outlet />
-      ) : null}
-    </main>
+        {pathname === `/track/add` || pathname === `/track/update/${name}` ? (
+          <RemixReact.Outlet />
+        ) : null}
+      </div>
+    </>
   )
 }

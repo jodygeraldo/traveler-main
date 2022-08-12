@@ -16,7 +16,7 @@ export default function Breadcrumb({
         className="flex border-b border-gray-6 bg-gray-2"
         aria-label="Breadcrumb"
       >
-        <div className="flex px-4 py-2 sm:hidden sm:px-6 lg:px-8">
+        <div className="flex px-4 py-3 sm:hidden sm:px-6 lg:px-8">
           <RemixReact.Link
             to={backLinkTo}
             prefetch="intent"
@@ -29,12 +29,12 @@ export default function Breadcrumb({
             <span>{backLinkLabel}</span>
           </RemixReact.Link>
         </div>
-        <ol className="mx-auto hidden w-full max-w-screen-xl space-x-4 px-4 sm:flex sm:px-6 lg:px-8">
+        <ol className="mx-auto hidden w-full space-x-4 px-4 sm:flex sm:px-6 lg:px-8">
           <li className="flex">
             <div className="flex items-center">
               <RemixReact.Link
                 prefetch="intent"
-                to="/character"
+                to={backLinkTo}
                 className="text-gray-10 hover:text-gray-11"
               >
                 <Icon.Solid
@@ -42,7 +42,7 @@ export default function Breadcrumb({
                   className="h-5 w-5 flex-shrink-0"
                   aria-hidden="true"
                 />
-                <span className="sr-only">Character page</span>
+                <span className="sr-only">{backLinkLabel}</span>
               </RemixReact.Link>
             </div>
           </li>
