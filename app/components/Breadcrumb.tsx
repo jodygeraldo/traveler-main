@@ -36,6 +36,7 @@ export default function Breadcrumb({
                 prefetch="intent"
                 to={backLinkTo}
                 className="text-gray-10 hover:text-gray-11"
+                data-testid="breadcrumb-back-button"
               >
                 <Icon.Solid
                   name="home"

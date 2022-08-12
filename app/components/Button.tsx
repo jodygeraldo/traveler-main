@@ -275,10 +275,8 @@ const ButtonMenu = React.forwardRef<HTMLButtonElement, ButtonMenuProps>(
       className={clsx(
         'w-full rounded-md py-2 px-4',
         'text-left text-sm text-gray-11',
-        'disabled:text-gray-8 radix-disabled:text-gray-8',
-        isRadix &&
-          'radix-highlighted:bg-gray-4 radix-highlighted:text-gray-12 radix-highlighted:outline-none',
-        isRadix && 'radix-state-open:text-gray-12'
+        'radix-disabled:text-gray-8',
+        'radix-highlighted:bg-gray-4 radix-highlighted:text-gray-12 radix-highlighted:outline-none radix-state-open:text-gray-12'
       )}
       {...props}
     >

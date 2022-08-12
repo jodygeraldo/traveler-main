@@ -91,7 +91,7 @@ test('Track page flow', async ({ page }, testInfo) => {
   await page.locator('text=Save changes').click()
   await page.locator('[aria-label="Close"]').click()
 
-  await page.locator('a:has-text("Track")').click()
+  await page.locator('[data-testid="breadcrumb-back-button"]').click()
   await expect(page).toHaveURL('/track')
 
   await page.locator('a:has-text("Edit")').click()

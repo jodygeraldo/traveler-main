@@ -5,8 +5,8 @@ import clsx from 'clsx'
 import type { Variants } from 'framer-motion'
 import { AnimatePresence, motion } from 'framer-motion'
 import * as React from 'react'
+import * as Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
-import * as Link from '~/components/Link'
 import * as Logo from '~/components/Logo'
 import useUser from '~/hooks/useUser'
 
@@ -64,7 +64,7 @@ function DesktopSidebar() {
         </nav>
 
         <div className="border-t border-gray-6">
-          <ProfileMenu />
+          <ProfileMenu dataTestId="desktop-profile-dropdown" />
         </div>
       </div>
     </div>
@@ -189,19 +189,24 @@ function MobileTopbar() {
 
       <div className="flex flex-1 justify-end px-4 sm:px-6 lg:px-8">
         <div className="flex justify-end">
-          <ProfileMenu />
+          <ProfileMenu dataTestId="mobile-profile-dropdown" />
         </div>
       </div>
     </div>
   )
 }
 
-function ProfileMenu() {
+function ProfileMenu({ dataTestId }: { dataTestId: string }) {
+  const logoutSubmit = RemixReact.useSubmit()
+
   const { accounts } = useUser()
 
   return (
     <RadixDropdownMenu.Root>
-      <RadixDropdownMenu.Trigger className="group flex w-full items-center justify-between rounded-md p-4 text-sm font-medium text-gray-11 hover:bg-gray-4 hover:text-gray-12 focus:bg-gray-3 focus:outline-none radix-state-open:bg-gray-5 radix-state-open:text-gray-12 lg:rounded-none">
+      <RadixDropdownMenu.Trigger
+        data-testid={dataTestId}
+        className="group flex w-full items-center justify-between rounded-md p-4 text-sm font-medium text-gray-11 hover:bg-gray-4 hover:text-gray-12 focus:bg-gray-3 focus:outline-none radix-state-open:bg-gray-5 radix-state-open:text-gray-12 lg:rounded-none"
+      >
         <span>{accounts[0].name}</span>
         <Icon.Solid name="chevronDown" className="ml-4 h-4 w-4" />
       </RadixDropdownMenu.Trigger>
@@ -212,7 +217,17 @@ function ProfileMenu() {
           className="mx-2 mt-2 w-60 rounded-md bg-gray-3 p-1 shadow-lg ring-1 ring-overlay-black-1 origin-radix-context-menu [animation:scaleIn_150ms_ease-out] focus:outline-none"
         >
           <RadixDropdownMenu.Item asChild>
-            <Link.Menu to="/logout">Sign out</Link.Menu>
+            <Button.Menu
+              onClick={() =>
+                logoutSubmit(null, {
+                  action: '/logout',
+                  method: 'post',
+                  replace: true,
+                })
+              }
+            >
+              Sign out
+            </Button.Menu>
           </RadixDropdownMenu.Item>
         </RadixDropdownMenu.Content>
       </RadixDropdownMenu.Portal>
