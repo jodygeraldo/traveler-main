@@ -93,8 +93,8 @@ const sidebarVariants: Variants = {
 }
 
 const overlayVariants: Variants = {
-  hidden: { opacity: 0, transition: { ease: 'easeInOut', duration: 0.3 } },
-  show: { opacity: 1, transition: { ease: 'easeInOut', duration: 0.3 } },
+  hidden: { opacity: 0, transition: { duration: 0.3 } },
+  show: { opacity: 1, transition: { duration: 0.3 } },
 }
 
 function MobileSidebar() {
@@ -184,7 +184,7 @@ function MobileSidebar() {
 
 function MobileTopbar() {
   return (
-    <div className="sticky top-0 z-10 flex h-16 flex-shrink-0 border-b border-gray-6 bg-gray-2 lg:hidden">
+    <div className="sticky top-0 z-20 flex h-16 flex-shrink-0 border-b border-gray-6 bg-gray-2 lg:hidden">
       <MobileSidebar />
 
       <div className="flex flex-1 justify-end px-4 sm:px-6 lg:px-8">
