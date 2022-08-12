@@ -142,105 +142,107 @@ export default function Toolbar() {
   }
 
   return (
-    <RadixToolbar.Root className="bg-gray-2 px-2.5 py-2 sm:rounded-md lg:flex">
-      <RadixToolbar.ToggleGroup
-        type="single"
-        aria-label="Character vision filter"
-        defaultValue={searchParams.get('vision') || ''}
-        onValueChange={handleVisionChange}
-        className="space-x-1"
-      >
-        {visions.map(({ value, label, image }) => (
-          <ToggleItem key={value} value={value} label={label}>
-            <Image
-              src={image}
-              alt=""
-              width={24}
-              height={24}
-              className="h-6 w-6"
+    <div className="sm:px-6 lg:px-8">
+      <RadixToolbar.Root className="bg-gray-2 px-2.5 py-2 sm:rounded-md xl:flex">
+        <RadixToolbar.ToggleGroup
+          type="single"
+          aria-label="Character vision filter"
+          defaultValue={searchParams.get('vision') || ''}
+          onValueChange={handleVisionChange}
+          className="space-x-1"
+        >
+          {visions.map(({ value, label, image }) => (
+            <ToggleItem key={value} value={value} label={label}>
+              <Image
+                src={image}
+                alt=""
+                width={24}
+                height={24}
+                className="h-6 w-6"
+              />
+            </ToggleItem>
+          ))}
+        </RadixToolbar.ToggleGroup>
+
+        <RadixToolbar.Separator
+          orientation="horizontal"
+          className="my-4 mx-0.5 h-px w-auto bg-gray-6 xl:mx-4 xl:my-0.5 xl:h-auto xl:w-px "
+        />
+
+        <RadixToolbar.ToggleGroup
+          type="single"
+          aria-label="Character waepon filter"
+          defaultValue={searchParams.get('weapon') || ''}
+          onValueChange={handleWeaponChange}
+          className="space-x-1"
+        >
+          {weapons.map(({ value, label, image }) => (
+            <ToggleItem key={value} value={value} label={label}>
+              <Image
+                src={image}
+                alt=""
+                width={24}
+                height={24}
+                className="h-6 w-6 rounded-full bg-primary-9"
+              />
+            </ToggleItem>
+          ))}
+        </RadixToolbar.ToggleGroup>
+
+        <RadixToolbar.Separator
+          orientation="horizontal"
+          className="my-4 mx-0.5 h-px w-auto bg-gray-6 xl:mx-4 xl:my-0.5 xl:h-auto xl:w-px "
+        />
+
+        <RadixToolbar.ToggleGroup
+          type="single"
+          aria-label="Character region filter"
+          defaultValue={searchParams.get('region') || ''}
+          onValueChange={handleRegionChange}
+          className="space-x-1"
+        >
+          {regions.map(({ value, label, image }) => (
+            <ToggleItem key={value} value={value} label={label}>
+              <Image
+                src={image}
+                alt=""
+                width={24}
+                height={24}
+                className="h-6 w-6 rounded-full bg-primary-9"
+              />
+            </ToggleItem>
+          ))}
+        </RadixToolbar.ToggleGroup>
+
+        <RadixToolbar.Separator
+          orientation="horizontal"
+          className="my-4 mx-0.5 h-px w-auto bg-gray-6 xl:mx-4 xl:my-0.5 xl:h-auto xl:w-px "
+        />
+
+        <RadixToolbar.ToggleGroup
+          type="single"
+          aria-label="Character rarity filter"
+          defaultValue={searchParams.get('rarity') || ''}
+          onValueChange={handleRarityChange}
+          className="space-x-1"
+        >
+          <ToggleItem value="4" label="4 stars">
+            <Icon.Solid
+              name="star"
+              className="h-6 w-6 text-rarity-4"
+              aria-hidden
             />
           </ToggleItem>
-        ))}
-      </RadixToolbar.ToggleGroup>
-
-      <RadixToolbar.Separator
-        orientation="horizontal"
-        className="my-4 mx-0.5 h-px w-auto bg-gray-6 lg:mx-4 lg:my-0.5 lg:h-auto lg:w-px "
-      />
-
-      <RadixToolbar.ToggleGroup
-        type="single"
-        aria-label="Character waepon filter"
-        defaultValue={searchParams.get('weapon') || ''}
-        onValueChange={handleWeaponChange}
-        className="space-x-1"
-      >
-        {weapons.map(({ value, label, image }) => (
-          <ToggleItem key={value} value={value} label={label}>
-            <Image
-              src={image}
-              alt=""
-              width={24}
-              height={24}
-              className="h-6 w-6 rounded-full bg-primary-9"
+          <ToggleItem value="5" label="5 stars">
+            <Icon.Solid
+              name="star"
+              className="h-6 w-6 text-rarity-5"
+              aria-hidden
             />
           </ToggleItem>
-        ))}
-      </RadixToolbar.ToggleGroup>
-
-      <RadixToolbar.Separator
-        orientation="horizontal"
-        className="my-4 mx-0.5 h-px w-auto bg-gray-6 lg:mx-4 lg:my-0.5 lg:h-auto lg:w-px "
-      />
-
-      <RadixToolbar.ToggleGroup
-        type="single"
-        aria-label="Character region filter"
-        defaultValue={searchParams.get('region') || ''}
-        onValueChange={handleRegionChange}
-        className="space-x-1"
-      >
-        {regions.map(({ value, label, image }) => (
-          <ToggleItem key={value} value={value} label={label}>
-            <Image
-              src={image}
-              alt=""
-              width={24}
-              height={24}
-              className="h-6 w-6 rounded-full bg-primary-9"
-            />
-          </ToggleItem>
-        ))}
-      </RadixToolbar.ToggleGroup>
-
-      <RadixToolbar.Separator
-        orientation="horizontal"
-        className="my-4 mx-0.5 h-px w-auto bg-gray-6 lg:mx-4 lg:my-0.5 lg:h-auto lg:w-px "
-      />
-
-      <RadixToolbar.ToggleGroup
-        type="single"
-        aria-label="Character rarity filter"
-        defaultValue={searchParams.get('rarity') || ''}
-        onValueChange={handleRarityChange}
-        className="space-x-1"
-      >
-        <ToggleItem value="4" label="4 stars">
-          <Icon.Solid
-            name="star"
-            className="h-6 w-6 text-rarity-4"
-            aria-hidden
-          />
-        </ToggleItem>
-        <ToggleItem value="5" label="5 stars">
-          <Icon.Solid
-            name="star"
-            className="h-6 w-6 text-rarity-5"
-            aria-hidden
-          />
-        </ToggleItem>
-      </RadixToolbar.ToggleGroup>
-    </RadixToolbar.Root>
+        </RadixToolbar.ToggleGroup>
+      </RadixToolbar.Root>
+    </div>
   )
 }
 

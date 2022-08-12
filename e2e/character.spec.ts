@@ -41,7 +41,7 @@ test('Character page flow', async ({ page }, testInfo) => {
   ).toBeVisible()
 
   // * should display character required items table
-  await page.locator('text=Material').click()
+  await page.locator('a:has-text("Material")').click()
   await expect(page).toHaveURL('/character/Bennett/material')
 
   await expect(page.locator('h1:has-text("Bennett")')).toBeVisible()
