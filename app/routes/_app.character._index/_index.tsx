@@ -2,6 +2,7 @@ import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import * as RPH from 'remix-params-helper'
 import * as Zod from 'zod'
+import PageHeading from '~/components/PageHeading'
 import * as CharacterModel from '~/models/character.server'
 import * as Session from '~/session.server'
 import * as CharacterUtils from '~/utils/server/character.server'
@@ -81,22 +82,16 @@ export default function CharactersPage() {
   })
 
   return (
-    <main className="mx-auto max-w-3xl py-10 lg:max-w-7xl">
-      <div className="px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
-        <h1 className="text-2xl font-bold leading-7 text-primary-12 sm:truncate sm:text-3xl">
-          Characters
-        </h1>
+    <>
+      <PageHeading title="Characters">
+        <SearchCharacter />
+      </PageHeading>
 
-        <div className="mt-4 sm:mt-0">
-          <SearchCharacter />
-        </div>
-      </div>
-
-      <div className="mt-8 sm:px-6 lg:px-8">
+      <div className="mt-6">
         <Toolbar />
       </div>
 
-      <div className="mt-4">
+      <div className="my-8">
         {filteredCharacters.length > 0 ? (
           <CharacterGridView characters={filteredCharacters} />
         ) : (
@@ -105,7 +100,7 @@ export default function CharactersPage() {
           </div>
         )}
       </div>
-    </main>
+    </>
   )
 }
 
