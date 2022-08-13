@@ -49,9 +49,7 @@ export async function loader({ params, request }: RemixNode.LoaderArgs) {
 export default function CharacterMaterialPage() {
   const { character, ascensionMaterial, talentMaterial } =
     RemixReact.useLoaderData<typeof loader>()
-  const [hideAscension, setHideAscension] = React.useState(
-    character.progression.ascension === 6
-  )
+  const [hideAscension, setHideAscension] = React.useState(false)
   const [hideTalent, setHideTalent] = React.useState(false)
   const [hideElementalTalent, setHideElementalTalent] = React.useState(false)
 
