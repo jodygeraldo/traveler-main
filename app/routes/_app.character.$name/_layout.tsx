@@ -135,7 +135,3 @@ export default function CharacterLayout() {
     </>
   )
 }
-
-export const handle = {
-  breadcrumb: () => <Breadcrumb.Link to=".">Character</Breadcrumb.Link>,
-}
