@@ -39,9 +39,13 @@ function MainContainer() {
 function DesktopSidebar() {
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-gray-6 lg:bg-gray-2 lg:pt-5">
-      <div className="flex flex-shrink-0 items-center px-4">
+      <RemixReact.Link
+        to="/character"
+        prefetch="intent"
+        className="flex flex-shrink-0 items-center px-4"
+      >
         <Logo.LogoWithText className="h-8 w-auto" />
-      </div>
+      </RemixReact.Link>
       <div className="flex min-h-0 flex-1 flex-col">
         <nav className="mt-5 flex-1 space-y-1 px-2">
           {navigation.map((item) => (
