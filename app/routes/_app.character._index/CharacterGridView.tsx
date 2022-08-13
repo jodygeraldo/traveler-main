@@ -47,7 +47,7 @@ export function CharacterGridItem({
       variants={variants}
       initial="hidden"
       animate="show"
-      className="bg-gray-2 sm:rounded-md shadow"
+      className="bg-gray-2 shadow sm:rounded-md"
     >
       <div className="block sm:rounded-md">
         <ContextMenu name={name} progression={progression}>

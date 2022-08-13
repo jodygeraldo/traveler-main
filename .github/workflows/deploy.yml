@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      REDIS_URL: "redis://localhost:6379"
+      REDIS_URL: 'redis://localhost:6379'
     steps:
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1

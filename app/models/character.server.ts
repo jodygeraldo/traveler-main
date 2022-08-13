@@ -634,7 +634,7 @@ export async function deleteTrackCharacter({
       `getUserNonTrackableCharactersName:${accountId}`,
       `getUserTrackCharacters:${accountId}`,
       `getUserTrackCharacter:${name}:${accountId}`,
-      `getUserCharacterTrackStatus:${name}:${accountId}`
+      `getUserCharacterTrackStatus:${name}:${accountId}`,
     ])
   } catch (error) {
     console.error(error)

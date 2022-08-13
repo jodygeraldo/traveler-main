@@ -1,5 +1,5 @@
-import * as RemixReact from '@remix-run/react';
-import clsx from 'clsx';
+import * as RemixReact from '@remix-run/react'
+import clsx from 'clsx'
 
 type Props = {
   tabs: { name: string; to: string }[]
