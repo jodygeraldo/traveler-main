@@ -1,6 +1,7 @@
 import * as RemixNode from '@remix-run/node'
 import dotenv from 'dotenv'
 import invariant from 'tiny-invariant'
+import type * as DB from '~/db.server'
 import * as UserModel from '~/models/user.server'
 
 dotenv.config()
@@ -46,6 +47,7 @@ export async function getUser(request: Request): Promise<{
   accounts: {
     id: string
     name: string
+    server: DB.Server
   }[]
 } | null> {
   const userId = await getUserId(request)
@@ -87,6 +89,7 @@ export async function requireUser(request: Request): Promise<{
   accounts: {
     id: string
     name: string
+    server: DB.Server
   }[]
 }> {
   const userId = await requireUserId(request)

@@ -26,10 +26,17 @@ model Password {
   userId String @unique @map("user_id")
 }
 
+enum Server {
+  NA
+  EU
+  ASIA
+}
+
 model Account {
   id      String  @id @default(cuid())
   name    String
   default Boolean @default(false)
+  server  Server  @default(NA)
 
   characters UserCharacter[]
 
@@ -121,8 +128,8 @@ model CharacterTrack {
   targetElementalBurst Int?   @map("target_elemental_burst") @db.UnsignedSmallInt
 
   userCharacter UserCharacter @relation(fields: [name, ownerId], references: [name, ownerId], onDelete: Cascade, onUpdate: Cascade)
-  name          String         @map("character_name")
-  ownerId       String         @map("owner_id")
+  name          String        @map("character_name")
+  ownerId       String        @map("owner_id")
 
   @@unique([name, ownerId])
 }
