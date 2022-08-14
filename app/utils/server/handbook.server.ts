@@ -12,14 +12,14 @@ export function getGenshinDailyReset(server: DB.Server) {
   }
 
   const resetTime = DateFnsTz.zonedTimeToUtc(
-    DateFns.nextDay(
+    DateFns.addDays(
       DateFns.set(new Date(), {
         hours: hours[server],
         minutes: 0,
         seconds: 0,
         milliseconds: 0,
       }),
-      0
+      1
     ),
     'Asia/Jakarta'
   ).getTime()
