@@ -28,7 +28,7 @@ export default function ServerSelect({
         <RadixSelect.Value asChild>
           <div className="text-sm text-gray-11">
             <span className="font-medium text-gray-12">{server.name} </span>
-            <span>
+            <span className="tabular-nums">
               reset in {hours}:{minutes}:{seconds}
             </span>
           </div>
