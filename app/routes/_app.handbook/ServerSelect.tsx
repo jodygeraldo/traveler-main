@@ -19,6 +19,7 @@ export default function ServerSelect({
   return (
     <RadixSelect.Root
       name="server"
+      defaultValue={server.name}
       onValueChange={(value) =>
         submit({ server: value }, { method: 'post', replace: true })
       }
@@ -38,7 +39,7 @@ export default function ServerSelect({
       </RadixSelect.Trigger>
 
       <RadixSelect.Portal>
-        <RadixSelect.Content className="mx-2 mt-2 w-60 rounded-md bg-gray-4 p-1 shadow-lg ring-1 ring-overlay-black-1 focus:outline-none">
+        <RadixSelect.Content className="mx-2 mt-2 min-w-fit rounded-md bg-gray-4 p-1 shadow-lg ring-1 ring-overlay-black-1 focus:outline-none">
           <RadixSelect.ScrollUpButton />
           <RadixSelect.Viewport>
             <SelectItem value="NA">America</SelectItem>
@@ -63,14 +64,19 @@ function SelectItem({
     <RadixSelect.Item
       value={value}
       className={clsx(
-        'w-full rounded-md py-2 px-4',
+        'group flex w-full items-center justify-between rounded-md py-2 px-4',
         'text-left text-sm text-gray-11',
         'radix-disabled:text-gray-8',
         'radix-highlighted:bg-gray-5 radix-highlighted:text-gray-12 radix-highlighted:outline-none radix-state-open:text-gray-12'
       )}
     >
       <RadixSelect.ItemText>{children}</RadixSelect.ItemText>
-      <RadixSelect.ItemIndicator />
+      <RadixSelect.ItemIndicator>
+        <Icon.Solid
+          name="check"
+          className="h-5 w-5 text-gray-11 group-radix-highlighted:text-gray-12"
+        />
+      </RadixSelect.ItemIndicator>
     </RadixSelect.Item>
   )
 }
