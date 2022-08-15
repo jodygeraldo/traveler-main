@@ -3,6 +3,7 @@ import * as DateFnsTz from 'date-fns-tz'
 import * as FarmableData from '~/data/farmable.server'
 import type * as DB from '~/db.server'
 import type * as CharacterType from '~/types/character'
+import * as CharacterUtils from '~/utils/server/character.server'
 
 export function getGenshinDailyReset(server: DB.Server) {
   const jakartaTime = DateFnsTz.zonedTimeToUtc(new Date(), 'Asia/Jakarta')
@@ -95,4 +96,25 @@ export function getStats(
       }, 0),
     },
   ]
+}
+
+export function getCharactersTrackMaterials(
+  tracks: ({ name: string } & CharacterType.TrackProgression)[]
+) {
+  type KV = { key: string; value: number }
+
+  const materialArray: KV[][] = []
+  tracks.forEach((track) => {
+    const name = CharacterUtils.isValidCharacterName(track.name) && track.name
+    if (!name) throw new Error('Invalid character name')
+    const { name: _, ...t } = track
+    const materials = CharacterUtils.getItemsQuantity({ name, ...t })
+    if (!Array.isArray(materials)) throw new Error('Invalid materials')
+    materialArray.push(materials)
+  })
+
+  return CharacterUtils.combineDuplicateKey({
+    skipPreprocess: true,
+    arr: materialArray.flat(),
+  })
 }
