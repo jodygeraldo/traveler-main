@@ -5,7 +5,7 @@ interface BaseProps {
   src: string
   alt: string
   className?: string
-  width: number
+  width: number | string
   height?: number | string
   centered?: boolean
 }
@@ -19,14 +19,26 @@ const PUBLIC_URL =
 
 const Image = React.forwardRef<HTMLImageElement, Props>(
   ({ src, alt, className, width, height, centered, ...props }, ref) => {
+    const getSrcSet = React.useCallback(
+      (dpr = 1) =>
+        `//images.weserv.nl/?url=${PUBLIC_URL}${src}&w=${+width * dpr}${
+          height ? '&h=' + +height * dpr : ''
+        }&output=webp`,
+      [height, src, width]
+    )
+
+    const srcSet = React.useMemo(() => {
+      return `${getSrcSet(1)} 1x, ${getSrcSet(2)} 2x, ${getSrcSet(
+        3
+      )} 3x, ${getSrcSet(4)} 4x`
+    }, [getSrcSet])
+
     return (
       <picture
         className={clsx(centered && 'justify-center', 'flex flex-shrink-0')}
       >
         <source
-          srcSet={`//images.weserv.nl/?url=${PUBLIC_URL}${src}&w=${width}${
-            height ? '&h=' + height : ''
-          }&output=webp`}
+          srcSet={srcSet}
           type="image/webp"
           width={width}
           height={height}
