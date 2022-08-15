@@ -1,5 +1,6 @@
 import * as DateFns from 'date-fns'
 import * as DateFnsTz from 'date-fns-tz'
+import * as FarmableData from '~/data/farmable.server'
 import type * as DB from '~/db.server'
 
 export function getGenshinDailyReset(server: DB.Server) {
@@ -24,8 +25,28 @@ export function getGenshinDailyReset(server: DB.Server) {
     'Asia/Jakarta'
   ).getTime()
 
-  let resetIn = resetTime - jakartaTime.getTime()
-  if (resetIn > 86400000) resetIn -= 86400000
+  const resetIn = resetTime - jakartaTime.getTime()
 
-  return { name: server, resetIn }
+  return {
+    name: server,
+    resetIn: resetIn > 86400000 ? resetIn - 86400000 : resetIn,
+    rawResetIn: resetIn,
+  }
+}
+
+export function getFarmable(server: DB.Server) {
+  const jakartaTime = DateFnsTz.zonedTimeToUtc(new Date(), 'Asia/Jakarta')
+
+  const resetTime: Record<DB.Server, number> = {
+    NA: 16,
+    EU: 10,
+    ASIA: 3,
+  }
+
+  const currentDay =
+    jakartaTime.getHours() >= resetTime[server]
+      ? jakartaTime.getDay()
+      : DateFns.addDays(jakartaTime, -1).getDay()
+
+  return FarmableData.farmable[currentDay]
 }
