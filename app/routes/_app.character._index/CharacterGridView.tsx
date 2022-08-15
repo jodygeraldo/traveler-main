@@ -56,7 +56,7 @@ export function CharacterGridItem({
               <Image
                 src={`/character/${Utils.getImageSrc(name)}.png`}
                 alt={name}
-                className="h-16 w-16 xs:h-20 xs:w-20"
+                className="h-20 w-20"
                 width={80}
                 height={80}
               />
