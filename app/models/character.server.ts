@@ -448,7 +448,7 @@ export async function upsertCharacter({
       if (name.includes('Electro')) names[1] = 'Traveler Geo'
 
       if (characters.length === 0) {
-        return prisma.userCharacter.createMany({
+        await prisma.userCharacter.createMany({
           data: [
             {
               ownerId: accountId,
@@ -471,7 +471,7 @@ export async function upsertCharacter({
           ],
         })
       } else {
-        return prisma.$transaction([
+        await prisma.$transaction([
           prisma.userCharacter.update({
             where: { id: characters.find((c) => c.name === name)!.id },
             data: { ...progression },
