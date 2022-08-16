@@ -11,6 +11,7 @@ import * as Logo from '~/components/Logo'
 import useUser from '~/hooks/useUser'
 
 const navigation = [
+  { name: 'Handbook', to: '/handbook' },
   { name: 'Character', to: '/character' },
   { name: 'Track', to: '/track' },
 ]
