@@ -24,7 +24,7 @@ test('auth flow', async ({ page }) => {
     page.waitForNavigation(),
     page.locator('button:has-text("Sign up")').click(),
   ])
-  await expect(page).toHaveURL('/character')
+  await expect(page).toHaveURL('/handbook')
 
   await page.locator('[data-testid="desktop-profile-dropdown"]').click()
   await page.locator('button[role="menuitem"]:has-text("Sign out")').click()
@@ -38,7 +38,7 @@ test('auth flow', async ({ page }) => {
   await page.locator('[placeholder="Email address"]').fill(email)
   await page.locator('[placeholder="Password"]').fill(password)
   await page.locator('button:has-text("Sign in")').click()
-  await expect(page).toHaveURL('/character')
+  await expect(page).toHaveURL('/handbook')
 
   await page.locator('[data-testid="desktop-profile-dropdown"]').click()
   await page.locator('button[role="menuitem"]:has-text("Sign out")').click()

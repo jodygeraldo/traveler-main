@@ -76,7 +76,7 @@ export const test = baseTest.extend({
         page.waitForResponse((response) => response.status() === 200),
         page.locator('button:has-text("Sign in")').click(),
       ])
-      await expect(page).toHaveURL('http://localhost:3000/character')
+      await expect(page).toHaveURL('http://localhost:3000/handbook')
       await page.context().storageState({ path: fileName })
       await page.close()
     }
