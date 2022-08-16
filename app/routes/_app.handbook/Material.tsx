@@ -14,7 +14,7 @@ export default function Material({
             Combined track materials
           </h2>
 
-          <div className="mt-6 grid grid-cols-1 gap-x-8 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          <div className="mt-6 grid grid-cols-1 gap-x-8 sm:grid-cols-2 2xl:grid-cols-3">
             {materials.map((m) => (
               <div key={m.key} className="flex items-center gap-2">
                 <Image
