@@ -118,3 +118,47 @@ export function getCharactersTrackMaterials(
     arr: materialArray.flat(),
   })
 }
+
+export function getTopPriorityCharacter(
+  tracks: ({
+    id: string
+    priority: number | null
+    name: string
+  } & CharacterType.TrackProgression)[]
+) {
+  if (tracks.length === 0) return null
+  const topPriorityTrack = tracks[0]
+  const { name, id: _, priority: _2, ...track } = topPriorityTrack
+
+  const progression: {
+    label: string
+    current: number
+    target: number | null
+  }[] = []
+
+  const label = {
+    level: 'Level',
+    ascension: 'Ascension',
+    normalAttack: 'Normal Attack',
+    elementalSkill: 'Elemental Skill',
+    elementalBurst: 'Elemental Burst',
+  } as const
+
+  type ProgressionKey = keyof typeof track
+
+  for (const key in track) {
+    const typedKey = key as ProgressionKey
+    if (track[typedKey].current < (track[typedKey].target || 0)) {
+      progression.push({
+        label: label[typedKey],
+        current: track[typedKey].current,
+        target: track[typedKey].target,
+      })
+    }
+  }
+
+  return {
+    name,
+    progression,
+  }
+}
