@@ -1,7 +1,6 @@
 import * as HeadlessUIReact from '@headlessui/react'
 import clsx from 'clsx'
 import * as React from 'react'
-import Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
 import Image from '~/components/Image'
 import * as Utils from '~/utils'
@@ -9,13 +8,13 @@ import * as Utils from '~/utils'
 interface Props {
   options: string[]
   defaultValue?: string
-  fetchProgressionHandler: (option: string) => void
+  fetcherLoad: (href: string) => void
 }
 
 export default function Combobox({
   options,
   defaultValue,
-  fetchProgressionHandler,
+  fetcherLoad,
 }: Props) {
   const [query, setQuery] = React.useState('')
   const [selectedOption, setSelectedOption] = React.useState(
@@ -29,7 +28,17 @@ export default function Combobox({
           option.toLowerCase().includes(query.toLowerCase())
         )
 
-  const handleFetchProgression = () => fetchProgressionHandler(selectedOption)
+  const handleFetchProgression = React.useCallback(
+    (name: string) => {
+      if (name === '') return
+      fetcherLoad('/api/get-character-progression?name=' + name)
+    },
+    [fetcherLoad]
+  )
+
+  React.useEffect(() => {
+    handleFetchProgression(selectedOption)
+  }, [handleFetchProgression, selectedOption])
 
   return (
     <HeadlessUIReact.Combobox
@@ -126,11 +135,6 @@ export default function Combobox({
             ))}
           </HeadlessUIReact.Combobox.Options>
         )}
-      </div>
-      <div className="mt-4 flex justify-end sm:col-span-3 sm:mt-0 sm:justify-self-end">
-        <Button onClick={handleFetchProgression} type="button" variant="info">
-          Update progression
-        </Button>
       </div>
     </HeadlessUIReact.Combobox>
   )

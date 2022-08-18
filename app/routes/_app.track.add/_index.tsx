@@ -149,11 +149,6 @@ export default function AddTrackPage() {
   const progressionfetcher =
     RemixReact.useFetcher<CharacterTypes.CharacterNameWithProgression>()
 
-  function handleFetchProgression(name: string) {
-    if (name === '') return
-    progressionfetcher.load('/api/get-character-progression?name=' + name)
-  }
-
   const character = progressionfetcher.data
 
   return (
@@ -224,16 +219,14 @@ export default function AddTrackPage() {
                                 <Combobox
                                   options={trackableCharacterNames}
                                   defaultValue={firstCharacter?.name}
-                                  fetchProgressionHandler={
-                                    handleFetchProgression
-                                  }
+                                  fetcherLoad={progressionfetcher.load}
                                 />
 
                                 {(firstCharacter || character) && (
                                   <>
                                     <div className="px-4 sm:px-6 sm:py-5">
                                       <p className="text-gray-11">
-                                        Last updated progression for{' '}
+                                        Current progression for{' '}
                                         <span className="text-gray-12">
                                           {character
                                             ? character.name

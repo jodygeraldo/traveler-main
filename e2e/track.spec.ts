@@ -36,7 +36,14 @@ test('Track page flow', async ({ page }, testInfo) => {
   await expect(page).toHaveURL('/track/add')
   await page.locator('input[role="combobox"]').fill('bennett')
   await page.locator('ul[role="listbox"] div:has-text("Bennett")').click()
-  await page.locator('text=Update progression').click()
+  await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        response.url().includes('api/get-character-progression') &&
+        response.request().method() === 'GET'
+    ),
+    page.locator('button:has-text("Track")').click(),
+  ])
 
   await page.locator('input[name="level"]').fill('40')
   await page.locator('input[name="ascension"]').fill('2')
