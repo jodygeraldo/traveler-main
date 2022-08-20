@@ -24,7 +24,7 @@ export default function CharacterProfilePage() {
         alt=""
         width={384}
         height="auto"
-        className="h-auto w-96"
+        className="h-96 w-full max-w-[24rem] object-contain xl:h-full"
         centered
       />
 

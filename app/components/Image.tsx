@@ -20,10 +20,14 @@ const PUBLIC_URL =
 const Image = React.forwardRef<HTMLImageElement, Props>(
   ({ src, alt, className, width, height, centered, ...props }, ref) => {
     const getSrcSet = React.useCallback(
-      (dpr = 1) =>
-        `//images.weserv.nl/?url=${PUBLIC_URL}${src}&w=${+width * dpr}${
-          height ? '&h=' + +height * dpr : ''
-        }&output=webp`,
+      (dpr = 1) => {
+        const w =
+          typeof width === 'number' ? `${width * dpr}px` : width || 'auto'
+        const h =
+          typeof height === 'number' ? `${height * dpr}px` : height || 'auto'
+
+        return `//images.weserv.nl/?url=${PUBLIC_URL}${src}&w=${w}&h=${h}&output=webp`
+      },
       [height, src, width]
     )
 
