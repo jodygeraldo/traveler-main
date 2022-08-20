@@ -9,12 +9,17 @@ export default function Stat({
         Progresion
       </h2>
       <div className="grid grid-cols-1 divide-y divide-gray-6 overflow-hidden rounded-lg bg-gray-2 shadow md:grid-cols-3 md:divide-y-0 md:divide-x">
-        {stats.map((stat) => (
+        {stats.map((stat, idx) => (
           <div
             key={stat.name}
             className="flex items-start px-4 py-5 sm:p-6 md:block"
           >
-            <p className="text-8xl tabular-nums text-primary-9">{stat.value}</p>
+            <p
+              data-testid={`stat-${idx}`}
+              className="text-8xl tabular-nums text-primary-9"
+            >
+              {stat.value}
+            </p>
             <p className="text-sm font-medium text-gray-12 xs:text-base">
               {stat.name}
             </p>

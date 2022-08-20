@@ -24,7 +24,10 @@ export default function ServerSelect({
         submit({ server: value }, { method: 'post', replace: true })
       }
     >
-      <RadixSelect.Trigger className="flex items-center gap-4 rounded-md bg-gray-3 px-4 py-2 hover:bg-gray-4 focus:outline-none focus:ring-2 focus:ring-primary-8">
+      <RadixSelect.Trigger
+        data-testid="server-select"
+        className="flex items-center gap-4 rounded-md bg-gray-3 px-4 py-2 hover:bg-gray-4 focus:outline-none focus:ring-2 focus:ring-primary-8"
+      >
         <RadixSelect.Value asChild>
           <div className="text-sm text-gray-11">
             <span className="font-medium text-gray-12">{server.name} </span>
@@ -69,6 +72,7 @@ function SelectItem({
         'radix-disabled:text-gray-8',
         'radix-highlighted:bg-gray-5 radix-highlighted:text-gray-12 radix-highlighted:outline-none radix-state-open:text-gray-12'
       )}
+      data-testid={`server-option-${value}`}
     >
       <RadixSelect.ItemText>{children}</RadixSelect.ItemText>
       <RadixSelect.ItemIndicator>
