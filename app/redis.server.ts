@@ -1,41 +1,31 @@
-import * as Redis from 'redis'
+import Redis from 'ioredis'
 import invariant from 'tiny-invariant'
 import type * as Zod from 'zod'
 
 invariant(process.env.REDIS_URL, 'REDIS_URL must be set')
 
-const client = Redis.createClient({ url: process.env.REDIS_URL })
+const redis = new Redis(process.env.REDIS_URL)
 
-client.on('error', (err) => console.log('Redis client error', err))
+redis.on('error', (err) => console.log('Redis client error', err))
 
 export async function get(key: string) {
-  try {
-    await client.connect()
-    const [cache] = await Promise.all([client.get(key), client.quit()])
-    if (!cache) return null
+  const cache = await redis.get(key)
+  if (cache) {
     return JSON.parse(cache)
-  } catch (error) {
-    console.error(`Redis Error .get: ${error}`)
-    return null
   }
+  return null
 }
 
 export async function set(key: string, value: any) {
-  try {
-    await client.connect()
-    await Promise.all([client.set(key, JSON.stringify(value)), client.quit()])
-  } catch (error) {
-    console.error(`Redis Error .set: ${error}`)
-  }
+  await redis
+    .set(key, JSON.stringify(value))
+    .catch((error) => console.error(`Redis Error .set: ${error}`))
 }
 
-export async function del(key: string | string[]) {
-  try {
-    await client.connect()
-    await Promise.all([client.del(key), client.quit()])
-  } catch (error) {
-    console.error(`Redis Error .del: ${error}`)
-  }
+export async function del(keys: string | string[]) {
+  await redis
+    .del(typeof keys === 'string' ? [keys] : keys)
+    .catch((error) => console.error(`Redis Error .del: ${error}`))
 }
 
 export async function getSafe<T extends Zod.ZodTypeAny>({
@@ -49,6 +39,7 @@ export async function getSafe<T extends Zod.ZodTypeAny>({
   const value = await get(key)
 
   const result = schema.safeParse(value)
+
   if (!result.success) return
   return result.data as SchemaType
 }
