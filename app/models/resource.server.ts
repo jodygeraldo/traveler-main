@@ -14,6 +14,19 @@ export async function getResources(type?: DB.ResourceStatus) {
   })
 }
 
+export async function getResource(id: string) {
+  return await prisma.resource.findUniqueOrThrow({
+    where: { id },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      url: true,
+      status: true,
+    },
+  })
+}
+
 export async function addResource({
   userId,
   title,
