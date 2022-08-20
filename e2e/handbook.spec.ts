@@ -1,25 +1,8 @@
-import prisma from '~/db.server'
-import * as Redis from '~/redis.server'
-import { expect, getRedisCharacterKeys, test, users } from './fixtures'
+import { cleanup, expect, test, users } from './fixtures'
 
 test.skip('Handbook page flow', async ({ page }, testInfo) => {
   const currentUser = users[testInfo.workerIndex]
-  await Redis.del(getRedisCharacterKeys(currentUser.accountId))
-  await prisma.user
-    .update({
-      where: { email: currentUser.email },
-      data: {
-        accounts: {
-          update: {
-            where: { id: currentUser.accountId },
-            data: {
-              characters: { deleteMany: {} },
-            },
-          },
-        },
-      },
-    })
-    .catch((e) => console.error(e))
+  await cleanup(currentUser.accountId)
 
   // * Should display clean first handbook page
   await page.goto('/handbook')

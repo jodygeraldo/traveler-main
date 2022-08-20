@@ -1,6 +1,8 @@
 import { expect, test as baseTest } from '@playwright/test'
 import fs from 'node:fs'
 import path from 'node:path'
+import prisma from '~/db.server'
+import * as Redis from '~/redis.server'
 export { expect }
 
 export const users = [
@@ -56,24 +58,6 @@ export const users = [
 
 const password = 'playwright1234'
 
-export function getRedisCharacterKeys(accountId: string) {
-  const names = ['Bennett']
-  const keysWithName = names
-    .map((name) => [
-      `getUserCharacter:${name}:${accountId}`,
-      `getUserTrackCharacter:${name}:${accountId}`,
-      `getUserCharacterTrackStatus:${name}:${accountId}`,
-    ])
-    .flat()
-
-  return [
-    ...keysWithName,
-    `getUserCharacters:${accountId}`,
-    `getUserNonTrackableCharactersName:${accountId}`,
-    `getUserTrackCharacters:${accountId}`,
-  ]
-}
-
 export const test = baseTest.extend({
   storageState: async ({ browser }, use, testInfo) => {
     // Override storage state, use worker index to look up logged-in info and generate it lazily.
@@ -101,3 +85,38 @@ export const test = baseTest.extend({
     await use(fileName)
   },
 })
+
+function getRedisCharacterKeys(id: string) {
+  const names = ['Bennett']
+  const keysWithName = names
+    .map((name) => [
+      `getUserCharacter:${name}:${id}`,
+      `getUserTrackCharacter:${name}:${id}`,
+      `getUserCharacterTrackStatus:${name}:${id}`,
+    ])
+    .flat()
+
+  return [
+    ...keysWithName,
+    `getUserCharacters:${id}`,
+    `getUserNonTrackableCharactersName:${id}`,
+    `getUserTrackCharacters:${id}`,
+  ]
+}
+
+async function cleanupAccount(id: string) {
+  await prisma.account
+    .update({
+      where: { id },
+      data: {
+        characters: { deleteMany: {} },
+        server: { set: 'NA' },
+      },
+    })
+    .catch((e) => console.error(e))
+}
+
+export async function cleanup(id: string) {
+  await Redis.del(getRedisCharacterKeys(id))
+  await cleanupAccount(id)
+}
