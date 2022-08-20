@@ -56,6 +56,24 @@ export const users = [
 
 const password = 'playwright1234'
 
+export function getRedisCharacterKeys(accountId: string) {
+  const names = ['Bennett']
+  const keysWithName = names
+    .map((name) => [
+      `getUserCharacter:${name}:${accountId}`,
+      `getUserTrackCharacter:${name}:${accountId}`,
+      `getUserCharacterTrackStatus:${name}:${accountId}`,
+    ])
+    .flat()
+
+  return [
+    ...keysWithName,
+    `getUserCharacters:${accountId}`,
+    `getUserNonTrackableCharactersName:${accountId}`,
+    `getUserTrackCharacters:${accountId}`,
+  ]
+}
+
 export const test = baseTest.extend({
   storageState: async ({ browser }, use, testInfo) => {
     // Override storage state, use worker index to look up logged-in info and generate it lazily.
