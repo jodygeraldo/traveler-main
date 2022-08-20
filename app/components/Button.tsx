@@ -58,7 +58,7 @@ interface ButtonLinkProps
 
 interface ButtonLinkExternalProps
   extends BaseProps,
-    Omit<React.LinkHTMLAttributes<HTMLAnchorElement>, keyof BaseProps> {
+    Omit<React.ComponentPropsWithRef<'a'>, keyof BaseProps | 'rel' | 'target'> {
   kind?: 'buttonLink' | 'text'
   focusRing?: 1 | 2 | 3
 }

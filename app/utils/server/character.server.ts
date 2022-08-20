@@ -871,7 +871,7 @@ function getUpdatedMaterial({
   })
 }
 
-function combineDuplicateKey(
+export function combineDuplicateKey(
   obj:
     | { skipPreprocess: false; arr: { [k: string]: number }[] }
     | { skipPreprocess: true; arr: KV[] }

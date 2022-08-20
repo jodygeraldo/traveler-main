@@ -9,7 +9,7 @@ export async function loader({ request }: RemixNode.LoaderArgs) {
   const userId = await Session.getUserId(request)
 
   if (userId) {
-    return RemixNode.redirect('/character')
+    return RemixNode.redirect('/handbook')
   }
 
   return null

@@ -81,7 +81,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
 
 export default function Join() {
   const [searchParams] = RemixReact.useSearchParams()
-  const redirectTo = searchParams.get('redirectTo') ?? '/character'
+  const redirectTo = searchParams.get('redirectTo') ?? '/handbook'
   const actionData = RemixReact.useActionData<ActionData>()
   const emailRef = React.useRef<HTMLInputElement>(null)
   const passwordRef = React.useRef<HTMLInputElement>(null)

@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs'
+import type * as DB from '~/db.server'
 import prisma from '~/db.server'
 
 export async function getUserById(id: string) {
@@ -11,6 +12,7 @@ export async function getUserById(id: string) {
         select: {
           id: true,
           name: true,
+          server: true,
         },
       },
     },
@@ -95,4 +97,17 @@ export async function verifyLogin(email: string, password: string) {
   const { password: _password, ...userWithoutPassword } = userWithPassword
 
   return userWithoutPassword
+}
+
+export async function updateAccountServer({
+  server,
+  accountId,
+}: {
+  server: DB.Server
+  accountId: string
+}) {
+  return prisma.account.update({
+    where: { id: accountId },
+    data: { server },
+  })
 }

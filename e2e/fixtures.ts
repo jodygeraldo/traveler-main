@@ -1,6 +1,8 @@
 import { expect, test as baseTest } from '@playwright/test'
 import fs from 'node:fs'
 import path from 'node:path'
+import prisma from '~/db.server'
+import * as Redis from '~/redis.server'
 export { expect }
 
 export const users = [
@@ -76,10 +78,45 @@ export const test = baseTest.extend({
         page.waitForResponse((response) => response.status() === 200),
         page.locator('button:has-text("Sign in")').click(),
       ])
-      await expect(page).toHaveURL('http://localhost:3000/character')
+      await expect(page).toHaveURL('http://localhost:3000/handbook')
       await page.context().storageState({ path: fileName })
       await page.close()
     }
     await use(fileName)
   },
 })
+
+function getRedisCharacterKeys(id: string) {
+  const names = ['Bennett']
+  const keysWithName = names
+    .map((name) => [
+      `getUserCharacter:${name}:${id}`,
+      `getUserTrackCharacter:${name}:${id}`,
+      `getUserCharacterTrackStatus:${name}:${id}`,
+    ])
+    .flat()
+
+  return [
+    ...keysWithName,
+    `getUserCharacters:${id}`,
+    `getUserNonTrackableCharactersName:${id}`,
+    `getUserTrackCharacters:${id}`,
+  ]
+}
+
+async function cleanupAccount(id: string) {
+  await prisma.account
+    .update({
+      where: { id },
+      data: {
+        characters: { deleteMany: {} },
+        server: { set: 'NA' },
+      },
+    })
+    .catch((e) => console.error(e))
+}
+
+export async function cleanup(id: string) {
+  await Redis.del(getRedisCharacterKeys(id))
+  await cleanupAccount(id)
+}
