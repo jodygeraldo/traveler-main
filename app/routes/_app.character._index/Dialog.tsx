@@ -36,7 +36,7 @@ export default function Dialog({ name, progression, children }: Props) {
       <AnimatePresence>
         {open && (
           <RadixDialog.Portal forceMount>
-            <div className="relative z-10">
+            <div className="relative z-30">
               <RadixDialog.Overlay asChild>
                 <motion.div
                   className="fixed inset-0 bg-overlay-black-12"

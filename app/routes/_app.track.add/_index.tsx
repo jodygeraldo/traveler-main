@@ -155,7 +155,7 @@ export default function AddTrackPage() {
     <HeadlessUI.Transition.Root show={open} as={React.Fragment}>
       <HeadlessUI.Dialog
         as="div"
-        className="relative z-10"
+        className="relative z-30"
         onClose={() => setOpen(false)}
       >
         <HeadlessUI.Transition.Child
