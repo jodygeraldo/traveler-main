@@ -8,6 +8,7 @@ export async function getUserById(id: string) {
     select: {
       id: true,
       email: true,
+      role: true,
       accounts: {
         select: {
           id: true,
@@ -51,6 +52,7 @@ export async function createUser(email: string, password: string) {
     },
     select: {
       id: true,
+      role: true,
       accounts: {
         take: 1,
         where: {
@@ -75,6 +77,7 @@ export async function verifyLogin(email: string, password: string) {
     where: { email },
     select: {
       id: true,
+      role: true,
       accounts: {
         select: {
           id: true,

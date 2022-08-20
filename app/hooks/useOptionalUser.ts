@@ -6,6 +6,7 @@ export default function useOptionalUser() {
     user: Zod.object({
       id: Zod.string(),
       email: Zod.string(),
+      role: Zod.enum(['USER', 'ADMIN']),
       accounts: Zod.array(Zod.object({ id: Zod.string(), name: Zod.string() })),
     }),
   })
