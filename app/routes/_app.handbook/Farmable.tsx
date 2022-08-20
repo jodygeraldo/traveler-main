@@ -23,17 +23,17 @@ export default function Farmable({ todayFarmable }: Props) {
   const [tabs, setTabs] = React.useState([
     {
       name: 'Character',
-      isActive: false,
+      isActive: true,
       farmableAccessor: 'character' as const,
     },
     {
       name: 'Weapon',
-      isActive: true,
+      isActive: false,
       farmableAccessor: 'weapon' as const,
     },
   ])
   const [selectedTabAccessor, setSelectedTabAccessor] = React.useState(
-    tabs[1].farmableAccessor
+    tabs[0].farmableAccessor
   )
 
   function handleTabChange(newTabName: string) {
