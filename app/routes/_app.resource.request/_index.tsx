@@ -18,7 +18,7 @@ const FormDataSchema = Zod.object({
   description: Zod.string(),
   url: Zod.string(),
   status: Zod.nativeEnum(DB.ResourceStatus).optional(),
-  searchParams: Zod.string(),
+  searchParams: Zod.string().optional(),
 })
 
 export async function action({ request }: RemixNode.ActionArgs) {
@@ -37,6 +37,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
     userId,
   })
 
+  if (!searchParams) return RemixNode.redirect('/resource')
   return RemixNode.redirect(`/resource?${searchParams}`)
 }
 
