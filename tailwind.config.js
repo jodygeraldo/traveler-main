@@ -142,9 +142,6 @@ module.exports = {
       'image-rarity-5s': "url('/image/background/bg-rarity-5s.webp')",
     },
   },
-  corePlugins: {
-    aspectRatio: false,
-  },
   plugins: [
     plugin(function ({ addVariant }) {
       addVariant('data-side-top', '&[data-state="open"][data-side="top"]')
@@ -153,7 +150,6 @@ module.exports = {
       addVariant('data-side-left', '&[data-state="open"][data-side="left"]')
     }),
     require('tailwindcss-radix'),
-    require('@tailwindcss/aspect-ratio'),
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
   ],
