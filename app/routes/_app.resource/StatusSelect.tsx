@@ -19,12 +19,12 @@ export default function StatusSelect() {
 
   return (
     <RadixSelect.Root
-      name="server"
+      name="status"
       defaultValue={searchParams.get('status') || 'ALL'}
       onValueChange={handleStatusChange}
     >
       <RadixSelect.Trigger
-        data-testid="server-select"
+        data-testid="status-select"
         className="flex items-center gap-4 rounded-md bg-gray-3 px-4 py-2 hover:bg-gray-4 focus:outline-none focus:ring-2 focus:ring-primary-8"
       >
         <RadixSelect.Value />
