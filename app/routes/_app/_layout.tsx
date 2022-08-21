@@ -33,6 +33,7 @@ function MainContainer() {
 
       <main className="flex-1">
         <RemixReact.Outlet />
+        <Footer />
       </main>
     </div>
   )
@@ -238,5 +239,36 @@ function ProfileMenu({ dataTestId }: { dataTestId: string }) {
         </RadixDropdownMenu.Content>
       </RadixDropdownMenu.Portal>
     </RadixDropdownMenu.Root>
+  )
+}
+
+function Footer() {
+  return (
+    <footer>
+      <div className="max-w-prose px-4 py-12 sm:px-6 lg:px-8">
+        <p className="text-gray-9">
+          TravelerMain is a open source project by{' '}
+          <a
+            href="https://jodygeraldo.com/"
+            target="_blank"
+            rel="noreferrer"
+            className="text-gray-11 hover:text-gray-12 hover:underline"
+          >
+            Jody Geraldo
+          </a>
+          . The code is licensed under the MIT License. All Genshin Impact
+          related contents and materials are copyright by{' '}
+          <a
+            href="https://www.hoyoverse.com/"
+            target="_blank"
+            rel="noreferrer"
+            className="text-gray-11 hover:text-gray-12 hover:underline"
+          >
+            HoYoverse
+          </a>
+          .
+        </p>
+      </div>
+    </footer>
   )
 }
