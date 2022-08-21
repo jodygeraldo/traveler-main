@@ -1,7 +1,8 @@
 import * as RemixNode from '@remix-run/node'
 import dotenv from 'dotenv'
 import invariant from 'tiny-invariant'
-import type * as DB from '~/db.server'
+import * as Zod from 'zod'
+import * as DB from '~/db.server'
 import * as UserModel from '~/models/user.server'
 
 dotenv.config()
@@ -20,6 +21,7 @@ export const sessionStorage = RemixNode.createCookieSessionStorage({
 })
 
 const USER_SESSION_KEY = 'userId'
+const USER_ROLE_KEY = 'role'
 const ACCOUNT_SESSION_KEY = 'accountId'
 
 export async function getSession(request: Request) {
@@ -33,6 +35,14 @@ export async function getUserId(request: Request): Promise<string | undefined> {
   return userId
 }
 
+export async function getUserRole(
+  request: Request
+): Promise<DB.Role | undefined> {
+  const session = await getSession(request)
+  const userRole = session.get(USER_ROLE_KEY)
+  return Zod.nativeEnum(DB.Role).optional().parse(userRole)
+}
+
 export async function getAccountId(
   request: Request
 ): Promise<string | undefined> {
@@ -44,6 +54,7 @@ export async function getAccountId(
 export async function getUser(request: Request): Promise<{
   id: string
   email: string
+  role: DB.Role
   accounts: {
     id: string
     name: string
@@ -71,6 +82,33 @@ export async function requireUserId(
   return userId
 }
 
+export async function requireUserRole(
+  request: Request,
+  redirectTo: string = new URL(request.url).pathname
+): Promise<DB.Role> {
+  const userId = await requireUserId(request)
+  const userRole = await getUserRole(request)
+  if (!userRole && userId) {
+    const session = await getSession(request)
+    session.set(USER_ROLE_KEY, 'USER')
+    const searchParams = new URLSearchParams([['redirectTo', redirectTo]])
+    throw RemixNode.redirect(`/login?${searchParams}`, {
+      headers: {
+        'Set-Cookie': await sessionStorage.commitSession(session),
+      },
+    })
+  }
+
+  if (!userRole) {
+    const session = await getSession(request)
+    session.set(USER_ROLE_KEY, 'USER')
+    const searchParams = new URLSearchParams([['redirectTo', redirectTo]])
+    throw RemixNode.redirect(`/login?${searchParams}`)
+  }
+
+  return userRole
+}
+
 export async function requireAccountId(
   request: Request,
   redirectTo: string = new URL(request.url).pathname
@@ -86,6 +124,7 @@ export async function requireAccountId(
 export async function requireUser(request: Request): Promise<{
   id: string
   email: string
+  role: DB.Role
   accounts: {
     id: string
     name: string
@@ -104,17 +143,20 @@ export async function createUserSession({
   request,
   userId,
   accountId,
+  role,
   remember,
   redirectTo,
 }: {
   request: Request
   userId: string
   accountId: string
+  role: DB.Role
   remember: boolean
   redirectTo: string
 }): Promise<Response> {
   const session = await getSession(request)
   session.set(USER_SESSION_KEY, userId)
+  session.set(USER_ROLE_KEY, role)
   session.set(ACCOUNT_SESSION_KEY, accountId)
   return RemixNode.redirect(redirectTo, {
     headers: {

@@ -9,14 +9,21 @@ datasource db {
   referentialIntegrity = "prisma"
 }
 
+enum Role {
+  ADMIN
+  USER
+}
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
+  role      Role     @default(USER)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   password Password?
   accounts Account[]
+  Resource Resource[]
 }
 
 model Password {
@@ -132,4 +139,21 @@ model CharacterTrack {
   ownerId       String        @map("owner_id")
 
   @@unique([name, ownerId])
+}
+
+enum ResourceStatus {
+  PUBLISHED
+  DRAFT
+  PENDING
+}
+
+model Resource {
+  id          String         @id @default(cuid())
+  title       String         @unique
+  description String
+  url         String
+  status      ResourceStatus @default(PENDING)
+
+  submittedBy   User?   @relation(fields: [submittedById], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  submittedById String? @map("submitted_by_id")
 }

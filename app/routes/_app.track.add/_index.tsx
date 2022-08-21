@@ -230,7 +230,7 @@ export default function AddTrackPage() {
                                         <span className="text-gray-12">
                                           {character
                                             ? character.name
-                                            : firstCharacter.name}
+                                            : firstCharacter!.name}
                                         </span>
                                       </p>
                                     </div>
@@ -241,12 +241,12 @@ export default function AddTrackPage() {
                                       currentValue={
                                         character
                                           ? character.progression.level
-                                          : firstCharacter.progression.level
+                                          : firstCharacter!.progression.level
                                       }
                                       min={
                                         character
                                           ? character.progression.level
-                                          : firstCharacter.progression.level
+                                          : firstCharacter!.progression.level
                                       }
                                       max={90}
                                       error={actionData?.errors?.level}
@@ -258,12 +258,14 @@ export default function AddTrackPage() {
                                       currentValue={
                                         character
                                           ? character.progression.ascension
-                                          : firstCharacter.progression.ascension
+                                          : firstCharacter!.progression
+                                              .ascension
                                       }
                                       min={
                                         character
                                           ? character.progression.ascension
-                                          : firstCharacter.progression.ascension
+                                          : firstCharacter!.progression
+                                              .ascension
                                       }
                                       max={6}
                                       error={actionData?.errors?.ascension}
@@ -276,13 +278,13 @@ export default function AddTrackPage() {
                                       currentValue={
                                         character
                                           ? character.progression.normalAttack
-                                          : firstCharacter.progression
+                                          : firstCharacter!.progression
                                               .normalAttack
                                       }
                                       min={
                                         character
                                           ? character.progression.normalAttack
-                                          : firstCharacter.progression
+                                          : firstCharacter!.progression
                                               .normalAttack
                                       }
                                       max={10}
@@ -296,13 +298,13 @@ export default function AddTrackPage() {
                                       currentValue={
                                         character
                                           ? character.progression.elementalSkill
-                                          : firstCharacter.progression
+                                          : firstCharacter!.progression
                                               .elementalSkill
                                       }
                                       min={
                                         character
                                           ? character.progression.elementalSkill
-                                          : firstCharacter.progression
+                                          : firstCharacter!.progression
                                               .elementalSkill
                                       }
                                       max={10}
@@ -316,13 +318,13 @@ export default function AddTrackPage() {
                                       currentValue={
                                         character
                                           ? character.progression.elementalBurst
-                                          : firstCharacter.progression
+                                          : firstCharacter!.progression
                                               .elementalBurst
                                       }
                                       min={
                                         character
                                           ? character.progression.elementalBurst
-                                          : firstCharacter.progression
+                                          : firstCharacter!.progression
                                               .elementalBurst
                                       }
                                       max={10}

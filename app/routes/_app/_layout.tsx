@@ -14,6 +14,7 @@ const navigation = [
   { name: 'Handbook', to: '/handbook' },
   { name: 'Character', to: '/character' },
   { name: 'Track', to: '/track' },
+  { name: 'Resource', to: '/resource' },
 ]
 
 export default function AppLayout() {

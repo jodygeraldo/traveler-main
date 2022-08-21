@@ -54,6 +54,7 @@ export async function action({ request }: RemixNode.ActionArgs) {
   return Session.createUserSession({
     request,
     userId: user.id,
+    role: user.role,
     accountId: user.accounts[0].id,
     remember: remember === 'on' ? true : false,
     redirectTo,
