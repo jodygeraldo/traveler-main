@@ -85,6 +85,7 @@ export default function ResourceCard({
               </Button.Base>
             )}
             <Button.Link
+              data-testid={`edit-resource-${title}`}
               to={`edit?id=${id}&${searchParams.toString()}`}
               type="submit"
               styles="button"
@@ -94,6 +95,7 @@ export default function ResourceCard({
               Edit
             </Button.Link>
             <Button.Base
+              data-testid={`delete-resource-${title}`}
               type="submit"
               name="intent"
               value="delete"
