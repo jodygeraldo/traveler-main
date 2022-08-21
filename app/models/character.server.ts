@@ -32,6 +32,7 @@ function getRedisCharacterKeys(accountId: string, name: string) {
     `getUserCharacters:${accountId}`,
     `getUserNonTrackableCharactersName:${accountId}`,
     `getUserTrackCharacters:${accountId}`,
+    `getUserTopThreeTracks:${accountId}`,
   ]
 }
 
@@ -358,6 +359,26 @@ export async function getUserCharacterTrackStatus({
   return status
 }
 
+export async function getUserTopThreeTracks(accountId: string) {
+  const userTopThreeTracksCache = await Redis.getSafe({
+    key: `getUserTopThreeTracks:${accountId}`,
+    schema: Zod.object({ name: Zod.string() }).array(),
+  })
+
+  if (userTopThreeTracksCache) return userTopThreeTracksCache
+
+  const userTopThreeTracks = await prisma.characterTrack.findMany({
+    where: { ownerId: accountId },
+    select: { name: true },
+    orderBy: [{ priority: { sort: 'asc', nulls: 'last' } }, { name: 'asc' }],
+    take: 3,
+  })
+
+  await Redis.set(`getUserTopThreeTracks:${accountId}`, userTopThreeTracks)
+
+  return userTopThreeTracks
+}
+
 export async function updateCharacter({
   name,
   progression,
@@ -612,6 +633,7 @@ export async function updateTrackCharacter({
       `getUserNonTrackableCharactersName:${accountId}`,
       `getUserTrackCharacters:${accountId}`,
       `getUserTrackCharacter:${name}:${accountId}`,
+      `getUserTopThreeTracks:${accountId}`,
     ])
   } catch (error) {
     console.error(error)
@@ -635,6 +657,7 @@ export async function deleteTrackCharacter({
       `getUserTrackCharacters:${accountId}`,
       `getUserTrackCharacter:${name}:${accountId}`,
       `getUserCharacterTrackStatus:${name}:${accountId}`,
+      `getUserTopThreeTracks:${accountId}`,
     ])
   } catch (error) {
     console.error(error)
@@ -660,7 +683,10 @@ export async function updateCharacterTrackOrder({
     )
     await prisma.$transaction(queries)
 
-    await Redis.del(`getUserTrackCharacters:${accountId}`)
+    await Redis.del([
+      `getUserTrackCharacters:${accountId}`,
+      `getUserTopThreeTracks:${accountId}`,
+    ])
   } catch (error) {
     console.error(error)
   }

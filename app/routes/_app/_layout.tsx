@@ -1,5 +1,6 @@
 import * as RadixDialog from '@radix-ui/react-dialog'
 import * as RadixDropdownMenu from '@radix-ui/react-dropdown-menu'
+import * as RemixNode from '@remix-run/node'
 import * as RemixReact from '@remix-run/react'
 import clsx from 'clsx'
 import type { Variants } from 'framer-motion'
@@ -7,8 +8,20 @@ import { AnimatePresence, motion } from 'framer-motion'
 import * as React from 'react'
 import * as Button from '~/components/Button'
 import * as Icon from '~/components/Icon'
+import Image from '~/components/Image'
 import * as Logo from '~/components/Logo'
 import useUser from '~/hooks/useUser'
+import * as CharacterModel from '~/models/character.server'
+import * as Session from '~/session.server'
+import { getImageSrc } from '~/utils'
+
+export async function loader({ request }: RemixNode.LoaderArgs) {
+  const accountId = await Session.requireAccountId(request)
+
+  return RemixNode.json({
+    tracks: await CharacterModel.getUserTopThreeTracks(accountId),
+  })
+}
 
 const navigation = [
   { name: 'Handbook', to: '/handbook' },
@@ -40,6 +53,8 @@ function MainContainer() {
 }
 
 function DesktopSidebar() {
+  const { tracks } = RemixReact.useLoaderData<typeof loader>()
+
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col lg:border-r lg:border-gray-6 lg:bg-gray-2 lg:pt-5">
       <RemixReact.Link
@@ -50,7 +65,7 @@ function DesktopSidebar() {
         <Logo.LogoWithText className="h-8 w-auto" />
       </RemixReact.Link>
       <div className="flex min-h-0 flex-1 flex-col">
-        <nav className="mt-5 flex-1 space-y-1 px-2">
+        <nav className="mt-5 space-y-1 px-2">
           {navigation.map((item) => (
             <RemixReact.NavLink
               key={item.name}
@@ -69,6 +84,34 @@ function DesktopSidebar() {
             </RemixReact.NavLink>
           ))}
         </nav>
+
+        {tracks.length > 0 && (
+          <div className="mt-6 flex-1 px-4">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-11">
+              Top tracks
+            </h3>
+            <ul className="mt-3 space-y-2">
+              {tracks.map((track) => (
+                <li key={track.name}>
+                  <RemixReact.Link
+                    to={`/track/${track.name}`}
+                    prefetch="intent"
+                    className="flex items-center gap-2 rounded-md text-gray-11 hover:text-gray-12 focus:outline-none focus:ring-2 focus:ring-primary-7"
+                  >
+                    <Image
+                      src={`/character/${getImageSrc(track.name)}.png`}
+                      alt=""
+                      width={20}
+                      height={20}
+                      className="h-5 w-5 rounded-full"
+                    />
+                    {track.name}
+                  </RemixReact.Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div className="border-t border-gray-6">
           <ProfileMenu dataTestId="desktop-profile-dropdown" />
